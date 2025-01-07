@@ -22,9 +22,6 @@
 
 - [ ] Code follows team's coding standards
 - [ ] Comments added/updated where needed
-- [ ] Constants are properly named and documented
-- [ ] Subsystem requirements are documented
-- [ ] Command requirements are documented
 - [ ] Changes have been tested in simulation (if applicable)
 - [ ] Changes have been tested on the robot (if applicable)
 
