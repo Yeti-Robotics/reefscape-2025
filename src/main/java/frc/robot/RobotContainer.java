@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
 
-
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -22,14 +21,11 @@ public class RobotContainer {
 
     XboxController xboxController;
 
-    /**
-     * The container for the robot. Contains subsystems, OI devices, and commands.
-     */
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         xboxController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
         configureBindings();
     }
-
 
     /**
      * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -40,9 +36,7 @@ public class RobotContainer {
      * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
      * joysticks}.
      */
-    private void configureBindings() {
-
-    }
+    private void configureBindings() {}
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

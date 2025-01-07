@@ -17,7 +17,9 @@ import frc.robot.constants.FieldConstants;
 
 /** Utility functions for flipping from the blue to red alliance. */
 public class AllianceFlipUtil {
-    /** Flips an x coordinate to the correct side of the field based on the current alliance color. */
+    /**
+     * Flips an x coordinate to the correct side of the field based on the current alliance color.
+     */
     public static double apply(double xCoordinate) {
         if (shouldFlip()) {
             return FieldConstants.FIELD_LENGTH - xCoordinate;
@@ -63,7 +65,7 @@ public class AllianceFlipUtil {
     }
 
     public static boolean shouldFlip() {
-        return DriverStation.getAlliance().isPresent() &&
-            DriverStation.getAlliance().get() == Alliance.Red;
+        return DriverStation.getAlliance().isPresent()
+                && DriverStation.getAlliance().get() == Alliance.Red;
     }
 }

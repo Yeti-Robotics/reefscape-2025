@@ -1,23 +1,18 @@
 package frc.robot.util.controllerUtils;
 
-
 import edu.wpi.first.wpilibj2.command.Command;
-
 import java.util.HashMap;
 import java.util.function.BooleanSupplier;
 
-/**
- * Creates, stores, and manages buttons.
- * All buttons created by ButtonHelper are MultiButtons
- */
+/** Creates, stores, and manages buttons. All buttons created by ButtonHelper are MultiButtons */
 public class ButtonHelper {
     private static final int maxAxis = 32;
     private static final int maxPOV = 16;
     private final Controller[] controllers;
-    /**
-     * Map of controllers and their associated button mappings
-     */
+
+    /** Map of controllers and their associated button mappings */
     private final HashMap<Controller, HashMap<Byte, MultiButton>> buttonMaps = new HashMap<>();
+
     private Controller controller;
 
     public ButtonHelper(Controller[] controllers) {
@@ -84,20 +79,13 @@ public class ButtonHelper {
             return buttonMaps.get(controller).get(buttonID);
         }
 
-        MultiButton multiButton = new MultiButton(
-                supplier,
-                buttonID,
-                layer,
-                command,
-                runCondition);
+        MultiButton multiButton = new MultiButton(supplier, buttonID, layer, command, runCondition);
 
         buttonMaps.get(controller).put(buttonID, multiButton);
         return multiButton;
     }
 
-    private MultiButton createButton(
-            BooleanSupplier supplier,
-            byte buttonID) {
+    private MultiButton createButton(BooleanSupplier supplier, byte buttonID) {
 
         if (buttonID == (byte) 0b11111111) {
             System.out.println("FAILED to create button!!!");
@@ -108,9 +96,7 @@ public class ButtonHelper {
             return buttonMaps.get(controller).get(buttonID);
         }
 
-        MultiButton multiButton = new MultiButton(
-                supplier,
-                buttonID);
+        MultiButton multiButton = new MultiButton(supplier, buttonID);
 
         buttonMaps.get(controller).put(buttonID, multiButton);
         return multiButton;
@@ -119,18 +105,14 @@ public class ButtonHelper {
     /**
      * Creates a MultiButton from a normal push-type button on a controller
      *
-     * @param buttonPort   the button's port number
-     * @param layer        the layer the command will be assigned to on the button
-     * @param command      a command to run
+     * @param buttonPort the button's port number
+     * @param layer the layer the command will be assigned to on the button
+     * @param command a command to run
      * @param runCondition the condition to run the command
      * @return instance of the MultiButton created. Does not have to be stored.
      */
     public MultiButton createButton(
-            int buttonPort,
-            int layer,
-            Command command,
-            MultiButton.RunCondition runCondition) {
-
+            int buttonPort, int layer, Command command, MultiButton.RunCondition runCondition) {
 
         return createButton(
                 () -> controller.getRawButton(buttonPort),
@@ -141,27 +123,25 @@ public class ButtonHelper {
     }
 
     /**
-     * Creates a MultiButton from a normal push-type button on a controller
-     * This method does not bind any commands. It is just to instantiate a button.
+     * Creates a MultiButton from a normal push-type button on a controller This method does not
+     * bind any commands. It is just to instantiate a button.
      *
      * @param buttonPort the button's port number
      * @return instance of the MultiButton created. Does not have to be stored.
      */
     public MultiButton createButton(int buttonPort) {
 
-        return createButton(
-                () -> controller.getRawButton(buttonPort),
-                getButtonID(buttonPort));
+        return createButton(() -> controller.getRawButton(buttonPort), getButtonID(buttonPort));
     }
 
     /**
      * Creates a MultiButton from an analog axis on a controller
      *
-     * @param axisPort     the axis's port number
-     * @param layer        the layer the command will be assigned to on the button
-     * @param command      a command to run
+     * @param axisPort the axis's port number
+     * @param layer the layer the command will be assigned to on the button
+     * @param command a command to run
      * @param runCondition the condition to run the command
-     * @param threshold    a value from -1.0 to 1.0 that triggers the button
+     * @param threshold a value from -1.0 to 1.0 that triggers the button
      * @return instance of the MultiButton created. Does not have to be stored.
      */
     public MultiButton createAxisButton(
@@ -170,52 +150,46 @@ public class ButtonHelper {
             Command command,
             MultiButton.RunCondition runCondition,
             double threshold) {
-        BooleanSupplier axisSupplier = () -> {
-            if (threshold < 0.0) {
-                return controller.getRawAxis(axisPort) < threshold;
-            }
-            return controller.getRawAxis(axisPort) > threshold;
-        };
+        BooleanSupplier axisSupplier =
+                () -> {
+                    if (threshold < 0.0) {
+                        return controller.getRawAxis(axisPort) < threshold;
+                    }
+                    return controller.getRawAxis(axisPort) > threshold;
+                };
 
         return createButton(
-                axisSupplier,
-                getButtonID(axisPort, threshold < 0.0),
-                layer,
-                command,
-                runCondition);
+                axisSupplier, getButtonID(axisPort, threshold < 0.0), layer, command, runCondition);
     }
 
     /**
-     * Creates a MultiButton from an analog axis on a controller
-     * This method does not bind any commands. It is just to instantiate a button.
+     * Creates a MultiButton from an analog axis on a controller This method does not bind any
+     * commands. It is just to instantiate a button.
      *
-     * @param axisPort  the axis's port number
+     * @param axisPort the axis's port number
      * @param threshold a value from -1.0 to 1.0 that triggers the button
      * @return instance of the MultiButton created. Does not have to be stored.
      */
-    public MultiButton createAxisButton(
-            int axisPort,
-            double threshold) {
-        BooleanSupplier axisSupplier = () -> {
-            if (threshold < 0.0) {
-                return controller.getRawAxis(axisPort) < threshold;
-            }
-            return controller.getRawAxis(axisPort) > threshold;
-        };
+    public MultiButton createAxisButton(int axisPort, double threshold) {
+        BooleanSupplier axisSupplier =
+                () -> {
+                    if (threshold < 0.0) {
+                        return controller.getRawAxis(axisPort) < threshold;
+                    }
+                    return controller.getRawAxis(axisPort) > threshold;
+                };
 
-        return createButton(
-                axisSupplier,
-                getButtonID(axisPort, threshold < 0.0));
+        return createButton(axisSupplier, getButtonID(axisPort, threshold < 0.0));
     }
 
     /**
      * Creates a MultiButton from a POV button on a controller
      *
-     * @param povPort      the POV's port number
-     * @param layer        the layer the command will be assigned to on the button
-     * @param command      a command to run
+     * @param povPort the POV's port number
+     * @param layer the layer the command will be assigned to on the button
+     * @param command a command to run
      * @param runCondition the condition to run the command
-     * @param direction    the direction of the POV
+     * @param direction the direction of the POV
      * @return instance of the MultiButton created. Does not have to be stored.
      */
     public MultiButton createPOVButton(
@@ -227,29 +201,21 @@ public class ButtonHelper {
         BooleanSupplier povSupplier = () -> controller.getPOV(povPort) == direction.value;
 
         return createButton(
-                povSupplier,
-                getButtonID(povPort, direction),
-                layer,
-                command,
-                runCondition);
+                povSupplier, getButtonID(povPort, direction), layer, command, runCondition);
     }
 
     /**
-     * Creates a MultiButton from a POV button on a controller
-     * This method does not bind any commands. It is just to instantiate a button.
+     * Creates a MultiButton from a POV button on a controller This method does not bind any
+     * commands. It is just to instantiate a button.
      *
-     * @param povPort   the POV's port number
+     * @param povPort the POV's port number
      * @param direction the direction of the POV
      * @return instance of the MultiButton created. Does not have to be stored.
      */
-    public MultiButton createPOVButton(
-            int povPort,
-            POVDirections direction) {
+    public MultiButton createPOVButton(int povPort, POVDirections direction) {
         BooleanSupplier povSupplier = () -> controller.getPOV(povPort) == direction.value;
 
-        return createButton(
-                povSupplier,
-                getButtonID(povPort, direction));
+        return createButton(povSupplier, getButtonID(povPort, direction));
     }
 
     public void setController(int controllerNumber) {
@@ -281,16 +247,17 @@ public class ButtonHelper {
     }
 
     /**
-     * Returns a unique byte base on the type of button and its port number.
-     * This is used to identify each button.
-     * <p>
-     * The first 6 bits represents the button's port number.
-     * The 7th and 8th bits represents the button type.
-     * If the 7th bit is true, then the button is an axis; 8th bit is true, then it is a POV.
-     * If both bits are false, then it is a normal button; both are false, then it is an invalid button
-     * <p>
-     * In order to differentiate between the different directions on a POV or axis, a unique ID
-     * must be created for each direction. This results in a limit of 32 axis buttons and 16 POV buttons.
+     * Returns a unique byte base on the type of button and its port number. This is used to
+     * identify each button.
+     *
+     * <p>The first 6 bits represents the button's port number. The 7th and 8th bits represents the
+     * button type. If the 7th bit is true, then the button is an axis; 8th bit is true, then it is
+     * a POV. If both bits are false, then it is a normal button; both are false, then it is an
+     * invalid button
+     *
+     * <p>In order to differentiate between the different directions on a POV or axis, a unique ID
+     * must be created for each direction. This results in a limit of 32 axis buttons and 16 POV
+     * buttons.
      *
      * @param type the type of button
      * @param port the port number of the button
@@ -322,7 +289,7 @@ public class ButtonHelper {
     }
 
     /**
-     * @param port       the port number of the axis
+     * @param port the port number of the axis
      * @param isNegative is the button using the positive or negative values of an axis
      * @return a byte that represents the unique ID of the button
      * @see ButtonHelper#getButtonID(ButtonType, Integer)
@@ -334,7 +301,7 @@ public class ButtonHelper {
     }
 
     /**
-     * @param port      the port number of the axis
+     * @param port the port number of the axis
      * @param direction the associated direction of the POV for this button
      * @return a byte that represents the unique ID of the button
      * @see ButtonHelper#getButtonID(ButtonType, Integer)

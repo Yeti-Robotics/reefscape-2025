@@ -3,11 +3,9 @@ package frc.robot.util.controllerUtils;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-
 import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
-
 
 public class MultiButton {
     private static boolean isLayersSynced;
@@ -21,7 +19,12 @@ public class MultiButton {
     private int buttonLayer = 0;
 
     @SuppressWarnings("unchecked")
-    public MultiButton(BooleanSupplier trigger, byte buttonID, int layer, Command command, RunCondition runCondition) {
+    public MultiButton(
+            BooleanSupplier trigger,
+            byte buttonID,
+            int layer,
+            Command command,
+            RunCondition runCondition) {
         this.trigger = trigger;
         this.buttonID = buttonID;
         this.layerCount = layer + 1;
@@ -56,8 +59,7 @@ public class MultiButton {
         int i = 0;
         for (Object o : buttonActions) {
             if (o == null) {
-                buttonActions[i] = (aBoolean, aBoolean2) -> {
-                };
+                buttonActions[i] = (aBoolean, aBoolean2) -> {};
             }
             i++;
         }
@@ -106,56 +108,61 @@ public class MultiButton {
         CANCEL_WHEN_PRESSED
     }
 
-    private static BiConsumer<Boolean, Boolean> defineButton(Command command, RunCondition runCondition) {
+    private static BiConsumer<Boolean, Boolean> defineButton(
+            Command command, RunCondition runCondition) {
         BiConsumer<Boolean, Boolean> biConsumer;
 
         if (command == null || runCondition == null) {
-            biConsumer = (aBoolean, bBoolean) -> {
-            };
+            biConsumer = (aBoolean, bBoolean) -> {};
             return biConsumer;
         }
 
         switch (runCondition) {
             case WHEN_PRESSED:
-                biConsumer = (pressed, pressedLast) -> {
-                    if (!pressedLast && pressed) {
-                        command.schedule();
-                    }
-                };
+                biConsumer =
+                        (pressed, pressedLast) -> {
+                            if (!pressedLast && pressed) {
+                                command.schedule();
+                            }
+                        };
                 break;
             case WHEN_RELEASED:
-                biConsumer = (pressed, pressedLast) -> {
-                    if (pressedLast && !pressed) {
-                        command.schedule();
-                    }
-                };
+                biConsumer =
+                        (pressed, pressedLast) -> {
+                            if (pressedLast && !pressed) {
+                                command.schedule();
+                            }
+                        };
                 break;
             case WHILE_HELD:
-                biConsumer = (pressed, pressedLast) -> {
-                    if (pressed) {
-                        command.schedule();
-                    } else if (!pressedLast) {
-                        command.cancel();
-                    }
-                };
+                biConsumer =
+                        (pressed, pressedLast) -> {
+                            if (pressed) {
+                                command.schedule();
+                            } else if (!pressedLast) {
+                                command.cancel();
+                            }
+                        };
                 break;
             case TOGGLE_WHEN_PRESSED:
-                biConsumer = (pressed, pressedLast) -> {
-                    if (!pressedLast && pressed) {
-                        if (command.isScheduled()) {
-                            command.cancel();
-                        } else {
-                            command.schedule();
-                        }
-                    }
-                };
+                biConsumer =
+                        (pressed, pressedLast) -> {
+                            if (!pressedLast && pressed) {
+                                if (command.isScheduled()) {
+                                    command.cancel();
+                                } else {
+                                    command.schedule();
+                                }
+                            }
+                        };
                 break;
             case CANCEL_WHEN_PRESSED:
-                biConsumer = (pressed, pressedLast) -> {
-                    if (!pressedLast && pressed) {
-                        command.cancel();
-                    }
-                };
+                biConsumer =
+                        (pressed, pressedLast) -> {
+                            if (!pressedLast && pressed) {
+                                command.cancel();
+                            }
+                        };
                 break;
             default:
                 biConsumer = null;

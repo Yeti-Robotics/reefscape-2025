@@ -1,7 +1,6 @@
 package frc.robot.util.controllerUtils;
 
 import edu.wpi.first.wpilibj.XboxController;
-
 import java.util.Map;
 
 public class ControllerContainer {
@@ -10,16 +9,17 @@ public class ControllerContainer {
     public ControllerContainer(Map<Integer, Controller.ControllerType> controllers) {
         this.controllers = new Controller[controllers.size()];
 
-        controllers.forEach((port, type) -> {
-            switch (type) {
-                case CUSTOM:
-                    this.controllers[port] = new CustomController(port);
-                    break;
-                case XBOX:
-                    this.controllers[port] = new CustomXboxController(port);
-                    break;
-            }
-        });
+        controllers.forEach(
+                (port, type) -> {
+                    switch (type) {
+                        case CUSTOM:
+                            this.controllers[port] = new CustomController(port);
+                            break;
+                        case XBOX:
+                            this.controllers[port] = new CustomXboxController(port);
+                            break;
+                    }
+                });
     }
 
     public Controller get(int controllerNumber) {
