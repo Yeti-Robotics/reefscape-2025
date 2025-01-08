@@ -25,8 +25,6 @@ public class AlgaeIntake extends SubsystemBase {
         var configs = new TalonFXConfiguration();
         configs.MotorOutput.Inverted = IntakeConstants.rollerInversion;
         configs.MotorOutput.NeutralMode = IntakeConstants.rollerNeutralMode;
-        roller.getRotorVelocity().waitForUpdate(IntakeConstants.velocityStatusFrame);
-        roller.getRotorPosition().waitForUpdate(IntakeConstants.positionStatusFrame);
         rollerConfigurator.apply(configs);
     }
 
