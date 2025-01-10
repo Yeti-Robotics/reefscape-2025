@@ -1,15 +1,13 @@
 package frc.robot;
 
-
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -24,10 +22,10 @@ public class WristSubsystem extends SubsystemBase {
         HORIZONTAL
     }
 
-    private final EnumMap<Positions, Integer> positionsEnumMap = new EnumMap<>(Map.ofEntries(
-        Map.entry(Positions.VERTICAL, 90),
-        Map.entry(Positions.HORIZONTAL, 0)
-    ));
+    private final EnumMap<Positions, Integer> positionsEnumMap =
+            new EnumMap<>(
+                    Map.ofEntries(
+                            Map.entry(Positions.VERTICAL, 90), Map.entry(Positions.HORIZONTAL, 0)));
 
     public WristSubsystem() {
         wristMotor = new TalonFX(9, "rio");
@@ -40,7 +38,9 @@ public class WristSubsystem extends SubsystemBase {
         wristConfigurator.apply(configs);
     }
 
-    private void spinWrist(double speed) { wristMotor.set(speed); }
+    private void spinWrist(double speed) {
+        wristMotor.set(speed);
+    }
 
     private void stopWrist() {
         wristMotor.stopMotor();
@@ -59,4 +59,3 @@ public class WristSubsystem extends SubsystemBase {
         wristEncoder.setPosition(0);
     }
 }
-
