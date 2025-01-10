@@ -1,11 +1,13 @@
 package frc.robot;
 
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import static frc.robot.constants.Constants.*;
 
 public class CoralIntake extends SubsystemBase {
     private final TalonFX claw;
@@ -20,7 +22,7 @@ public class CoralIntake extends SubsystemBase {
 
     // Constructor that sets configs for claw
     public CoralIntake() {
-        claw = new TalonFX(IntakeConstants.clawId, "rio");
+        claw = new TalonFX(IntakeConstants.clawId, CANBUS_NAME);
 
         var clawConfigurator = claw.getConfigurator();
         var configs = new TalonFXConfiguration();
