@@ -13,21 +13,21 @@ public class CoralIntake extends SubsystemBase {
     private final TalonFX claw;
 
     public static class IntakeConstants {
-        public static final int clawId = 9;
-        public static final InvertedValue clawInversion = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue clawNeutralMode = NeutralModeValue.Coast;
-        public static final double positionStatusFrame = 0.05;
-        public static final double velocityStatusFrame = 0.01;
+        public static final int CLAW_ID = 9;
+        public static final InvertedValue CLAW_INVERSION = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue CLAW_NEUTRAL_MODE = NeutralModeValue.Coast;
+        public static final double POSITION_STATUS_FRAME = 0.05;
+        public static final double VELOCITY_STATUS_FRAME = 0.01;
     }
 
     // Constructor that sets configs for claw
     public CoralIntake() {
-        claw = new TalonFX(IntakeConstants.clawId, RIO_BUS);
+        claw = new TalonFX(IntakeConstants.CLAW_ID, RIO_BUS);
 
         var clawConfigurator = claw.getConfigurator();
         var configs = new TalonFXConfiguration();
-        configs.MotorOutput.Inverted = IntakeConstants.clawInversion;
-        configs.MotorOutput.NeutralMode = IntakeConstants.clawNeutralMode;
+        configs.MotorOutput.Inverted = IntakeConstants.CLAW_INVERSION;
+        configs.MotorOutput.NeutralMode = IntakeConstants.CLAW_NEUTRAL_MODE;
         clawConfigurator.apply(configs);
     }
 

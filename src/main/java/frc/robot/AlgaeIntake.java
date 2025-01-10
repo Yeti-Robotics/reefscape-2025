@@ -13,20 +13,20 @@ public class AlgaeIntake extends SubsystemBase {
     private final TalonFX roller;
 
     public static class IntakeConstants {
-        public static final int rollerId = 8;
-        public static final InvertedValue rollerInversion = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue rollerNeutralMode = NeutralModeValue.Coast;
-        public static final double positionStatusFrame = 0.05;
-        public static final double velocityStatusFrame = 0.01;
+        public static final int ROLLER_ID = 8;
+        public static final InvertedValue ROLLER_INVERSION = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue ROLLER_NEUTRAL_MODE = NeutralModeValue.Coast;
+        public static final double POSITION_STATUS_FRAME = 0.05;
+        public static final double VELOCITY_STATUS_FRAME = 0.01;
     }
 
     public AlgaeIntake() {
-        roller = new TalonFX(IntakeConstants.rollerId, RIO_BUS);
+        roller = new TalonFX(IntakeConstants.ROLLER_ID, RIO_BUS);
 
         var rollerConfigurator = roller.getConfigurator();
         var configs = new TalonFXConfiguration();
-        configs.MotorOutput.Inverted = IntakeConstants.rollerInversion;
-        configs.MotorOutput.NeutralMode = IntakeConstants.rollerNeutralMode;
+        configs.MotorOutput.Inverted = IntakeConstants.ROLLER_INVERSION;
+        configs.MotorOutput.NeutralMode = IntakeConstants.ROLLER_NEUTRAL_MODE;
         rollerConfigurator.apply(configs);
     }
 
