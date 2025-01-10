@@ -15,7 +15,6 @@ package frc.robot.constants;
  */
 public final class Constants {
     public static final int XBOX_CONTROLLER_PORT = 0;
-    public static final String CANIVORE_NAME = "canivoreBus";
-    public static final String CANBUS_NAME = "rio";
-
+    public static final String CANIVORE_BUS = "canivoreBus";
+    public static final String RIO_BUS = "rio";
 }
