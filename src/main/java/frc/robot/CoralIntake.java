@@ -18,8 +18,8 @@ public class CoralIntake extends SubsystemBase {
         public static final NeutralModeValue CLAW_NEUTRAL_MODE = NeutralModeValue.Coast;
         public static final double POSITION_STATUS_FRAME = 0.05;
         public static final double VELOCITY_STATUS_FRAME = 0.01;
-
     }
+
     public static final double FORWARD_SPEED = 1;
     public static final double BACKWARD_SPEED = -1;
 
@@ -46,11 +46,11 @@ public class CoralIntake extends SubsystemBase {
         return startEnd(() -> setClawSpeed(speed), this::stopClaw);
     }
 
-    public Command spinClawForward(){
+    public Command spinClawForward() {
         return spinClaw(FORWARD_SPEED);
     }
 
-    public Command spinClawBackward(){
+    public Command spinClawBackward() {
         return spinClaw(BACKWARD_SPEED);
     }
 }
