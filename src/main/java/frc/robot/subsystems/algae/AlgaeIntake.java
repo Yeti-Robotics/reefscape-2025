@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems.algae;
 
 import static frc.robot.constants.Constants.*;
 
@@ -12,21 +12,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class AlgaeIntake extends SubsystemBase {
     private final TalonFX roller;
 
-    public static class IntakeConstants {
-        public static final int ROLLER_ID = 8;
-        public static final InvertedValue ROLLER_INVERSION = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue ROLLER_NEUTRAL_MODE = NeutralModeValue.Coast;
-        public static final double POSITION_STATUS_FRAME = 0.05;
-        public static final double VELOCITY_STATUS_FRAME = 0.01;
-    }
-
     public AlgaeIntake() {
-        roller = new TalonFX(IntakeConstants.ROLLER_ID, RIO_BUS);
+        roller = new TalonFX(AlgaeConfigs.ROLLER_ID, RIO_BUS);
 
         var rollerConfigurator = roller.getConfigurator();
         var configs = new TalonFXConfiguration();
-        configs.MotorOutput.Inverted = IntakeConstants.ROLLER_INVERSION;
-        configs.MotorOutput.NeutralMode = IntakeConstants.ROLLER_NEUTRAL_MODE;
+        configs.MotorOutput.Inverted = AlgaeConfigs.ROLLER_INVERSION;
+        configs.MotorOutput.NeutralMode = AlgaeConfigs.ROLLER_NEUTRAL_MODE;
         rollerConfigurator.apply(configs);
     }
 

@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems.coral;
 
 import static frc.robot.constants.Constants.*;
 
@@ -12,24 +12,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class CoralIntake extends SubsystemBase {
     private final TalonFX claw;
 
-    private static class IntakeConfigs {
-        public static final int CLAW_ID = 9;
-        public static final InvertedValue CLAW_INVERSION = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue CLAW_NEUTRAL_MODE = NeutralModeValue.Coast;
-        public static final double POSITION_STATUS_FRAME = 0.05;
-        public static final double VELOCITY_STATUS_FRAME = 0.01;
-    }
-
     public static final double FORWARD_SPEED = 1;
     public static final double BACKWARD_SPEED = -1;
 
     public CoralIntake() {
-        claw = new TalonFX(IntakeConfigs.CLAW_ID, RIO_BUS);
+        claw = new TalonFX(CoralConfigs.CLAW_ID, RIO_BUS);
 
         var clawConfigurator = claw.getConfigurator();
         var configs = new TalonFXConfiguration();
-        configs.MotorOutput.Inverted = IntakeConfigs.CLAW_INVERSION;
-        configs.MotorOutput.NeutralMode = IntakeConfigs.CLAW_NEUTRAL_MODE;
+        configs.MotorOutput.Inverted = CoralConfigs.CLAW_INVERSION;
+        configs.MotorOutput.NeutralMode = CoralConfigs.CLAW_NEUTRAL_MODE;
         clawConfigurator.apply(configs);
     }
 
