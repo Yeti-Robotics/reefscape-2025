@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems.algae;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
