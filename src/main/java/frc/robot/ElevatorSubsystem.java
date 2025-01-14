@@ -53,7 +53,21 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
 
+    // Sets elevator position to a certain height
+    public void setPosition(ElevatorPosition position) {
+        double targetTicks = position.getHeight() * TICKS_PER_INCH / STAGE_RATIO;
+        primaryElevatorMotor.set(ControlMode.Position, targetTicks);
+    }
 
+    // Stops elevator
+    public void stop() {
+        primaryElevatorMotor.stopMotor();
+    }
+
+    // Checks magSwitch status
+    public boolean isMagSwitchActivated() {
+        return magSwitch.isActivated();
+    }
     @Override
     public void periodic() {
         // Periodic updates will be added soon
