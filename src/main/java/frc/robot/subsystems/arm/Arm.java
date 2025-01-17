@@ -1,16 +1,17 @@
 package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
 
 public class Arm {
     private final TalonFX armKraken;
+    final MotionMagicVoltage magicRequest;
 
-    
+
     
 
     public Arm() {
@@ -28,6 +29,14 @@ public class Arm {
         talonFXConfiguration.Feedback.SensorToMechanismRatio = 0;
         talonFXConfiguration.Feedback.RotorToSensorRatio = 0;
         talonFXConfiguration.Slot0 = ArmConfig.SLOT_0_CONFIGS;
+
+        // set Motion Magic settings
+        var motionMagicConfigs = talonFXConfiguration.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = .1;
+        motionMagicConfigs.MotionMagicAcceleration = .2;
+        motionMagicConfigs.MotionMagicJerk = 1;
+
+        magicRequest = new MotionMagicVoltage(0);
 
         armKraken.getRotorVelocity().waitForUpdate(ArmConfig.ARM_VELOCITY_STATUS_FRAME);
         armKraken.getRotorPosition().waitForUpdate(ArmConfig.ARM_POSITION_STATUS_FRAME);
@@ -53,5 +62,9 @@ public class Arm {
 
     public void stop() {
         armKraken.stopMotor();
+    }
+
+     public void target() {
+         armKraken.setControl(magicRequest.withPosition(100));
     }
 }
