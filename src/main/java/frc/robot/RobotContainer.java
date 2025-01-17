@@ -22,21 +22,18 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
  */
 public class RobotContainer {
 
-    XboxController xboxController;
-
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer() {
-        xboxController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
-        configureBindings();
-    }
-
     public final CommandXboxController joystick = new CommandXboxController(1);
     final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     private final SwerveRequest.FieldCentric drive =
-            new SwerveRequest.FieldCentric()
-                    .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
-                    .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
-                    .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
+        new SwerveRequest.FieldCentric()
+            .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
+            .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
+            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
+
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    public RobotContainer() {
+        configureBindings();
+    }
 
     private void configureBindings() {
         drivetrain.setDefaultCommand(
