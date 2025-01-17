@@ -10,12 +10,9 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
-import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.util.controllerUtils.ButtonHelper;
-import frc.robot.util.controllerUtils.ControllerContainer;
+import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drivetrain.TunerConstants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -33,58 +30,29 @@ public class RobotContainer {
         configureBindings();
     }
 
-    /**
-     * Use this method to define your trigger->command mappings. Triggers can be created via the
-     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-     * predicate, or via the named factories in {@link
-     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-     * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-     * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-     * joysticks}.
-     */
-    public ControllerContainer controllerContainer = new ControllerContainer();
-
-    ButtonHelper buttonHelper = new ButtonHelper(controllerContainer.getControllers());
-
-    public final CommandXboxController joystick = new CommandXboxController(1); // My joystick
-    final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain(); // My drivetrain
+    public final CommandXboxController joystick = new CommandXboxController(1);
+    final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
-                    .withRotationalDeadband(
-                            TunerConstants.MaFxAngularRate * 0.1) // Add a 10% deadband
-                    .withDriveRequestType(
-                            SwerveModule.DriveRequestType.OpenLoopVoltage); // I want field-centric
-    // driving in open loop
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-
-    private final SwerveRequest.RobotCentric forwardStraight =
-            new SwerveRequest.RobotCentric()
+                    .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-    private final Telemetry logger = new Telemetry(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND);
-
     private void configureBindings() {
-
-        drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+        drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(
                         () ->
                                 drive.withVelocityX(
                                                 joystick.getLeftY()
                                                         * TunerConstants.kSpeedAt12Volts
-                                                                .magnitude()) // Drive forward with
-                                        // negative Y (forward)
+                                                                .magnitude())
                                         .withVelocityY(
                                                 joystick.getLeftX()
                                                         * TunerConstants.kSpeedAt12Volts
-                                                                .magnitude()) // Drive left with
-                                        // negative X (left)
+                                                                .magnitude())
                                         .withRotationalRate(
                                                 -joystick.getRightX()
-                                                        * TunerConstants.MaFxAngularRate) // Drive
-                        // counterclockwise with negative X (left)
-                        ));
+                                                        * TunerConstants.MaFxAngularRate)));
     }
 
     /**
