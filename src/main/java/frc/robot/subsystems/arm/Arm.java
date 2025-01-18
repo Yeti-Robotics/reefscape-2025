@@ -11,9 +11,6 @@ public class Arm {
     private final TalonFX armKraken;
     final MotionMagicVoltage magicRequest;
 
-
-    
-
     public Arm() {
         armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, "canivoreBus");
         CANcoder armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, "canivoreBus");
@@ -22,7 +19,8 @@ public class Arm {
         var talonFXConfiguration = new TalonFXConfiguration();
 
         talonFXConfiguration.Feedback.FeedbackRemoteSensorID = armEncoder.getDeviceID();
-        talonFXConfiguration.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+        talonFXConfiguration.Feedback.FeedbackSensorSource =
+                FeedbackSensorSourceValue.RemoteCANcoder;
         talonFXConfiguration.MotorOutput.Inverted = ArmConfig.ARM_INVERSION;
         talonFXConfiguration.MotorOutput.NeutralMode = ArmConfig.ARM_NEUTRAL_MODE;
         talonFXConfiguration.FutureProofConfigs = true;
@@ -47,9 +45,9 @@ public class Arm {
         var cancoderConfiguration = new CANcoderConfiguration();
 
         cancoderConfiguration.MagnetSensor.MagnetOffset = ArmConfig.MAGNET_OFFSET;
-        cancoderConfiguration.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        cancoderConfiguration.MagnetSensor.SensorDirection =
+                SensorDirectionValue.CounterClockwise_Positive;
         armEncoderConfigurator.apply(cancoderConfiguration);
-
     }
 
     public void moveUp(double speed) {
@@ -64,7 +62,7 @@ public class Arm {
         armKraken.stopMotor();
     }
 
-     public void target() {
-         armKraken.setControl(magicRequest.withPosition(100));
+    public void target() {
+        armKraken.setControl(magicRequest.withPosition(100));
     }
 }
