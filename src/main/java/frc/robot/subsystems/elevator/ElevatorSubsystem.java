@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -61,6 +62,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     // Checks magnetic switch status
     public boolean getMagSwitch() {
         return magSwitch.get();
+    }
+
+    public Command moveUp(){
+        return runOnce(() -> setPosition(ElevatorConfigs.ElevatorPosition.TOP));
+    }
+
+    public Command moveDown(){
+        return runOnce(() -> setPosition(ElevatorConfigs.ElevatorPosition.BOTTOM));
     }
 
     @Override
