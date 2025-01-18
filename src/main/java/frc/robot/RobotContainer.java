@@ -52,6 +52,8 @@ public class RobotContainer {
                                                         * TunerConstants.MaFxAngularRate)));
         joystick.a().whileTrue(coralIntake.spinClawForward());
         joystick.b().whileTrue(coralIntake.spinClawBackward());
+        joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
     }
 
     /**
