@@ -4,8 +4,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 
 class ElevatorConfigs {
     static final int primaryElevatorMotorPort = 42; //placeholder
-    static final int secondaryElevatorMotorPort = 0; // placeholder;
-    static final int elevatorEncoderID = 0; ; // placeholder
+    //static final int secondaryElevatorMotorPort = 0; // placeholder;
     static final int magSwitchPort = 0; // placeholder
 
     static final double Elevator_kP = 2.4;

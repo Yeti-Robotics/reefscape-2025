@@ -1,10 +1,7 @@
 package frc.robot.subsystems.elevator;
 
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.hardware.CANcoder;
-import edu.wpi.first.units.measure.Angle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,7 +12,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     //private final TalonFX secondaryElevatorMotor;
 
     // Sensors
-    private final CANcoder elevatorEncoder;
     private final DigitalInput magSwitch;
 
     public final MotionMagicVoltage magicRequest;
@@ -27,7 +23,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public ElevatorSubsystem() {
         primaryElevatorMotor = new TalonFX(ElevatorConfigs.primaryElevatorMotorPort, "canivoreBUS");
-        elevatorEncoder = new CANcoder(ElevatorConfigs.elevatorEncoderID, "canivoreBUS");
 
         // secondaryElevatorMotor = new TalonFX(ElevatorConfigs.secondaryElevatorMotorPort);
         var talonFXConfigs = new TalonFXConfiguration();
