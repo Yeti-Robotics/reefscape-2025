@@ -56,7 +56,7 @@ public class WristSubsystem extends SubsystemBase {
 
     // not sure abt this again, but found it on the internet again :sob:
     private double degreesToRotations(double degrees) {
-        double gearRatio = 22.0 / 75.0;
+        double gearRatio = 20.0 / 75.0;
         return (degrees / 360.0) * gearRatio;
     }
 
