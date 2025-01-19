@@ -31,7 +31,6 @@ public class WristSubsystem extends SubsystemBase {
         wristMotor = new TalonFX(WristConfigs.DEVICE_ID, Constants.RIO_BUS);
         wristEncoder = new CANcoder(WristConfigs.DEVICE_ID);
 
-
         var wristConfigurator = wristMotor.getConfigurator();
         var configs = new TalonFXConfiguration();
         configs.MotorOutput.Inverted = WristConfigs.MOTOR_INVERSION;
