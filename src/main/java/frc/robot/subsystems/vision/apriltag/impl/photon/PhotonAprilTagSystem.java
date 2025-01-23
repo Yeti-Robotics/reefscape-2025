@@ -3,10 +3,7 @@ package frc.robot.subsystems.vision.apriltag.impl.photon;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.vision.apriltag.AprilTagConstants;
-import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
-import frc.robot.subsystems.vision.apriltag.AprilTagResults;
-import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
+import frc.robot.subsystems.vision.apriltag.*;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -28,6 +25,9 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private AprilTagResults aprilTagResults = null;
     private double maxAmbiguity = 1;
     private int[] fiducialIds = null;
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private Optional<EstimatedRobotPose> estimatedRobotPose;
 
     public PhotonAprilTagSystem(String cameraName, Transform3d cameraTransform) {
         this.camera = new PhotonCamera(cameraName);
@@ -84,6 +84,10 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         for (PhotonPipelineResult result : results) {
             Optional<EstimatedRobotPose> estimatedRobotPose = photonPoseEstimator.update(result, camera.getCameraMatrix(), camera.getDistCoeffs());;
 
+            this.estimatedRobotPose = estimatedRobotPose;
+
+            estimatedRobotPose.ifPresent(robotPose -> photonPoseEstimator.setReferencePose(robotPose.estimatedPose));
+
             latestTimestamp = Math.max(latestTimestamp, result.getTimestampSeconds());
             highestLatency = Math.max(highestLatency, result.metadata.getLatencyMillis());
 
@@ -105,12 +109,17 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     }
 
     @Override
+    public Optional<AprilTagPose> getEstimatedPose() {
+        return estimatedRobotPose.map(e -> new AprilTagPose(e.estimatedPose.toPose2d(), e.targetsUsed.size(), e.timestampSeconds));
+    }
+
+    @Override
     public void filterFiducialIDs(int... ids) {
         fiducialIds = ids;
     }
 
     private boolean isFiducialOfInterest(int id) {
-        return fiducialIds != null && fiducialIds.length > 0 && Arrays.stream(fiducialIds).anyMatch(e -> e == id);
+        return (fiducialIds == null || fiducialIds.length < 1) || Arrays.stream(fiducialIds).anyMatch(e -> e == id);
     }
 
     public PhotonAprilTagSystem withAmbiguityLessThan(double ambiguity) {

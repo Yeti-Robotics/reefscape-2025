@@ -4,6 +4,7 @@ import java.util.Optional;
 
 public interface AprilTagSubsystem {
     Optional<AprilTagResults> getResults();
+    Optional<AprilTagPose> getEstimatedPose();
 
     default Optional<AprilTagDetection> findDetection(int fiducialId) {
         Optional<AprilTagResults> results = getResults();
