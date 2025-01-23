@@ -1,6 +1,5 @@
 package frc.robot.subsystems.vision.apriltag.impl.limelight;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
@@ -15,7 +14,7 @@ import java.util.Optional;
 public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSubsystem {
     private final String limelightName;
     private AprilTagResults aprilTagResults;
-    private LimelightHelpers.PoseEstimate estimatedRobotPose;
+    private LimelightHelpers.PoseEstimate poseEstimate;
 
     public LimelightAprilTagSystem(String limelightName) {
         this.limelightName = limelightName;
@@ -23,9 +22,9 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
 
     @Override
     public void periodic() {
-        double yawPlaceholder = 0; // need to add drivetrain
+        double yawPlaceholder = 0; // TODO: need to add drivetrain values
         LimelightHelpers.SetRobotOrientation(limelightName, yawPlaceholder, yawPlaceholder, yawPlaceholder, yawPlaceholder, yawPlaceholder, yawPlaceholder);
-        LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
+        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
 
 
         LimelightHelpers.LimelightResults results = LimelightHelpers.getLatestResults(limelightName);
@@ -56,7 +55,7 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
 
     @Override
     public Optional<AprilTagPose> getEstimatedPose() {
-        return Optional.ofNullable(estimatedRobotPose)
+        return Optional.ofNullable(poseEstimate)
                 .map(e -> new AprilTagPose(e.pose, e.tagCount, e.timestampSeconds));
     }
 

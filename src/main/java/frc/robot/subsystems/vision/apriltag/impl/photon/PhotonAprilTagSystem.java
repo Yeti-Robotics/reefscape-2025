@@ -78,7 +78,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
         List<AprilTagDetection> aprilTagDetections = new ArrayList<>();
 
-        double latestTimestamp = 0;
+        double earliestTimestamp = Double.POSITIVE_INFINITY;
         double highestLatency = 0;
 
         for (PhotonPipelineResult result : results) {
@@ -86,9 +86,10 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
             this.estimatedRobotPose = estimatedRobotPose;
 
+            // TODO: update estimate with actual robot pose from drivetrain
             estimatedRobotPose.ifPresent(robotPose -> photonPoseEstimator.setReferencePose(robotPose.estimatedPose));
 
-            latestTimestamp = Math.max(latestTimestamp, result.getTimestampSeconds());
+            earliestTimestamp = Math.min(earliestTimestamp, result.getTimestampSeconds());
             highestLatency = Math.max(highestLatency, result.metadata.getLatencyMillis());
 
             if (result.hasTargets()) {
@@ -100,7 +101,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
             }
         }
 
-        aprilTagResults = new AprilTagResults(latestTimestamp, highestLatency, aprilTagDetections);
+        aprilTagResults = new AprilTagResults(earliestTimestamp, highestLatency, aprilTagDetections);
     }
 
     @Override
