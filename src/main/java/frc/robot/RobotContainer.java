@@ -9,7 +9,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.arm.ArmSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,11 +21,12 @@ import frc.robot.constants.Constants;
  */
 public class RobotContainer {
 
-    XboxController xboxController;
-
+    CommandXboxController xboxController;
+    ArmSubsystem arm;
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        xboxController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
+        xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
+        arm = new ArmSubsystem();
         configureBindings();
     }
 
@@ -36,7 +39,23 @@ public class RobotContainer {
      * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
      * joysticks}.
      */
-    private void configureBindings() {}
+    private void configureBindings() {
+        xboxController
+                .a()
+                .whileTrue(arm.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        xboxController
+                .b()
+                .and(xboxController.leftBumper())
+                .whileTrue(arm.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        xboxController
+                .x()
+                .and(xboxController.leftBumper())
+                .whileTrue(arm.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        xboxController
+                .y()
+                .and(xboxController.leftBumper())
+                .whileTrue(arm.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
