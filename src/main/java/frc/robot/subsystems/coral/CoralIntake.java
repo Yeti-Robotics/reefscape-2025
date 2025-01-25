@@ -10,8 +10,8 @@ import static frc.robot.constants.Constants.RIO_BUS;
 public class CoralIntake extends SubsystemBase {
     private final TalonFX claw;
 
-    public static final double FORWARD_SPEED = 1;
-    public static final double BACKWARD_SPEED = -1;
+    public static final double FORWARD_SPEED = -0.5;
+    public static final double BACKWARD_SPEED = 1.0;
 
     public CoralIntake() {
         claw = new TalonFX(CoralConfigs.CLAW_ID, RIO_BUS);
