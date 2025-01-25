@@ -18,14 +18,17 @@ public class LEDStrip extends SubsystemBase {
     private final LEDStripIO io;
     private State state = State.IDLE;
 
-    public LEDStrip(LEDStripIO io) { this.io = io;}
+    public LEDStrip(LEDStripIO io) {
+        this.io = io;
+    }
+
     @Override
-    public void periodic(){
+    public void periodic() {
         if (DriverStation.isDisabled()) {
-            //progress bar
+            // progress bar
         }
 
-        switch(state){
+        switch (state) {
             case IDLE:
                 allianceAnim();
                 break;
@@ -43,12 +46,12 @@ public class LEDStrip extends SubsystemBase {
         }
     }
 
-    public void setState(State state){
+    public void setState(State state) {
         this.state = state;
     }
 
-    private void allianceAnim(){
-        if (Robot.isRedAlliance()){
+    private void allianceAnim() {
+        if (Robot.isRedAlliance()) {
             io.idleRedAlliance();
         } else {
             io.idleBlueAlliance();

@@ -106,6 +106,8 @@ public class Robot extends TimedRobot {
     public void simulationPeriodic() {}
 
     public static boolean isRedAlliance() {
-        return DriverStation.getAlliance().filter(value -> value == DriverStation.Alliance.Red).isPresent();
+        return DriverStation.getAlliance()
+                .filter(value -> value == DriverStation.Alliance.Red)
+                .isPresent();
     }
 }
