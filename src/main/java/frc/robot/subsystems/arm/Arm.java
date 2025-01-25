@@ -22,13 +22,6 @@ public class Arm {
 
         var armConfigurator = armKraken.getConfigurator();
 
-
-        // set Motion Magic settings
-        var motionMagicConfigs = talonFXConfiguration.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = .1;
-        motionMagicConfigs.MotionMagicAcceleration = .2;
-        motionMagicConfigs.MotionMagicJerk = 1;
-
         magicRequest = new MotionMagicVoltage(0);
 
         armKraken.getRotorPosition().waitForUpdate(ArmConfig.ARM_POSITION_STATUS_FRAME);
