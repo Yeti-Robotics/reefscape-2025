@@ -10,6 +10,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
 import frc.robot.constants.Constants;
 
+import static frc.robot.subsystems.arm.ArmConfig.talonFXConfiguration;
+
 public class Arm {
     private final TalonFX armKraken;
     final MotionMagicVoltage magicRequest;
@@ -19,19 +21,7 @@ public class Arm {
         CANcoder armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.CANIVORE_BUS);
 
         var armConfigurator = armKraken.getConfigurator();
-        var talonFXConfiguration = new TalonFXConfiguration();
-        talonFXConfiguration
-                .withFeedback(new FeedbackConfigs()
-                        .withFeedbackRemoteSensorID(0)
-                        .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
-                        .withSensorToMechanismRatio(1)
-                        .withRotorToSensorRatio(1))
-                .withMotorOutput(new MotorOutputConfigs()
-                        .withInverted(ArmConfig.ARM_INVERSION)
-                        .withNeutralMode(ArmConfig.ARM_NEUTRAL_MODE));
 
-        talonFXConfiguration.FutureProofConfigs = true;
-        talonFXConfiguration.Slot0 = ArmConfig.SLOT_0_CONFIGS;
 
         // set Motion Magic settings
         var motionMagicConfigs = talonFXConfiguration.MotionMagic;
