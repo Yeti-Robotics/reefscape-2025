@@ -37,7 +37,7 @@ public class ElevatorSysIdSystem extends SubsystemBase {
             accelerationStatusSignal.refresh();
             supplyCurrent.refresh();
             statorCurrent.refresh();
-            log.motor("arm_motor")
+            log.motor("elevator_motor")
                     .voltage(motorVoltage.getValue())
                     .angularPosition(rotations.getValue())
                     .angularVelocity(motorRotationsVelo.getValue())
