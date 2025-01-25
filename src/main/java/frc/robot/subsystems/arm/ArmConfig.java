@@ -30,16 +30,4 @@ class ArmConfig {
     static final double MAGNET_OFFSET = 0; // placeholder
 
     static final double GEAR_RATIO = 0; // placeholder
-
-    enum ArmPositions {
-        STOWED(90);
-
-        final double angle;
-        final double sensorUnits;
-
-        ArmPositions(double angle) {
-            this.angle = angle;
-            this.sensorUnits = angle / GEAR_RATIO * ((double) 4096 / 360);
-        }
-    }
 }

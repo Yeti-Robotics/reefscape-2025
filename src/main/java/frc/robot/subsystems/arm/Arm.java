@@ -1,31 +1,36 @@
 package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
+import frc.robot.constants.Constants;
 
 public class Arm {
     private final TalonFX armKraken;
     final MotionMagicVoltage magicRequest;
 
     public Arm() {
-        armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, "canivoreBus");
-        CANcoder armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, "canivoreBus");
+        armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS);
+        CANcoder armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.CANIVORE_BUS);
 
         var armConfigurator = armKraken.getConfigurator();
         var talonFXConfiguration = new TalonFXConfiguration();
+        talonFXConfiguration
+                .withFeedback(new FeedbackConfigs()
+                        .withFeedbackRemoteSensorID(0)
+                        .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
+                        .withSensorToMechanismRatio(1)
+                        .withRotorToSensorRatio(1))
+                .withMotorOutput(new MotorOutputConfigs()
+                        .withInverted(ArmConfig.ARM_INVERSION)
+                        .withNeutralMode(ArmConfig.ARM_NEUTRAL_MODE));
 
-        talonFXConfiguration.Feedback.FeedbackRemoteSensorID = armEncoder.getDeviceID();
-        talonFXConfiguration.Feedback.FeedbackSensorSource =
-                FeedbackSensorSourceValue.RemoteCANcoder;
-        talonFXConfiguration.MotorOutput.Inverted = ArmConfig.ARM_INVERSION;
-        talonFXConfiguration.MotorOutput.NeutralMode = ArmConfig.ARM_NEUTRAL_MODE;
         talonFXConfiguration.FutureProofConfigs = true;
-        talonFXConfiguration.Feedback.SensorToMechanismRatio = 0;
-        talonFXConfiguration.Feedback.RotorToSensorRatio = 0;
         talonFXConfiguration.Slot0 = ArmConfig.SLOT_0_CONFIGS;
 
         // set Motion Magic settings
@@ -36,7 +41,6 @@ public class Arm {
 
         magicRequest = new MotionMagicVoltage(0);
 
-        armKraken.getRotorVelocity().waitForUpdate(ArmConfig.ARM_VELOCITY_STATUS_FRAME);
         armKraken.getRotorPosition().waitForUpdate(ArmConfig.ARM_POSITION_STATUS_FRAME);
 
         armConfigurator.apply(talonFXConfiguration);
@@ -48,6 +52,20 @@ public class Arm {
         cancoderConfiguration.MagnetSensor.SensorDirection =
                 SensorDirectionValue.CounterClockwise_Positive;
         armEncoderConfigurator.apply(cancoderConfiguration);
+    }
+
+    public enum Position {
+        LOW(30), //placeholder
+        MID(60), //placeholder
+        HIGH(90); //placeholder
+
+        private final int value;
+
+        Position(final int value){
+            this.value = value;
+        }
+
+        public int getValue() {return value;}
     }
 
     public void moveUp(double speed) {
@@ -62,7 +80,7 @@ public class Arm {
         armKraken.stopMotor();
     }
 
-    public void target() {
-        armKraken.setControl(magicRequest.withPosition(100));
+    public void target(Position position) {
+        armKraken.setControl(magicRequest.withPosition(position.getValue()));
     }
 }
