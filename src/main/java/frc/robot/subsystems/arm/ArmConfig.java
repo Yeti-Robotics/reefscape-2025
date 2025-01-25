@@ -47,9 +47,9 @@ class ArmConfig {
     static final MotionMagicConfigs motionMagicConfigs =
             talonFXConfiguration
                     .MotionMagic
-                    .withMotionMagicCruiseVelocity(0.1)
-                    .withMotionMagicAcceleration(0.2)
-                    .withMotionMagicJerk(1);
+                    .withMotionMagicCruiseVelocity(1)
+                    .withMotionMagicAcceleration(2)
+                    .withMotionMagicJerk(0);
 
     static final InvertedValue ARM_INVERSION = InvertedValue.CounterClockwise_Positive;
     static final NeutralModeValue ARM_NEUTRAL_MODE = NeutralModeValue.Brake;
