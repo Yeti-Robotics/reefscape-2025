@@ -1,16 +1,13 @@
 package frc.robot.subsystems.arm;
 
+import static frc.robot.subsystems.arm.ArmConfig.talonFXConfiguration;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
 import frc.robot.constants.Constants;
-
-import static frc.robot.subsystems.arm.ArmConfig.talonFXConfiguration;
 
 public class Arm {
     private final TalonFX armKraken;
@@ -38,17 +35,19 @@ public class Arm {
     }
 
     public enum Position {
-        LOW(30), //placeholder
-        MID(60), //placeholder
-        HIGH(90); //placeholder
+        LOW(30), // placeholder
+        MID(60), // placeholder
+        HIGH(90); // placeholder
 
         private final int value;
 
-        Position(final int value){
+        Position(final int value) {
             this.value = value;
         }
 
-        public int getValue() {return value;}
+        public int getValue() {
+            return value;
+        }
     }
 
     public void moveUp(double speed) {
