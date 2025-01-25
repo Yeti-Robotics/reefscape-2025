@@ -5,13 +5,13 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.arm.ArmSubsystem;
+import java.util.function.BooleanSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,6 +23,7 @@ public class RobotContainer {
 
     CommandXboxController xboxController;
     ArmSubsystem arm;
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
@@ -40,21 +41,25 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
+
+        BooleanSupplier rangeLimit = () -> false;
+
         xboxController
                 .a()
-                .whileTrue(arm.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+                .and(xboxController.leftBumper())
+                .whileTrue(arm.sysIdQuasistatic(SysIdRoutine.Direction.kForward).until(rangeLimit));
         xboxController
                 .b()
                 .and(xboxController.leftBumper())
-                .whileTrue(arm.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+                .whileTrue(arm.sysIdQuasistatic(SysIdRoutine.Direction.kReverse).until(rangeLimit));
         xboxController
                 .x()
                 .and(xboxController.leftBumper())
-                .whileTrue(arm.sysIdDynamic(SysIdRoutine.Direction.kForward));
+                .whileTrue(arm.sysIdDynamic(SysIdRoutine.Direction.kForward).until(rangeLimit));
         xboxController
                 .y()
                 .and(xboxController.leftBumper())
-                .whileTrue(arm.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+                .whileTrue(arm.sysIdDynamic(SysIdRoutine.Direction.kReverse).until(rangeLimit));
     }
 
     /**
