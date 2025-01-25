@@ -1,6 +1,7 @@
 package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -10,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ElevatorSubsystem extends SubsystemBase {
     // Motors
     private final TalonFX primaryElevatorMotor;
-    //private final TalonFX secondaryElevatorMotor;
+    private final TalonFX secondaryElevatorMotor;
 
     // Sensors
     private final DigitalInput magSwitch;
@@ -23,9 +24,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 
     public ElevatorSubsystem() {
-        primaryElevatorMotor = new TalonFX(ElevatorConfigs.primaryElevatorMotorPort, "canivoreBUS");
+        primaryElevatorMotor = new TalonFX(ElevatorConfigs.primaryElevatorMotorID, "canivoreBUS");
+        secondaryElevatorMotor = new TalonFX(ElevatorConfigs.secondaryElevatorMotorID, "canivoreBUS");
 
-        // secondaryElevatorMotor = new TalonFX(ElevatorConfigs.secondaryElevatorMotorPort);
         var talonFXConfigs = new TalonFXConfiguration();
         talonFXConfigs.Slot0.kP = ElevatorConfigs.Elevator_kP;
         talonFXConfigs.Slot0.kI = ElevatorConfigs.Elevator_kI;
@@ -33,11 +34,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         primaryElevatorMotor.getConfigurator().apply(talonFXConfigs);
 
-        // Secondary motor follows the primary motor
-        //secondaryElevatorMotor.setControl(new Follower(ElevatorConfigs.primaryElevatorMotorPort, true));
+        //Secondary motor follows the primary motor
+        secondaryElevatorMotor.setControl(new Follower(ElevatorConfigs.primaryElevatorMotorID, true));
 
         // Initialize magnetic switch
-        magSwitch = new DigitalInput(ElevatorConfigs.magSwitchPort);
+        magSwitch = new DigitalInput(ElevatorConfigs.magSwitchID);
 
         // Initialize Motion Magic request
         magicRequest = new MotionMagicVoltage(0);
@@ -59,7 +60,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         primaryElevatorMotor.stopMotor();
     }
 
-    // Checks magnetic switch status
+    // Checks magSwitch status
     public boolean getMagSwitch() {
         return magSwitch.get();
     }

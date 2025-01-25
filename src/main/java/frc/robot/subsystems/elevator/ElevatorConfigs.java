@@ -3,9 +3,9 @@ package frc.robot.subsystems.elevator;
 import com.ctre.phoenix6.configs.Slot0Configs;
 
 class ElevatorConfigs {
-    static final int primaryElevatorMotorPort = 42; //placeholder
-    //static final int secondaryElevatorMotorPort = 0; // placeholder;
-    static final int magSwitchPort = 0; // placeholder
+    static final int primaryElevatorMotorID = 42;
+    static final int secondaryElevatorMotorID = 15;
+    static final int magSwitchID = 0; // placeholder
 
     static final double Elevator_kP = 2.4;
     static final double Elevator_kI = 0;
@@ -18,9 +18,9 @@ class ElevatorConfigs {
 
 
     public enum ElevatorPosition {
-        BOTTOM(0.0),
-        MIDDLE(24.0),
-        TOP(48.0);
+        BOTTOM(0.0), // placeholder
+        MIDDLE(24.0), // placeholder
+        TOP(40.0);
 
         private final double height;
 
