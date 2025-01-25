@@ -15,9 +15,12 @@ class ArmConfig {
     static final double ARM_POSITION_STATUS_FRAME = 0; // placeholder
     static final double ARM_VELOCITY_STATUS_FRAME = 0; // placeholder
 
-    static final double ARM_P = 0; // placeholder
+    static final double ARM_P = 540; // placeholder
     static final double ARM_I = 0; // placeholder
-    static final double ARM_D = 0; // placeholder
+    static final double ARM_D = 200; // placeholder
+    static final double ARM_G = 13.2;
+    static final double ARM_V = 1;
+    static final double ARM_A = 0.75;
     static final double ARM_DEPLOY_LOWER_BOUND = 0; // placeholder
 
     static final Slot0Configs SLOT_0_CONFIGS =
@@ -25,9 +28,12 @@ class ArmConfig {
                     .withKP(ARM_P)
                     .withKI(ARM_I)
                     .withKD(ARM_D)
+                    .withKG(ARM_G)
+                    .withKV(ARM_V)
+                    .withKA(ARM_A)
                     .withGravityType(GravityTypeValue.Arm_Cosine);
 
     static final double MAGNET_OFFSET = 0; // placeholder
 
-    static final double GEAR_RATIO = 0; // placeholder
+    static final double GEAR_RATIO = 113; // placeholder
 }
