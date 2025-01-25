@@ -12,12 +12,14 @@ import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class LEDSubsystemExample extends SubsystemBase {
     private final CANdle m_candle = new CANdle(0, "rio");
     private final int LedCount = 15;
-    private XboxController joystick;
+    private CommandXboxController joystick;
 
     private Animation m_toAnimate = null;
 
@@ -36,7 +38,7 @@ public class LEDSubsystemExample extends SubsystemBase {
 
     private AnimationTypes m_currentAnimation;
 
-    public LEDSubsystemExample(XboxController joy) {
+    public LEDSubsystemExample(CommandXboxController joy) {
         this.joystick = joy;
         changeAnimation(AnimationTypes.SetAll);
         CANdleConfiguration configAll = new CANdleConfiguration();
@@ -201,10 +203,7 @@ public class LEDSubsystemExample extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
         if (m_toAnimate == null) {
-            m_candle.setLEDs(
-                    (int) (joystick.getLeftTriggerAxis() * 255),
-                    (int) (joystick.getRightTriggerAxis() * 255),
-                    (int) (joystick.getLeftX() * 255));
+            m_candle.setLEDs(0, 0, 255);
         } else {
             m_candle.animate(m_toAnimate);
         }

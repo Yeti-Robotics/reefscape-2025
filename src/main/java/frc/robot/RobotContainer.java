@@ -5,13 +5,13 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.led.CANdle;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.led.LEDStrip;
-import frc.robot.subsystems.led.LEDStripIOCANdle;
-import com.ctre.phoenix.led.CANdle;
+import frc.robot.subsystems.led.LEDSubsystemExample;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,14 +23,12 @@ public class RobotContainer {
 
     CommandXboxController xboxController;
 
-    public static LEDStrip ledStrip;
-    public final CANdle m_candle = new CANdle(0, Constants.RIO_BUS);
-    private final int LedCount = 15;
+    public static LEDSubsystemExample leds;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
-        ledStrip = new LEDStrip(new LEDStripIOCANdle());
+        leds = new LEDSubsystemExample(xboxController);
         configureBindings();
     }
 
@@ -44,7 +42,7 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        xboxController.rightBumper().onTrue(ledStrip.setStateCommand(LEDStrip.State.NICK));
+//        xboxController.rightBumper().onTrue(ledStrip.setStateCommand(LEDStrip.State.NICK));
     }
 
     /**
