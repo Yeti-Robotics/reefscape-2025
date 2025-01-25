@@ -7,9 +7,9 @@ class ElevatorConfigs {
     static final int secondaryElevatorMotorID = 15;
     static final int magSwitchID = 0; // placeholder
 
-    static final double Elevator_kP = 2.4;
-    static final double Elevator_kI = 0;
-    static final double Elevator_kD = 0.1;
+    static final double Elevator_kP = 2.4; //placeholder
+    static final double Elevator_kI = 0; //placeholder
+    static final double Elevator_kD = 0.1; //placeholder
 
     static Slot0Configs slot0configs = new Slot0Configs()
             .withKP(Elevator_kP)
@@ -20,7 +20,7 @@ class ElevatorConfigs {
     public enum ElevatorPosition {
         BOTTOM(0.0), // placeholder
         MIDDLE(24.0), // placeholder
-        TOP(40.0);
+        TOP(40.0); //placeholser
 
         private final double height;
 

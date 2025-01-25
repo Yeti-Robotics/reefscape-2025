@@ -44,9 +44,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         magicRequest = new MotionMagicVoltage(0);
 
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 1;
-        motionMagicConfigs.MotionMagicAcceleration = 1;
-        motionMagicConfigs.MotionMagicJerk = 1;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 1; //placeholder
+        motionMagicConfigs.MotionMagicAcceleration = 1; //placeholder
+        motionMagicConfigs.MotionMagicJerk = 1; //placeholder
     }
 
     // Sets elevator position to a specific height
