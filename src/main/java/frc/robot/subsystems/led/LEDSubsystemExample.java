@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class LEDSubsystemExample extends SubsystemBase {
     private final CANdle m_candle = new CANdle(0, "rio");
-    private final int LedCount = 15;
+    private final int LedCount = 6;
     private CommandXboxController joystick;
 
     private Animation m_toAnimate = null;
@@ -203,9 +203,9 @@ public class LEDSubsystemExample extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
         if (m_toAnimate == null) {
-            m_candle.setLEDs(0, 0, 255);
+            m_candle.animate(new FireAnimation(1, 0.7, LedCount, 0.7, 0.3, false, 7));
         } else {
-            m_candle.animate(m_toAnimate);
+            m_candle.animate(new FireAnimation(0.5, 0.7, LedCount, 0.7, 0.5));
         }
         m_candle.modulateVBatOutput(joystick.getRightY());
     }
