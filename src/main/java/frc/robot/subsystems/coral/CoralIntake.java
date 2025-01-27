@@ -11,8 +11,8 @@ import frc.robot.util.StateManager;
 public class CoralIntake extends SubsystemBase {
     private final TalonFX claw;
 
-    public static final double FORWARD_SPEED = 1;
-    public static final double BACKWARD_SPEED = -1;
+    public static final double FORWARD_SPEED = -0.5;
+    public static final double BACKWARD_SPEED = 1.0;
 
     public enum CoralState {
         ROLL_OUT,
