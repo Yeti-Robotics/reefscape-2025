@@ -13,6 +13,13 @@ public class CoralIntake extends SubsystemBase {
     public static final double FORWARD_SPEED = 1;
     public static final double BACKWARD_SPEED = -1;
 
+    public enum State {
+        ROLL_OUT,
+        ROLL_IN
+    }
+
+    private State state;
+
     public CoralIntake() {
         claw = new TalonFX(CoralConfigs.CLAW_ID, RIO_BUS);
 
@@ -21,6 +28,20 @@ public class CoralIntake extends SubsystemBase {
         configs.MotorOutput.Inverted = CoralConfigs.CLAW_INVERSION;
         configs.MotorOutput.NeutralMode = CoralConfigs.CLAW_NEUTRAL_MODE;
         clawConfigurator.apply(configs);
+    }
+
+    @Override
+    public void periodic() {
+        switch (state) {
+            case ROLL_IN:
+                spinClawForward();
+                break;
+            case ROLL_OUT:
+                spinClawBackward();
+                break;
+            default:
+                stopClaw();
+        }
     }
 
     private void setClawSpeed(double speed) {
