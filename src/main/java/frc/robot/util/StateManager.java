@@ -4,8 +4,7 @@ import java.util.Optional;
 
 public class StateManager<T> {
     private T currentState;
-    private T wantedState;
-
+    private T targetState;
 
     public StateManager(T currentState) {
         this.currentState = currentState;
@@ -13,29 +12,22 @@ public class StateManager<T> {
 
     public StateManager() {}
 
-    public StateManager<T> withDefaultState(T defaultState) {
-        this.currentState = defaultState;
-        return this;
-    }
-
-    public T getCurrentState() {
-        return currentState;
-    }
-
-    public Optional<T> transitioningTo() {
-        return Optional.ofNullable(wantedState);
+    public T getState() {
+        return targetState != null ? targetState : currentState;
     }
 
     public boolean isTransitioning() {
-        return wantedState != null;
+        return targetState != null;
     }
 
-    public void transitionTo(T wantedState) {
-        this.wantedState = wantedState;
+    public void transitionTo(T newTargetState) {
+        if (newTargetState != currentState) {
+            this.targetState = newTargetState;
+        }
     }
 
     public void finishTransition() {
-        currentState = wantedState;
-        wantedState = null;
+        currentState = targetState;
+        targetState = null;
     }
 }

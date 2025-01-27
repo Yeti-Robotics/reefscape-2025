@@ -3,22 +3,30 @@ package frc.robot.subsystems.coral;
 import static frc.robot.constants.Constants.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.ControlRequest;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorOutputStatusValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.StateManager;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
 public class CoralIntake extends SubsystemBase {
     private final TalonFX claw = new TalonFX(CoralConfigs.CLAW_ID, RIO_BUS);
+    private final MotionMagicVelocityVoltage motorRequest = new MotionMagicVelocityVoltage(0);
 
     public enum CoralState {
         ROLL_OUT,
         ROLL_IN,
-        OFF
+        OFF,
+        IDLE
     }
 
-    public StateManager<CoralState> coralIntakeState = new StateManager<CoralState>()
-            .withDefaultState(CoralState.OFF);
+    public StateManager<CoralState> coralIntakeState = new StateManager<>(CoralState.OFF);
 
     public CoralIntake() {
         claw.getConfigurator().apply(CoralConfigs.coralMotorConfig);
@@ -26,22 +34,21 @@ public class CoralIntake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        switch (coralIntakeState.getCurrentState()) {
+        switch (coralIntakeState.getState()) {
             case ROLL_IN:
-                setClawSpeed(CoralConfigs.FORWARD_SPEED);
-                coralIntakeState.finishTransition();
-                break;
+                setClawVelocity(CoralConfigs.FORWARD_SPEED);
             case ROLL_OUT:
-                setClawSpeed(CoralConfigs.BACKWARD_SPEED);
-                coralIntakeState.finishTransition();
-                break;
-            default:
+                setClawVelocity(CoralConfigs.BACKWARD_SPEED);
+            case OFF:
                 stopClaw();
+            default:
+                coralIntakeState.transitionTo(CoralState.IDLE);
+                coralIntakeState.finishTransition();
         }
     }
 
-    private void setClawSpeed(double speed) {
-        claw.set(speed);
+    private void setClawVelocity(double velocity) {
+        claw.setControl(motorRequest.withVelocity(velocity));
     }
 
     private void stopClaw() {
