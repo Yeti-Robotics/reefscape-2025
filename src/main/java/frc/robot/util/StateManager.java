@@ -1,7 +1,5 @@
 package frc.robot.util;
 
-import java.util.Optional;
-
 public class StateManager<T> {
     private T currentState;
     private T targetState;

@@ -16,7 +16,7 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        switch (armState.getState()){
+        switch (armState.getState()) {
             case IDLE:
                 break;
             default:
@@ -36,6 +36,4 @@ public class Arm extends SubsystemBase {
     public Command moveToPosition(ArmPositions position) {
         return runOnce(() -> armKraken.setControl(motionRequest.withPosition(position.getAngle())));
     }
-
-
 }
