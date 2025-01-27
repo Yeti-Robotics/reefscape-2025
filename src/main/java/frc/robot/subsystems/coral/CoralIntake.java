@@ -30,6 +30,14 @@ public class CoralIntake extends SubsystemBase {
         claw.getConfigurator().apply(CoralConfigs.coralMotorConfig);
     }
 
+    public boolean isInTray() {
+        return traySensor.get();
+    }
+
+    public boolean isInClaw() {
+        return clawSensor.get();
+    }
+
     @Override
     public void periodic() {
         switch (coralIntakeState.getState()) {
@@ -48,9 +56,6 @@ public class CoralIntake extends SubsystemBase {
     private void setClawVelocity(double velocity) {
         claw.setControl(motorRequest.withVelocity(velocity));
     }
-
-    public boolean isInTray = traySensor.get();
-    public boolean isInClaw = clawSensor.get();
 
     private void stopClaw() {
         claw.stopMotor();
