@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class LEDSubsystemExample extends SubsystemBase {
     private final CANdle m_candle = new CANdle(0, "rio");
-    private final int LedCount = 6;
+    private final int LedCount = 42;
     private CommandXboxController joystick;
 
     private Animation m_toAnimate = null;
@@ -44,9 +44,9 @@ public class LEDSubsystemExample extends SubsystemBase {
         CANdleConfiguration configAll = new CANdleConfiguration();
         configAll.statusLedOffWhenActive = true;
         configAll.disableWhenLOS = false;
-        configAll.stripType = LEDStripType.GRB;
+        configAll.stripType = LEDStripType.RGB;
         configAll.brightnessScalar = 0.1;
-        configAll.vBatOutputMode = VBatOutputMode.Modulated;
+        configAll.vBatOutputMode = VBatOutputMode.On;
         m_candle.configAllSettings(configAll, 100);
     }
 
@@ -163,7 +163,7 @@ public class LEDSubsystemExample extends SubsystemBase {
         switch (toChange) {
             case ColorFlow:
                 m_toAnimate =
-                        new ColorFlowAnimation(128, 20, 70, 0, 0.7, LedCount, Direction.Forward);
+                        new ColorFlowAnimation(240, 119, 99, 0, 0.7, LedCount, Direction.Forward);
                 break;
             case Fire:
                 m_toAnimate = new FireAnimation(0.5, 0.7, LedCount, 0.7, 0.5);
@@ -203,7 +203,7 @@ public class LEDSubsystemExample extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
         if (m_toAnimate == null) {
-            m_candle.animate(new FireAnimation(1, 0.7, LedCount, 0.7, 0.3, false, 7));
+            m_candle.animate(new LarsonAnimation(0, 255, 46, 0, 0.25, LedCount, BounceMode.Front, 3, 8));
         } else {
             m_candle.animate(new FireAnimation(0.5, 0.7, LedCount, 0.7, 0.5));
         }
