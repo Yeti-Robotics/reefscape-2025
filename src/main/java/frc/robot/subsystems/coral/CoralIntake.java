@@ -14,7 +14,7 @@ public class CoralIntake extends SubsystemBase {
     private final MotionMagicVelocityVoltage motorRequest = new MotionMagicVelocityVoltage(0);
 
     public DigitalInput traySensor = new DigitalInput(0);
-    public DigitalInput clawSensor = new DigitalInput(0);
+    public DigitalInput clawSensor = new DigitalInput(1);
 
 
     public enum CoralState {
