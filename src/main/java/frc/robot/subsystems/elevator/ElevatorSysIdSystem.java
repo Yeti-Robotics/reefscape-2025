@@ -21,7 +21,7 @@ public class ElevatorSysIdSystem extends SubsystemBase {
     public ElevatorSysIdSystem() {
 
         primaryElevatorMotor = new TalonFX(ElevatorConfigs.primaryElevatorMotorPort, "canivoreBus");
-        secondaryElevatorMotor = new TalonFX(0, "canivoreBus");
+        secondaryElevatorMotor = new TalonFX(15, "canivoreBus");
         secondaryElevatorMotor.setControl(new Follower(primaryElevatorMotor.getDeviceID(), true));
 
         rotations = primaryElevatorMotor.getRotorPosition();
