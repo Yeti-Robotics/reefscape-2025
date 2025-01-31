@@ -32,11 +32,12 @@ public class Superstructure extends SubsystemBase {
         this.coralIntake = coralIntake;
         this.arm = arm;
 
-        new Trigger(this::occupiedIntake)
-                .onTrue(new InstantCommand());
+        new Trigger(this::occupiedIntake).whileTrue(coralIntake.spinClawForward());
+
     }
 
     public boolean occupiedIntake() {
-        return coralIntake.isInClaw() && coralIntake.isInTray();
+        return coralIntake.isCoralInIntake();
     }
+
 }

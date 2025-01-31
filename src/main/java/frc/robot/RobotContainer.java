@@ -8,6 +8,7 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.coral.CoralIntake;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
@@ -50,16 +51,10 @@ public class RobotContainer {
                                         .withRotationalRate(
                                                 -joystick.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
-        joystick.a().whileTrue(coralIntake.spinClawForward());
         joystick.b().whileTrue(coralIntake.spinClawBackward());
         joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
     public Command getAutonomousCommand() {
         return null;
     }
