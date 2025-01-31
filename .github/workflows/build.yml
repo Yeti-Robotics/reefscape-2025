@@ -1,4 +1,4 @@
-name: Run Gradle on PRs
+name: Build robot code
 on: pull_request
 jobs:
   gradle:
