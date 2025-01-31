@@ -50,17 +50,10 @@ public class RobotContainer {
                                         .withRotationalRate(
                                                 -joystick.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
-        joystick.a().whileTrue(coralIntake.spinClawForward());
         joystick.b().whileTrue(coralIntake.spinClawBackward());
         joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-
     }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
     public Command getAutonomousCommand() {
         return null;
     }
