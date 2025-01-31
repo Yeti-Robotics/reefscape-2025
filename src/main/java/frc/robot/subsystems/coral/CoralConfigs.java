@@ -12,7 +12,7 @@ class CoralConfigs {
     static final int CLAW_ID = 20;
     static final double FORWARD_SPEED = -0.5;
     static final double BACKWARD_SPEED = 1.0;
-    static final ColorData coralColor = new ColorData(255,255,255);
+    static final ColorData coralColor = new ColorData(255, 255, 255);
     static final TalonFXConfiguration coralMotorConfig =
             new TalonFXConfiguration()
                     .withMotorOutput(

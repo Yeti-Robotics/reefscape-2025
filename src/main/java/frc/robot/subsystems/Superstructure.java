@@ -1,10 +1,8 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.ArmPositions;
 import frc.robot.subsystems.coral.CoralIntake;
 
 public class Superstructure extends SubsystemBase {
@@ -33,11 +31,9 @@ public class Superstructure extends SubsystemBase {
         this.arm = arm;
 
         new Trigger(this::occupiedIntake).whileTrue(coralIntake.spinClawForward());
-
     }
 
     public boolean occupiedIntake() {
         return coralIntake.isCoralInIntake();
     }
-
 }
