@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.coral.CoralIntake;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
+import frc.robot.subsystems.tray.Tray;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -21,6 +22,7 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
  */
 public class RobotContainer {
     public CoralIntake coralIntake = new CoralIntake();
+    public Tray tray = new Tray();
 
     public final CommandXboxController joystick = new CommandXboxController(1);
     final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -52,6 +54,7 @@ public class RobotContainer {
                                                         * TunerConstants.MaFxAngularRate)));
         joystick.b().whileTrue(coralIntake.spinClawBackward());
         joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        tray.coralInTrayTrigger.onTrue(coralIntake.spinClawForward());
     }
 
     public Command getAutonomousCommand() {

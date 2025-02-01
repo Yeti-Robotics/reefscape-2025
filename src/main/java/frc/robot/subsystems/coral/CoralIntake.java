@@ -13,13 +13,11 @@ import frc.robot.util.StateManager;
 
 public class CoralIntake extends SubsystemBase {
     private final TalonFX claw = new TalonFX(CoralConfigs.CLAW_ID, RIO_BUS);
-    public final Canandcolor traySensor = new Canandcolor(0);
     public final Canandcolor clawSensor = new Canandcolor(1);
     private final MotionMagicVelocityVoltage motorRequest = new MotionMagicVelocityVoltage(0);
 
     public final Trigger intakeOccupiedTrigger;
     public final Trigger stopTrigger;
-    public final Trigger trayOccupiedTrigger;
 
 
     public enum CoralState {
@@ -36,11 +34,9 @@ public class CoralIntake extends SubsystemBase {
 
         intakeOccupiedTrigger = new Trigger(this::isCoralInIntake);
         stopTrigger = new Trigger(this::readyToStop);
-        trayOccupiedTrigger = new Trigger(this::isCoralInTray);
 
         intakeOccupiedTrigger.onTrue(this.holdClaw());
         stopTrigger.onTrue(this.stopClaw());
-        trayOccupiedTrigger.onTrue(this.spinClawForward());
     }
 
     @Override
@@ -63,14 +59,6 @@ public class CoralIntake extends SubsystemBase {
     private boolean readyToStop() {
         return isCoralInIntake() && coralIntakeState.getState() == CoralState.ROLL_IN
                 || coralIntakeState.getState() == CoralState.ROLL_OUT && !isCoralInIntake();
-    }
-
-    public boolean isCoralInTray() {
-        ColorData traySensorColor = traySensor.getColor();
-
-        return traySensorColor.red() == CoralConfigs.coralColor.red()
-                && traySensorColor.green() == CoralConfigs.coralColor.green()
-                && traySensorColor.blue() == CoralConfigs.coralColor.blue();
     }
 
     public boolean isCoralInIntake() {
