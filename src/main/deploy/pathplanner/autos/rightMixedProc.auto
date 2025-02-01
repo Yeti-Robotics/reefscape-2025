@@ -1,0 +1,67 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "lineE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4 Coral 7pts"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "eStack"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral?"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Algae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "rightStackC"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Process Algae 6pts"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "dProc"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4 Coral 7pts"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
