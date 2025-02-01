@@ -5,11 +5,13 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.led.LEDSubsystemExample;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,11 +21,14 @@ import frc.robot.constants.Constants;
  */
 public class RobotContainer {
 
-    XboxController xboxController;
+    CommandXboxController xboxController;
+
+    public static LEDSubsystemExample leds;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        xboxController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
+        xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
+        leds = new LEDSubsystemExample(xboxController);
         configureBindings();
     }
 
@@ -36,7 +41,9 @@ public class RobotContainer {
      * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
      * joysticks}.
      */
-    private void configureBindings() {}
+    private void configureBindings() {
+//        xboxController.rightBumper().onTrue(ledStrip.setStateCommand(LEDStrip.State.NICK));
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
