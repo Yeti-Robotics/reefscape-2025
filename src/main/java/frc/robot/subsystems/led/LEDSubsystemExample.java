@@ -11,14 +11,12 @@ import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class LEDSubsystemExample extends SubsystemBase {
     private final CANdle m_candle = new CANdle(0, "rio");
-    private final int LedCount = 42;
+    private final int LedCount = 33;
     private CommandXboxController joystick;
 
     private Animation m_toAnimate = null;
@@ -45,7 +43,7 @@ public class LEDSubsystemExample extends SubsystemBase {
         configAll.statusLedOffWhenActive = true;
         configAll.disableWhenLOS = false;
         configAll.stripType = LEDStripType.RGB;
-        configAll.brightnessScalar = 0.1;
+        configAll.brightnessScalar = 1;
         configAll.vBatOutputMode = VBatOutputMode.On;
         m_candle.configAllSettings(configAll, 100);
     }
@@ -203,7 +201,7 @@ public class LEDSubsystemExample extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
         if (m_toAnimate == null) {
-            m_candle.animate(new LarsonAnimation(0, 255, 46, 0, 0.25, LedCount, BounceMode.Front, 3, 8));
+            m_candle.animate(new StrobeAnimation(217, 30, 102, 0, 4, LedCount));
         } else {
             m_candle.animate(new FireAnimation(0.5, 0.7, LedCount, 0.7, 0.5));
         }
