@@ -1,0 +1,85 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "lineE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4 Coral 7pts"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "eStack"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Algae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "lowStackSource"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral HP Station"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "hpD"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4 Coral 7pts"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "dHP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral HP Station"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "hpC"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4 Coral 7pts"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
