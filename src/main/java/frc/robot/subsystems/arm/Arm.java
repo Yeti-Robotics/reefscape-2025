@@ -41,7 +41,6 @@ public class Arm {
 
         var armEncoderConfigurator = armEncoder.getConfigurator();
         var cancoderConfiguration = new CANcoderConfiguration();
-
     }
 
     public void moveUp(double speed) {

@@ -2,6 +2,7 @@ package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.*;
+
 class ArmConfig {
 
     static final int ARM_KRAKEN_ID = 21;
@@ -10,12 +11,12 @@ class ArmConfig {
     static final double MAGNET_OFFSET = 0; // placeholder
     static final double GEAR_RATIO = 113;
 
-    static final double ARM_P = 540; //alphabot
-    static final double ARM_I = 0; //alphabot
-    static final double ARM_D = 200; //alphabot
-    static final double ARM_G = 13.2; //alphabot
-    static final double ARM_V = 1; //alphabot
-    static final double ARM_A = 0.75; //alphabot
+    static final double ARM_P = 540; // alphabot
+    static final double ARM_I = 0; // alphabot
+    static final double ARM_D = 200; // alphabot
+    static final double ARM_G = 13.2; // alphabot
+    static final double ARM_V = 1; // alphabot
+    static final double ARM_A = 0.75; // alphabot
     static final double ARM_DEPLOY_LOWER_BOUND = 0; // placeholder //alphabot
 
     static final Slot0Configs SLOT_0_CONFIGS =
@@ -53,9 +54,10 @@ class ArmConfig {
     static final CANcoderConfiguration cancoderConfiguration =
             new CANcoderConfiguration()
                     .withMagnetSensor(
-                        new MagnetSensorConfigs()
-                            .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
-                            .withMagnetOffset(MAGNET_OFFSET));
+                            new MagnetSensorConfigs()
+                                    .withSensorDirection(
+                                            SensorDirectionValue.CounterClockwise_Positive)
+                                    .withMagnetOffset(MAGNET_OFFSET));
 
     static final InvertedValue ARM_INVERSION = InvertedValue.CounterClockwise_Positive;
     static final NeutralModeValue ARM_NEUTRAL_MODE = NeutralModeValue.Brake;
