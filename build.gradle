@@ -149,3 +149,6 @@ spotless {
         endWithNewline()
     }
 }
+
+tasks.build.dependsOn(tasks.spotlessApply)
+tasks.deploy.dependsOn(tasks.spotlessApply)
