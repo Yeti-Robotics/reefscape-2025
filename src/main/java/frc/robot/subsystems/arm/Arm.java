@@ -13,27 +13,6 @@ public class Arm {
     private final TalonFX armKraken;
     final MotionMagicVoltage magicRequest;
 
-    public Arm() {
-        armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS);
-        CANcoder armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.CANIVORE_BUS);
-
-        var armConfigurator = armKraken.getConfigurator();
-
-        magicRequest = new MotionMagicVoltage(0);
-
-        armKraken.getRotorPosition().waitForUpdate(ArmConfig.ARM_POSITION_STATUS_FRAME);
-
-        armConfigurator.apply(talonFXConfiguration);
-
-        var armEncoderConfigurator = armEncoder.getConfigurator();
-        var cancoderConfiguration = new CANcoderConfiguration();
-
-        cancoderConfiguration.MagnetSensor.MagnetOffset = ArmConfig.MAGNET_OFFSET;
-        cancoderConfiguration.MagnetSensor.SensorDirection =
-                SensorDirectionValue.CounterClockwise_Positive;
-        armEncoderConfigurator.apply(cancoderConfiguration);
-    }
-
     public enum Position {
         LOW(30), // placeholder
         MID(60), // placeholder
@@ -48,6 +27,21 @@ public class Arm {
         public int getValue() {
             return value;
         }
+    }
+
+    public Arm() {
+        armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS);
+        CANcoder armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.CANIVORE_BUS);
+
+        var armConfigurator = armKraken.getConfigurator();
+
+        magicRequest = new MotionMagicVoltage(0);
+
+        armConfigurator.apply(talonFXConfiguration);
+
+        var armEncoderConfigurator = armEncoder.getConfigurator();
+        var cancoderConfiguration = new CANcoderConfiguration();
+
     }
 
     public void moveUp(double speed) {
