@@ -35,9 +35,9 @@ class ArmConfig {
                             new FeedbackConfigs()
                                     .withFeedbackRemoteSensorID(0)
                                     .withFeedbackSensorSource(
-                                            FeedbackSensorSourceValue.RemoteCANcoder)
-                                    .withSensorToMechanismRatio(GEAR_RATIO)
-                                    .withRotorToSensorRatio(1))
+                                            FeedbackSensorSourceValue.FusedCANcoder)
+                                    .withSensorToMechanismRatio(GEAR_RATIO) // alphabot
+                                    .withRotorToSensorRatio(1)) // alphabot
                     .withMotorOutput(
                             new MotorOutputConfigs()
                                     .withInverted(ArmConfig.ARM_INVERSION)

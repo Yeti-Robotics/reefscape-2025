@@ -1,8 +1,8 @@
 package frc.robot.subsystems.arm;
 
+import static frc.robot.subsystems.arm.ArmConfig.cancoderConfiguration;
 import static frc.robot.subsystems.arm.ArmConfig.talonFXConfiguration;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -40,7 +40,8 @@ public class Arm {
         armConfigurator.apply(talonFXConfiguration);
 
         var armEncoderConfigurator = armEncoder.getConfigurator();
-        var cancoderConfiguration = new CANcoderConfiguration();
+
+        armEncoderConfigurator.apply(cancoderConfiguration);
     }
 
     public void moveUp(double speed) {
