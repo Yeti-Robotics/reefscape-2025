@@ -7,6 +7,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.coral.CoralIntake;
@@ -30,6 +31,12 @@ public class RobotContainer {
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
+    public static final double SWERVE_X_REDUCTION = 1.0 / 6.75;
+    public static final double WHEEL_DIAMETER = Units.inchesToMeters(4); //0.1016
+
+    public static final double MaFxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+
+    public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 * SWERVE_X_REDUCTION * WHEEL_DIAMETER * Math.PI; //placeholder
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         configureBindings();
@@ -54,6 +61,8 @@ public class RobotContainer {
         joystick.b().whileTrue(coralIntake.spinClawBackward());
         joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
+        Telemetry logger = new Telemetry(MAX_VELOCITY_METERS_PER_SECOND);
+        drivetrain.registerTelemetry(logger::telemeterize);
     }
 
     /**
