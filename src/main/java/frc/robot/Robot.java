@@ -80,19 +80,19 @@ public class Robot extends TimedRobot {
         // (Robot pose is considered the center of rotation at the floor level, or Z = 0)
         Translation3d robotToElevCam1Trl =
                 new Translation3d(
-                        Units.inchesToMeters(-10),
-                        Units.inchesToMeters(-12),
+                        Units.inchesToMeters(-8),
+                        Units.inchesToMeters(-7),
                         Units.inchesToMeters(22.5));
         Translation3d robotToElevCam2Trl =
                 new Translation3d(
-                        Units.inchesToMeters(-10),
-                        Units.inchesToMeters(12),
+                        Units.inchesToMeters(-8),
+                        Units.inchesToMeters(7),
                         Units.inchesToMeters(22.5));
         Translation3d robotToRearCamTrl =
-                new Translation3d(Units.inchesToMeters(-12), 0, Units.inchesToMeters(22.5));
+                new Translation3d(Units.inchesToMeters(-9.5), 0, Units.inchesToMeters(35.125));
         // and pitched 15 degrees up.
-        Rotation3d robotToElevCam1Rot = new Rotation3d(0, Math.toRadians(20), Math.toRadians(90));
-        Rotation3d robotToElevCam2Rot = new Rotation3d(0, Math.toRadians(20), Math.toRadians(-90));
+        Rotation3d robotToElevCam1Rot = new Rotation3d(0, Math.toRadians(35), Math.toRadians(90));
+        Rotation3d robotToElevCam2Rot = new Rotation3d(0, Math.toRadians(35), Math.toRadians(-90));
         Rotation3d robotToRearCamRot = new Rotation3d(0, 0, Math.toRadians(180));
 
         Transform3d robotToElevCam1 = new Transform3d(robotToElevCam1Trl, robotToElevCam1Rot);
