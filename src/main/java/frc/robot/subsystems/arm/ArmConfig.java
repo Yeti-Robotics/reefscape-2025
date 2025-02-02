@@ -11,22 +11,16 @@ class ArmConfig {
     static final double MAGNET_OFFSET = 0; // placeholder
     static final double GEAR_RATIO = 113;
 
-    static final double ARM_P = 540; // alphabot
-    static final double ARM_I = 0; // alphabot
-    static final double ARM_D = 200; // alphabot
-    static final double ARM_G = 13.2; // alphabot
-    static final double ARM_V = 1; // alphabot
-    static final double ARM_A = 0.75; // alphabot
     static final double ARM_DEPLOY_LOWER_BOUND = 0; // placeholder //alphabot
 
     static final Slot0Configs SLOT_0_CONFIGS =
             new Slot0Configs()
-                    .withKP(ARM_P)
-                    .withKI(ARM_I)
-                    .withKD(ARM_D)
-                    .withKG(ARM_G)
-                    .withKV(ARM_V)
-                    .withKA(ARM_A)
+                    .withKP(540) // alphabot
+                    .withKI(0) // alphabot
+                    .withKD(200) // alphabot
+                    .withKG(13.2) // alphabot
+                    .withKV(1) // alphabot
+                    .withKA(0.75) // alphabot
                     .withGravityType(GravityTypeValue.Arm_Cosine);
 
     static final TalonFXConfiguration talonFXConfiguration =
