@@ -6,19 +6,20 @@ import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.LEDPattern;
-import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.constants.Constants;
-import java.util.Map;
 
 public class LEDSubsystem extends SubsystemBase {
     public final CANdle candle = new CANdle(0, Constants.RIO_BUS);
     public final AddressableLED led = new AddressableLED(0);
     public final AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(36);
     private Animation toAnimate = null;
-    private Events currentAnimation;
+    public int ledCount = 39;
+    public int ledOffset = 8;
 
     public enum Events {
         NICK,
@@ -26,23 +27,29 @@ public class LEDSubsystem extends SubsystemBase {
         CORALSTOWED,
         ALGAEINTAKE,
         IDLETELEOP,
-        PROGRESSBAR;
+        PROGRESSBAR,
+        FLAME,
+        OFF,
+        LOS;
     }
 
     public LEDSubsystem() {
+        //        this.joystick = joystick;
         led.setLength(ledBuffer.getLength());
         CANdleConfiguration configAll = new CANdleConfiguration();
-        configAll.statusLedOffWhenActive = true;
+        configAll.statusLedOffWhenActive = false;
         configAll.disableWhenLOS = false;
         configAll.stripType = LEDStripType.RGB;
         configAll.brightnessScalar = 0.5;
         configAll.vBatOutputMode = VBatOutputMode.On;
         candle.configAllSettings(configAll, 1);
+        //        System.out.println("Candle Output");
+        //        System.out.println(candle.setLEDs(8, 255, 8, 8, 0, 14));
+        //        candle.setLEDs(220, 0, 0, 22, 22, 17);
+        new Trigger(DriverStation::isDisabled).onFalse(Commands.print("led off"));
     }
 
     public void changeAnimation(Events animation) {
-        int ledCount = 39;
-        int ledOffset = 8;
         switch (animation) {
             case NICK:
                 toAnimate = new StrobeAnimation(255, 0, 25, 0, 4, ledCount);
@@ -72,16 +79,36 @@ public class LEDSubsystem extends SubsystemBase {
                 }
                 break;
             case PROGRESSBAR:
-                LEDPattern steps = LEDPattern.steps(Map.of(0, Color.kRed, 0.5, Color.kGreen));
-                steps.applyTo(ledBuffer);
-                led.setData(ledBuffer);
+                //                ProgressBar progressBar = new ProgressBar();
+                //                progressBar.setProgress(ProgressBar.ProgressBarPercents.FIFTY);
                 break;
+            case FLAME:
+                toAnimate = new FireAnimation(1, 0.2, 15, 0.5, 0.2, false, 8);
+                break;
+            case OFF:
+                toAnimate = new StrobeAnimation(0, 0, 0, 0, 4, ledCount);
+            case LOS:
+                if (Robot.isRedAlliance()) {
+                    toAnimate = new StrobeAnimation(255, 0, 0, 0, 0.2, ledCount);
+                } else {
+                    toAnimate = new StrobeAnimation(84, 229, 182, 0, 0.2, ledCount);
+                }
         }
     }
 
     @Override
     public void periodic() {
-        changeAnimation(Events.NICK);
-        candle.animate(toAnimate);
+        //        candle.setLEDs(
+        //                (int) (joystick.getLeftTriggerAxis() * 255),
+        //                (int) (joystick.getRightTriggerAxis() * 255),
+        //                (int) (joystick.getLeftX() * 255));
+        //        candle.setLEDs(100, 100, 210);
+        if (DriverStation.isDisabled()) {
+            candle.clearAnimation(0);
+            candle.setLEDs(255, 0, 0);
+        } else {
+            changeAnimation(Events.IDLETELEOP);
+            candle.animate(toAnimate);
+        }
     }
 }
