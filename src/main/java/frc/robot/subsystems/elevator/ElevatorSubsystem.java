@@ -20,9 +20,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         secondaryElevatorMotor = new TalonFX(ElevatorConfigs.secondaryElevatorMotorID, RIO_BUS);
 
         primaryElevatorMotor.getConfigurator().apply(talonFXConfigs);
-
-        //Secondary motor follows the primary motor
         secondaryElevatorMotor.setControl(new Follower(ElevatorConfigs.primaryElevatorMotorID, true));
+
         magSwitch = new DigitalInput(ElevatorConfigs.magSwitchID);
         magicRequest = new MotionMagicVoltage(0);
     }
@@ -34,21 +33,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
     public boolean getMagSwitch() {
         return magSwitch.get();
-    }
-    public Command moveUpLevel1(){
-        return runOnce(() -> setPosition(ElevatorPosition.LEVEL1));
-    }
-    public Command moveUpLevel2(){
-        return runOnce(() -> setPosition(ElevatorPosition.LEVEL2));
-    }
-    public Command moveUpLevel3(){
-        return runOnce(() -> setPosition(ElevatorPosition.LEVEL3));
-    }
-    public Command moveUpLevel4(){
-        return runOnce(() -> setPosition(ElevatorPosition.LEVEL4));
-    }
-    public Command moveDown(){
-        return runOnce(() -> setPosition(ElevatorPosition.BOTTOM));
     }
 
     @Override
