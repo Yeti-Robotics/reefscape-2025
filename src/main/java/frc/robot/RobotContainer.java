@@ -32,11 +32,14 @@ public class RobotContainer {
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
     public static final double SWERVE_X_REDUCTION = 1.0 / 6.75;
-    public static final double WHEEL_DIAMETER = Units.inchesToMeters(4); //0.1016
+    public static final double WHEEL_DIAMETER = Units.inchesToMeters(4); // 0.1016
 
-    public static final double MaFxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+    public static final double MaFxAngularRate =
+            1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
-    public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 * SWERVE_X_REDUCTION * WHEEL_DIAMETER * Math.PI; //placeholder
+    public static final double MAX_VELOCITY_METERS_PER_SECOND =
+            6380.0 / 60.0 * SWERVE_X_REDUCTION * WHEEL_DIAMETER * Math.PI; // placeholder
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         configureBindings();

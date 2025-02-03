@@ -5,12 +5,11 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import java.util.ArrayList;
+import java.util.List;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.targeting.PhotonTrackedTarget;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AprilTagCamSim {
     private final PhotonCamera cam;
@@ -19,7 +18,11 @@ public class AprilTagCamSim {
     private final StructArrayPublisher<Pose3d> pub;
     private final Transform3d transform;
 
-    public AprilTagCamSim(PhotonCamera cam, PhotonCameraSim cameraSim, StructArrayPublisher<Pose3d> pub, Transform3d transform) {
+    public AprilTagCamSim(
+            PhotonCamera cam,
+            PhotonCameraSim cameraSim,
+            StructArrayPublisher<Pose3d> pub,
+            Transform3d transform) {
         this.cam = cam;
         this.cameraSim = cameraSim;
         this.tagCache = new ArrayList<>();
@@ -32,9 +35,9 @@ public class AprilTagCamSim {
         if (!results.isEmpty()) {
             tagCache.clear();
             var t =
-                results.get(0).getTargets().stream()
-                    .map(PhotonTrackedTarget::getFiducialId)
-                    .toList();
+                    results.get(0).getTargets().stream()
+                            .map(PhotonTrackedTarget::getFiducialId)
+                            .toList();
             tagCache.addAll(t);
         }
 

@@ -36,39 +36,33 @@ public class Robot extends TimedRobot {
 
         tagSimulator = new AprilTagSimulator();
 
-        tagSimulator.addCamera(AprilTagCamSimBuilder.newCamera()
-            .withCameraName("elevCam1")
-            .withTranslation(
-                Units.inchesToMeters(-8),
-                Units.inchesToMeters(-7),
-                Units.inchesToMeters(22.5))
-            .withRotation(
-                0,
-                Math.toRadians(35),
-                Math.toRadians(90))
-            .build());
-        tagSimulator.addCamera(AprilTagCamSimBuilder.newCamera()
-            .withCameraName("elevCam2")
-            .withTranslation(
-                Units.inchesToMeters(-8),
-                Units.inchesToMeters(7),
-                Units.inchesToMeters(13.5))
-            .withRotation(
-                0,
-                Math.toRadians(-15),
-                Math.toRadians(-90))
-            .build());
-        tagSimulator.addCamera(AprilTagCamSimBuilder.newCamera()
-            .withCameraName("rearCam")
-            .withTranslation(
-                Units.inchesToMeters(-9.5),
-                Units.inchesToMeters(0),
-                Units.inchesToMeters(35.125))
-            .withRotation(
-                0,
-                0,
-                Math.toRadians(-180))
-            .build());
+        tagSimulator.addCamera(
+                AprilTagCamSimBuilder.newCamera()
+                        .withCameraName("elevCam1")
+                        .withTranslation(
+                                Units.inchesToMeters(-8),
+                                Units.inchesToMeters(-7),
+                                Units.inchesToMeters(22.5))
+                        .withRotation(0, Math.toRadians(35), Math.toRadians(90))
+                        .build());
+        tagSimulator.addCamera(
+                AprilTagCamSimBuilder.newCamera()
+                        .withCameraName("elevCam2")
+                        .withTranslation(
+                                Units.inchesToMeters(-8),
+                                Units.inchesToMeters(7),
+                                Units.inchesToMeters(13.5))
+                        .withRotation(0, Math.toRadians(-15), Math.toRadians(-90))
+                        .build());
+        tagSimulator.addCamera(
+                AprilTagCamSimBuilder.newCamera()
+                        .withCameraName("rearCam")
+                        .withTranslation(
+                                Units.inchesToMeters(-9.5),
+                                Units.inchesToMeters(0),
+                                Units.inchesToMeters(35.125))
+                        .withRotation(0, 0, Math.toRadians(-180))
+                        .build());
     }
 
     /**
