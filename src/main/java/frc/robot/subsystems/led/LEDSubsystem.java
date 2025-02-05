@@ -72,7 +72,7 @@ public class LEDSubsystem extends SubsystemBase {
                 }
                 break;
             case PROGRESSBAR:
-                ProgressBar progressBar = new ProgressBar();
+                ProgressBar progressBar = new ProgressBar(this);
                 progressBar.setProgress(ProgressBar.ProgressBarPercents.FULL);
                 break;
             case FLAME:

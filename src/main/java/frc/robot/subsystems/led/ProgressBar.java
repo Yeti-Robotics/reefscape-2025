@@ -39,7 +39,7 @@ public class ProgressBar {
         }
     }
 
-    public ProgressBar() {
-        ledSubsystem = new LEDSubsystem();
+    public ProgressBar(LEDSubsystem ledSubsystem) {
+        this.ledSubsystem = ledSubsystem;
     }
 }
