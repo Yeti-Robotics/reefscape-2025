@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision.apriltag;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 public class AprilTagDetection {
     private final int fiducialID;
@@ -25,6 +26,10 @@ public class AprilTagDetection {
 
     public Pose2d getTargetPose() {
         return targetPose;
+    }
+
+    public Translation2d getTargetTranslation(){
+        return targetPose.getTranslation();
     }
 
     public double getAmbiguity() {
