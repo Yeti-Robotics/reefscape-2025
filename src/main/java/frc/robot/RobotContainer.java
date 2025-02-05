@@ -27,7 +27,6 @@ public class RobotContainer {
     public RobotContainer() {
         xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         //        leds = new LEDSubsystemExample(xboxController);
-        leds = new LEDSubsystem();
         configureBindings();
     }
 
