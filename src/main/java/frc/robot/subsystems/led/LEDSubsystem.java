@@ -21,7 +21,6 @@ public class LEDSubsystem extends SubsystemBase {
         ALGAEINTAKE,
         IDLETELEOP,
         PROGRESSBAR,
-        FLAME,
         OFF,
         LOS;
     }
@@ -34,6 +33,10 @@ public class LEDSubsystem extends SubsystemBase {
         configAll.brightnessScalar = 0.5;
         configAll.vBatOutputMode = VBatOutputMode.On;
         candle.configAllSettings(configAll, 100);
+    }
+
+    public void clearAnimation() {
+        candle.clearAnimation(0);
     }
 
     public void setAnimation(Events animation) {
@@ -59,38 +62,36 @@ public class LEDSubsystem extends SubsystemBase {
                 candle.animate(toAnimate);
                 break;
             case IDLETELEOP:
-                if (Robot.isRedAlliance()) {
-                    toAnimate =
-                            new LarsonAnimation(
-                                    255, 0, 0, 0, 0.3, ledCount, BounceMode.Front, 3, ledOffset);
-                    candle.animate(toAnimate);
-                } else {
-                    toAnimate =
-                            new LarsonAnimation(
-                                    84, 229, 182, 0, 0.3, ledCount, BounceMode.Front, 3, ledOffset);
-                    candle.animate(toAnimate);
-                }
+                toAnimate =
+                        Robot.isRedAlliance()
+                                ? new LarsonAnimation(
+                                        255, 0, 0, 0, 0.4, ledCount, BounceMode.Front, 3, ledOffset)
+                                : new LarsonAnimation(
+                                        84,
+                                        229,
+                                        182,
+                                        0,
+                                        0.3,
+                                        ledCount,
+                                        BounceMode.Front,
+                                        3,
+                                        ledOffset);
+                candle.animate(toAnimate);
                 break;
             case PROGRESSBAR:
                 ProgressBar progressBar = new ProgressBar(this);
                 progressBar.setProgress(ProgressBar.ProgressBarPercents.FULL);
-                break;
-            case FLAME:
-                toAnimate = new FireAnimation(1, 0.2, 15, 0.5, 0.2, false, 8);
-                candle.animate(toAnimate);
                 break;
             case OFF:
                 toAnimate = new StrobeAnimation(0, 0, 0, 0, 4, ledCount);
                 candle.animate(toAnimate);
                 break;
             case LOS:
-                if (Robot.isRedAlliance()) {
-                    toAnimate = new StrobeAnimation(255, 0, 0, 0, 0.2, ledCount);
-                    candle.animate(toAnimate);
-                } else {
-                    toAnimate = new StrobeAnimation(84, 229, 182, 0, 0.2, ledCount);
-                    candle.animate(toAnimate);
-                }
+                toAnimate =
+                        Robot.isRedAlliance()
+                                ? new StrobeAnimation(255, 0, 0, 0, 0.2, ledCount)
+                                : new StrobeAnimation(84, 229, 182, 0, 0.2, ledCount);
+                candle.animate(toAnimate);
                 break;
         }
     }

@@ -54,8 +54,9 @@ public class Robot extends TimedRobot {
     /** This method is called once each time the robot enters Disabled mode. */
     @Override
     public void disabledInit() {
-        leds.setAnimation(LEDSubsystem.Events.OFF);
+        leds.clearAnimation();
         leds.setAnimation(LEDSubsystem.Events.PROGRESSBAR);
+        // implement logic for each step later ig
     }
 
     @Override
