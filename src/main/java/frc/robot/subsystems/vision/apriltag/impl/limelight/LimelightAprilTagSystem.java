@@ -38,7 +38,7 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
 
         for (LimelightHelpers.LimelightTarget_Fiducial aprilTag : results.targets_Fiducials) {
             aprilTagDetections.add(new AprilTagDetection(
-                    aprilTag.fiducialID,
+                    (int) aprilTag.fiducialID,
                     aprilTag.getRobotPose_FieldSpace2D(),
                     aprilTag.getTargetPose_RobotSpace2D(),
                     0 // we can trust MegaTag2, as it eliminates pose ambiguity
@@ -59,7 +59,8 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
                 .map(e -> new AprilTagPose(e.pose, e.tagCount, e.timestampSeconds));
     }
 
-    public void filterFiducialIDs(int... fiducialIDs) {
+    @Override
+    public void onlyTrackTags(int... fiducialIDs) {
         LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, fiducialIDs);
     }
 }
