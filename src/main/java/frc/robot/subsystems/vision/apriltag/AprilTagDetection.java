@@ -3,19 +3,19 @@ package frc.robot.subsystems.vision.apriltag;
 import edu.wpi.first.math.geometry.Pose2d;
 
 public class AprilTagDetection {
-    private final double fiducialID;
+    private final int fiducialID;
     private final Pose2d robotPose;
     private final Pose2d targetPose;
     private final double ambiguity;
 
-    public AprilTagDetection(double fiducialID, Pose2d robotPose, Pose2d targetPose, double ambiguity) {
+    public AprilTagDetection(int fiducialID, Pose2d robotPose, Pose2d targetPose, double ambiguity) {
         this.fiducialID = fiducialID;
         this.robotPose = robotPose;
         this.targetPose = targetPose;
         this.ambiguity = ambiguity;
     }
 
-    public double getFiducialID() {
+    public int getFiducialID() {
         return fiducialID;
     }
 

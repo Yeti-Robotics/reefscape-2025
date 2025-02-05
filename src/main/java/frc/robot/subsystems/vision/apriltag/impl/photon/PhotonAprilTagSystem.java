@@ -115,7 +115,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     }
 
     @Override
-    public void filterFiducialIDs(int... ids) {
+    public void onlyTrackTags(int... ids) {
         fiducialIds = ids;
     }
 
