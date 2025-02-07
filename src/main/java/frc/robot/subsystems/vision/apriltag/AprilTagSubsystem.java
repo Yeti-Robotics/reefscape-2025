@@ -1,29 +1,50 @@
 package frc.robot.subsystems.vision.apriltag;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public interface AprilTagSubsystem {
     Optional<AprilTagResults> getResults();
+
     Optional<AprilTagPose> getEstimatedPose();
 
-    default Optional<AprilTagDetection> findDetection(int fiducialId) {
-        return getResults()
-                .map(AprilTagResults::getResults)
-                .flatMap(results -> results.stream()
-                        .filter(t -> t.getFiducialID() == fiducialId)
-                        .findFirst());
-    }
+    Optional<AprilTagDetection> getBestDetection();
 
-    default List<AprilTagDetection> findDetections(int ...ids) {
+    default Optional<AprilTagDetection> findDetection(int fiducialId) {
         Optional<AprilTagResults> results = getResults();
 
-        return results.map(aprilTagResults -> aprilTagResults.getResults().stream()
-                .filter(tag -> Arrays.stream(ids).anyMatch(id -> id == tag.getFiducialID()))
-                .collect(Collectors.toList())).orElseGet(List::of);
+        if (results.isPresent()) {
+            List<AprilTagDetection> detections = results.get().getResults();
+
+            for (AprilTagDetection detection : detections) {
+                if (detection.getFiducialID() == fiducialId) {
+                    return Optional.of(detection);
+                }
+            }
+
+        }
+
+        return Optional.empty();
+    }
+
+    default List<AprilTagDetection> findDetections(int... ids) {
+        Optional<AprilTagResults> optResults = getResults();
+
+        if (optResults.isEmpty()) return Collections.emptyList();
+
+        AprilTagResults results = optResults.get();
+        List<AprilTagDetection> detections = new ArrayList<>(results.getResults().size());
+
+        for (AprilTagDetection tag : results.getResults()) {
+            for (int id : ids) {
+                if (id == tag.getFiducialID()) {
+                    detections.add(tag);
+                    break;
+                }
+            }
+
+        }
+
+        return detections;
     }
 
     void onlyTrackTags(int... ids);
