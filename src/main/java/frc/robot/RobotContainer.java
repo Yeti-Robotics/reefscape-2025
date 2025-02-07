@@ -28,8 +28,7 @@ public class RobotContainer {
 
     public final CommandXboxController joystick = new CommandXboxController(1);
     final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    final PhotonAprilTagSystem reefSubsystem1 = new PhotonAprilTagSystem("YETICam_1", new Transform3d());
-    final PhotonAprilTagSystem reefSubsystem2 = new PhotonAprilTagSystem("YETICam_2", new Transform3d());
+    final PhotonAprilTagSystem reefSubsystem = new PhotonAprilTagSystem("YETICam_1", new Transform3d());
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
@@ -38,8 +37,7 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        reefSubsystem1.onlyTrackTags(AprilTagConstants.reefIDs);
-        reefSubsystem2.onlyTrackTags(AprilTagConstants.reefIDs);
+        reefSubsystem.onlyTrackTags(AprilTagConstants.reefIDs);
         configureBindings();
     }
 
@@ -61,7 +59,7 @@ public class RobotContainer {
         joystick.a().whileTrue(coralIntake.spinClawForward());
         joystick.b().whileTrue(coralIntake.spinClawBackward());
         joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        joystick.leftTrigger().whileTrue(new ReefAimCommand(drivetrain, reefSubsystem1, reefSubsystem2, () -> -joystick.getLeftY(), () -> -joystick.getLeftX()));
+        joystick.leftTrigger().whileTrue(new ReefAimCommand(drivetrain, reefSubsystem, () -> -joystick.getLeftY(), () -> -joystick.getLeftX()));
 
     }
 

@@ -14,17 +14,15 @@ import java.util.function.DoubleSupplier;
 
 public class ReefAimCommand extends Command {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
-    private final AprilTagSubsystem aprilTagSubsystem1;
-    private final AprilTagSubsystem aprilTagSubsystem2;
+    private final AprilTagSubsystem aprilTagSubsystem;
     private final DoubleSupplier xVelSupplier;
     private final TurnToPoint poseAimRequest;
     private final DoubleSupplier yVelSupplier;
     private int currentTag;
 
-    public ReefAimCommand(CommandSwerveDrivetrain drivetrain, AprilTagSubsystem aprilTagSubsystem1, AprilTagSubsystem aprilTagSubsystem2, DoubleSupplier xVelSupplier, DoubleSupplier yVelSupplier) {
+    public ReefAimCommand(CommandSwerveDrivetrain drivetrain, AprilTagSubsystem aprilTagSubsystem1, DoubleSupplier xVelSupplier, DoubleSupplier yVelSupplier) {
             this.commandSwerveDrivetrain = drivetrain;
-            this.aprilTagSubsystem1 = aprilTagSubsystem1;
-            this.aprilTagSubsystem2 = aprilTagSubsystem2;
+            this.aprilTagSubsystem = aprilTagSubsystem1;
             this.xVelSupplier = xVelSupplier;
             this.yVelSupplier = yVelSupplier;
 
@@ -36,17 +34,11 @@ public class ReefAimCommand extends Command {
 
     @Override
     public void initialize() {
-        Optional<AprilTagDetection> possibleDetection1 = aprilTagSubsystem1.getBestDetection();
-        Optional<AprilTagDetection> possibleDetection2 = aprilTagSubsystem2.getBestDetection();
+        Optional<AprilTagDetection> possibleDetection = aprilTagSubsystem.getBestDetection();
 
-        if (possibleDetection1.isPresent()){
-            currentTag = possibleDetection1.get().getFiducialID();
-            Translation2d targetPosition = possibleDetection1.get().getTargetTranslation();
-            poseAimRequest.setTargetPoint(targetPosition);
-        }
-        if (possibleDetection2.isPresent()){
-            currentTag = possibleDetection2.get().getFiducialID();
-            Translation2d targetPosition = possibleDetection2.get().getTargetTranslation();
+        if (possibleDetection.isPresent()){
+            currentTag = possibleDetection.get().getFiducialID();
+            Translation2d targetPosition = possibleDetection.get().getTargetTranslation();
             poseAimRequest.setTargetPoint(targetPosition);
         }
         else {
