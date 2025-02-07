@@ -11,7 +11,7 @@ import frc.robot.constants.Constants;
 public class LEDSubsystem extends SubsystemBase {
     public final CANdle candle = new CANdle(0, Constants.RIO_BUS);
     private Animation toAnimate = null;
-    public int ledCount = 39;
+    public int ledCount = 36;
     public int ledOffset = 8;
 
     public enum Events {
@@ -20,7 +20,6 @@ public class LEDSubsystem extends SubsystemBase {
         CORALSTOWED,
         ALGAEINTAKE,
         IDLETELEOP,
-        PROGRESSBAR,
         OFF,
         LOS;
     }
@@ -77,10 +76,6 @@ public class LEDSubsystem extends SubsystemBase {
                                         3,
                                         ledOffset);
                 candle.animate(toAnimate);
-                break;
-            case PROGRESSBAR:
-                ProgressBar progressBar = new ProgressBar(this);
-                progressBar.setProgress(ProgressBar.ProgressBarPercents.FULL);
                 break;
             case OFF:
                 toAnimate = new StrobeAnimation(0, 0, 0, 0, 4, ledCount);

@@ -9,7 +9,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.algae.AlgaeIntake;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.led.LEDSubsystem;
+import frc.robot.subsystems.led.ProgressBar;
+import frc.robot.subsystems.tray.Tray;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -20,13 +24,41 @@ import frc.robot.subsystems.led.LEDSubsystem;
 public class RobotContainer {
 
     CommandXboxController xboxController;
-
-    public static LEDSubsystem leds;
+    ElevatorSubsystem elevatorSubsystem;
+    Tray tray;
+    AlgaeIntake algaeIntake;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
-        //        leds = new LEDSubsystemExample(xboxController);
+        elevatorSubsystem = new ElevatorSubsystem();
+        tray = new Tray();
+        algaeIntake = new AlgaeIntake();
+//        if (tray.isCoralInTray()) {
+//            Robot.progressBar.addProgress();
+//        } else {
+//            Robot.progressBar.subtractProgress();
+//        }
+//        if (elevatorSubsystem.getHeight() == 0) {
+//            Robot.progressBar.addProgress();
+//        } else {
+//            Robot.progressBar.subtractProgress();
+//        }
+//        if (swerveDrivetrain.isZeroed()) {
+//            Robot.progressBar.addProgress();
+//        } else {
+//            Robot.progressBar.subtractProgress();
+//        }
+//        if (climber.isStowed()) {
+//            Robot.progressBar.addProgress();
+//        } else {
+//            Robot.progressBar.subtractProgress();
+//        }
+//        if (algaeIntake.isStowed()) {
+//            Robot.progressBar.addProgress();
+//        } else {
+//            Robot.progressBar.subtractProgress();
+//        }
         configureBindings();
     }
 

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.led.LEDSubsystem;
+import frc.robot.subsystems.led.ProgressBar;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -21,7 +22,8 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
 
     private RobotContainer robotContainer;
-    private LEDSubsystem leds;
+    public static LEDSubsystem leds;
+    public static ProgressBar progressBar;
 
     /**
      * This method is run when the robot is first started up and should be used for any
@@ -33,6 +35,7 @@ public class Robot extends TimedRobot {
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
         leds = new LEDSubsystem();
+        progressBar = new ProgressBar(leds);
     }
 
     /**
@@ -53,14 +56,12 @@ public class Robot extends TimedRobot {
 
     /** This method is called once each time the robot enters Disabled mode. */
     @Override
-    public void disabledInit() {
-        leds.clearAnimation();
-        leds.setAnimation(LEDSubsystem.Events.PROGRESSBAR);
-        // implement logic for each step later ig
-    }
+    public void disabledInit() {}
 
     @Override
-    public void disabledPeriodic() {}
+    public void disabledPeriodic() {
+        Robot.progressBar.setProgress(ProgressBar.progressBarState);
+    }
 
     /**
      * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
