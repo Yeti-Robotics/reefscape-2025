@@ -16,6 +16,9 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
     private AprilTagResults aprilTagResults;
     private LimelightHelpers.PoseEstimate poseEstimate;
 
+    private LimelightHelpers.LimelightTarget_Fiducial currentBestDetection;
+    private double currentBestDetectionDistance = Double.POSITIVE_INFINITY;
+
     public LimelightAprilTagSystem(String limelightName) {
         this.limelightName = limelightName;
     }
@@ -25,7 +28,6 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
         double yawPlaceholder = 0; // TODO: need to add drivetrain values
         LimelightHelpers.SetRobotOrientation(limelightName, yawPlaceholder, yawPlaceholder, yawPlaceholder, yawPlaceholder, yawPlaceholder, yawPlaceholder);
         poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
-
 
         LimelightHelpers.LimelightResults results = LimelightHelpers.getLatestResults(limelightName);
 
@@ -37,6 +39,13 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
         List<AprilTagDetection> aprilTagDetections = new ArrayList<>(results.targets_Fiducials.length);
 
         for (LimelightHelpers.LimelightTarget_Fiducial aprilTag : results.targets_Fiducials) {
+            double normDistance = aprilTag.getCameraPose_TargetSpace2D().getTranslation().getNorm();
+
+            if (normDistance < currentBestDetectionDistance) {
+                currentBestDetection = aprilTag;
+                currentBestDetectionDistance = normDistance;
+            }
+
             aprilTagDetections.add(new AprilTagDetection(
                     (int) aprilTag.fiducialID,
                     aprilTag.getRobotPose_FieldSpace2D(),
@@ -57,6 +66,11 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
     public Optional<AprilTagPose> getEstimatedPose() {
         return Optional.ofNullable(poseEstimate)
                 .map(e -> new AprilTagPose(e.pose, e.tagCount, e.timestampSeconds));
+    }
+
+    @Override
+    public Optional<AprilTagDetection> getBestDetection() {
+        return Optional.empty();
     }
 
     @Override

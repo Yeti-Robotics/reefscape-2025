@@ -7,6 +7,8 @@ public interface AprilTagSubsystem {
 
     Optional<AprilTagPose> getEstimatedPose();
 
+    Optional<AprilTagDetection> getBestDetection();
+
     default Optional<AprilTagDetection> findDetection(int fiducialId) {
         Optional<AprilTagResults> results = getResults();
 

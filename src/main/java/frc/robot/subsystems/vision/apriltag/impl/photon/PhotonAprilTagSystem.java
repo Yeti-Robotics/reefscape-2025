@@ -25,7 +25,8 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private AprilTagResults aprilTagResults = null;
     private double maxAmbiguity = 1;
     private int[] fiducialIds = null;
-
+    private PhotonTrackedTarget currentBestDetection;
+    private double currentBestDetectionTimestamp;
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<EstimatedRobotPose> estimatedRobotPose;
 
@@ -82,7 +83,8 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         double highestLatency = 0;
 
         for (PhotonPipelineResult result : results) {
-            Optional<EstimatedRobotPose> estimatedRobotPose = photonPoseEstimator.update(result, camera.getCameraMatrix(), camera.getDistCoeffs());;
+            Optional<EstimatedRobotPose> estimatedRobotPose = photonPoseEstimator.update(result, camera.getCameraMatrix(), camera.getDistCoeffs());
+            ;
 
             this.estimatedRobotPose = estimatedRobotPose;
 
@@ -93,6 +95,13 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
             highestLatency = Math.max(highestLatency, result.metadata.getLatencyMillis());
 
             if (result.hasTargets()) {
+                PhotonTrackedTarget bestDetection = result.getBestTarget();
+
+                if (result.getTimestampSeconds() > currentBestDetectionTimestamp) {
+                    currentBestDetection = bestDetection;
+                    currentBestDetectionTimestamp = result.getTimestampSeconds();
+                }
+
                 for (PhotonTrackedTarget target : result.getTargets()) {
                     if (target.getFiducialId() != -1 && isFiducialOfInterest(target.getFiducialId())) {
                         mapToDetection(target).ifPresent(aprilTagDetections::add);
@@ -112,6 +121,11 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     @Override
     public Optional<AprilTagPose> getEstimatedPose() {
         return estimatedRobotPose.map(e -> new AprilTagPose(e.estimatedPose.toPose2d(), e.targetsUsed.size(), e.timestampSeconds));
+    }
+
+    @Override
+    public Optional<AprilTagDetection> getBestDetection() {
+        return Optional.ofNullable(currentBestDetection).flatMap(this::mapToDetection);
     }
 
     @Override
