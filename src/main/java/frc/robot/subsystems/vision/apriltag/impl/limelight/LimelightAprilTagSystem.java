@@ -25,6 +25,9 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
 
     @Override
     public void periodic() {
+        currentBestDetection = null;
+        currentBestDetectionDistance = Double.POSITIVE_INFINITY;
+
         double yawPlaceholder = 0; // TODO: need to add drivetrain values
         LimelightHelpers.SetRobotOrientation(limelightName, yawPlaceholder, yawPlaceholder, yawPlaceholder, yawPlaceholder, yawPlaceholder, yawPlaceholder);
         poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
@@ -46,12 +49,7 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
                 currentBestDetectionDistance = normDistance;
             }
 
-            aprilTagDetections.add(new AprilTagDetection(
-                    (int) aprilTag.fiducialID,
-                    aprilTag.getRobotPose_FieldSpace2D(),
-                    aprilTag.getTargetPose_RobotSpace2D(),
-                    0 // we can trust MegaTag2, as it eliminates pose ambiguity
-            ));
+            aprilTagDetections.add(mapToDetection(aprilTag));
         }
 
         aprilTagResults = new AprilTagResults(results.timestamp_LIMELIGHT_publish, results.latency_pipeline, aprilTagDetections);
@@ -70,11 +68,21 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
 
     @Override
     public Optional<AprilTagDetection> getBestDetection() {
-        return Optional.empty();
+        return Optional.ofNullable(currentBestDetection)
+                .map(this::mapToDetection);
     }
 
     @Override
     public void onlyTrackTags(int... fiducialIDs) {
         LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, fiducialIDs);
+    }
+
+    private AprilTagDetection mapToDetection(LimelightHelpers.LimelightTarget_Fiducial aprilTag) {
+        return new AprilTagDetection(
+                (int) aprilTag.fiducialID,
+                aprilTag.getRobotPose_FieldSpace2D(),
+                aprilTag.getTargetPose_RobotSpace2D(),
+                0 // we can trust MegaTag2, as it eliminates pose ambiguity
+        );
     }
 }

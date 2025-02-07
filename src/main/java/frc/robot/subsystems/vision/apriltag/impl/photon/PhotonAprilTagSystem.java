@@ -70,6 +70,9 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
     @Override
     public void periodic() {
+        currentBestDetection = null;
+        currentBestDetectionTimestamp = 0;
+
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
         if (results.isEmpty()) {
@@ -83,8 +86,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         double highestLatency = 0;
 
         for (PhotonPipelineResult result : results) {
-            Optional<EstimatedRobotPose> estimatedRobotPose = photonPoseEstimator.update(result, camera.getCameraMatrix(), camera.getDistCoeffs());
-            ;
+            Optional<EstimatedRobotPose> estimatedRobotPose = photonPoseEstimator.update(result, camera.getCameraMatrix(), camera.getDistCoeffs());;
 
             this.estimatedRobotPose = estimatedRobotPose;
 
