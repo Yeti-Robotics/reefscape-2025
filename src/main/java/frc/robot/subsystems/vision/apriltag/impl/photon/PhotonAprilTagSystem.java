@@ -99,7 +99,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
             if (result.hasTargets()) {
                 PhotonTrackedTarget bestDetection = result.getBestTarget();
 
-                if (result.getTimestampSeconds() > currentBestDetectionTimestamp) {
+                if (result.getTimestampSeconds() > currentBestDetectionTimestamp && isFiducialOfInterest(bestDetection.getFiducialId())) {
                     currentBestDetection = bestDetection;
                     currentBestDetectionTimestamp = result.getTimestampSeconds();
                 }

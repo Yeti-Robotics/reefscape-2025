@@ -1,49 +1,62 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
-import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
+import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
-import frc.robot.util.AllianceFlipUtil;
-import frc.robot.util.LimelightHelpers;
 
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 
 public class ReefAimCommand extends Command {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
-    private final PhotonAprilTagSystem photonSubsystem;
+    private final AprilTagSubsystem aprilTagSubsystem1;
+    private final AprilTagSubsystem aprilTagSubsystem2;
     private final DoubleSupplier xVelSupplier;
     private final TurnToPoint poseAimRequest;
     private final DoubleSupplier yVelSupplier;
     private int currentTag;
 
-    public ReefAimCommand(CommandSwerveDrivetrain drivetrain, PhotonAprilTagSystem photonSubsystem, DoubleSupplier xVelSupplier, DoubleSupplier yVelSupplier) {
-
+    public ReefAimCommand(CommandSwerveDrivetrain drivetrain, AprilTagSubsystem aprilTagSubsystem1, AprilTagSubsystem aprilTagSubsystem2, DoubleSupplier xVelSupplier, DoubleSupplier yVelSupplier) {
             this.commandSwerveDrivetrain = drivetrain;
-            this.photonSubsystem = photonSubsystem;
+            this.aprilTagSubsystem1 = aprilTagSubsystem1;
+            this.aprilTagSubsystem2 = aprilTagSubsystem2;
             this.xVelSupplier = xVelSupplier;
             this.yVelSupplier = yVelSupplier;
 
             addRequirements(drivetrain);
 
             poseAimRequest = new TurnToPoint();
-            poseAimRequest.HeadingController.setPID(5,0,0);
             poseAimRequest.HeadingController.enableContinuousInput(-Math.PI,Math.PI);
     }
-/*
+
     @Override
     public void initialize() {
+        Optional<AprilTagDetection> possibleDetection1 = aprilTagSubsystem1.getBestDetection();
+        Optional<AprilTagDetection> possibleDetection2 = aprilTagSubsystem2.getBestDetection();
 
-        if (currentTag == ) {
-            Translation2d targetPosition = photonSubsystem.findDetection(currentTag).get().getTargetTranslation();
+        if (possibleDetection1.isPresent()){
+            currentTag = possibleDetection1.get().getFiducialID();
+            Translation2d targetPosition = possibleDetection1.get().getTargetTranslation();
             poseAimRequest.setTargetPoint(targetPosition);
         }
-    }*/
+        if (possibleDetection2.isPresent()){
+            currentTag = possibleDetection2.get().getFiducialID();
+            Translation2d targetPosition = possibleDetection2.get().getTargetTranslation();
+            poseAimRequest.setTargetPoint(targetPosition);
+        }
+        else {
+            poseAimRequest.setTargetPoint(FieldConstants.Reef);
+        }
+
+
+
+    }
+
     @Override
     public void execute() {
         if (LimelightHelpers.getFiducialID("limelight") == currentTag){
