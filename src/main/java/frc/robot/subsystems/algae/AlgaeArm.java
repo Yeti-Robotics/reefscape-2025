@@ -1,13 +1,12 @@
 package frc.robot.subsystems.algae;
 
+import static frc.robot.subsystems.algae.AlgaeConfigs.cancoderConfiguration;
+import static frc.robot.subsystems.algae.AlgaeConfigs.talonFXConfiguration;
+
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.algae.AlgaeConfigs;
-
-import static frc.robot.subsystems.algae.AlgaeConfigs.cancoderConfiguration;
-import static frc.robot.subsystems.algae.AlgaeConfigs.talonFXConfiguration;
 
 public class AlgaeArm {
     private final TalonFX algaeArmKraken;
@@ -55,5 +54,4 @@ public class AlgaeArm {
     public void stop() {
         algaeArmKraken.stopMotor();
     }
-
 }

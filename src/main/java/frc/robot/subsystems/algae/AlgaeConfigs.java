@@ -2,7 +2,6 @@ package frc.robot.subsystems.algae;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.*;
-import frc.robot.subsystems.algae.AlgaeConfigs;
 
 class AlgaeConfigs {
     static final int ROLLER_ID = 8;
