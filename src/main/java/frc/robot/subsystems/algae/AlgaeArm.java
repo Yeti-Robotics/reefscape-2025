@@ -1,7 +1,7 @@
-package frc.robot.subsystems.algaePivot;
+package frc.robot.subsystems.algae;
 
-import static frc.robot.subsystems.algaePivot.AlgaeConfigs.cancoderConfiguration;
-import static frc.robot.subsystems.algaePivot.AlgaeConfigs.talonFXConfiguration;
+import static frc.robot.subsystems.algae.AlgaeConfigs.cancoderConfiguration;
+import static frc.robot.subsystems.algae.AlgaeConfigs.talonFXConfiguration;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -11,6 +11,7 @@ import frc.robot.constants.Constants;
 public class AlgaeArm {
     private final TalonFX algaeArmKraken;
     final MotionMagicVoltage magicRequest;
+    public CANcoder armEncoder;
 
     public enum Position {
         LOW(0), // placeholder
@@ -30,7 +31,8 @@ public class AlgaeArm {
 
     public AlgaeArm() {
         algaeArmKraken = new TalonFX(AlgaeConfigs.ROLLER_ID, Constants.CANIVORE_BUS);
-        CANcoder armEncoder = new CANcoder(AlgaeConfigs.ROLLER_CANCODER_ID, Constants.CANIVORE_BUS);
+
+        armEncoder = new CANcoder(AlgaeConfigs.ROLLER_CANCODER_ID, Constants.CANIVORE_BUS);
 
         var armConfigurator = algaeArmKraken.getConfigurator();
 

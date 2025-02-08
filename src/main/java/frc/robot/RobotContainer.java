@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.algae.AlgaeIntake;
+import frc.robot.subsystems.algae.AlgaeArm;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
@@ -29,7 +29,7 @@ public class RobotContainer {
     CommandXboxController xboxController;
     ElevatorSubsystem elevatorSubsystem;
     Tray tray;
-    AlgaeIntake algaeIntake;
+    AlgaeArm algaeArm;
     CommandSwerveDrivetrain commandSwerveDrivetrain;
     Climber climber;
     CANcoder wheel1 = new CANcoder(1);
@@ -42,7 +42,7 @@ public class RobotContainer {
         xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         elevatorSubsystem = new ElevatorSubsystem();
         tray = new Tray();
-        algaeIntake = new AlgaeIntake();
+        algaeArm = new AlgaeArm();
         commandSwerveDrivetrain = TunerConstants.createDrivetrain();
         climber = new Climber();
         configureBindings();
@@ -61,13 +61,13 @@ public class RobotContainer {
             }
             // Stage 3
             if (wheel1.getPosition().refresh().getValueAsDouble() >= 0
-                    || wheel1.getPosition().refresh().getValueAsDouble() <= 0.01) {
+                    || wheel1.getPosition().refresh().getValueAsDouble() <= 0.005) {
                 if (wheel2.getPosition().refresh().getValueAsDouble() >= 0
-                        || wheel2.getPosition().refresh().getValueAsDouble() <= 0.01) {
+                        || wheel2.getPosition().refresh().getValueAsDouble() <= 0.005) {
                     if (wheel3.getPosition().refresh().getValueAsDouble() >= 0
-                            || wheel3.getPosition().refresh().getValueAsDouble() <= 0.01) {
+                            || wheel3.getPosition().refresh().getValueAsDouble() <= 0.005) {
                         if (wheel4.getPosition().refresh().getValueAsDouble() >= 0
-                                || wheel4.getPosition().refresh().getValueAsDouble() <= 0.01) {
+                                || wheel4.getPosition().refresh().getValueAsDouble() <= 0.005) {
                             Robot.progressBar.addProgress();
                         }
                     }
@@ -77,17 +77,17 @@ public class RobotContainer {
             }
             // Stage 4
             if (climber.climberEncoder.getPosition().refresh().getValueAsDouble() >= 0
-                    || climber.climberEncoder.getPosition().refresh().getValueAsDouble() <= 0.01) {
+                    || climber.climberEncoder.getPosition().refresh().getValueAsDouble() <= 0.005) {
                 Robot.progressBar.addProgress();
             } else {
                 Robot.progressBar.subtractProgress();
             }
-//            // Stage 5
-//            if (algaeIntake.isStowed()) {
-//                Robot.progressBar.addProgress();
-//            } else {
-//                Robot.progressBar.subtractProgress();
-//            }
+            // Stage 5
+            if (algaeArm.armEncoder.getPosition().refresh().getValueAsDouble() >= 0 || algaeArm.armEncoder.getPosition().refresh().getValueAsDouble() <= 0.005) {
+                Robot.progressBar.addProgress();
+            } else {
+                Robot.progressBar.subtractProgress();
+            }
         }
     }
 
