@@ -1,4 +1,4 @@
-package frc.robot.subsystems.algae;
+package frc.robot.subsystems.algaePivot;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.*;

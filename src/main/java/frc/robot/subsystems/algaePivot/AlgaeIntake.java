@@ -1,4 +1,4 @@
-package frc.robot.subsystems.algae;
+package frc.robot.subsystems.algaePivot;
 
 import static frc.robot.constants.Constants.*;
 

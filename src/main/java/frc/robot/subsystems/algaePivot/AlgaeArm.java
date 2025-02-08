@@ -1,7 +1,7 @@
-package frc.robot.subsystems.algae;
+package frc.robot.subsystems.algaePivot;
 
-import static frc.robot.subsystems.algae.AlgaeConfigs.cancoderConfiguration;
-import static frc.robot.subsystems.algae.AlgaeConfigs.talonFXConfiguration;
+import static frc.robot.subsystems.algaePivot.AlgaeConfigs.cancoderConfiguration;
+import static frc.robot.subsystems.algaePivot.AlgaeConfigs.talonFXConfiguration;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
