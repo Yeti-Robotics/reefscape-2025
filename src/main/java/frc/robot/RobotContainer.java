@@ -61,7 +61,7 @@ public class RobotContainer {
         joystick.a().whileTrue(coralIntake.spinClawForward());
         joystick.b().whileTrue(coralIntake.spinClawBackward());
         joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        joystick.leftTrigger().whileTrue(new ReefAimCommand(drivetrain, reefSubsystem1, reefSubsystem2, () -> -joystick.getLeftY(), () -> -joystick.getLeftX()));
+        joystick.leftTrigger().whileTrue(new ReefAimCommand(drivetrain, () -> -joystick.getLeftY(), () -> -joystick.getLeftX()));
 
     }
 
