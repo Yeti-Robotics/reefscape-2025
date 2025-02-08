@@ -15,7 +15,7 @@ import frc.robot.subsystems.coral.CoralIntake;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagConstants;
-import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
+import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -28,7 +28,8 @@ public class RobotContainer {
 
     public final CommandXboxController joystick = new CommandXboxController(1);
     final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    final PhotonAprilTagSystem reefSubsystem = new PhotonAprilTagSystem("YETICam_1", new Transform3d());
+    final LimelightAprilTagSystem reefSubsystem =
+            new LimelightAprilTagSystem("yetilime");
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
@@ -59,8 +60,13 @@ public class RobotContainer {
         joystick.a().whileTrue(coralIntake.spinClawForward());
         joystick.b().whileTrue(coralIntake.spinClawBackward());
         joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        joystick.leftTrigger().whileTrue(new ReefAimCommand(drivetrain, reefSubsystem, () -> -joystick.getLeftY(), () -> -joystick.getLeftX()));
-
+        joystick.leftTrigger()
+                .whileTrue(
+                        new ReefAimCommand(
+                                drivetrain,
+                                reefSubsystem,
+                                () -> -joystick.getLeftY(),
+                                () -> -joystick.getLeftX()));
     }
 
     /**

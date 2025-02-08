@@ -6,7 +6,6 @@ import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.AprilTagResults;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.util.LimelightHelpers;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,17 +28,26 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
         currentBestDetectionDistance = Double.POSITIVE_INFINITY;
 
         double yawPlaceholder = 0; // TODO: need to add drivetrain values
-        LimelightHelpers.SetRobotOrientation(limelightName, yawPlaceholder, yawPlaceholder, yawPlaceholder, yawPlaceholder, yawPlaceholder, yawPlaceholder);
+        LimelightHelpers.SetRobotOrientation(
+                limelightName,
+                yawPlaceholder,
+                yawPlaceholder,
+                yawPlaceholder,
+                yawPlaceholder,
+                yawPlaceholder,
+                yawPlaceholder);
         poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
 
-        LimelightHelpers.LimelightResults results = LimelightHelpers.getLatestResults(limelightName);
+        LimelightHelpers.LimelightResults results =
+                LimelightHelpers.getLatestResults(limelightName);
 
         if (!results.valid) {
             aprilTagResults = null;
             return;
         }
 
-        List<AprilTagDetection> aprilTagDetections = new ArrayList<>(results.targets_Fiducials.length);
+        List<AprilTagDetection> aprilTagDetections =
+                new ArrayList<>(results.targets_Fiducials.length);
 
         for (LimelightHelpers.LimelightTarget_Fiducial aprilTag : results.targets_Fiducials) {
             double normDistance = aprilTag.getCameraPose_TargetSpace2D().getTranslation().getNorm();
@@ -52,7 +60,11 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
             aprilTagDetections.add(mapToDetection(aprilTag));
         }
 
-        aprilTagResults = new AprilTagResults(results.timestamp_LIMELIGHT_publish, results.latency_pipeline, aprilTagDetections);
+        aprilTagResults =
+                new AprilTagResults(
+                        results.timestamp_LIMELIGHT_publish,
+                        results.latency_pipeline,
+                        aprilTagDetections);
     }
 
     @Override
@@ -68,8 +80,7 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
 
     @Override
     public Optional<AprilTagDetection> getBestDetection() {
-        return Optional.ofNullable(currentBestDetection)
-                .map(this::mapToDetection);
+        return Optional.ofNullable(currentBestDetection).map(this::mapToDetection);
     }
 
     @Override
@@ -83,6 +94,6 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
                 aprilTag.getRobotPose_FieldSpace2D(),
                 aprilTag.getTargetPose_RobotSpace2D(),
                 0 // we can trust MegaTag2, as it eliminates pose ambiguity
-        );
+                );
     }
 }
