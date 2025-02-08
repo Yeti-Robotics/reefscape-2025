@@ -13,9 +13,9 @@ public class AlgaeArm {
     final MotionMagicVoltage magicRequest;
 
     public enum Position {
-        LOW(30), // placeholder
-        MID(60), // placeholder
-        HIGH(90); // placeholder
+        LOW(0), // placeholder
+        MID(0), // placeholder
+        HIGH(0); // placeholder
 
         private final int value;
 
