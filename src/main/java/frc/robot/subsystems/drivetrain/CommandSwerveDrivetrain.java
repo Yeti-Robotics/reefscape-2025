@@ -37,6 +37,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+    RobotConfig config;
+
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -54,28 +56,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             new SwerveRequest.SysIdSwerveRotation();
     private final SwerveRequest.ApplyRobotSpeeds AutoReq = new SwerveRequest.ApplyRobotSpeeds();
 
-    RobotConfig config;
-
-    {
-        try {
-            config = RobotConfig.fromGUISettings();
-        } catch (IOException | ParseException e) {
-            throw new RuntimeException(e);
-        }
-        AutoBuilder.configure(
-                () -> this.getState().Pose,
-                this::resetPose,
-                this::getChassisSpeeds,
-                (ChassisSpeeds speeds) -> this.setControl(AutoReq.withSpeeds(speeds)),
-                new PPHolonomicDriveController(
-                        new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
-                config,
-                () -> {
-                    var alliance = DriverStation.getAlliance();
-                    return alliance.filter(value -> value == Alliance.Red).isPresent();
-                },
-                this);
-    }
 
     protected SwerveDriveKinematics m_kinematics =
             new SwerveDriveKinematics(config.moduleLocations);
@@ -162,6 +142,27 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         super(drivetrainConstants, modules);
         if (Utils.isSimulation()) {
             startSimThread();
+        }
+
+        {
+            try {
+                config = RobotConfig.fromGUISettings();
+            } catch (IOException | ParseException e) {
+                throw new RuntimeException(e);
+            }
+            AutoBuilder.configure(
+                    () -> this.getState().Pose,
+                    this::resetPose,
+                    this::getChassisSpeeds,
+                    (ChassisSpeeds speeds) -> this.setControl(AutoReq.withSpeeds(speeds)),
+                    new PPHolonomicDriveController(
+                            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+                    config,
+                    () -> {
+                        var alliance = DriverStation.getAlliance();
+                        return alliance.filter(value -> value == Alliance.Red).isPresent();
+                    },
+                    this);
         }
     }
 

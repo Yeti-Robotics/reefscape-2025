@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.constants;
 
 import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.subsystems.drivetrain.TunerConstants;
