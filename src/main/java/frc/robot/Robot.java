@@ -51,8 +51,8 @@ public class Robot extends TimedRobot {
                         .withTranslation(
                                 Units.inchesToMeters(-8),
                                 Units.inchesToMeters(7),
-                                Units.inchesToMeters(13.5))
-                        .withRotation(0, Math.toRadians(-15), Math.toRadians(-90))
+                                Units.inchesToMeters(13.5 + 19))
+                        .withRotation(0, Math.toRadians(35), Math.toRadians(-90))
                         .build());
         tagSimulator.addCamera(
                 AprilTagCamSimBuilder.newCamera()
