@@ -144,26 +144,24 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
 
-        {
-            try {
-                config = RobotConfig.fromGUISettings();
-            } catch (IOException | ParseException e) {
-                throw new RuntimeException(e);
-            }
-            AutoBuilder.configure(
-                    () -> this.getState().Pose,
-                    this::resetPose,
-                    this::getChassisSpeeds,
-                    (ChassisSpeeds speeds) -> this.setControl(AutoReq.withSpeeds(speeds)),
-                    new PPHolonomicDriveController(
-                            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
-                    config,
-                    () -> {
-                        var alliance = DriverStation.getAlliance();
-                        return alliance.filter(value -> value == Alliance.Red).isPresent();
-                    },
-                    this);
+        try {
+            config = RobotConfig.fromGUISettings();
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
         }
+        AutoBuilder.configure(
+                () -> this.getState().Pose,
+                this::resetPose,
+                this::getChassisSpeeds,
+                (ChassisSpeeds speeds) -> this.setControl(AutoReq.withSpeeds(speeds)),
+                new PPHolonomicDriveController(
+                        new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+                config,
+                () -> {
+                    var alliance = DriverStation.getAlliance();
+                    return alliance.filter(value -> value == Alliance.Red).isPresent();
+                },
+                this);
     }
 
     /**
