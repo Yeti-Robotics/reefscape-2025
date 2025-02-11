@@ -7,6 +7,9 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.coral.CoralIntake;
@@ -29,10 +32,15 @@ public class RobotContainer {
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
+    private final SendableChooser<Command> autoChooser;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+
         configureBindings();
+
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     private void configureBindings() {
@@ -53,7 +61,6 @@ public class RobotContainer {
         joystick.a().whileTrue(coralIntake.spinClawForward());
         joystick.b().whileTrue(coralIntake.spinClawBackward());
         joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-
     }
 
     /**
@@ -62,6 +69,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return null;
+        return autoChooser.getSelected();
     }
 }
