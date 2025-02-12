@@ -50,7 +50,7 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(
                         () ->
-                                drive.withVelocityY(
+                                drive.withVelocityX(
                                                 -xboxController.getLeftY()
                                                         * TunerConstants.kSpeedAt12Volts
                                                                 .magnitude())
