@@ -4,6 +4,8 @@ import static frc.robot.constants.Constants.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -15,8 +17,8 @@ public class AlgaeIntake extends SubsystemBase {
 
         var rollerConfigurator = roller.getConfigurator();
         var configs = new TalonFXConfiguration();
-        configs.MotorOutput.Inverted = AlgaeConfigs.ROLLER_INVERSION;
-        configs.MotorOutput.NeutralMode = AlgaeConfigs.ROLLER_NEUTRAL_MODE;
+        configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         rollerConfigurator.apply(configs);
     }
 

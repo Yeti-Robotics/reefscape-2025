@@ -7,9 +7,10 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 
-public class Arm {
+public class Arm extends SubsystemBase {
     private final TalonFX armKraken;
     final MotionMagicVoltage magicRequest;
 
