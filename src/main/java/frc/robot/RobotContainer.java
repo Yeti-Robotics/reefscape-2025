@@ -5,11 +5,14 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
+import com.ctre.phoenix6.swerve.SwerveModule;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drivetrain.TunerConstants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,11 +22,18 @@ import frc.robot.constants.Constants;
  */
 public class RobotContainer {
 
-    XboxController xboxController;
+    public final CommandXboxController xboxController;
+    final CommandSwerveDrivetrain drivetrain;
+    private final SwerveRequest.FieldCentric drive =
+            new SwerveRequest.FieldCentric()
+                    .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
+                    .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
+                    .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        xboxController = new XboxController(Constants.XBOX_CONTROLLER_PORT);
+        xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
+        drivetrain = TunerConstants.createDrivetrain();
         configureBindings();
     }
 
@@ -36,7 +46,23 @@ public class RobotContainer {
      * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
      * joysticks}.
      */
-    private void configureBindings() {}
+    private void configureBindings() {
+        drivetrain.setDefaultCommand(
+                drivetrain.applyRequest(
+                        () ->
+                                drive.withVelocityX(
+                                                -xboxController.getLeftY()
+                                                        * TunerConstants.kSpeedAt12Volts
+                                                                .magnitude())
+                                        .withVelocityY(
+                                                -xboxController.getLeftX()
+                                                        * TunerConstants.kSpeedAt12Volts
+                                                                .magnitude())
+                                        .withRotationalRate(
+                                                -xboxController.getRightX()
+                                                        * TunerConstants.MaFxAngularRate)));
+        xboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
