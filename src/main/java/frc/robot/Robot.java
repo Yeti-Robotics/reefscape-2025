@@ -5,9 +5,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.util.sim.MechanismSimManager;
+import frc.robot.util.sim.PhysicsSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -29,6 +33,8 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
+        DataLogManager.start();
+        DriverStation.startDataLog(DataLogManager.getLog());
     }
 
     /**
@@ -102,5 +108,8 @@ public class Robot extends TimedRobot {
 
     /** This method is called periodically whilst in simulation. */
     @Override
-    public void simulationPeriodic() {}
+    public void simulationPeriodic() {
+        PhysicsSim.getInstance().run();
+        MechanismSimManager.updateMechanisms();
+    }
 }
