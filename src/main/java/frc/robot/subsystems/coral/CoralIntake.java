@@ -21,7 +21,6 @@ public class CoralIntake extends SubsystemBase {
     public final Trigger stopTrigger;
     public final Trigger trayOccupiedTrigger;
 
-
     public enum CoralState {
         ROLL_OUT,
         ROLL_IN,
@@ -58,7 +57,6 @@ public class CoralIntake extends SubsystemBase {
                 break;
         }
     }
-
 
     private boolean readyToStop() {
         return isCoralInIntake() && coralIntakeState.getState() == CoralState.ROLL_IN

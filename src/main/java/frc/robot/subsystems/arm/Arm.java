@@ -1,39 +1,62 @@
 package frc.robot.subsystems.arm;
 
-import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import static frc.robot.subsystems.arm.ArmConfig.cancoderConfiguration;
+import static frc.robot.subsystems.arm.ArmConfig.talonFXConfiguration;
+
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.ctre.phoenix6.signals.*;
 import frc.robot.constants.Constants;
-import frc.robot.util.StateManager;
 
-public class Arm extends SubsystemBase {
-    private final TalonFX armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS);
-    private final MotionMagicTorqueCurrentFOC motionRequest = new MotionMagicTorqueCurrentFOC(0);
+public class Arm {
+    private final TalonFX armKraken;
+    final MotionMagicVoltage magicRequest;
 
-    public StateManager<ArmPositions> armState = new StateManager<>(ArmPositions.STOWED);
+    public enum Position {
+        LOW(30), // placeholder
+        MID(60), // placeholder
+        HIGH(90); // placeholder
 
-    @Override
-    public void periodic() {
-        switch (armState.getState()) {
-            case IDLE:
-                break;
-            default:
-                moveToPosition(armState.getState());
-                armState.transitionTo(ArmPositions.IDLE);
-                armState.finishTransition();
+        private final int value;
+
+        Position(final int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
         }
     }
 
     public Arm() {
-        armKraken.getConfigurator().apply(ArmConfig.armMotorConfig);
+        armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS);
         CANcoder armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.CANIVORE_BUS);
 
-        armEncoder.getConfigurator().apply(ArmConfig.armCanCoderConfig);
+        var armConfigurator = armKraken.getConfigurator();
+
+        magicRequest = new MotionMagicVoltage(0);
+
+        armConfigurator.apply(talonFXConfiguration);
+
+        var armEncoderConfigurator = armEncoder.getConfigurator();
+
+        armEncoderConfigurator.apply(cancoderConfiguration);
     }
 
-    public Command moveToPosition(ArmPositions position) {
-        return runOnce(() -> armKraken.setControl(motionRequest.withPosition(position.getAngle())));
+    public void moveUp(double speed) {
+        armKraken.set(Math.abs(speed));
+    }
+
+    private void moveDown(double speed) {
+        armKraken.set(-Math.abs(speed));
+    }
+
+    public void stop() {
+        armKraken.stopMotor();
+    }
+
+    public void target(Position position) {
+        armKraken.setControl(magicRequest.withPosition(position.getValue()));
     }
 }

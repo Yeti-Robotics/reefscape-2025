@@ -9,7 +9,8 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.coral.CoralIntake;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 
@@ -20,10 +21,9 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-    public CoralIntake coralIntake = new CoralIntake();
 
-    public final CommandXboxController joystick = new CommandXboxController(1);
-    final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final CommandXboxController xboxController;
+    final CommandSwerveDrivetrain drivetrain;
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
@@ -32,28 +32,43 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+        xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
+        drivetrain = TunerConstants.createDrivetrain();
         configureBindings();
     }
 
+    /**
+     * Use this method to define your trigger->command mappings. Triggers can be created via the
+     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+     * predicate, or via the named factories in {@link
+     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
+     * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+     * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+     * joysticks}.
+     */
     private void configureBindings() {
         drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(
                         () ->
-                                drive.withVelocityY(
-                                                joystick.getLeftY()
+                                drive.withVelocityX(
+                                                -xboxController.getLeftY()
                                                         * TunerConstants.kSpeedAt12Volts
                                                                 .magnitude())
-                                        .withVelocityX(
-                                                -joystick.getLeftX()
+                                        .withVelocityY(
+                                                -xboxController.getLeftX()
                                                         * TunerConstants.kSpeedAt12Volts
                                                                 .magnitude())
                                         .withRotationalRate(
-                                                -joystick.getRightX()
+                                                -xboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
-        joystick.b().whileTrue(coralIntake.spinClawBackward());
-        joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        xboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     }
 
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
     public Command getAutonomousCommand() {
         return null;
     }
