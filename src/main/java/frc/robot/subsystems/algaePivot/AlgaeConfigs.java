@@ -39,6 +39,21 @@ class AlgaeConfigs {
                                     .withNeutralMode(NeutralModeValue.Coast))
                     .withSlot0(SLOT_0_CONFIGS);
 
+    static final TalonFXConfiguration configs =
+            new TalonFXConfiguration()
+                    .withFeedback(
+                            new FeedbackConfigs()
+                                    .withFeedbackRemoteSensorID(0)
+                                    .withFeedbackSensorSource(
+                                            FeedbackSensorSourceValue.FusedCANcoder)
+                                    .withSensorToMechanismRatio(GEAR_RATIO) // alphabot
+                                    .withRotorToSensorRatio(1)) // alphabot
+                    .withMotorOutput(
+                            new MotorOutputConfigs()
+                                    .withInverted(InvertedValue.Clockwise_Positive)
+                                    .withNeutralMode(NeutralModeValue.Coast))
+                    .withSlot0(SLOT_0_CONFIGS);
+
     static final MotionMagicConfigs motionMagicConfigs =
             talonFXConfiguration
                     .MotionMagic

@@ -6,6 +6,7 @@ import static frc.robot.subsystems.algaePivot.AlgaeConfigs.talonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.arm.Arm;
@@ -45,19 +46,19 @@ public class AlgaeArm extends SubsystemBase {
         armEncoderConfigurator.apply(cancoderConfiguration);
     }
 
-    public void moveUp(double speed) {
-        algaeArmKraken.set(Math.abs(speed));
-    }
-
-    private void moveDown(double speed) {
-        algaeArmKraken.set(-Math.abs(speed));
-    }
-
     public void stop() {
         algaeArmKraken.stopMotor();
     }
 
     public void target(Arm.Position position) {
         algaeArmKraken.setControl(magicRequest.withPosition(position.getValue()));
+    }
+
+    private void setAlgaeArmKrakenSpeed(double speed) {
+        algaeArmKraken.set(speed);
+    }
+
+    public Command spinRoller(double speed) {
+        return startEnd(() -> setAlgaeArmKrakenSpeed(speed), this::stop);
     }
 }

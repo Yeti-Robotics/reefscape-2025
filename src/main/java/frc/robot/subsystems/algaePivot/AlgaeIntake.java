@@ -16,10 +16,7 @@ public class AlgaeIntake extends SubsystemBase {
         roller = new TalonFX(AlgaeConfigs.ROLLER_ID, RIO_BUS);
 
         var rollerConfigurator = roller.getConfigurator();
-        var configs = new TalonFXConfiguration();
-        configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-        configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        rollerConfigurator.apply(configs);
+        rollerConfigurator.apply(AlgaeConfigs.configs);
     }
 
     private void setRollerSpeed(double speed) {
