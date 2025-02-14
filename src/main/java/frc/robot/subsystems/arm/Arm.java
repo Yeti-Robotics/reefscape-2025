@@ -30,6 +30,11 @@ public class Arm extends SubsystemBase {
         }
     }
 
+    public enum Direction {
+        UP,
+        DOWN
+    }
+
     public Arm() {
         armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS);
         CANcoder armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.CANIVORE_BUS);

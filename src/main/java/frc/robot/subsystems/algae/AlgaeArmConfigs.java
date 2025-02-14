@@ -4,9 +4,6 @@ import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.*;
 
 class AlgaeArmConfigs {
-    static final int ROLLER_ID = 8;
-    static final int ROLLER_CANCODER_ID = 5;
-
     static final int ALGAE_ARM_KRAKEN_ID = 0; // placeholder
     static final int ALGAE_ARM_CANCODER_ID = 0; // placeholder
     static final double MAGNET_OFFSET = 0; // placeholder
@@ -33,21 +30,6 @@ class AlgaeArmConfigs {
                                             FeedbackSensorSourceValue.FusedCANcoder)
                                     .withSensorToMechanismRatio(GEAR_RATIO) // alphabot
                                     .withRotorToSensorRatio(0)) // placeholder alphabot
-                    .withMotorOutput(
-                            new MotorOutputConfigs()
-                                    .withInverted(InvertedValue.Clockwise_Positive)
-                                    .withNeutralMode(NeutralModeValue.Coast))
-                    .withSlot0(SLOT_0_CONFIGS);
-
-    static final TalonFXConfiguration configs =
-            new TalonFXConfiguration()
-                    .withFeedback(
-                            new FeedbackConfigs()
-                                    .withFeedbackRemoteSensorID(0)
-                                    .withFeedbackSensorSource(
-                                            FeedbackSensorSourceValue.FusedCANcoder)
-                                    .withSensorToMechanismRatio(GEAR_RATIO) // alphabot
-                                    .withRotorToSensorRatio(1)) // alphabot
                     .withMotorOutput(
                             new MotorOutputConfigs()
                                     .withInverted(InvertedValue.Clockwise_Positive)

@@ -10,10 +10,10 @@ public class AlgaeRoller extends SubsystemBase {
     private final TalonFX roller;
 
     public AlgaeRoller() {
-        roller = new TalonFX(AlgaeArmConfigs.ROLLER_ID, RIO_BUS);
+        roller = new TalonFX(AlgaeRollerConfigs.ROLLER_ID, RIO_BUS);
 
         var rollerConfigurator = roller.getConfigurator();
-        rollerConfigurator.apply(AlgaeArmConfigs.configs);
+        rollerConfigurator.apply(AlgaeRollerConfigs.configs);
     }
 
     private void setRollerSpeed(double speed) {
