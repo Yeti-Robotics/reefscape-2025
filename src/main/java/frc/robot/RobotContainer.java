@@ -66,6 +66,7 @@ public class RobotContainer {
                                                         * TunerConstants.MaFxAngularRate)));
         xboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
         xboxController.b().whileTrue(elevatorSubsystem.tuning(16.00));
+        xboxController.a().whileTrue(elevatorSubsystem.tuning(-16.00));
     }
 
     /**

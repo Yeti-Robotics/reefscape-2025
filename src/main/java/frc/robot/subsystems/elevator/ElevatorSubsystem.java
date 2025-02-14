@@ -1,7 +1,8 @@
 package frc.robot.subsystems.elevator;
 
 import static frc.robot.constants.Constants.RIO_BUS;
-import static frc.robot.subsystems.elevator.ElevatorConfigs.talonFXConfigs;
+import static frc.robot.subsystems.elevator.ElevatorConfigs.primaryTalonFXConfigs;
+import static frc.robot.subsystems.elevator.ElevatorConfigs.secondaryTalonFXConfigs;
 
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -21,9 +22,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         primaryElevatorMotor = new TalonFX(ElevatorConfigs.primaryElevatorMotorID, RIO_BUS);
         secondaryElevatorMotor = new TalonFX(ElevatorConfigs.secondaryElevatorMotorID, RIO_BUS);
 
-        primaryElevatorMotor.getConfigurator().apply(talonFXConfigs);
+        primaryElevatorMotor.getConfigurator().apply(primaryTalonFXConfigs);
+        secondaryElevatorMotor.getConfigurator().apply(secondaryTalonFXConfigs);
         secondaryElevatorMotor.setControl(
-                new Follower(ElevatorConfigs.primaryElevatorMotorID, false));
+                new Follower(ElevatorConfigs.primaryElevatorMotorID, true));
 
         magSwitch = new DigitalInput(ElevatorConfigs.magSwitchID);
         magicRequest = new MotionMagicVoltage(0);
