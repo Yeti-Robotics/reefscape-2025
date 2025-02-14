@@ -1,14 +1,14 @@
-package frc.robot.subsystems.algaePivot;
+package frc.robot.subsystems.algae;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.*;
 
-class AlgaeConfigs {
+class AlgaeArmConfigs {
     static final int ROLLER_ID = 8;
     static final int ROLLER_CANCODER_ID = 5;
 
-    static final int ALGAE_ARM_KRAKEN_ID = 0; //placeholder
-    static final int ALGAE_ARM_CANCODER_ID = 0; //placeholder
+    static final int ALGAE_ARM_KRAKEN_ID = 0; // placeholder
+    static final int ALGAE_ARM_CANCODER_ID = 0; // placeholder
     static final double MAGNET_OFFSET = 0; // placeholder
     static final double GEAR_RATIO = 0; // placeholder
 
@@ -69,8 +69,8 @@ class AlgaeConfigs {
                                             SensorDirectionValue.CounterClockwise_Positive)
                                     .withMagnetOffset(MAGNET_OFFSET));
 
-    //static final InvertedValue ROLLER_INVERSION = InvertedValue.Clockwise_Positive;
-    //static final NeutralModeValue ROLLER_NEUTRAL_MODE = NeutralModeValue.Coast;
+    // static final InvertedValue ROLLER_INVERSION = InvertedValue.Clockwise_Positive;
+    // static final NeutralModeValue ROLLER_NEUTRAL_MODE = NeutralModeValue.Coast;
     static final double POSITION_STATUS_FRAME = 0.05;
     static final double VELOCITY_STATUS_FRAME = 0.01;
 }

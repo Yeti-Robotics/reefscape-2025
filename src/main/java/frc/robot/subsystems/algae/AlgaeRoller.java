@@ -2,7 +2,6 @@ package frc.robot.subsystems.algae;
 
 import static frc.robot.constants.Constants.*;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,13 +10,10 @@ public class AlgaeRoller extends SubsystemBase {
     private final TalonFX roller;
 
     public AlgaeRoller() {
-        roller = new TalonFX(AlgaeRollerConfigs.ROLLER_ID, RIO_BUS);
+        roller = new TalonFX(AlgaeArmConfigs.ROLLER_ID, RIO_BUS);
 
         var rollerConfigurator = roller.getConfigurator();
-        var configs = new TalonFXConfiguration();
-        configs.MotorOutput.Inverted = AlgaeRollerConfigs.ROLLER_INVERSION;
-        configs.MotorOutput.NeutralMode = AlgaeRollerConfigs.ROLLER_NEUTRAL_MODE;
-        rollerConfigurator.apply(configs);
+        rollerConfigurator.apply(AlgaeArmConfigs.configs);
     }
 
     private void setRollerSpeed(double speed) {
