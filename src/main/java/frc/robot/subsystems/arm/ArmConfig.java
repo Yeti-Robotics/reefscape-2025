@@ -29,4 +29,6 @@ class ArmConfig {
             .withMagnetSensor(new MagnetSensorConfigs()
                     .withMagnetOffset(0)
                     .withSensorDirection(SensorDirectionValue.Clockwise_Positive));
+
+    static final double ANGLE_TOLERANCE = 0.001;
 }

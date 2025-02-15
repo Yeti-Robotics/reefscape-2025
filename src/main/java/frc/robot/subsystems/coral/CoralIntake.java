@@ -22,7 +22,7 @@ public class CoralIntake extends SubsystemBase {
         OFF
     }
 
-    private final StateManager<CoralState> coralIntakeState = new StateManager<CoralState>(CoralState.OFF);
+    private final StateManager<CoralState> coralIntakeState = new StateManager<>(CoralState.OFF, this);
     // replace this with motion magic velo control
     private final DutyCycleOut dutyCycleReq = new DutyCycleOut(0);
     private final NeutralOut stopRequest = new NeutralOut();
@@ -41,7 +41,9 @@ public class CoralIntake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (coralIntakeState.isTransitioning()) {
+        if (coralIntakeState.isTransitioning() && !coralIntakeState.transitionStarted()) {
+            coralIntakeState.startTransition();
+
             StatusCode code = switch (coralIntakeState.transitioningTo().orElse(CoralState.OFF)) {
                 case ROLL_IN -> claw.setControl(dutyCycleReq.withOutput(CoralConfigs.FORWARD_SPEED));
                 case ROLL_OUT -> claw.setControl(dutyCycleReq.withOutput(CoralConfigs.BACKWARD_SPEED));
