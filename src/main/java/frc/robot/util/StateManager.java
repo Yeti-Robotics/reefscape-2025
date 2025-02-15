@@ -13,11 +13,6 @@ public class StateManager<T> {
 
     public StateManager() {}
 
-    public StateManager<T> withDefaultState(T defaultState) {
-        this.currentState = defaultState;
-        return this;
-    }
-
     public T getCurrentState() {
         return currentState;
     }
@@ -32,6 +27,10 @@ public class StateManager<T> {
 
     public void transitionTo(T wantedState) {
         this.wantedState = wantedState;
+    }
+
+    public void failTransition() {
+        wantedState = null;
     }
 
     public void finishTransition() {
