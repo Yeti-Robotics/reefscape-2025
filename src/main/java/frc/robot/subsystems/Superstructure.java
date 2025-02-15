@@ -4,10 +4,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.coral.CoralIntake;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 public class Superstructure extends SubsystemBase {
     private CoralIntake coralIntake;
     private Arm arm;
+    private ElevatorSubsystem elevator;
 
     public enum SuperState {
         IDLE,
@@ -26,9 +28,10 @@ public class Superstructure extends SubsystemBase {
 
     private SuperState superState = SuperState.IDLE;
 
-    public Superstructure(CoralIntake coralIntake, Arm arm) {
+    public Superstructure(CoralIntake coralIntake, Arm arm, ElevatorSubsystem elevator) {
         this.coralIntake = coralIntake;
         this.arm = arm;
+        this.elevator = elevator;
 
         new Trigger(this::occupiedIntake).whileTrue(coralIntake.spinClawForward());
     }
