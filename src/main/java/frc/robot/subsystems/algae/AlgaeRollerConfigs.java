@@ -16,16 +16,16 @@ class AlgaeRollerConfigs {
     static final NeutralModeValue ROLLER_NEUTRAL_MODE = NeutralModeValue.Coast;
     static final double POSITION_STATUS_FRAME = 0.05;
     static final double VELOCITY_STATUS_FRAME = 0.01;
-    static final double GEAR_RATIO = 0; // placeholder
+    static final double GEAR_RATIO = 1;
 
     static final Slot0Configs SLOT_0_CONFIGS =
             new Slot0Configs()
-                    .withKP(0) // placeholder alphabot
-                    .withKI(0) // placeholder alphabot
-                    .withKD(0) // placeholder alphabot
-                    .withKG(0) // placeholder alphabot
-                    .withKV(0) // placeholder alphabot
-                    .withKA(0) // placeholder alphabot
+                    .withKP(0) // alphabot
+                    .withKI(0) // alphabot
+                    .withKD(0) // alphabot
+                    .withKG(0) // alphabot
+                    .withKV(0) // alphabot
+                    .withKA(0) // alphabot
                     .withGravityType(GravityTypeValue.Arm_Cosine);
 
     static final TalonFXConfiguration configs =

@@ -9,27 +9,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.arm.Arm;
 
 public class AlgaeArm extends SubsystemBase {
     private final TalonFX algaeArmKraken;
     final MotionMagicVoltage magicRequest;
-
-    public enum Position {
-        LOW(0), // placeholder
-        MID(0), // placeholder
-        HIGH(0); // placeholder
-
-        private final int value;
-
-        Position(final int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
-    }
 
     public AlgaeArm() {
         algaeArmKraken = new TalonFX(AlgaeArmConfigs.ALGAE_ARM_KRAKEN_ID, Constants.CANIVORE_BUS);
@@ -51,7 +34,7 @@ public class AlgaeArm extends SubsystemBase {
         algaeArmKraken.stopMotor();
     }
 
-    public void target(Arm.Position position) {
+    public void target(AlgaePosition.Position position) {
         algaeArmKraken.setControl(magicRequest.withPosition(position.getValue()));
     }
 
