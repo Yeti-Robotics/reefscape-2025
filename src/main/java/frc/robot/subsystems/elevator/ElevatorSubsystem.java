@@ -6,9 +6,12 @@ import static frc.robot.subsystems.elevator.ElevatorConfigs.talonFXConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+@Logged
 public class ElevatorSubsystem extends SubsystemBase {
     private final TalonFX primaryElevatorMotor;
     private final TalonFX secondaryElevatorMotor;

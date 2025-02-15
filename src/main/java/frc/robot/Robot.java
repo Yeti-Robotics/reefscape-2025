@@ -5,6 +5,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.epilogue.Epilogue;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -19,6 +21,7 @@ import frc.robot.util.sim.PhysicsSim;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
+@Logged
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
 
@@ -35,6 +38,7 @@ public class Robot extends TimedRobot {
         robotContainer = new RobotContainer();
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());
+        Epilogue.bind(this);
     }
 
     /**
