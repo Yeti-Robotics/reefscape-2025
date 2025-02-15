@@ -7,14 +7,16 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class AlgaeIntake extends SubsystemBase {
-    private final TalonFX roller = new TalonFX(AlgaeConfigs.ROLLER_ID, RIO_BUS);
+public class AlgaeRoller extends SubsystemBase {
+    private final TalonFX roller;
 
-    public AlgaeIntake() {
+    public AlgaeRoller() {
+        roller = new TalonFX(AlgaeRollerConfigs.ROLLER_ID, RIO_BUS);
+
         var rollerConfigurator = roller.getConfigurator();
         var configs = new TalonFXConfiguration();
-        configs.MotorOutput.Inverted = AlgaeConfigs.ROLLER_INVERSION;
-        configs.MotorOutput.NeutralMode = AlgaeConfigs.ROLLER_NEUTRAL_MODE;
+        configs.MotorOutput.Inverted = AlgaeRollerConfigs.ROLLER_INVERSION;
+        configs.MotorOutput.NeutralMode = AlgaeRollerConfigs.ROLLER_NEUTRAL_MODE;
         rollerConfigurator.apply(configs);
     }
 
