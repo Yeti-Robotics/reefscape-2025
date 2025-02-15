@@ -7,27 +7,17 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.util.StateManager;
 
-public class Arm {
+public class Arm extends SubsystemBase {
     private final TalonFX armKraken;
     final MotionMagicVoltage magicRequest;
 
-    public enum Position {
-        LOW(30), // placeholder
-        MID(60), // placeholder
-        HIGH(90); // placeholder
+    public StateManager<ArmPositions> armState = new StateManager<>(ArmPositions.STOWED);
 
-        private final int value;
-
-        Position(final int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
-    }
 
     public Arm() {
         armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS);
@@ -44,6 +34,16 @@ public class Arm {
         armEncoderConfigurator.apply(cancoderConfiguration);
     }
 
+    @Override
+    public void periodic() {
+        ArmPositions positions = armState.getState();
+        ArmPositions targetPosition = armState.getTargetState();
+        // if i am transitioning to a new state, set the target position
+        if (armState.isTransitioning()) {
+            target(targetPosition);
+        }
+    }
+
     public void moveUp(double speed) {
         armKraken.set(Math.abs(speed));
     }
@@ -56,7 +56,11 @@ public class Arm {
         armKraken.stopMotor();
     }
 
-    public void target(Position position) {
-        armKraken.setControl(magicRequest.withPosition(position.getValue()));
+    public void target(ArmPositions position) {
+        armKraken.setControl(magicRequest.withPosition(position.getAngle()));
+    }
+
+    public Command moveTo(ArmPositions targetPosition){
+        return runOnce(() -> armState.transitionTo(targetPosition));
     }
 }
