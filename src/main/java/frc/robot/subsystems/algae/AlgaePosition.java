@@ -1,19 +1,16 @@
 package frc.robot.subsystems.algae;
 
-public class AlgaePosition {
-    public enum Position {
-        LOW(0),
-        MID(0),
-        HIGH(0);
+public enum AlgaePosition {
+    LOW(0),
+    MID(0),
+    HIGH(0);
+    private int value;
 
-        private final int value;
+    AlgaePosition(int value) {
+        this.value = value;
+    }
 
-        Position(final int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
+    public int getValue() {
+        return value;
     }
 }

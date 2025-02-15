@@ -34,7 +34,7 @@ public class AlgaeArm extends SubsystemBase {
         algaeArmKraken.stopMotor();
     }
 
-    public void target(AlgaePosition.Position position) {
+    public void target(AlgaePosition position) {
         algaeArmKraken.setControl(magicRequest.withPosition(position.getValue()));
     }
 
