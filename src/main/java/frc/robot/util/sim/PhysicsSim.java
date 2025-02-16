@@ -1,12 +1,14 @@
 package frc.robot.util.sim;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import java.util.ArrayList;
 
 /** Manages physics simulation for CTRE products. */
 public class PhysicsSim {
     private static final PhysicsSim sim = new PhysicsSim();
+    private final ArrayList<SimProfile> simProfiles = new ArrayList<>();
 
     /** Gets the robot simulator instance. */
     public static PhysicsSim getInstance() {
@@ -22,19 +24,24 @@ public class PhysicsSim {
     public void addTalonFX(TalonFX talonFX, final double rotorInertia) {
         if (talonFX != null) {
             TalonFXSimProfile simTalonFX = new TalonFXSimProfile(talonFX, rotorInertia);
-            _simProfiles.add(simTalonFX);
+            simProfiles.add(simTalonFX);
+        }
+    }
+
+    public void addTalonFX(TalonFX talonFX, final double rotorInertia, CANcoder cancoder) {
+        if (talonFX != null && cancoder != null) {
+            TalonFXSimProfile simTalonFX = new TalonFXSimProfile(talonFX, rotorInertia, cancoder);
+            simProfiles.add(simTalonFX);
         }
     }
 
     /** Runs the simulator: - enable the robot - simulate sensors */
     public void run() {
         // Simulate devices
-        for (SimProfile simProfile : _simProfiles) {
+        for (SimProfile simProfile : simProfiles) {
             simProfile.run();
         }
     }
-
-    private final ArrayList<SimProfile> _simProfiles = new ArrayList<SimProfile>();
 
     /** Holds information about a simulated device. */
     static class SimProfile {

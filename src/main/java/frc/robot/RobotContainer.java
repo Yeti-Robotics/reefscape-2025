@@ -16,11 +16,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -44,12 +48,20 @@ public class RobotContainer {
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
+    private final Joystick joystick = new Joystick(0);
+    Mechanism2d elevatorArmMech =
+            new Mechanism2d(Units.inchesToMeters(30), Units.inchesToMeters(30));
+    private MechanismLigament2d liftLigament;
+    private MechanismLigament2d armLigament;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
+        elevatorSubsystem = new ElevatorSubsystem();
+        arm = new Arm();
         configureBindings();
+        assembleMechanisms();
     }
 
     /**
@@ -77,6 +89,34 @@ public class RobotContainer {
                                                 -xboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
         xboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        new JoystickButton(joystick, 1).whileTrue(elevatorSubsystem.raiseLift());
+        new JoystickButton(joystick, 2).whileTrue(elevatorSubsystem.lowerLift());
+        new JoystickButton(joystick, 3).whileTrue(arm.raiseArm());
+        new JoystickButton(joystick, 4).whileTrue(arm.lowerArm());
+    }
+
+    private void assembleMechanisms() {
+        liftLigament =
+                elevatorArmMech
+                        .getRoot("startPoint", Units.inchesToMeters(10), Units.inchesToMeters(4))
+                        .append(
+                                new MechanismLigament2d(
+                                        "lift",
+                                        Units.feetToMeters(1),
+                                        90,
+                                        6,
+                                        new Color8Bit(Color.kRed)));
+        armLigament =
+                liftLigament.append(
+                        new MechanismLigament2d(
+                                "arm", Units.inchesToMeters(12), 0, 6, new Color8Bit(Color.kBlue)));
+    }
+
+    public void updateMechanisms() {
+        liftLigament.setLength(elevatorSubsystem.update());
+        armLigament.setAngle(arm.update());
+
+        SmartDashboard.putData("Mechanisms", elevatorArmMech);
     }
 
     /**

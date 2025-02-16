@@ -9,10 +9,14 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
+import frc.robot.util.sim.PhysicsSim;
+import frc.robot.util.sim.Simulatable;
 
 @Logged
-public class ElevatorSubsystem extends SubsystemBase {
+public class ElevatorSubsystem extends SubsystemBase implements Simulatable {
     private final TalonFX primaryElevatorMotor;
     private final TalonFX secondaryElevatorMotor;
     private final DigitalInput magSwitch;
@@ -28,10 +32,19 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         magSwitch = new DigitalInput(ElevatorConfigs.magSwitchID);
         magicRequest = new MotionMagicVoltage(0);
+
+        if (Robot.isSimulation()) {
+            PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor, 0.001);
+            PhysicsSim.getInstance().addTalonFX(secondaryElevatorMotor, 0.001);
+        }
     }
 
     public void setPosition(ElevatorPosition position) {
         primaryElevatorMotor.setControl(magicRequest.withPosition(position.getHeight()));
+    }
+
+    public void setPosition(double setpoint) {
+        primaryElevatorMotor.setControl(magicRequest.withPosition(setpoint));
     }
 
     public void stop() {
@@ -42,8 +55,16 @@ public class ElevatorSubsystem extends SubsystemBase {
         return magSwitch.get();
     }
 
+    public Command raiseLift() {
+        return startEnd(() -> primaryElevatorMotor.set(0.5), this::stop);
+    }
+
+    public Command lowerLift() {
+        return startEnd(() -> primaryElevatorMotor.set(-0.5), this::stop);
+    }
+
     @Override
-    public void periodic() {
-        // Update logic if needed
+    public double update() {
+        return Units.inchesToMeters(primaryElevatorMotor.getPosition().getValueAsDouble());
     }
 }

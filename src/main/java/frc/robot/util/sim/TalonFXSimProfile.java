@@ -1,6 +1,8 @@
 package frc.robot.util.sim;
 
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -9,11 +11,12 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 /** Holds information about a simulated TalonFX. */
 class TalonFXSimProfile extends PhysicsSim.SimProfile {
-    private static final double kMotorResistance =
+    private static final double MOTOR_RESISTANCE =
             0.002; // Assume 2mOhm resistance for voltage drop calculation
 
-    private final DCMotorSim _motorSim;
-    private final TalonFXSimState _talonFXSim;
+    private final DCMotorSim motorSim;
+    private final TalonFXSimState talonFXSim;
+    private CANcoderSimState cancoderSimState;
 
     /**
      * Creates a new simulation profile for a TalonFX device.
@@ -23,10 +26,15 @@ class TalonFXSimProfile extends PhysicsSim.SimProfile {
      */
     public TalonFXSimProfile(final TalonFX talonFX, final double rotorInertia) {
         var gearbox = DCMotor.getKrakenX60Foc(1);
-        this._motorSim =
+        this.motorSim =
                 new DCMotorSim(
                         LinearSystemId.createDCMotorSystem(gearbox, rotorInertia, 1.0), gearbox);
-        this._talonFXSim = talonFX.getSimState();
+        this.talonFXSim = talonFX.getSimState();
+    }
+
+    public TalonFXSimProfile(final TalonFX talonFX, final double rotorInertia, CANcoder cancoder) {
+        this(talonFX, rotorInertia);
+        cancoderSimState = cancoder.getSimState();
     }
 
     /**
@@ -39,18 +47,22 @@ class TalonFXSimProfile extends PhysicsSim.SimProfile {
     public void run() {
         /// DEVICE SPEED SIMULATION
 
-        _motorSim.setInputVoltage(_talonFXSim.getMotorVoltage());
+        motorSim.setInputVoltage(talonFXSim.getMotorVoltage());
 
-        _motorSim.update(getPeriod());
+        motorSim.update(getPeriod());
 
         /// SET SIM PHYSICS INPUTS
-        final double position_rot = _motorSim.getAngularPositionRotations();
+        final double position_rot = motorSim.getAngularPositionRotations();
         final double velocity_rps =
-                Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec());
+                Units.radiansToRotations(motorSim.getAngularVelocityRadPerSec());
 
-        _talonFXSim.setRawRotorPosition(position_rot);
-        _talonFXSim.setRotorVelocity(velocity_rps);
+        if (cancoderSimState != null) {
+            cancoderSimState.setRawPosition(position_rot);
+            cancoderSimState.setVelocity(velocity_rps);
+        }
+        talonFXSim.setRawRotorPosition(position_rot);
+        talonFXSim.setRotorVelocity(velocity_rps);
 
-        _talonFXSim.setSupplyVoltage(12 - _talonFXSim.getSupplyCurrent() * kMotorResistance);
+        talonFXSim.setSupplyVoltage(12 - talonFXSim.getSupplyCurrent() * MOTOR_RESISTANCE);
     }
 }
