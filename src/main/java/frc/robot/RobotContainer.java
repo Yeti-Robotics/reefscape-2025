@@ -14,6 +14,7 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.hariIntake.HariIntake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -26,6 +27,7 @@ public class RobotContainer {
     public final CommandXboxController xboxController;
     final CommandSwerveDrivetrain drivetrain;
     ElevatorSubsystem elevatorSubsystem;
+    HariIntake hariIntake;
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
@@ -37,6 +39,7 @@ public class RobotContainer {
         xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
         elevatorSubsystem = new ElevatorSubsystem();
+        hariIntake = new HariIntake();
         configureBindings();
     }
 
@@ -65,8 +68,9 @@ public class RobotContainer {
                                                 -xboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
         xboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        xboxController.b().whileTrue(elevatorSubsystem.tuning(16.00));
-        xboxController.a().whileTrue(elevatorSubsystem.tuning(-16.00));
+//        xboxController.b().whileTrue(elevatorSubsystem.tuning(16.00));
+//        xboxController.a().whileTrue(elevatorSubsystem.tuning(-16.00));
+        xboxController.leftTrigger().whileTrue(hariIntake.spinBox(xboxController.getLeftTriggerAxis()));
     }
 
     /**
