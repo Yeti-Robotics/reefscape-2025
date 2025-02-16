@@ -36,11 +36,9 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        ArmPositions positions = armState.getState();
-        ArmPositions targetPosition = armState.getTargetState();
         // if i am transitioning to a new state, set the target position
         if (armState.isTransitioning()) {
-            target(targetPosition);
+            moveTo(armState.getTargetState());
         }
     }
 
@@ -61,6 +59,6 @@ public class Arm extends SubsystemBase {
     }
 
     public Command moveTo(ArmPositions targetPosition){
-        return runOnce(() -> armState.transitionTo(targetPosition));
+        return runOnce(() -> armState.transitionTo(targetPosition)).andThen(() -> armState.finishTransition());
     }
 }

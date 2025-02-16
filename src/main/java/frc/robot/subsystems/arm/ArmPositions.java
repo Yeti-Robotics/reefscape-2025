@@ -1,7 +1,6 @@
 package frc.robot.subsystems.arm;
 
 public enum ArmPositions {
-    IDLE(-1),
     STOWED(90),
     INTAKE(270),
     L1(0),

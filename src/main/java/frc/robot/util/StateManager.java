@@ -11,7 +11,11 @@ public class StateManager<T> {
     public StateManager() {}
 
     public T getState() {
-        return targetState != null ? targetState : currentState;
+        return currentState;
+    }
+
+    public T getTargetState() {
+        return targetState;
     }
 
     public boolean isTransitioning() {
