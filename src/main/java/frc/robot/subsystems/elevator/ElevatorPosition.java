@@ -4,8 +4,8 @@ public enum ElevatorPosition {
     BOTTOM(0.0), // placeholder
     LEVEL1(8.0), // placeholder
     LEVEL2(16.0), // placeholder
-    LEVEL3(24.0), // placeholder
-    LEVEL4(40.0),
+    LEVEL3(0), // placeholder
+    LEVEL4(3.83),
     INTAKE(1.88),
     TEST(1.9),
     SAFE(2.2);

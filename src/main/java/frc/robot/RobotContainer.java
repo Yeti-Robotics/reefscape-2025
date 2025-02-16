@@ -72,11 +72,19 @@ public class RobotContainer {
                                         .withRotationalRate(
                                                 -xboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
+
         xboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        xboxController.povUp().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.SAFE));
-        xboxController.povDown().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.TEST));
-        xboxController.a().onTrue(arm.moveTo(ArmPositions.INTAKE));
-        xboxController.y().onTrue(arm.moveTo(ArmPositions.STOWED));
+
+        xboxController.povDown().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.SAFE));
+        xboxController.povRight().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.TEST));
+        xboxController.povUp().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.LEVEL3));
+        xboxController.povLeft().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.LEVEL4));
+
+        xboxController.a().onTrue(arm.moveTo(ArmPositions.STOWED));
+        xboxController.b().onTrue(arm.moveTo(ArmPositions.INTAKE));
+        xboxController.y().onTrue(arm.moveTo(ArmPositions.L3));
+        xboxController.x().onTrue(arm.moveTo(ArmPositions.L4));
+
         xboxController.leftBumper().whileTrue(coralIntake.spinClaw(0.5));
         xboxController.rightBumper().whileTrue(coralIntake.spinClaw(-0.2));
     }

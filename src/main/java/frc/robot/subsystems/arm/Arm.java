@@ -16,8 +16,8 @@ public class Arm extends SubsystemBase {
     final MotionMagicTorqueCurrentFOC magicRequest;
 
     public Arm() {
-        armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS);
-        CANcoder armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.CANIVORE_BUS);
+        armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.RIO_BUS);
+        CANcoder armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.RIO_BUS);
 
         var armConfigurator = armKraken.getConfigurator();
 

@@ -36,8 +36,8 @@ class ArmConfig {
                                     .withFeedbackRemoteSensorID(0)
                                     .withFeedbackSensorSource(
                                             FeedbackSensorSourceValue.FusedCANcoder)
-                                    .withSensorToMechanismRatio(GEAR_RATIO) // alphabot
-                                    .withRotorToSensorRatio(1)) // alphabot
+                                    .withSensorToMechanismRatio(GEAR_RATIO)
+                                    .withRotorToSensorRatio(1))
                     .withMotorOutput(
                             new MotorOutputConfigs()
                                     .withInverted(InvertedValue.CounterClockwise_Positive)
@@ -51,5 +51,6 @@ class ArmConfig {
                             new MagnetSensorConfigs()
                                     .withSensorDirection(
                                             SensorDirectionValue.CounterClockwise_Positive)
-                                    .withMagnetOffset(MAGNET_OFFSET));
+                                    .withMagnetOffset(MAGNET_OFFSET)
+                                    .withAbsoluteSensorDiscontinuityPoint(0.63));
 }
