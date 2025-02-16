@@ -11,8 +11,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmPositions;
+import frc.robot.subsystems.coral.CoralIntake;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
+import frc.robot.subsystems.elevator.ElevatorPosition;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
 /**
@@ -26,6 +30,8 @@ public class RobotContainer {
     public final CommandXboxController xboxController;
     final CommandSwerveDrivetrain drivetrain;
     ElevatorSubsystem elevatorSubsystem;
+    CoralIntake coralIntake;
+    Arm arm;
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
@@ -37,6 +43,8 @@ public class RobotContainer {
         xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
         elevatorSubsystem = new ElevatorSubsystem();
+        coralIntake = new CoralIntake();
+        arm = new Arm();
         configureBindings();
     }
 
@@ -65,8 +73,12 @@ public class RobotContainer {
                                                 -xboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
         xboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        xboxController.b().whileTrue(elevatorSubsystem.tuning(16.00));
-        xboxController.a().whileTrue(elevatorSubsystem.tuning(-16.00));
+        xboxController.povUp().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.SAFE));
+        xboxController.povDown().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.TEST));
+        xboxController.a().onTrue(arm.moveTo(ArmPositions.INTAKE));
+        xboxController.y().onTrue(arm.moveTo(ArmPositions.STOWED));
+        xboxController.leftBumper().whileTrue(coralIntake.spinClaw(0.5));
+        xboxController.rightBumper().whileTrue(coralIntake.spinClaw(-0.2));
     }
 
     /**

@@ -5,23 +5,29 @@ import com.ctre.phoenix6.signals.*;
 
 class ArmConfig {
 
-    static final int ARM_KRAKEN_ID = 21;
+    static final int ARM_KRAKEN_ID = 10;
     static final int ARM_CANCODER_ID = 5;
 
-    static final double MAGNET_OFFSET = 0; // placeholder
-    static final double GEAR_RATIO = 113;
+    static final double MAGNET_OFFSET = 0;
+    static final double GEAR_RATIO = 75.6055;
 
-    static final double ARM_DEPLOY_LOWER_BOUND = 0; // placeholder //alphabot
+    static final double ARM_DEPLOY_LOWER_BOUND = 0;
 
     static final Slot0Configs SLOT_0_CONFIGS =
             new Slot0Configs()
-                    .withKP(540) // alphabot
-                    .withKI(0) // alphabot
-                    .withKD(200) // alphabot
-                    .withKG(13.2) // alphabot
-                    .withKV(1) // alphabot
-                    .withKA(0.75) // alphabot
+                    .withKP(1440)
+                    .withKI(0)
+                    .withKD(300)
+                    .withKG(7.5)
+                    .withKV(1)
+                    .withKA(2)
                     .withGravityType(GravityTypeValue.Arm_Cosine);
+
+    static final MotionMagicConfigs motionMagicConfigs =
+            new MotionMagicConfigs()
+                    .withMotionMagicCruiseVelocity(0.5)
+                    .withMotionMagicAcceleration(1)
+                    .withMotionMagicJerk(0);
 
     static final TalonFXConfiguration talonFXConfiguration =
             new TalonFXConfiguration()
@@ -34,16 +40,10 @@ class ArmConfig {
                                     .withRotorToSensorRatio(1)) // alphabot
                     .withMotorOutput(
                             new MotorOutputConfigs()
-                                    .withInverted(ArmConfig.ARM_INVERSION)
-                                    .withNeutralMode(ArmConfig.ARM_NEUTRAL_MODE))
-                    .withSlot0(SLOT_0_CONFIGS);
-
-    static final MotionMagicConfigs motionMagicConfigs =
-            talonFXConfiguration
-                    .MotionMagic
-                    .withMotionMagicCruiseVelocity(1)
-                    .withMotionMagicAcceleration(2)
-                    .withMotionMagicJerk(0);
+                                    .withInverted(InvertedValue.CounterClockwise_Positive)
+                                    .withNeutralMode(NeutralModeValue.Brake))
+                    .withSlot0(SLOT_0_CONFIGS)
+                    .withMotionMagic(motionMagicConfigs);
 
     static final CANcoderConfiguration cancoderConfiguration =
             new CANcoderConfiguration()
@@ -52,9 +52,4 @@ class ArmConfig {
                                     .withSensorDirection(
                                             SensorDirectionValue.CounterClockwise_Positive)
                                     .withMagnetOffset(MAGNET_OFFSET));
-
-    static final InvertedValue ARM_INVERSION = InvertedValue.CounterClockwise_Positive;
-    static final NeutralModeValue ARM_NEUTRAL_MODE = NeutralModeValue.Brake;
-    static final double ARM_POSITION_STATUS_FRAME = 0; // placeholder
-    static final double ARM_VELOCITY_STATUS_FRAME = 0; // placeholder
 }

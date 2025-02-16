@@ -5,8 +5,7 @@ import static frc.robot.subsystems.elevator.ElevatorConfigs.primaryTalonFXConfig
 import static frc.robot.subsystems.elevator.ElevatorConfigs.secondaryTalonFXConfigs;
 
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,7 +15,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final TalonFX primaryElevatorMotor;
     private final TalonFX secondaryElevatorMotor;
     private final DigitalInput magSwitch;
-    public final MotionMagicVoltage magicRequest;
+    public final MotionMagicTorqueCurrentFOC magicRequest;
 
     public ElevatorSubsystem() {
         primaryElevatorMotor = new TalonFX(ElevatorConfigs.primaryElevatorMotorID, RIO_BUS);
@@ -28,7 +27,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 new Follower(ElevatorConfigs.primaryElevatorMotorID, true));
 
         magSwitch = new DigitalInput(ElevatorConfigs.magSwitchID);
-        magicRequest = new MotionMagicVoltage(0);
+        magicRequest = new MotionMagicTorqueCurrentFOC(0);
     }
 
     public void setPosition(ElevatorPosition position) {
@@ -36,8 +35,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public Command tuning(double output) {
-        return startEnd(
-                () -> primaryElevatorMotor.setControl(new TorqueCurrentFOC(output)), this::stop);
+        return startEnd(() -> primaryElevatorMotor.setControl(magicRequest), this::stop);
     }
 
     public void stop() {
@@ -46,6 +44,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public boolean getMagSwitch() {
         return magSwitch.get();
+    }
+
+    public Command moveTo(ElevatorPosition position) {
+        return startEnd(
+                () ->
+                        primaryElevatorMotor.setControl(
+                                magicRequest.withPosition(position.getHeight())),
+                this::stop);
     }
 
     @Override
