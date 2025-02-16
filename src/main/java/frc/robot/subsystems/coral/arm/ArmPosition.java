@@ -1,16 +1,16 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.coral.arm;
 
-public enum ArmPositions {
+public enum ArmPosition {
+    HOLD(0),
     STOWED(90),
     L1(0),
     L2(0),
     L3(0),
-    L4(0),
-    HOLD(0);
+    L4(0);
 
     private final double angle;
 
-    ArmPositions(double angle) {
+    ArmPosition(double angle) {
         this.angle = angle;
     }
 

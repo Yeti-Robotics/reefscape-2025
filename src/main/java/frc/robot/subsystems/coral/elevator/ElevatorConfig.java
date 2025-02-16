@@ -1,10 +1,10 @@
-package frc.robot.subsystems.elevator;
+package frc.robot.subsystems.coral.elevator;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-class ElevatorConfigs {
+class ElevatorConfig {
     static final int primaryElevatorMotorID = 9;
     static final int secondaryElevatorMotorID = 11;
     static final int magSwitchID = 0; // placeholder
@@ -43,4 +43,6 @@ class ElevatorConfigs {
                             new FeedbackConfigs()
                                     .withRotorToSensorRatio(1.0)
                                     .withSensorToMechanismRatio(gearRatio));
+
+    static final double HEIGHT_TOLERANCE = 0.001;
 }
