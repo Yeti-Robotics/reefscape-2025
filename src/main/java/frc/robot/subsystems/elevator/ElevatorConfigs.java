@@ -14,17 +14,17 @@ class ElevatorConfigs {
             new TalonFXConfiguration()
                     .withSlot0(
                             new Slot0Configs()
-                                    .withKP(0) // placeholder
-                                    .withKI(0) // placeholder
-                                    .withKD(0)
+                                    .withKP(90)
+                                    .withKI(0)
+                                    .withKD(4.5)
                                     .withKG(31.5)
-                                    .withKA(0)
-                                    .withKV(0)) // placeholder
+                                    .withKA(0.5)
+                                    .withKV(2))
                     .withMotionMagic(
                             new MotionMagicConfigs()
-                                    .withMotionMagicCruiseVelocity(1) // placeholder
-                                    .withMotionMagicAcceleration(1) // placeholder
-                                    .withMotionMagicJerk(1))
+                                    .withMotionMagicCruiseVelocity(7)
+                                    .withMotionMagicAcceleration(14)
+                                    .withMotionMagicJerk(0))
                     .withMotorOutput(
                             new MotorOutputConfigs()
                                     .withInverted(InvertedValue.CounterClockwise_Positive)
