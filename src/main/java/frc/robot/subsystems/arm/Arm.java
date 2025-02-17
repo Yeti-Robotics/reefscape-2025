@@ -12,10 +12,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.constants.Constants;
 import frc.robot.util.sim.PhysicsSim;
-import frc.robot.util.sim.Simulatable;
+import frc.robot.util.sim.SimulatableMechanism;
 
 @Logged
-public class Arm extends SubsystemBase implements Simulatable {
+public class Arm extends SubsystemBase implements SimulatableMechanism {
     private final TalonFX armKraken;
     private final CANcoder armEncoder;
     final MotionMagicVoltage magicRequest;
@@ -72,6 +72,15 @@ public class Arm extends SubsystemBase implements Simulatable {
                 magicRequest.withPosition(position.getValue()).withSlot(Robot.isReal() ? 0 : 1));
     }
 
+    public Command targetCommand(double position) {
+        return runOnce(
+                () ->
+                        armKraken.setControl(
+                                magicRequest
+                                        .withPosition(position)
+                                        .withSlot(Robot.isReal() ? 0 : 1)));
+    }
+
     public Command raiseArm() {
         return runEnd(() -> armKraken.set(1), this::stop);
     }
@@ -81,7 +90,7 @@ public class Arm extends SubsystemBase implements Simulatable {
     }
 
     @Override
-    public double update() {
-        return armKraken.getPosition().getValueAsDouble();
+    public double updateMechPos() {
+        return (armKraken.getPosition().getValueAsDouble() * 360.0) - 90;
     }
 }

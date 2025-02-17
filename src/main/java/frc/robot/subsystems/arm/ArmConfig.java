@@ -25,12 +25,12 @@ class ArmConfig {
 
     static final Slot1Configs SLOT_1_SIM_CONFIGS =
             new Slot1Configs()
-                    .withKP(0)
+                    .withKP(368)
                     .withKI(0)
-                    .withKD(0)
+                    .withKD(32)
                     .withKG(0)
                     .withKV(0)
-                    .withKA(0)
+                    .withKA(6.25)
                     .withGravityType(GravityTypeValue.Arm_Cosine);
 
     static final MotionMagicConfigs motionMagicConfigs =
