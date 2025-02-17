@@ -15,33 +15,28 @@ public class TalonFXLogger extends ClassSpecificLogger<TalonFX> {
     protected void update(EpilogueBackend backend, TalonFX talon) {
         backend.log("Supply Voltage", talon.getSupplyVoltage().getValueAsDouble());
         backend.log("Supply Current", talon.getSupplyCurrent().getValueAsDouble());
-        backend.log("getTorqueCurrent", talon.getTorqueCurrent().getValueAsDouble());
-        backend.log("getAppliedRotorPolarity", talon.getAppliedRotorPolarity().getValueAsDouble());
+        backend.log("Torque Current", talon.getTorqueCurrent().getValueAsDouble());
+        backend.log("Applied Rotor Velocity", talon.getAppliedRotorPolarity().getValueAsDouble());
+        backend.log("Duty Cycle", talon.getDutyCycle().getValueAsDouble());
 
-        backend.log("getPosition", talon.getPosition().getValueAsDouble());
-        backend.log("getVelocity", talon.getVelocity().getValueAsDouble());
-        backend.log("getAcceleration", talon.getAcceleration().getValueAsDouble());
-        backend.log("getClosedLoopError", talon.getClosedLoopError().getValueAsDouble());
-        backend.log("getClosedLoopReference", talon.getClosedLoopReference().getValueAsDouble());
+        backend.log("Position", talon.getPosition().getValueAsDouble());
+        backend.log("Velocity", talon.getVelocity().getValueAsDouble());
+        backend.log("Acceleration", talon.getAcceleration().getValueAsDouble());
+        backend.log("Target Error", talon.getClosedLoopError().getValueAsDouble());
+        backend.log("Target Position", talon.getClosedLoopReference().getValueAsDouble());
+        backend.log("Target Velocity", talon.getClosedLoopReferenceSlope().getValueAsDouble());
+        backend.log("Closed Loop Output", talon.getClosedLoopOutput().getValueAsDouble());
         backend.log(
-                "getClosedLoopReferenceSlope",
-                talon.getClosedLoopReferenceSlope().getValueAsDouble());
-        backend.log("getClosedLoopOutput", talon.getClosedLoopOutput().getValueAsDouble());
+                "Closed Loop P Output", talon.getClosedLoopProportionalOutput().getValueAsDouble());
         backend.log(
-                "getClosedLoopProportionalOutput",
-                talon.getClosedLoopProportionalOutput().getValueAsDouble());
+                "Closed Loop I Output", talon.getClosedLoopIntegratedOutput().getValueAsDouble());
         backend.log(
-                "getClosedLoopIntegratedOutput",
-                talon.getClosedLoopIntegratedOutput().getValueAsDouble());
-        backend.log(
-                "getClosedLoopDerivativeOutput",
-                talon.getClosedLoopDerivativeOutput().getValueAsDouble());
-        backend.log("getAppliedControl", talon.getAppliedControl().getControlInfo().toString());
-        backend.log("getForwardLimit", talon.getForwardLimit().getValueAsDouble());
-        backend.log("getReverseLimit", talon.getReverseLimit().getValueAsDouble());
+                "Closed Loop D Output", talon.getClosedLoopDerivativeOutput().getValueAsDouble());
+        backend.log("Applied Control", talon.getAppliedControl().getControlInfo().toString());
+        backend.log("Forward Limit", talon.getForwardLimit().getValueAsDouble());
+        backend.log("Reverse Limit", talon.getReverseLimit().getValueAsDouble());
 
-        backend.log("getDeviceTemp", talon.getDeviceTemp().getValueAsDouble());
-        backend.log("getDeviceID", talon.getDeviceID());
-        backend.log("getDutyCycle", talon.getDutyCycle().getValueAsDouble());
+        backend.log("Device Temp", talon.getDeviceTemp().getValueAsDouble());
+        backend.log("Device ID", talon.getDeviceID());
     }
 }
