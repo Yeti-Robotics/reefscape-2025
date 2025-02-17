@@ -27,7 +27,7 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
 
     @Override
     public Angle determineSetpoint(ArmPosition targetState) {
-        return targetState == ArmPosition.HOLD ? armPosition.getValue() : Units.Degrees.of(targetState.getAngle());
+        return targetState == ArmPosition.HOLD ? armPosition.getValue() : Units.Rotations.of(targetState.getAngle());
     }
 
     @Override
@@ -42,6 +42,6 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
 
     @Override
     public Angle getErrorTolerance() {
-        return Units.Degrees.of(ArmConfig.ANGLE_TOLERANCE);
+        return Units.Rotations.of(ArmConfig.ANGLE_TOLERANCE);
     }
 }
