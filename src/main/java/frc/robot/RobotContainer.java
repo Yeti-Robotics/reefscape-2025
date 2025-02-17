@@ -47,7 +47,7 @@ public class RobotContainer {
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
-    private final Joystick joystick = new Joystick(0);
+    private final Joystick simJoystick = new Joystick(0);
     Mechanism2d elevatorArmMech =
             new Mechanism2d(Units.inchesToMeters(30), Units.inchesToMeters(30));
     private MechanismLigament2d liftLigament;
@@ -88,10 +88,10 @@ public class RobotContainer {
                                                 -xboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
         xboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        new JoystickButton(joystick, 1).whileTrue(elevatorSubsystem.raiseLift());
-        new JoystickButton(joystick, 2).whileTrue(elevatorSubsystem.lowerLift());
-        new JoystickButton(joystick, 3).whileTrue(arm.raiseArm());
-        new JoystickButton(joystick, 4).whileTrue(arm.lowerArm());
+        new JoystickButton(simJoystick, 1).whileTrue(elevatorSubsystem.raiseLift());
+        new JoystickButton(simJoystick, 2).whileTrue(elevatorSubsystem.lowerLift());
+        new JoystickButton(simJoystick, 3).whileTrue(arm.targetCommand(0));
+        new JoystickButton(simJoystick, 4).whileTrue(arm.targetCommand(0.5));
     }
 
     private void assembleMechanisms() {
@@ -112,8 +112,8 @@ public class RobotContainer {
     }
 
     public void updateMechanisms() {
-        liftLigament.setLength(elevatorSubsystem.update());
-        armLigament.setAngle(arm.update());
+        liftLigament.setLength(elevatorSubsystem.updateMechPos());
+        armLigament.setAngle(arm.updateMechPos());
 
         SmartDashboard.putData("Mechanisms", elevatorArmMech);
     }

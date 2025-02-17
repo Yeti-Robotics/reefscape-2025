@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm;
 
-import static frc.robot.subsystems.arm.ArmConfig.*;
+import static frc.robot.subsystems.arm.ArmConfig.cancoderConfiguration;
+import static frc.robot.subsystems.arm.ArmConfig.talonFXConfiguration;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -21,9 +22,9 @@ public class Arm extends SubsystemBase implements SimulatableMechanism {
     final MotionMagicVoltage magicRequest;
 
     public enum Position {
-        LOW(30), // placeholder
-        MID(60), // placeholder
-        HIGH(90); // placeholder
+        LOW(30),
+        MID(60),
+        HIGH(90);
 
         private final int value;
 

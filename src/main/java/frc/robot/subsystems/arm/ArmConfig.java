@@ -8,12 +8,12 @@ class ArmConfig {
     static final int ARM_KRAKEN_ID = 47;
     static final int ARM_CANCODER_ID = 5;
 
-    static final double MAGNET_OFFSET = 0; // placeholder
+    static final double MAGNET_OFFSET = 0;
     static final double GEAR_RATIO = 113;
 
-    static final double ARM_DEPLOY_LOWER_BOUND = 0; // placeholder //alphabot
+    static final double ARM_DEPLOY_LOWER_BOUND = 0;
 
-    static final Slot0Configs SLOT_0_CONFIGS =
+    private static final Slot0Configs SLOT_0_REAL_CONFIGS =
             new Slot0Configs()
                     .withKP(540) // alphabot
                     .withKI(0) // alphabot
@@ -23,7 +23,7 @@ class ArmConfig {
                     .withKA(0.75) // alphabot
                     .withGravityType(GravityTypeValue.Arm_Cosine);
 
-    static final Slot1Configs SLOT_1_SIM_CONFIGS =
+    private static final Slot1Configs SLOT_1_SIM_CONFIGS =
             new Slot1Configs()
                     .withKP(368)
                     .withKI(0)
@@ -33,7 +33,7 @@ class ArmConfig {
                     .withKA(6.25)
                     .withGravityType(GravityTypeValue.Arm_Cosine);
 
-    static final MotionMagicConfigs motionMagicConfigs =
+    private static final MotionMagicConfigs motionMagicConfigs =
             new MotionMagicConfigs()
                     .withMotionMagicCruiseVelocity(1)
                     .withMotionMagicAcceleration(2)
@@ -52,7 +52,7 @@ class ArmConfig {
                             new MotorOutputConfigs()
                                     .withInverted(InvertedValue.CounterClockwise_Positive)
                                     .withNeutralMode(NeutralModeValue.Brake))
-                    .withSlot0(SLOT_0_CONFIGS)
+                    .withSlot0(SLOT_0_REAL_CONFIGS)
                     .withSlot1(SLOT_1_SIM_CONFIGS)
                     .withMotionMagic(motionMagicConfigs);
 
