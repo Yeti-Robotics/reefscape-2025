@@ -5,12 +5,14 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.led.ProgressBar;
+
+import static frc.robot.RobotContainer.leds;
+import static frc.robot.RobotContainer.progressBar;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -22,8 +24,6 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
 
     private RobotContainer robotContainer;
-    public static LEDSubsystem leds;
-    public static ProgressBar progressBar;
 
     /**
      * This method is run when the robot is first started up and should be used for any
@@ -34,8 +34,6 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
-        leds = new LEDSubsystem();
-        progressBar = new ProgressBar(leds);
     }
 
     /**
@@ -60,7 +58,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-        Robot.progressBar.setProgress(ProgressBar.progressBarState);
+        progressBar.setProgress(ProgressBar.progressBarState);
     }
 
     /**
@@ -114,10 +112,4 @@ public class Robot extends TimedRobot {
     /** This method is called periodically whilst in simulation. */
     @Override
     public void simulationPeriodic() {}
-
-    public static boolean isRedAlliance() {
-        return DriverStation.getAlliance()
-                .filter(value -> value == DriverStation.Alliance.Red)
-                .isPresent();
-    }
 }

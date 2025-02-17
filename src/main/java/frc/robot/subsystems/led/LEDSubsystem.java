@@ -4,6 +4,7 @@ import static frc.robot.subsystems.led.LEDConfigs.*;
 
 import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.constants.Constants;
@@ -56,7 +57,7 @@ public class LEDSubsystem extends SubsystemBase {
                 break;
             case IDLETELEOP:
                 toAnimate =
-                        Robot.isRedAlliance()
+                        isRedAlliance()
                                 ? new LarsonAnimation(
                                         255, 0, 0, 0, 0.4, ledCount, BounceMode.Front, 3, ledOffset)
                                 : new LarsonAnimation(
@@ -77,11 +78,16 @@ public class LEDSubsystem extends SubsystemBase {
                 break;
             case LOS:
                 toAnimate =
-                        Robot.isRedAlliance()
+                        isRedAlliance()
                                 ? new StrobeAnimation(255, 0, 0, 0, 0.2, ledCount)
                                 : new StrobeAnimation(84, 229, 182, 0, 0.2, ledCount);
                 candle.animate(toAnimate);
                 break;
         }
+    }
+    public static boolean isRedAlliance() {
+        return DriverStation.getAlliance()
+                .filter(value -> value == DriverStation.Alliance.Red)
+                .isPresent();
     }
 }
