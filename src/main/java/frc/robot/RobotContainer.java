@@ -9,6 +9,7 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
@@ -50,8 +51,8 @@ public class RobotContainer {
                                         .withRotationalRate(
                                                 -joystick.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
-        joystick.a().whileTrue(grabber.spinClawForward());
-        joystick.b().whileTrue(grabber.spinClawBackward());
+        joystick.a().whileTrue(grabber.transitionTo(GrabberState.ROLL_IN));
+        joystick.b().whileTrue(grabber.transitionTo(GrabberState.ROLL_OUT));
         joystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
     }

@@ -8,7 +8,8 @@ public enum ElevatorPosition {
     L1(8.0),
     L2(16.0),
     L3(24.0),
-    L4(40.0);
+    L4(40.0),
+    HOLD(-1); // special case, for when transitions are interrupted
 
     private final double height;
 

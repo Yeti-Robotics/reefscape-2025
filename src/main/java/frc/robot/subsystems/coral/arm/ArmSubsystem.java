@@ -27,7 +27,7 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
 
     @Override
     public Angle determineSetpoint(ArmPosition targetState) {
-        return Units.Degrees.of(targetState.getAngle());
+        return targetState == ArmPosition.HOLD ? armPosition.getValue() : Units.Degrees.of(targetState.getAngle());
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
     }
 
     @Override
-    public StatusSignal<Angle> setPointSignal() {
+    public StatusSignal<Angle> currentStateSignal() {
         return armPosition;
     }
 

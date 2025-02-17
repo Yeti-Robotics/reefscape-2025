@@ -27,7 +27,7 @@ public class ElevatorSubsystem extends StatefulSetpointSubsystem<ElevatorPositio
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
 
     public ElevatorSubsystem() {
-        super(ElevatorPosition.BOTTOM);
+        super(ElevatorPosition.HOLD);
         primaryElevatorMotor.getConfigurator().apply(primaryTalonFXConfigs);
         secondaryElevatorMotor.getConfigurator().apply(secondaryTalonFXConfigs);
         secondaryElevatorMotor.setControl(
@@ -50,13 +50,13 @@ public class ElevatorSubsystem extends StatefulSetpointSubsystem<ElevatorPositio
     }
 
     @Override
-    public StatusSignal<Angle> setPointSignal() {
+    public StatusSignal<Angle> currentStateSignal() {
         return elevatorPosition;
     }
 
     @Override
     public Angle determineSetpoint(ElevatorPosition targetState) {
-        return Units.Rotations.of(targetState.getHeight());
+        return targetState == ElevatorPosition.HOLD ? elevatorPosition.getValue() : Units.Rotations.of(targetState.getHeight());
     }
 
     @Override

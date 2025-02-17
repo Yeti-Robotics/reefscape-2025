@@ -13,15 +13,16 @@ public abstract class StatefulSetpointSubsystem<T extends Enum<T>, S extends Uni
         super(defaultState);
     }
 
-    public abstract StatusSignal<M> setPointSignal();
+    public abstract StatusSignal<M> currentStateSignal();
 
     public abstract M determineSetpoint(T targetState);
 
     public abstract StatusCode moveTo(M setpoint);
+
     public abstract M getErrorTolerance();
 
     @Override
-    public StatusCode initializeTransition(T targetState) {
+    protected StatusCode initializeTransition(T targetState) {
         M setPointMeasure = determineSetpoint(targetState);
         setpointTarget.mut_replace(setPointMeasure);
         return moveTo(setPointMeasure);
@@ -29,11 +30,11 @@ public abstract class StatefulSetpointSubsystem<T extends Enum<T>, S extends Uni
 
     @Override
     public void runPeriodic() {
-        setPointSignal().refresh();
+        currentStateSignal().refresh();
     }
 
     @Override
-    public boolean checkTransitionFinished() {
-        return setPointSignal().getValue().isNear(setpointTarget, getErrorTolerance());
+    protected boolean checkTransitionFinished() {
+        return currentStateSignal().getValue().isNear(setpointTarget, getErrorTolerance());
     }
 }

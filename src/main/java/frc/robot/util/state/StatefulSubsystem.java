@@ -16,13 +16,11 @@ public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase
         this.defaultState = defaultState;
     }
 
-    public abstract StatusCode initializeTransition(T targetState);
+    protected abstract StatusCode initializeTransition(T targetState);
 
-    public abstract boolean checkTransitionFinished();
+    protected abstract boolean checkTransitionFinished();
 
-    public void runPeriodic() {
-        // no-op
-    }
+    protected void runPeriodic() {}
 
     protected void updateState(T targetState) {
         if (!transitionStarted) {
@@ -50,8 +48,28 @@ public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase
         }
     }
 
+    /**
+     * Transition to the given state, or the default state supplied by the subsystem if the transition is interrupted.
+     * @param state the target state to transition to.
+     * @return a command that will transition to the given state, or the default state if the transition is interrupted.
+     * */
     public Command transitionTo(T state) {
-        return runOnce(() -> transitionToState(state));
+        return transitionTo(state, defaultState); // most of the time, this fallback state will be HOLD, which maintains the current position
+    }
+
+    /**
+     * Transition to the given state, or fallback state if the transition is interrupted.
+     * Be careful with this method, as it can lead to unexpected behavior if the fallback state is not appropriate for the subsystem, it may cause sudden changes.
+     * @param state the target state to transition to.
+     * @param fallbackState the fallback state to use if the transition is interrupted.
+     * @return A command that will transition to the given state, or fallback state if the transition is interrupted.
+     * @see StatefulSubsystem#transitionTo(Enum)
+     * if you don't want to specify a fallback state
+     * */
+    public Command transitionTo(T state, T fallbackState) {
+        return runOnce(() -> transitionToState(state))
+                .until(() -> !isTransitioning())
+                .handleInterrupt(() -> transitionToState(fallbackState));
     }
 
     public T getCurrentState() {
@@ -67,10 +85,14 @@ public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase
     }
 
     protected void transitionToState(T state) {
+        if (isTransitioning()) {
+            failTransition();
+        }
+
         wantedState = state;
     }
 
-    private void failTransition() {
+    protected void failTransition() {
         wantedState = null;
         transitionStarted = false;
     }
