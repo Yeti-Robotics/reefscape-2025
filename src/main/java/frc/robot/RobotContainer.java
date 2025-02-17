@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.arm.Arm;
@@ -49,7 +48,7 @@ public class RobotContainer {
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
     private final Joystick simJoystick = new Joystick(0);
     Mechanism2d elevatorArmMech =
-            new Mechanism2d(Units.inchesToMeters(30), Units.inchesToMeters(30));
+            new Mechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(50));
     private MechanismLigament2d liftLigament;
     private MechanismLigament2d armLigament;
 
@@ -88,16 +87,12 @@ public class RobotContainer {
                                                 -xboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
         xboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        new JoystickButton(simJoystick, 1).whileTrue(elevatorSubsystem.raiseLift());
-        new JoystickButton(simJoystick, 2).whileTrue(elevatorSubsystem.lowerLift());
-        new JoystickButton(simJoystick, 3).whileTrue(arm.targetCommand(0));
-        new JoystickButton(simJoystick, 4).whileTrue(arm.targetCommand(0.5));
     }
 
     private void assembleMechanisms() {
         liftLigament =
                 elevatorArmMech
-                        .getRoot("startPoint", Units.inchesToMeters(10), Units.inchesToMeters(4))
+                        .getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
                         .append(
                                 new MechanismLigament2d(
                                         "lift",

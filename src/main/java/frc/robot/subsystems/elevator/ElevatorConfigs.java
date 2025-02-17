@@ -13,16 +13,23 @@ class ElevatorConfigs {
     static final double gearRatio = 44.0 / 18.0;
 
     private static final Slot0Configs SLOT_0_REAL_CONFIGS =
-            new Slot0Configs().withKP(90).withKI(0).withKD(4.5).withKG(31.5).withKA(0.5).withKV(2);
+            new Slot0Configs()
+                    .withKP(90)
+                    .withKI(0)
+                    .withKD(4.5)
+                    .withKG(31.5)
+                    .withKA(0.5)
+                    .withKV(2)
+                    .withGravityType(GravityTypeValue.Elevator_Static);
 
     private static final Slot1Configs SLOT_1_SIM_CONFIGS =
             new Slot1Configs()
-                    .withKP(0)
+                    .withKP(8)
                     .withKI(0)
-                    .withKD(0)
+                    .withKD(1)
                     .withKG(0)
                     .withKV(0)
-                    .withKA(1)
+                    .withKA(0.1)
                     .withGravityType(GravityTypeValue.Elevator_Static);
 
     static final TalonFXConfiguration primaryTalonFXConfigs =
@@ -41,7 +48,7 @@ class ElevatorConfigs {
                     .withFeedback(
                             new FeedbackConfigs()
                                     .withRotorToSensorRatio(1.0)
-                                    .withSensorToMechanismRatio(gearRatio)); // placeholder
+                                    .withSensorToMechanismRatio(gearRatio));
     static final TalonFXConfiguration secondaryTalonFXConfigs =
             new TalonFXConfiguration()
                     .withMotorOutput(

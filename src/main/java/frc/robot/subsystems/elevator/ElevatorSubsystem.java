@@ -6,7 +6,6 @@ import static frc.robot.subsystems.elevator.ElevatorConfigs.secondaryTalonFXConf
 
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
@@ -52,9 +51,8 @@ public class ElevatorSubsystem extends SubsystemBase implements SimulatableMecha
                 magicRequest.withPosition(setpoint).withSlot(Robot.isReal() ? 0 : 1));
     }
 
-    public Command tuning(double output) {
-        return startEnd(
-                () -> primaryElevatorMotor.setControl(new TorqueCurrentFOC(output)), this::stop);
+    public Command setPositionCommand(double setpoint) {
+        return runOnce(() -> setPosition(setpoint));
     }
 
     public void stop() {
