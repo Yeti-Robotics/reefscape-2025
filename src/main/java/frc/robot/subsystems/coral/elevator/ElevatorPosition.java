@@ -1,5 +1,8 @@
 package frc.robot.subsystems.coral.elevator;
 
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
+
 public enum ElevatorPosition {
     // the following positions are placeholders
     // TODO: find actual positions
@@ -11,13 +14,17 @@ public enum ElevatorPosition {
     L4(40.0),
     HOLD(-1); // special case, for when transitions are interrupted
 
-    private final double height;
+    private final Angle height;
 
     ElevatorPosition(double height) {
+        this(Units.Rotations.of(height));
+    }
+
+    ElevatorPosition(Angle height) {
         this.height = height;
     }
 
-    public double getHeight() {
+    public Angle getHeight() {
         return height;
     }
 }

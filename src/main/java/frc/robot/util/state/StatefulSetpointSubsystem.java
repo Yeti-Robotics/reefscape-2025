@@ -6,11 +6,14 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Unit;
 
-public abstract class StatefulSetpointSubsystem<T extends Enum<T>, S extends Unit, M extends Measure<S>> extends StatefulSubsystem<T> {
-    private MutableMeasure<S, Measure<S>, ?> setpointTarget;
+public abstract class StatefulSetpointSubsystem<T extends Enum<T>, S extends Unit, M extends Measure<S>, U extends MutableMeasure<S, M, ?>> extends StatefulSubsystem<T> {
+    private final U setpointTarget;
+    private final M errorTolerance;
 
-    public StatefulSetpointSubsystem(T defaultState) {
+    public StatefulSetpointSubsystem(T defaultState, U setPointTarget, M errorTolerance) {
         super(defaultState);
+        this.setpointTarget = setPointTarget;
+        this.errorTolerance = errorTolerance;
     }
 
     public abstract StatusSignal<M> currentStateSignal();
@@ -18,8 +21,6 @@ public abstract class StatefulSetpointSubsystem<T extends Enum<T>, S extends Uni
     public abstract M determineSetpoint(T targetState);
 
     public abstract StatusCode moveTo(M setpoint);
-
-    public abstract M getErrorTolerance();
 
     @Override
     protected StatusCode initializeTransition(T targetState) {
@@ -35,6 +36,6 @@ public abstract class StatefulSetpointSubsystem<T extends Enum<T>, S extends Uni
 
     @Override
     protected boolean isTransitionFinished() {
-        return currentStateSignal().getValue().isNear(setpointTarget, getErrorTolerance());
+        return currentStateSignal().getValue().isNear(setpointTarget, errorTolerance);
     }
 }

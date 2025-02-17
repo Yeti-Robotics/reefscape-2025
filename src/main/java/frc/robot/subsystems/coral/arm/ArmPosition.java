@@ -1,5 +1,8 @@
 package frc.robot.subsystems.coral.arm;
 
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
+
 public enum ArmPosition {
     STOWED(90),
     L1(0),
@@ -8,13 +11,17 @@ public enum ArmPosition {
     L4(0),
     HOLD(-1);  // special case, for when transitions are interrupted
 
-    private final double angle;
+    private final Angle angle;
 
     ArmPosition(double angle) {
+        this(Units.Rotations.of(angle));
+    }
+
+    ArmPosition(Angle angle) {
         this.angle = angle;
     }
 
-    public double getAngle() {
+    public Angle getAngle() {
         return angle;
     }
 }

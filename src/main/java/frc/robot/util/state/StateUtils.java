@@ -1,7 +1,15 @@
 package frc.robot.util.state;
 
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.MutAngle;
+
 public class StateUtils {
-    public static boolean isAtSetpoint(double currentPosition, double targetPosition, double errorTolerance) {
-        return Math.abs(currentPosition - targetPosition) > errorTolerance;
+    public static MutAngle mutableAngleSetpoint(AngleUnit unit) {
+        return new MutAngle(0,0, unit);
+    }
+
+    public static MutAngle mutableAngleSetpoint() {
+        return new MutAngle(0, 0, Units.Rotations);
     }
 }

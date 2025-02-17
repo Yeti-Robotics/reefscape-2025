@@ -21,7 +21,7 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
         super(GrabberState.OFF);
         claw.getConfigurator().apply(GrabberConfig.coralMotorConfig);
 
-        new Trigger(clawSwitch::get)
+        new Trigger(this::hasCoral)
                 .onChange(transitionTo(GrabberState.OFF));
     }
 
