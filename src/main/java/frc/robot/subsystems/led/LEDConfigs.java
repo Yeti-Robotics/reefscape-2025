@@ -5,6 +5,7 @@ import com.ctre.phoenix.led.CANdleConfiguration;
 
 class LEDConfigs {
     static CANdleConfiguration configAll;
+
     LEDConfigs() {
         configAll = new CANdleConfiguration();
         configAll.statusLedOffWhenActive = false;

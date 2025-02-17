@@ -1,11 +1,12 @@
 package frc.robot.subsystems.led;
 
+import static frc.robot.subsystems.led.LEDConfigs.*;
+
 import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.constants.Constants;
-import static frc.robot.subsystems.led.LEDConfigs.*;
 
 public class LEDSubsystem extends SubsystemBase {
     public final CANdle candle = new CANdle(0, Constants.RIO_BUS);

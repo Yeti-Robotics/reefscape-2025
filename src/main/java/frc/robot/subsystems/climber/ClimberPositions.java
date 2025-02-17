@@ -7,7 +7,9 @@ public enum ClimberPositions {
 
     private final int angle;
 
-    ClimberPositions(final int angle) { this.angle = angle; }
+    ClimberPositions(final int angle) {
+        this.angle = angle;
+    }
 
     public int getAngle() {
         return angle;

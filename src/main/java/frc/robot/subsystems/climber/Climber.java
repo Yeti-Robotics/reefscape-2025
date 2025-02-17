@@ -4,7 +4,6 @@ import static edu.wpi.first.wpilibj2.command.Commands.startEnd;
 import static frc.robot.constants.Constants.*;
 import static frc.robot.subsystems.climber.ClimberConfigs.*;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,12 +13,9 @@ public class Climber {
     public CANcoder climberEncoder = new CANcoder(12);
 
     public Climber() {
-        climberMotor = new TalonFX(MOTOR_ID, RIO_BUS);
-        var configs = new TalonFXConfiguration();
+        climberMotor = new TalonFX(climberId, RIO_BUS);
         var configurator = climberMotor.getConfigurator();
-        configs.MotorOutput.Inverted = MOTOR_INVERSION;
-        configs.MotorOutput.NeutralMode = MOTOR_NEUTRAL_MODE;
-        configurator.apply(configs);
+        configurator.apply(climberTalonFXConfigs);
     }
 
     private void stop() {
