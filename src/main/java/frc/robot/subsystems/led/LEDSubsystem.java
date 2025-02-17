@@ -1,12 +1,11 @@
 package frc.robot.subsystems.led;
 
 import com.ctre.phoenix.led.*;
-import com.ctre.phoenix.led.CANdle.LEDStripType;
-import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.constants.Constants;
+import static frc.robot.subsystems.led.LEDConfigs.*;
 
 public class LEDSubsystem extends SubsystemBase {
     public final CANdle candle = new CANdle(0, Constants.RIO_BUS);
@@ -25,12 +24,6 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public LEDSubsystem() {
-        CANdleConfiguration configAll = new CANdleConfiguration();
-        configAll.statusLedOffWhenActive = false;
-        configAll.disableWhenLOS = false;
-        configAll.stripType = LEDStripType.RGB;
-        configAll.brightnessScalar = 0.5;
-        configAll.vBatOutputMode = VBatOutputMode.On;
         candle.configAllSettings(configAll, 100);
     }
 

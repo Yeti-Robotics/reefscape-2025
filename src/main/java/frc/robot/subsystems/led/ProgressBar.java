@@ -14,26 +14,20 @@ public class ProgressBar {
     }
 
     public void addProgress() {
-        if (progressBarState == ProgressBarPercents.TWENTY) {
-            progressBarState = ProgressBarPercents.FORTY;
-        } else if (progressBarState == ProgressBarPercents.FORTY) {
-            progressBarState = ProgressBarPercents.SIXTY;
-        } else if (progressBarState == ProgressBarPercents.SIXTY) {
-            progressBarState = ProgressBarPercents.EIGHTY;
-        } else if (progressBarState == ProgressBarPercents.EIGHTY) {
-            progressBarState = ProgressBarPercents.FULL;
+        switch (progressBarState) {
+            case TWENTY -> progressBarState = ProgressBarPercents.FORTY;
+            case FORTY -> progressBarState = ProgressBarPercents.SIXTY;
+            case SIXTY -> progressBarState = ProgressBarPercents.EIGHTY;
+            case EIGHTY -> progressBarState = ProgressBarPercents.FULL;
         }
     }
 
     public void subtractProgress() {
-        if (progressBarState == ProgressBarPercents.FULL) {
-            progressBarState = ProgressBarPercents.EIGHTY;
-        } else if (progressBarState == ProgressBarPercents.EIGHTY) {
-            progressBarState = ProgressBarPercents.SIXTY;
-        } else if (progressBarState == ProgressBarPercents.SIXTY) {
-            progressBarState = ProgressBarPercents.FORTY;
-        } else if (progressBarState == ProgressBarPercents.FORTY) {
-            progressBarState = ProgressBarPercents.TWENTY;
+        switch (progressBarState) {
+            case FULL -> progressBarState = ProgressBarPercents.EIGHTY;
+            case EIGHTY -> progressBarState = ProgressBarPercents.SIXTY;
+            case SIXTY -> progressBarState = ProgressBarPercents.FORTY;
+            case FORTY -> progressBarState = ProgressBarPercents.TWENTY;
         }
     }
 

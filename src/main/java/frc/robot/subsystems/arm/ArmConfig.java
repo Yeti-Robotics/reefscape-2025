@@ -8,10 +8,10 @@ class ArmConfig {
     static final int ARM_KRAKEN_ID = 21;
     static final int ARM_CANCODER_ID = 5;
 
-    static final double MAGNET_OFFSET = 0; // placeholder
+    static final double MAGNET_OFFSET = 0;
     static final double GEAR_RATIO = 113;
 
-    static final double ARM_DEPLOY_LOWER_BOUND = 0; // placeholder //alphabot
+    static final double ARM_DEPLOY_LOWER_BOUND = 0; // alphabot
 
     static final Slot0Configs SLOT_0_CONFIGS =
             new Slot0Configs()
