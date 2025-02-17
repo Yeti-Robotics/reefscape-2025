@@ -33,16 +33,11 @@ public class ElevatorSubsystem extends StatefulSetpointSubsystem<ElevatorPositio
         secondaryElevatorMotor.setControl(
                 new Follower(ElevatorConfig.primaryElevatorMotorID, true));
 
-        new Trigger(this::getMagSwitch).onTrue(transitionTo(ElevatorPosition.HOVER));
+        new Trigger(this::getMagSwitch).onTrue(transitionTo(ElevatorPosition.BOTTOM));
     }
 
     public StatusCode setPosition(ElevatorPosition position) {
         return primaryElevatorMotor.setControl(motionVoltageRequest.withPosition(position.getHeight()));
-    }
-
-    public Command tuningFOC(double output) {
-        return startEnd(
-                () -> primaryElevatorMotor.setControl(new TorqueCurrentFOC(output)), primaryElevatorMotor::stopMotor);
     }
 
     public boolean getMagSwitch() {

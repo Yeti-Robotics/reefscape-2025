@@ -48,7 +48,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     }
 
     @Override
-    protected boolean checkTransitionFinished() {
+    protected boolean isTransitionFinished() {
         return !arm.isTransitioning() && !elevator.isTransitioning() && !grabber.isTransitioning();
     }
 }

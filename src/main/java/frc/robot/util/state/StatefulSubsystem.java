@@ -18,7 +18,7 @@ public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase
 
     protected abstract StatusCode initializeTransition(T targetState);
 
-    protected abstract boolean checkTransitionFinished();
+    protected abstract boolean isTransitionFinished();
 
     protected void runPeriodic() {}
 
@@ -34,7 +34,7 @@ public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase
             }
         }
 
-        if (checkTransitionFinished()) {
+        if (isTransitionFinished()) {
             finishTransition();
         }
     }

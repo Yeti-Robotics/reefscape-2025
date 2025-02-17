@@ -40,11 +40,11 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(
                         () ->
-                                drive.withVelocityY(
+                                drive.withVelocityX(
                                                 joystick.getLeftY()
                                                         * TunerConstants.kSpeedAt12Volts
                                                                 .magnitude())
-                                        .withVelocityX(
+                                        .withVelocityY(
                                                 -joystick.getLeftX()
                                                         * TunerConstants.kSpeedAt12Volts
                                                                 .magnitude())

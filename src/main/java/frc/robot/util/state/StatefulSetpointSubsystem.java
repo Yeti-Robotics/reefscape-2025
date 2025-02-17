@@ -34,7 +34,7 @@ public abstract class StatefulSetpointSubsystem<T extends Enum<T>, S extends Uni
     }
 
     @Override
-    protected boolean checkTransitionFinished() {
+    protected boolean isTransitionFinished() {
         return currentStateSignal().getValue().isNear(setpointTarget, getErrorTolerance());
     }
 }

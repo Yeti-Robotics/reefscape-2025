@@ -15,7 +15,7 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
     private final DutyCycleOut dutyCycleReq = new DutyCycleOut(0);
 
     // idk if its DigitalInput or Cancolor, assuming the former for now
-    private final DigitalInput clawSwitch = new DigitalInput(0);
+    private final DigitalInput clawSwitch = new DigitalInput(GrabberConfig.GRABBER_BEAM_BREAK);
 
     public GrabberSubsystem() {
         super(GrabberState.OFF);
@@ -32,7 +32,7 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
 
     // we assume that the transition to other states is (near) instantaneous
     @Override
-    protected boolean checkTransitionFinished() {
+    protected boolean isTransitionFinished() {
         return true;
     }
 
