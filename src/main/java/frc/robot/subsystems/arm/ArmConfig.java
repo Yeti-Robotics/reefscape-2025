@@ -23,6 +23,16 @@ class ArmConfig {
                     .withKA(0.75) // alphabot
                     .withGravityType(GravityTypeValue.Arm_Cosine);
 
+    static final Slot1Configs SLOT_1_SIM_CONFIGS =
+            new Slot1Configs()
+                    .withKP(0)
+                    .withKI(0)
+                    .withKD(0)
+                    .withKG(0)
+                    .withKV(0)
+                    .withKA(0)
+                    .withGravityType(GravityTypeValue.Arm_Cosine);
+
     static final MotionMagicConfigs motionMagicConfigs =
             new MotionMagicConfigs()
                     .withMotionMagicCruiseVelocity(1)
@@ -43,6 +53,7 @@ class ArmConfig {
                                     .withInverted(InvertedValue.CounterClockwise_Positive)
                                     .withNeutralMode(NeutralModeValue.Brake))
                     .withSlot0(SLOT_0_CONFIGS)
+                    .withSlot1(SLOT_1_SIM_CONFIGS)
                     .withMotionMagic(motionMagicConfigs);
 
     static final CANcoderConfiguration cancoderConfiguration =

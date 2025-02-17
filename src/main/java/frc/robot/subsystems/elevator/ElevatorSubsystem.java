@@ -40,11 +40,13 @@ public class ElevatorSubsystem extends SubsystemBase implements Simulatable {
     }
 
     public void setPosition(ElevatorPosition position) {
-        primaryElevatorMotor.setControl(magicRequest.withPosition(position.getHeight()));
+        primaryElevatorMotor.setControl(
+                magicRequest.withPosition(position.getHeight()).withSlot(Robot.isReal() ? 0 : 1));
     }
 
     public void setPosition(double setpoint) {
-        primaryElevatorMotor.setControl(magicRequest.withPosition(setpoint));
+        primaryElevatorMotor.setControl(
+                magicRequest.withPosition(setpoint).withSlot(Robot.isReal() ? 0 : 1));
     }
 
     public void stop() {

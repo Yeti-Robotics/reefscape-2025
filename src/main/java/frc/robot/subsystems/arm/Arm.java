@@ -68,7 +68,8 @@ public class Arm extends SubsystemBase implements Simulatable {
     }
 
     public void target(Position position) {
-        armKraken.setControl(magicRequest.withPosition(position.getValue()));
+        armKraken.setControl(
+                magicRequest.withPosition(position.getValue()).withSlot(Robot.isReal() ? 0 : 1));
     }
 
     public Command raiseArm() {
