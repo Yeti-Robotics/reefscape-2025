@@ -9,7 +9,7 @@ public class StateUtils {
         return new MutAngle(0,0, unit);
     }
 
-    public static MutAngle mutableAngleSetpoint() {
+    public static MutAngle mutableRotationSetpoint() {
         return new MutAngle(0, 0, Units.Rotations);
     }
 }

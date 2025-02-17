@@ -20,7 +20,7 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
     private final StatusSignal<Angle> armPosition = armKraken.getPosition();
 
     public ArmSubsystem() {
-        super(ArmPosition.HOLD, StateUtils.mutableAngleSetpoint(), Units.Rotations.of(ArmConfig.ANGLE_TOLERANCE));
+        super(ArmPosition.HOLD, StateUtils.mutableRotationSetpoint(), Units.Rotations.of(ArmConfig.ANGLE_TOLERANCE));
         armKraken.getConfigurator().apply(ArmConfig.armMotorConfig);
         CANcoder armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.CANIVORE_BUS);
 

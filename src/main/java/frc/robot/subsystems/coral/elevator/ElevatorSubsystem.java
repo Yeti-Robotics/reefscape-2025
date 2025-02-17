@@ -12,6 +12,7 @@ import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.util.state.StateUtils;
 import frc.robot.util.state.StatefulSetpointSubsystem;
 
 import static frc.robot.constants.Constants.RIO_BUS;
@@ -27,7 +28,7 @@ public class ElevatorSubsystem extends StatefulSetpointSubsystem<ElevatorPositio
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
 
     public ElevatorSubsystem() {
-        super(ElevatorPosition.HOLD, new MutAngle(0, 0, Units.Rotations), Units.Rotations.of(ElevatorConfig.HEIGHT_TOLERANCE));
+        super(ElevatorPosition.HOLD, StateUtils.mutableRotationSetpoint(), Units.Rotations.of(ElevatorConfig.HEIGHT_TOLERANCE));
         primaryElevatorMotor.getConfigurator().apply(primaryTalonFXConfigs);
         secondaryElevatorMotor.getConfigurator().apply(secondaryTalonFXConfigs);
         secondaryElevatorMotor.setControl(
