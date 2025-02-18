@@ -36,8 +36,8 @@ public class ElevatorSubsystem extends SubsystemBase implements SimulatableMecha
         magicRequest = new MotionMagicVoltage(0);
 
         if (Robot.isSimulation()) {
-            PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor, 0.001);
-            PhysicsSim.getInstance().addTalonFX(secondaryElevatorMotor, 0.001);
+            PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
+            PhysicsSim.getInstance().addTalonFX(secondaryElevatorMotor);
         }
     }
 

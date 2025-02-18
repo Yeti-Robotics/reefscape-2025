@@ -52,7 +52,7 @@ public class Arm extends SubsystemBase implements SimulatableMechanism {
         armEncoderConfigurator.apply(cancoderConfiguration);
 
         if (Robot.isSimulation()) {
-            PhysicsSim.getInstance().addTalonFX(armKraken, 0.001, armEncoder);
+            PhysicsSim.getInstance().addTalonFX(armKraken, armEncoder);
         }
     }
 
