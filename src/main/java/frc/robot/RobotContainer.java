@@ -7,6 +7,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -29,7 +30,10 @@ public class RobotContainer {
 
     public final CommandXboxController xboxController;
     final CommandSwerveDrivetrain drivetrain;
+
+    @Logged(name = "Elevator")
     ElevatorSubsystem elevatorSubsystem;
+
     CoralIntake coralIntake;
     Arm arm;
     private final SwerveRequest.FieldCentric drive =
@@ -75,15 +79,30 @@ public class RobotContainer {
 
         xboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-        xboxController.povDown().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.SAFE));
+        xboxController.povDown().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.BOTTOM));
         xboxController.povRight().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.TEST));
         xboxController.povUp().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.LEVEL3));
         xboxController.povLeft().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.LEVEL4));
 
-        xboxController.a().onTrue(arm.moveTo(ArmPositions.STOWED));
-        xboxController.b().onTrue(arm.moveTo(ArmPositions.INTAKE));
-        xboxController.y().onTrue(arm.moveTo(ArmPositions.L3));
-        xboxController.x().onTrue(arm.moveTo(ArmPositions.L4));
+        xboxController
+                .a()
+                .onTrue(
+                        elevatorSubsystem
+                                .moveTo(ElevatorPosition.BOTTOM)
+                                .andThen(arm.moveTo(ArmPositions.UP)));
+        xboxController
+                .b()
+                .onTrue(
+                        elevatorSubsystem
+                                .moveTo(ElevatorPosition.INTAKE)
+                                .andThen(arm.moveTo(ArmPositions.INTAKE)));
+        // xboxController.y().onTrue(arm.moveTo(ArmPositions.L3));
+        xboxController
+                .x()
+                .onTrue(
+                        elevatorSubsystem
+                                .moveTo(ElevatorPosition.LEVEL4)
+                                .andThen(arm.moveTo(ArmPositions.L4)));
 
         xboxController.leftBumper().whileTrue(coralIntake.spinClaw(0.5));
         xboxController.rightBumper().whileTrue(coralIntake.spinClaw(-0.2));

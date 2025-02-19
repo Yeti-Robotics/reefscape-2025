@@ -4,9 +4,9 @@ public enum ArmPositions {
     L1(0),
     L2(0),
     L3(0),
-    L4(-0.15),
-    STOWED(0.75),
-    INTAKE(0.25);
+    L4(0.15),
+    UP(0.25),
+    INTAKE(-0.25);
 
     private final double value;
 

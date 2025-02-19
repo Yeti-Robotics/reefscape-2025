@@ -7,10 +7,12 @@ import static frc.robot.subsystems.elevator.ElevatorConfigs.secondaryTalonFXConf
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+@Logged
 public class ElevatorSubsystem extends SubsystemBase {
     private final TalonFX primaryElevatorMotor;
     private final TalonFX secondaryElevatorMotor;
@@ -46,12 +48,15 @@ public class ElevatorSubsystem extends SubsystemBase {
         return magSwitch.get();
     }
 
+    public boolean isAtTarget(double target) {
+        return Math.abs(primaryElevatorMotor.getPosition().getValueAsDouble() - target) < 0.05;
+    }
+
     public Command moveTo(ElevatorPosition position) {
-        return startEnd(
-                () ->
+        return runOnce(() ->
                         primaryElevatorMotor.setControl(
-                                magicRequest.withPosition(position.getHeight())),
-                this::stop);
+                                magicRequest.withPosition(position.getHeight())))
+                .until(() -> isAtTarget(position.getHeight()));
     }
 
     @Override
