@@ -11,9 +11,11 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.algae.AlgaeArm;
@@ -39,8 +41,8 @@ public class RobotContainer {
     Tray tray;
     AlgaeArm algaeArm;
     Climber climber;
-//    public static LEDSubsystem leds;
-//    public ProgressBar progressBar;
+    public static LEDSubsystem leds;
+    public ProgressBar progressBar;
     CANcoder wheel1;
     CANcoder wheel2;
     CANcoder wheel3;
@@ -50,13 +52,14 @@ public class RobotContainer {
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
+    private Joystick simJoy = new Joystick(1);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         elevatorSubsystem = new ElevatorSubsystem();
-//        leds = new LEDSubsystem();
-//        progressBar = new ProgressBar(leds);
+        leds = new LEDSubsystem();
+        progressBar = new ProgressBar(leds);
         tray = new Tray();
         algaeArm = new AlgaeArm();
         drivetrain = TunerConstants.createDrivetrain();
@@ -66,8 +69,7 @@ public class RobotContainer {
         wheel3 = drivetrain.getCANcoder(2);
         wheel4 = drivetrain.getCANcoder(3);
         configureBindings();
-//        configureTriggers();
-        publishSmartDashboard();
+        configureTriggers();
     }
 
     /**
@@ -95,48 +97,39 @@ public class RobotContainer {
                                                 -xboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
         xboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        xboxController.b().whileTrue(elevatorSubsystem.tuning(16.00));
-        xboxController.a().whileTrue(elevatorSubsystem.tuning(-16.00));
+        xboxController.a().onTrue(runOnce(() -> progressBar.subtractProgress()));
+        xboxController.b().onTrue(runOnce(() -> progressBar.addProgress()));
     }
 
-//    private void configureTriggers() {
-//        new Trigger(tray::isCoralInTray)
-//                .onTrue(runOnce(() -> progressBar.addProgress()))
-//                .and(DriverStation::isDisabled)
-//                .onFalse(runOnce(() -> progressBar.subtractProgress()));
-//        new Trigger(elevatorSubsystem::getMagSwitch)
-//                .onTrue(runOnce(() -> progressBar.addProgress()))
-//                .and(DriverStation::isDisabled)
-//                .onFalse(runOnce(() -> progressBar.subtractProgress()));
-//        new Trigger(() -> isWheelZeroed(wheel1))
-//                .and(() -> isWheelZeroed(wheel2))
-//                .and(() -> isWheelZeroed(wheel3))
-//                .and(() -> isWheelZeroed(wheel4))
-//                .and(DriverStation::isDisabled)
-//                .onTrue(runOnce(() -> progressBar.addProgress()))
-//                .onFalse(runOnce(() -> progressBar.subtractProgress()));
-//        new Trigger(() -> isEncoderZeroed(climber.climberEncoder))
-//                .onTrue(runOnce(() -> progressBar.addProgress()))
-//                .and(DriverStation::isDisabled)
-//                .onFalse(runOnce(() -> progressBar.subtractProgress()));
-//        new Trigger(() -> isEncoderZeroed(algaeArm.armEncoder))
-//                .onTrue(runOnce(() -> progressBar.addProgress()))
-//                .and(DriverStation::isDisabled)
-//                .onFalse(runOnce(() -> progressBar.subtractProgress()));
-//    }
+    private void configureTriggers() {
+        new Trigger(tray::isCoralInTray)
+                .onTrue(runOnce(() -> progressBar.addProgress()))
+                .and(DriverStation::isDisabled)
+                .onFalse(runOnce(() -> progressBar.subtractProgress()));
+        new Trigger(elevatorSubsystem::getMagSwitch)
+                .onTrue(runOnce(() -> progressBar.addProgress()))
+                .and(DriverStation::isDisabled)
+                .onFalse(runOnce(() -> progressBar.subtractProgress()));
+        new Trigger(() -> isWheelZeroed(wheel1))
+                .and(() -> isWheelZeroed(wheel2))
+                .and(() -> isWheelZeroed(wheel3))
+                .and(() -> isWheelZeroed(wheel4))
+                .and(DriverStation::isDisabled)
+                .onTrue(runOnce(() -> progressBar.addProgress()))
+                .onFalse(runOnce(() -> progressBar.subtractProgress()));
+        new Trigger(climber::isClimberZero)
+                .onTrue(runOnce(() -> progressBar.addProgress()))
+                .and(DriverStation::isDisabled)
+                .onFalse(runOnce(() -> progressBar.subtractProgress()));
+        new Trigger(algaeArm::isArmZero)
+                .onTrue(runOnce(() -> progressBar.addProgress()))
+                .and(DriverStation::isDisabled)
+                .onFalse(runOnce(() -> progressBar.subtractProgress()));
+    }
 
-    private boolean isWheelZeroed(CANcoder wheel) {
+    public boolean isWheelZeroed(CANcoder wheel) {
         double position = wheel.getPosition().refresh().getValueAsDouble();
         return position >= 0 || position <= Constants.ZERO_TOLERANCE;
-    }
-
-    private boolean isEncoderZeroed(CANcoder encoder) {
-        double position = encoder.getPosition().refresh().getValueAsDouble();
-        return position >= 0 || position <= Constants.ZERO_TOLERANCE;
-    }
-
-    private void publishSmartDashboard() {
-//        SmartDashboard.putString("Progress Bar", progressBar.progressBarState.toString());
     }
 
     /**

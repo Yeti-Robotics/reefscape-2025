@@ -5,6 +5,7 @@ import static frc.robot.subsystems.led.LEDConfigs.*;
 import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 
@@ -22,6 +23,7 @@ public class LEDSubsystem extends SubsystemBase {
         ALGAEINTAKE,
         IDLETELEOP,
         OFF,
+        SINGLEFADE,
         LOS;
     }
 
@@ -33,6 +35,8 @@ public class LEDSubsystem extends SubsystemBase {
         configAll.brightnessScalar = 0.5;
         configAll.vBatOutputMode = CANdle.VBatOutputMode.On;
         candle.configAllSettings(configAll, 100);
+
+
     }
 
     public void clearAnimation() {
@@ -87,6 +91,10 @@ public class LEDSubsystem extends SubsystemBase {
                         isRedAlliance()
                                 ? new StrobeAnimation(255, 0, 0, 0, 0.2, ledCount)
                                 : new StrobeAnimation(84, 229, 182, 0, 0.2, ledCount);
+                candle.animate(toAnimate);
+                break;
+            case SINGLEFADE:
+                toAnimate = new SingleFadeAnimation(191, 255, 0, 0, 0.2, ledCount, ledOffset);
                 candle.animate(toAnimate);
                 break;
         }

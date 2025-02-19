@@ -4,12 +4,15 @@ import static frc.robot.constants.Constants.RIO_BUS;
 import static frc.robot.subsystems.elevator.ElevatorConfigs.primaryTalonFXConfigs;
 import static frc.robot.subsystems.elevator.ElevatorConfigs.secondaryTalonFXConfigs;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -17,6 +20,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final TalonFX secondaryElevatorMotor;
     private final DigitalInput magSwitch;
     public final MotionMagicVoltage magicRequest;
+    boolean isElevatorZero = false;
 
     public ElevatorSubsystem() {
         primaryElevatorMotor = new TalonFX(ElevatorConfigs.primaryElevatorMotorID, RIO_BUS);
@@ -29,6 +33,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         magSwitch = new DigitalInput(ElevatorConfigs.magSwitchID);
         magicRequest = new MotionMagicVoltage(0);
+
+        SmartDashboard.putData(new InstantCommand(() -> isElevatorZero = !isElevatorZero));
     }
 
     public void setPosition(ElevatorPosition position) {
@@ -45,11 +51,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public boolean getMagSwitch() {
-        return magSwitch.get();
+        return Utils.isSimulation() ? isElevatorZero : magSwitch.get();
     }
 
     @Override
     public void periodic() {
         // Update logic if needed
+        SmartDashboard.putBoolean("isElevatorZero", getMagSwitch());
     }
 }

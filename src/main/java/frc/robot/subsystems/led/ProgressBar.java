@@ -1,6 +1,8 @@
 package frc.robot.subsystems.led;
 
+import com.ctre.phoenix6.Utils;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ProgressBar extends SubsystemBase {
@@ -8,16 +10,23 @@ public class ProgressBar extends SubsystemBase {
     public ProgressBarPercents progressBarState;
 
     public enum ProgressBarPercents {
-        ZERO,
-        TWENTY,
-        FORTY,
-        SIXTY,
-        EIGHTY,
-        FULL;
+        ZERO(0),
+        TWENTY(20),
+        FORTY(40),
+        SIXTY(60),
+        EIGHTY(80),
+        FULL(100);
+
+        private final int progress;
+
+        ProgressBarPercents(int progress) { this.progress = progress; }
+
+        public int getProgress() { return progress; }
     }
 
     public void addProgress() {
         switch (progressBarState) {
+            case ZERO -> progressBarState = ProgressBarPercents.TWENTY;
             case TWENTY -> progressBarState = ProgressBarPercents.FORTY;
             case FORTY -> progressBarState = ProgressBarPercents.SIXTY;
             case SIXTY -> progressBarState = ProgressBarPercents.EIGHTY;
@@ -31,6 +40,7 @@ public class ProgressBar extends SubsystemBase {
             case EIGHTY -> progressBarState = ProgressBarPercents.SIXTY;
             case SIXTY -> progressBarState = ProgressBarPercents.FORTY;
             case FORTY -> progressBarState = ProgressBarPercents.TWENTY;
+            case TWENTY -> progressBarState = ProgressBarPercents.ZERO;
         }
     }
 
@@ -69,12 +79,12 @@ public class ProgressBar extends SubsystemBase {
 
     public ProgressBar(LEDSubsystem ledSubsystem) {
         this.ledSubsystem = ledSubsystem;
+        progressBarState = ProgressBarPercents.ZERO;
     }
 
     @Override
     public void periodic() {
-        if (DriverStation.isDisabled()) {
-            setProgress(progressBarState);
-        }
+        setProgress(progressBarState);
+        SmartDashboard.putNumber("progressState", progressBarState.getProgress());
     }
 }
