@@ -14,6 +14,7 @@ public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase
 
     public StatefulSubsystem(T defaultState) {
         this.defaultState = defaultState;
+        this.currentState = defaultState;
     }
 
     protected abstract StatusCode initializeTransition(T targetState);

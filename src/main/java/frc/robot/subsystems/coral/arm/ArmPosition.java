@@ -4,11 +4,12 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 
 public enum ArmPosition {
-    STOWED(90),
-    L1(0),
-    L2(0),
-    L3(0),
-    L4(0),
+    DOWN(-0.254),
+    UP(0.254),
+    L1(.60),
+    L2(.45),
+    L3(.45),
+    L4(.30),
     HOLD(-1);  // special case, for when transitions are interrupted
 
     private final Angle angle;

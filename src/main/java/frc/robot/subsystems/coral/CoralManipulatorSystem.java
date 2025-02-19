@@ -1,16 +1,18 @@
 package frc.robot.subsystems.coral;
 
 import com.ctre.phoenix6.StatusCode;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
 import frc.robot.util.state.StatefulSubsystem;
 
 public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorState> {
-    private final ArmSubsystem arm = new ArmSubsystem();
-    private final ElevatorSubsystem elevator = new ElevatorSubsystem();
-    private final GrabberSubsystem grabber = new GrabberSubsystem();
+    public final ArmSubsystem arm = new ArmSubsystem();
+    public final ElevatorSubsystem elevator = new ElevatorSubsystem();
+    public final GrabberSubsystem grabber = new GrabberSubsystem();
 
     public CoralManipulatorSystem() {
         super(CoralManipulatorState.IDLE);
@@ -18,9 +20,16 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
 
     @Override
     protected void runPeriodic() {
-        if (grabber.hasCoral() && getCurrentState() != CoralManipulatorState.READY) {
-            transitionToState(CoralManipulatorState.READY);
-        }
+//        if (grabber.hasCoral() && getCurrentState() == CoralManipulatorState.INTAKE) {
+//            transitionToState(CoralManipulatorState.READY);
+//        }
+
+        SmartDashboard.putBoolean("Grabber hasCoral", grabber.hasCoral());
+        SmartDashboard.putString("Coral state", getCurrentState().toString());
+        SmartDashboard.putBoolean("Arm transition", arm.isTransitioning());
+        SmartDashboard.putBoolean("Elevator transition", elevator.isTransitioning());
+        SmartDashboard.putString("Arm transition state", arm.getCurrentState().toString());
+        SmartDashboard.putString("Elevator transition state", elevator.getCurrentState().toString());
     }
 
     @Override
@@ -31,14 +40,12 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
             case INTAKE, READY -> {
                 coralManipulatorCommand = arm.transitionTo(targetState.getArmPosition())
                         .andThen(elevator.transitionTo(targetState.getElevatorPosition()))
-                        .alongWith(grabber.transitionTo(targetState.getGrabberState()))
-                        .handleInterrupt(this::failTransition);
+                        .alongWith(grabber.transitionTo(targetState.getGrabberState()));
             }
             default -> {
                 coralManipulatorCommand = arm.transitionTo(targetState.getArmPosition())
                         .alongWith(elevator.transitionTo(targetState.getElevatorPosition()))
-                        .alongWith(grabber.transitionTo(targetState.getGrabberState()))
-                        .handleInterrupt(this::failTransition);
+                        .alongWith(grabber.transitionTo(targetState.getGrabberState()));
             }
         }
 

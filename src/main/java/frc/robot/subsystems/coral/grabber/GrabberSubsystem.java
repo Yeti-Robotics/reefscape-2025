@@ -17,6 +17,8 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
     // idk if its DigitalInput or Cancolor, assuming the former for now
     private final DigitalInput clawSwitch = new DigitalInput(GrabberConfig.GRABBER_BEAM_BREAK);
 
+
+
     public GrabberSubsystem() {
         super(GrabberState.OFF);
         claw.getConfigurator().apply(GrabberConfig.coralMotorConfig);

@@ -5,9 +5,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.epilogue.Epilogue;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.util.sim.PhysicsSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -15,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
+@Logged
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
 
@@ -29,6 +35,9 @@ public class Robot extends TimedRobot {
         // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
+        DataLogManager.start();
+        DriverStation.startDataLog(DataLogManager.getLog());
+
     }
 
     /**
@@ -45,6 +54,7 @@ public class Robot extends TimedRobot {
         // and running subsystem periodic() methods.  This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
+        robotContainer.updateMechanisms();
     }
 
     /** This method is called once each time the robot enters Disabled mode. */
@@ -102,5 +112,7 @@ public class Robot extends TimedRobot {
 
     /** This method is called periodically whilst in simulation. */
     @Override
-    public void simulationPeriodic() {}
+    public void simulationPeriodic() {
+        PhysicsSim.getInstance().run();
+    }
 }
