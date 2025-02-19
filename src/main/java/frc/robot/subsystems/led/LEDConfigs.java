@@ -4,7 +4,7 @@ import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdleConfiguration;
 
 class LEDConfigs {
-    static CANdleConfiguration configAll;
+    public CANdleConfiguration configAll;
 
     LEDConfigs() {
         configAll = new CANdleConfiguration();

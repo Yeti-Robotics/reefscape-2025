@@ -9,10 +9,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.led.LEDSubsystem;
-import frc.robot.subsystems.led.ProgressBar;
-
-import static frc.robot.RobotContainer.leds;
-import static frc.robot.RobotContainer.progressBar;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -57,9 +53,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {}
 
     @Override
-    public void disabledPeriodic() {
-        progressBar.setProgress(ProgressBar.progressBarState);
-    }
+    public void disabledPeriodic() {}
 
     /**
      * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
@@ -92,7 +86,7 @@ public class Robot extends TimedRobot {
     /** This method is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-        leds.setAnimation(LEDSubsystem.Events.IDLETELEOP);
+//        RobotContainer.leds.setAnimation(LEDSubsystem.Events.IDLETELEOP);
     }
 
     @Override

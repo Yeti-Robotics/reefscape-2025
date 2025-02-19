@@ -1,8 +1,11 @@
 package frc.robot.subsystems.led;
 
-public class ProgressBar {
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class ProgressBar extends SubsystemBase {
     private LEDSubsystem ledSubsystem;
-    public static ProgressBarPercents progressBarState;
+    public ProgressBarPercents progressBarState;
 
     public enum ProgressBarPercents {
         ZERO,
@@ -66,5 +69,12 @@ public class ProgressBar {
 
     public ProgressBar(LEDSubsystem ledSubsystem) {
         this.ledSubsystem = ledSubsystem;
+    }
+
+    @Override
+    public void periodic() {
+        if (DriverStation.isDisabled()) {
+            setProgress(progressBarState);
+        }
     }
 }

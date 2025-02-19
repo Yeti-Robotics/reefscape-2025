@@ -6,7 +6,6 @@ import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.constants.Constants;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -14,6 +13,7 @@ public class LEDSubsystem extends SubsystemBase {
     private Animation toAnimate = null;
     public int ledCount = 36;
     public int ledOffset = 8;
+    private CANdleConfiguration configAll;
 
     public enum Events {
         NICK,
@@ -26,6 +26,12 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public LEDSubsystem() {
+        configAll = new CANdleConfiguration();
+        configAll.statusLedOffWhenActive = false;
+        configAll.disableWhenLOS = false;
+        configAll.stripType = CANdle.LEDStripType.RGB;
+        configAll.brightnessScalar = 0.5;
+        configAll.vBatOutputMode = CANdle.VBatOutputMode.On;
         candle.configAllSettings(configAll, 100);
     }
 
@@ -85,6 +91,7 @@ public class LEDSubsystem extends SubsystemBase {
                 break;
         }
     }
+
     public static boolean isRedAlliance() {
         return DriverStation.getAlliance()
                 .filter(value -> value == DriverStation.Alliance.Red)
