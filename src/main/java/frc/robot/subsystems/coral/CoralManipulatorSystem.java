@@ -56,10 +56,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
 
     @Override
     protected StatusCode initializeTransition(CoralManipulatorState targetState) {
-        Command coralManipulatorCommand =
-                arm.transitionTo(targetState.getArmPosition())
-                        .alongWith(elevator.transitionTo(targetState.getElevatorPosition()))
-                        .alongWith(grabber.transitionTo(targetState.getGrabberState()));
+        Command coralManipulatorCommand;
 
         if (getCurrentState()
                         .getElevatorPosition()
@@ -68,7 +65,14 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
                 && getCurrentState() != targetState) {
             coralManipulatorCommand =
                     elevator.transitionTo(ElevatorPosition.SAFE_POSITION)
-                            .andThen(coralManipulatorCommand);
+                            .andThen(arm.transitionTo(targetState.getArmPosition()))
+                            .andThen(elevator.transitionTo(targetState.getElevatorPosition()))
+                            .alongWith(grabber.transitionTo(targetState.getGrabberState()));
+        } else {
+            coralManipulatorCommand =
+                    arm.transitionTo(targetState.getArmPosition())
+                            .alongWith(elevator.transitionTo(targetState.getElevatorPosition()))
+                            .alongWith(grabber.transitionTo(targetState.getGrabberState()));
         }
 
         coralManipulatorCommand.schedule();
