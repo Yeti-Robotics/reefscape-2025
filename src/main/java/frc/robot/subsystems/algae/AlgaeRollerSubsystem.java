@@ -1,19 +1,18 @@
 package frc.robot.subsystems.algae;
 
-import static frc.robot.constants.Constants.*;
-
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class AlgaeRoller extends SubsystemBase {
-    private final TalonFX roller;
+import static frc.robot.constants.Constants.RIO_BUS;
 
-    public AlgaeRoller() {
-        roller = new TalonFX(AlgaeRollerConfigs.ROLLER_ID, RIO_BUS);
+@Logged
+public class AlgaeRollerSubsystem extends SubsystemBase {
+    private final TalonFX roller = new TalonFX(AlgaeRollerConfig.ROLLER_ID, RIO_BUS);
 
-        var rollerConfigurator = roller.getConfigurator();
-        rollerConfigurator.apply(AlgaeRollerConfigs.configs);
+    public AlgaeRollerSubsystem() {
+        roller.getConfigurator().apply(AlgaeRollerConfig.TALON_FX_CONFIGURATION);
     }
 
     private void setRollerSpeed(double speed) {

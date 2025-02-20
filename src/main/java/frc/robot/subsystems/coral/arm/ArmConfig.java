@@ -1,19 +1,19 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.coral.arm;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.*;
 
 class ArmConfig {
 
-    static final int ARM_KRAKEN_ID = 21;
+    static final int ARM_KRAKEN_ID = 47;
     static final int ARM_CANCODER_ID = 5;
 
     static final double MAGNET_OFFSET = 0;
     static final double GEAR_RATIO = 113;
 
-    static final double ARM_DEPLOY_LOWER_BOUND = 0; // alphabot
+    static final double ARM_DEPLOY_LOWER_BOUND = 0;
 
-    static final Slot0Configs SLOT_0_CONFIGS =
+    private static final Slot0Configs SLOT_0_REAL_CONFIGS =
             new Slot0Configs()
                     .withKP(540) // alphabot
                     .withKI(0) // alphabot
@@ -23,27 +23,38 @@ class ArmConfig {
                     .withKA(0.75) // alphabot
                     .withGravityType(GravityTypeValue.Arm_Cosine);
 
+    private static final Slot1Configs SLOT_1_SIM_CONFIGS =
+            new Slot1Configs()
+                    .withKP(368)
+                    .withKI(0)
+                    .withKD(32)
+                    .withKG(0)
+                    .withKV(0)
+                    .withKA(6.25)
+                    .withGravityType(GravityTypeValue.Arm_Cosine);
+
+    private static final MotionMagicConfigs motionMagicConfigs =
+            new MotionMagicConfigs()
+                    .withMotionMagicCruiseVelocity(1)
+                    .withMotionMagicAcceleration(2)
+                    .withMotionMagicJerk(0);
+
     static final TalonFXConfiguration talonFXConfiguration =
             new TalonFXConfiguration()
                     .withFeedback(
                             new FeedbackConfigs()
-                                    .withFeedbackRemoteSensorID(0)
+                                    .withFeedbackRemoteSensorID(ARM_CANCODER_ID)
                                     .withFeedbackSensorSource(
                                             FeedbackSensorSourceValue.FusedCANcoder)
                                     .withSensorToMechanismRatio(GEAR_RATIO) // alphabot
                                     .withRotorToSensorRatio(1)) // alphabot
                     .withMotorOutput(
                             new MotorOutputConfigs()
-                                    .withInverted(ArmConfig.ARM_INVERSION)
-                                    .withNeutralMode(ArmConfig.ARM_NEUTRAL_MODE))
-                    .withSlot0(SLOT_0_CONFIGS);
-
-    static final MotionMagicConfigs motionMagicConfigs =
-            talonFXConfiguration
-                    .MotionMagic
-                    .withMotionMagicCruiseVelocity(1)
-                    .withMotionMagicAcceleration(2)
-                    .withMotionMagicJerk(0);
+                                    .withInverted(InvertedValue.CounterClockwise_Positive)
+                                    .withNeutralMode(NeutralModeValue.Brake))
+                    .withSlot0(SLOT_0_REAL_CONFIGS)
+                    .withSlot1(SLOT_1_SIM_CONFIGS)
+                    .withMotionMagic(motionMagicConfigs);
 
     static final CANcoderConfiguration cancoderConfiguration =
             new CANcoderConfiguration()
@@ -53,8 +64,5 @@ class ArmConfig {
                                             SensorDirectionValue.CounterClockwise_Positive)
                                     .withMagnetOffset(MAGNET_OFFSET));
 
-    static final InvertedValue ARM_INVERSION = InvertedValue.CounterClockwise_Positive;
-    static final NeutralModeValue ARM_NEUTRAL_MODE = NeutralModeValue.Brake;
-    static final double ARM_POSITION_STATUS_FRAME = 0; // placeholder
-    static final double ARM_VELOCITY_STATUS_FRAME = 0; // placeholder
+    static final double ANGLE_TOLERANCE = 0.05;
 }
