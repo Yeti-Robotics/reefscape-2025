@@ -1,15 +1,14 @@
 package frc.robot.subsystems.climber;
 
+import static frc.robot.subsystems.climber.ClimberConfig.*;
+
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-
-import static frc.robot.subsystems.climber.ClimberConfig.*;
 
 @Logged
 public class ClimberSubsystem extends SubsystemBase {
@@ -29,9 +28,11 @@ public class ClimberSubsystem extends SubsystemBase {
     private void setClimberSpeed(double speed) {
         climber.set(speed);
     }
+
     private void stop() {
         climber.stopMotor();
     }
+
     public Command spinClimber(double speed) {
         return startEnd(() -> setClimberSpeed(speed), this::stop);
     }

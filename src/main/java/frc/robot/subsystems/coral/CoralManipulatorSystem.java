@@ -2,7 +2,6 @@ package frc.robot.subsystems.coral;
 
 import com.ctre.phoenix6.StatusCode;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
@@ -14,8 +13,10 @@ import frc.robot.util.state.StatefulSubsystem;
 public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorState> {
     @Logged(name = "Arm")
     public final ArmSubsystem arm = new ArmSubsystem();
+
     @Logged(name = "Elevator")
     public final ElevatorSubsystem elevator = new ElevatorSubsystem();
+
     @Logged(name = "Grabber")
     public final GrabberSubsystem grabber = new GrabberSubsystem();
 
@@ -55,13 +56,19 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
 
     @Override
     protected StatusCode initializeTransition(CoralManipulatorState targetState) {
-        Command coralManipulatorCommand = arm.transitionTo(targetState.getArmPosition())
-                .alongWith(elevator.transitionTo(targetState.getElevatorPosition()))
-                .alongWith(grabber.transitionTo(targetState.getGrabberState()));
+        Command coralManipulatorCommand =
+                arm.transitionTo(targetState.getArmPosition())
+                        .alongWith(elevator.transitionTo(targetState.getElevatorPosition()))
+                        .alongWith(grabber.transitionTo(targetState.getGrabberState()));
 
-        if (getCurrentState().getElevatorPosition().getHeight().lt(ElevatorPosition.SAFE_POSITION.getHeight())) {
-            coralManipulatorCommand = elevator.transitionTo(ElevatorPosition.SAFE_POSITION)
-                    .andThen(coralManipulatorCommand);
+        if (getCurrentState()
+                        .getElevatorPosition()
+                        .getHeight()
+                        .lt(ElevatorPosition.SAFE_POSITION.getHeight())
+                && getCurrentState() != targetState) {
+            coralManipulatorCommand =
+                    elevator.transitionTo(ElevatorPosition.SAFE_POSITION)
+                            .andThen(coralManipulatorCommand);
         }
 
         coralManipulatorCommand.schedule();

@@ -1,10 +1,8 @@
 package frc.robot.util.state;
 
 import com.ctre.phoenix6.StatusCode;
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import java.util.Optional;
 
 public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase {
@@ -42,7 +40,7 @@ public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase
     }
 
     @Override
-    final public void periodic() {
+    public final void periodic() {
         runPeriodic();
 
         if (isTransitioning()) {
@@ -51,23 +49,30 @@ public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase
     }
 
     /**
-     * Transition to the given state, or the default state supplied by the subsystem if the transition is interrupted.
+     * Transition to the given state, or the default state supplied by the subsystem if the
+     * transition is interrupted.
+     *
      * @param state the target state to transition to.
-     * @return a command that will transition to the given state, or the default state if the transition is interrupted.
-     * */
+     * @return a command that will transition to the given state, or the default state if the
+     *     transition is interrupted.
+     */
     public Command transitionTo(T state) {
-        return transitionTo(state, defaultState); // most of the time, this fallback state will be HOLD, which maintains the current position
+        return transitionTo(
+                state, defaultState); // most of the time, this fallback state will be HOLD, which
+        // maintains the current position
     }
 
     /**
-     * Transition to the given state, or fallback state if the transition is interrupted.
-     * Be careful with this method, as it can lead to unexpected behavior if the fallback state is not appropriate for the subsystem, it may cause sudden changes.
+     * Transition to the given state, or fallback state if the transition is interrupted. Be careful
+     * with this method, as it can lead to unexpected behavior if the fallback state is not
+     * appropriate for the subsystem, it may cause sudden changes.
+     *
      * @param state the target state to transition to.
      * @param fallbackState the fallback state to use if the transition is interrupted.
-     * @return A command that will transition to the given state, or fallback state if the transition is interrupted.
-     * @see StatefulSubsystem#transitionTo(Enum)
-     * if you don't want to specify a fallback state
-     * */
+     * @return A command that will transition to the given state, or fallback state if the
+     *     transition is interrupted.
+     * @see StatefulSubsystem#transitionTo(Enum) if you don't want to specify a fallback state
+     */
     public Command transitionTo(T state, T fallbackState) {
         return startEnd(() -> transitionToState(state), () -> {})
                 .until(() -> !isTransitioning())

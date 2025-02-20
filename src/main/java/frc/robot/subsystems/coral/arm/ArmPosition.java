@@ -12,7 +12,7 @@ public enum ArmPosition implements SetpointEnum {
     L3(.45),
     L4(.30),
     AWAY(0),
-    HOLD(-1);  // special case, for when transitions are interrupted
+    HOLD(-1); // special case, for when transitions are interrupted
 
     private final Angle angle;
 
@@ -29,7 +29,5 @@ public enum ArmPosition implements SetpointEnum {
     }
 
     @Override
-    public void validateOrdering() {
-
-    }
+    public void validateOrdering() {}
 }
