@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
@@ -34,32 +35,34 @@ import java.util.function.BiFunction;
  */
 public class RobotContainer {
 
-    // public final CommandXboxController xboxController;
+    public final CommandXboxController primaryXboxController;
+
+    @Logged(name = "Drivetrain")
     final CommandSwerveDrivetrain drivetrain;
 
-    @Logged(name = "coral")
-    final CoralManipulatorSystem coral;
+    @Logged(name = "CoralManipulator")
+    final CoralManipulatorSystem coralManipulator;
 
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
+
+
     Mechanism2d elevatorArmMech =
             new Mechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
     private MechanismLigament2d liftLigament;
     private MechanismLigament2d armLigament;
     private final CommandJoystick joystick = new CommandJoystick(0);
-    //private final CommandJoystick joystick1 = new CommandJoystick(1);
-    //   CommandXboxController xboxController = new CommandXboxController(0);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        // xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
+        primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
-        coral = new CoralManipulatorSystem();
+        coralManipulator = new CoralManipulatorSystem();
         configureBindings();
         assembleMechanisms();
     }
@@ -74,34 +77,31 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-//        drivetrain.setDefaultCommand(
-//                drivetrain.applyRequest(
-//                        () ->
-//                                drive.withVelocityX(
-//                                                -xboxController.getLeftY()
-//                                                        * TunerConstants.kSpeedAt12Volts
-//                                                        .magnitude())
-//                                        .withVelocityY(
-//                                                -xboxController.getLeftX()
-//                                                        * TunerConstants.kSpeedAt12Volts
-//                                                        .magnitude())
-//                                        .withRotationalRate(
-//                                                -xboxController.getRightX()
-//                                                        * TunerConstants.MaFxAngularRate)));
-//        xboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-//        xboxController.a().onTrue(coral.transitionTo(CoralManipulatorState.L1));
+        drivetrain.setDefaultCommand(
+                drivetrain.applyRequest(
+                        () ->
+                                drive.withVelocityX(
+                                                -primaryXboxController.getLeftY()
+                                                        * TunerConstants.kSpeedAt12Volts
+                                                        .magnitude())
+                                        .withVelocityY(
+                                                -primaryXboxController.getLeftX()
+                                                        * TunerConstants.kSpeedAt12Volts
+                                                        .magnitude())
+                                        .withRotationalRate(
+                                                -primaryXboxController.getRightX()
+                                                        * TunerConstants.MaFxAngularRate)));
+        primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-        BiFunction<Integer, Command, Command> buttonCommand = (buttonNum, andThenCmd) -> {
-            return new InstantCommand(() -> SmartDashboard.putNumber("Button pressed:", buttonNum))
-                    .andThen(andThenCmd);
-        };
+        BiFunction<Integer, Command, Command> buttonCommand = (buttonNum, andThenCmd) -> new InstantCommand(() -> SmartDashboard.putNumber("Button pressed:", buttonNum))
+                .andThen(andThenCmd);
 
-        joystick.button(1).onTrue(buttonCommand.apply(1, coral.transitionTo(CoralManipulatorState.L1)));
-        joystick.button(2).onTrue(buttonCommand.apply(2, coral.transitionTo(CoralManipulatorState.L2)));
-        joystick.button(3).onTrue(buttonCommand.apply(3, coral.transitionTo(CoralManipulatorState.L3)));
-        joystick.button(4).onTrue(buttonCommand.apply(4, coral.transitionTo(CoralManipulatorState.L4)));
-        joystick.button(5).onTrue(buttonCommand.apply(5, coral.transitionTo(CoralManipulatorState.INTAKE_CORAL)));
-        joystick.button(6).onTrue(buttonCommand.apply(6, coral.transitionTo(CoralManipulatorState.STOWED)));
+        joystick.button(1).onTrue(buttonCommand.apply(1, coralManipulator.transitionTo(CoralManipulatorState.L1)));
+        joystick.button(2).onTrue(buttonCommand.apply(2, coralManipulator.transitionTo(CoralManipulatorState.L2)));
+        joystick.button(3).onTrue(buttonCommand.apply(3, coralManipulator.transitionTo(CoralManipulatorState.L3)));
+        joystick.button(4).onTrue(buttonCommand.apply(4, coralManipulator.transitionTo(CoralManipulatorState.L4)));
+        joystick.button(5).onTrue(buttonCommand.apply(5, coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL)));
+        joystick.button(6).onTrue(buttonCommand.apply(6, coralManipulator.transitionTo(CoralManipulatorState.STOWED)));
 
     }
 
@@ -131,10 +131,10 @@ public class RobotContainer {
     }
 
     public void updateMechanisms() {
-        liftLigament.setLength(coral.elevator.updateMechPos());
-        armLigament.setAngle(coral.arm.updateMechPos());
+        liftLigament.setLength(coralManipulator.elevator.updateMechPos());
+        armLigament.setAngle(coralManipulator.arm.updateMechPos());
 
-        SmartDashboard.putData("Mechanisms", elevatorArmMech);
+        SmartDashboard.putData("Mechanisms/CoralManipulator", elevatorArmMech);
     }
 
     /**

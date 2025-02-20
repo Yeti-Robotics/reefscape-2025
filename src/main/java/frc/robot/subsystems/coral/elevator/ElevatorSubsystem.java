@@ -8,11 +8,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
@@ -21,6 +19,7 @@ import frc.robot.util.sim.SimulatableMechanism;
 import frc.robot.util.state.StateUtils;
 import frc.robot.util.state.StatefulSetpointSubsystem;
 
+import static edu.wpi.first.math.util.Units.inchesToMeters;
 import static frc.robot.constants.Constants.RIO_BUS;
 import static frc.robot.subsystems.coral.elevator.ElevatorConfig.primaryTalonFXConfigs;
 import static frc.robot.subsystems.coral.elevator.ElevatorConfig.secondaryTalonFXConfigs;
@@ -43,7 +42,6 @@ public class ElevatorSubsystem extends StatefulSetpointSubsystem<ElevatorPositio
                 new Follower(ElevatorConfig.primaryElevatorMotorID, true));
 
         new Trigger(this::getMagSwitch).onTrue(zeroPosition().andThen(transitionTo(ElevatorPosition.BOTTOM)));
-        SmartDashboard.putNumber("Elevator primary Can", primaryElevatorMotor.getDeviceID());
 
         if (Robot.isSimulation()) {
             PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor, 0.001);
@@ -76,6 +74,6 @@ public class ElevatorSubsystem extends StatefulSetpointSubsystem<ElevatorPositio
 
     @Override
     public double updateMechPos() {
-        return edu.wpi.first.math.util.Units.inchesToMeters(primaryElevatorMotor.getPosition().getValueAsDouble());
+        return inchesToMeters(primaryElevatorMotor.getPosition().getValueAsDouble());
     }
 }
