@@ -24,9 +24,9 @@ class ElevatorConfig {
 
     private static final Slot1Configs SLOT_1_SIM_CONFIGS =
             new Slot1Configs()
-                    .withKP(8)
+                    .withKP(24)
                     .withKI(0)
-                    .withKD(1)
+                    .withKD(24)
                     .withKG(0)
                     .withKV(0)
                     .withKA(0.1)

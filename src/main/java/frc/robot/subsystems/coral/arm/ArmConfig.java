@@ -9,7 +9,7 @@ class ArmConfig {
     static final int ARM_CANCODER_ID = 5;
 
     static final double MAGNET_OFFSET = 0;
-    static final double GEAR_RATIO = 113;
+    static final double GEAR_RATIO = 75.6055;
 
     static final double ARM_DEPLOY_LOWER_BOUND = 0;
 
@@ -25,12 +25,12 @@ class ArmConfig {
 
     private static final Slot1Configs SLOT_1_SIM_CONFIGS =
             new Slot1Configs()
-                    .withKP(368)
+                    .withKP(300)
                     .withKI(0)
-                    .withKD(32)
+                    .withKD(600)
                     .withKG(0)
                     .withKV(0)
-                    .withKA(6.25)
+                    .withKA(60)
                     .withGravityType(GravityTypeValue.Arm_Cosine);
 
     private static final MotionMagicConfigs motionMagicConfigs =

@@ -10,7 +10,6 @@ import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.MutAngle;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.constants.Constants;
 import frc.robot.util.sim.PhysicsSim;
@@ -22,7 +21,8 @@ import frc.robot.util.state.StatefulSetpointSubsystem;
 public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUnit, Angle, MutAngle>
         implements SimulatableMechanism {
     private final TalonFX armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS);
-    private final MotionMagicVoltage motionRequest = new MotionMagicVoltage(0).withSlot(1);
+    private final MotionMagicTorqueCurrentFOC magicRequest =
+            new MotionMagicTorqueCurrentFOC(0).withSlot(Robot.isReal() ? 0 : 1);
 
     private final StatusSignal<Angle> armPosition = armKraken.getPosition();
 
@@ -48,7 +48,7 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
 
     @Override
     public StatusCode moveTo(Angle setpoint) {
-        return armKraken.setControl(motionRequest.withPosition(setpoint).withSlot(1));
+        return armKraken.setControl(magicRequest.withPosition(setpoint));
     }
 
     @Override
@@ -58,7 +58,6 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
 
     @Override
     public double updateMechPos() {
-        SmartDashboard.putNumber("Arm position", armKraken.getPosition().getValueAsDouble());
-        return (armKraken.getPosition().getValueAsDouble() * 360.0) - 90;
+        return (armPosition.getValueAsDouble() * 360.0) - 90;
     }
 }

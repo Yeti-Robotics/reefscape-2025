@@ -8,7 +8,7 @@ import static frc.robot.subsystems.coral.elevator.ElevatorConfig.secondaryTalonF
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.AngleUnit;
@@ -34,7 +34,8 @@ public class ElevatorSubsystem
             new TalonFX(ElevatorConfig.secondaryElevatorMotorID, RIO_BUS);
     private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
 
-    private final MotionMagicVoltage motionVoltageRequest = new MotionMagicVoltage(0).withSlot(1);
+    private final MotionMagicTorqueCurrentFOC magicRequest =
+            new MotionMagicTorqueCurrentFOC(0).withSlot(Robot.isReal() ? 0 : 1);
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
 
     public ElevatorSubsystem() {
@@ -78,11 +79,11 @@ public class ElevatorSubsystem
 
     @Override
     public StatusCode moveTo(Angle setpoint) {
-        return primaryElevatorMotor.setControl(motionVoltageRequest.withPosition(setpoint));
+        return primaryElevatorMotor.setControl(magicRequest.withPosition(setpoint));
     }
 
     @Override
     public double updateMechPos() {
-        return inchesToMeters(primaryElevatorMotor.getPosition().getValueAsDouble());
+        return inchesToMeters(elevatorPosition.getValueAsDouble());
     }
 }
