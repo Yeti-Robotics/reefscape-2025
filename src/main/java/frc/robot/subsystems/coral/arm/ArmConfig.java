@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.coral.arm;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.*;
@@ -63,4 +63,6 @@ class ArmConfig {
                                     .withSensorDirection(
                                             SensorDirectionValue.CounterClockwise_Positive)
                                     .withMagnetOffset(MAGNET_OFFSET));
+
+    static final double ANGLE_TOLERANCE = 0.05;
 }
