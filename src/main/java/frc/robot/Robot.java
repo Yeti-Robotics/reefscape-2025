@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
     /** This method is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-//        RobotContainer.leds.setAnimation(LEDSubsystem.Events.IDLETELEOP);
+        RobotContainer.leds.setAnimation(LEDSubsystem.Events.IDLETELEOP);
     }
 
     @Override
