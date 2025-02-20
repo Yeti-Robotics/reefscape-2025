@@ -1,6 +1,7 @@
 package frc.robot.subsystems.coral;
 
 import com.ctre.phoenix6.StatusCode;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
@@ -15,6 +16,15 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
 
     public CoralManipulatorSystem() {
         super(CoralManipulatorState.IDLE);
+    }
+
+    @Override
+    protected void runPeriodic() {
+        SmartDashboard.putString("Coral state", getCurrentState().toString());
+        SmartDashboard.putBoolean("Arm transitioning?", arm.isTransitioning());
+        SmartDashboard.putBoolean("Elevator transitioning?", elevator.isTransitioning());
+        SmartDashboard.putString("Arm transition state", arm.getCurrentState().toString());
+        SmartDashboard.putString("Elevator transition state", elevator.getCurrentState().toString());
     }
 
     @Override
