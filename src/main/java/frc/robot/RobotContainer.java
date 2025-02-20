@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -26,6 +27,7 @@ public class RobotContainer {
     public final CommandXboxController xboxController;
     final CommandSwerveDrivetrain drivetrain;
     ElevatorSubsystem elevatorSubsystem;
+    ClimberSubsystem climberSubsystem;
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
@@ -37,6 +39,7 @@ public class RobotContainer {
         xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
         elevatorSubsystem = new ElevatorSubsystem();
+        climberSubsystem = new ClimberSubsystem();
         configureBindings();
     }
 
@@ -67,6 +70,8 @@ public class RobotContainer {
         xboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
         xboxController.b().whileTrue(elevatorSubsystem.tuning(16.00));
         xboxController.a().whileTrue(elevatorSubsystem.tuning(-16.00));
+        xboxController.leftBumper().whileTrue(climberSubsystem.spinClimber(-1));
+        xboxController.rightBumper().whileTrue(climberSubsystem.spinClimber(0.1));
     }
 
     /**

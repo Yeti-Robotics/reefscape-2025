@@ -2,14 +2,16 @@ package frc.robot.subsystems.climber;
 
 public enum ClimberPositions {
     STOWED(0),
-    READY(90),
-    CLIMBED(270);
+    READY(0.25),
+    CLIMBED(0.75);
 
-    private final int angle;
+    private final double value;
 
-    ClimberPositions(final int angle) { this.angle = angle; }
+    ClimberPositions(final double value) {
+        this.value = value;
+    }
 
-    public int getAngle() {
-        return angle;
+    public double getValue() {
+        return value;
     }
 }
