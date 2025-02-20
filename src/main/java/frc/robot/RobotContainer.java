@@ -9,7 +9,6 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,17 +19,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
-import frc.robot.subsystems.coral.arm.ArmPosition;
-import frc.robot.subsystems.coral.arm.ArmSubsystem;
-import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 
 import java.util.function.BiFunction;
-import java.util.function.Supplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -106,9 +100,8 @@ public class RobotContainer {
         joystick.button(2).onTrue(buttonCommand.apply(2, coral.transitionTo(CoralManipulatorState.L2)));
         joystick.button(3).onTrue(buttonCommand.apply(3, coral.transitionTo(CoralManipulatorState.L3)));
         joystick.button(4).onTrue(buttonCommand.apply(4, coral.transitionTo(CoralManipulatorState.L4)));
-        joystick.button(5).onTrue(buttonCommand.apply(5, coral.transitionTo(CoralManipulatorState.READY)));
-        joystick.button(6).onTrue(buttonCommand.apply(6, coral.transitionTo(CoralManipulatorState.INTAKE)));
-        joystick.button(7).onTrue(buttonCommand.apply(7, coral.transitionTo(CoralManipulatorState.STOWED)));
+        joystick.button(5).onTrue(buttonCommand.apply(5, coral.transitionTo(CoralManipulatorState.INTAKE_CORAL)));
+        joystick.button(6).onTrue(buttonCommand.apply(6, coral.transitionTo(CoralManipulatorState.STOWED)));
 
     }
 
@@ -119,10 +112,18 @@ public class RobotContainer {
                         .append(
                                 new MechanismLigament2d(
                                         "lift",
-                                        Units.feetToMeters(1),
+                                        Units.feetToMeters(3),
                                         90,
                                         6,
                                         new Color8Bit(Color.kRed)));
+        elevatorArmMech.getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
+                .append(
+                        new MechanismLigament2d(
+                                "bottom",
+                                Units.feetToMeters(3),
+                                0,
+                                6,
+                                new Color8Bit(Color.kGreen)));
         armLigament =
                 liftLigament.append(
                         new MechanismLigament2d(

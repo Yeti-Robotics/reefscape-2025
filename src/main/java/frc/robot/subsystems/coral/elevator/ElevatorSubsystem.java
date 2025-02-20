@@ -66,7 +66,6 @@ public class ElevatorSubsystem extends StatefulSetpointSubsystem<ElevatorPositio
 
     @Override
     public Angle determineSetpoint(ElevatorPosition targetState) {
-        elevatorPosition.waitForUpdate(1);
         return targetState == ElevatorPosition.HOLD ? elevatorPosition.getValue() : targetState.getHeight();
     }
 
