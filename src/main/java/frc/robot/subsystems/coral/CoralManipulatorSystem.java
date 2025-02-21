@@ -3,6 +3,7 @@ package frc.robot.subsystems.coral;
 import com.ctre.phoenix6.StatusCode;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
@@ -52,6 +53,16 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     @Logged(name = "States/Is elevator transitioning?")
     public boolean isElevatorTransitioning() {
         return elevator.isTransitioning();
+    }
+
+    @Logged(name = "States/Arm transitioning State")
+    public String armTransitionState() {
+        return arm.transitioningTo().orElse(ArmPosition.HOLD).toString();
+    }
+
+    @Logged(name = "States/Elevator transitioning State")
+    public String elevatorTransitionState() {
+        return elevator.transitioningTo().orElse(ElevatorPosition.HOLD).toString();
     }
 
     @Override

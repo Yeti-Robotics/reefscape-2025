@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.util.sim.PhysicsSim;
 
 /**
@@ -84,6 +85,14 @@ public class Robot extends TimedRobot {
     /** This method is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {}
+
+    @Override
+    public void teleopExit() {
+        robotContainer
+                .coralManipulator
+                .transitionTo(CoralManipulatorState.IDLE)
+                .ignoringDisable(true);
+    }
 
     @Override
     public void testInit() {

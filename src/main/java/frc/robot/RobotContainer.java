@@ -15,16 +15,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
+import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
-import java.util.function.BiFunction;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -88,40 +87,20 @@ public class RobotContainer {
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
         primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-
-        BiFunction<Integer, Command, Command> buttonCommand =
-                (buttonNum, andThenCmd) ->
-                        new InstantCommand(
-                                        () ->
-                                                SmartDashboard.putNumber(
-                                                        "Button pressed:", buttonNum))
-                                .andThen(andThenCmd);
-
-        joystick.button(1)
-                .onTrue(
-                        buttonCommand.apply(
-                                1, coralManipulator.transitionTo(CoralManipulatorState.L1)));
-        joystick.button(2)
-                .onTrue(
-                        buttonCommand.apply(
-                                2, coralManipulator.transitionTo(CoralManipulatorState.L2)));
-        joystick.button(3)
-                .onTrue(
-                        buttonCommand.apply(
-                                3, coralManipulator.transitionTo(CoralManipulatorState.L3)));
-        joystick.button(4)
-                .onTrue(
-                        buttonCommand.apply(
-                                4, coralManipulator.transitionTo(CoralManipulatorState.L4)));
-        joystick.button(5)
-                .onTrue(
-                        buttonCommand.apply(
-                                5,
-                                coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL)));
-        joystick.button(6)
-                .onTrue(
-                        buttonCommand.apply(
-                                6, coralManipulator.transitionTo(CoralManipulatorState.STOWED)));
+        primaryXboxController
+                .a()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        primaryXboxController
+                .b()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
+        primaryXboxController
+                .x()
+                .toggleOnTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN))
+                .toggleOnFalse(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+        primaryXboxController
+                .y()
+                .toggleOnTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT))
+                .toggleOnFalse(coralManipulator.grabber.transitionTo(GrabberState.OFF));
     }
 
     private void assembleMechanisms() {
