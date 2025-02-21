@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2025.2.1"
+    id "edu.wpi.first.GradleRIO" version "2025.3.1"
     id 'com.diffplug.spotless' version '6.25.0'
 }
 java {
@@ -149,5 +149,4 @@ spotless {
     }
 }
 
-tasks.build.dependsOn(tasks.spotlessApply)
-tasks.deploy.dependsOn(tasks.spotlessApply)
+tasks.compileJava.dependsOn(tasks.spotlessApply)

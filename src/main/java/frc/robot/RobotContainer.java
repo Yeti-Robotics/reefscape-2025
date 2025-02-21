@@ -8,17 +8,23 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.ArmPositions;
-import frc.robot.subsystems.coral.CoralIntake;
+import frc.robot.subsystems.coral.CoralManipulatorState;
+import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
-import frc.robot.subsystems.elevator.ElevatorPosition;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import java.util.function.BiFunction;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -28,28 +34,33 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
  */
 public class RobotContainer {
 
-    public final CommandXboxController xboxController;
+    public final CommandXboxController primaryXboxController;
+
+    @Logged(name = "Drivetrain")
     final CommandSwerveDrivetrain drivetrain;
 
-    @Logged(name = "Elevator")
-    ElevatorSubsystem elevatorSubsystem;
+    @Logged(name = "CoralManipulator")
+    final CoralManipulatorSystem coralManipulator;
 
-    CoralIntake coralIntake;
-    Arm arm;
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
+    Mechanism2d elevatorArmMech =
+            new Mechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
+    private MechanismLigament2d liftLigament;
+    private MechanismLigament2d armLigament;
+    private final CommandJoystick joystick = new CommandJoystick(0);
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
+        primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
-        elevatorSubsystem = new ElevatorSubsystem();
-        coralIntake = new CoralIntake();
-        arm = new Arm();
+        coralManipulator = new CoralManipulatorSystem();
         configureBindings();
+        assembleMechanisms();
     }
 
     /**
@@ -66,46 +77,84 @@ public class RobotContainer {
                 drivetrain.applyRequest(
                         () ->
                                 drive.withVelocityX(
-                                                -xboxController.getLeftY()
+                                                -primaryXboxController.getLeftY()
                                                         * TunerConstants.kSpeedAt12Volts
                                                                 .magnitude())
                                         .withVelocityY(
-                                                -xboxController.getLeftX()
+                                                -primaryXboxController.getLeftX()
                                                         * TunerConstants.kSpeedAt12Volts
                                                                 .magnitude())
                                         .withRotationalRate(
-                                                -xboxController.getRightX()
+                                                -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
+        primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-        xboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        BiFunction<Integer, Command, Command> buttonCommand =
+                (buttonNum, andThenCmd) ->
+                        new InstantCommand(
+                                        () ->
+                                                SmartDashboard.putNumber(
+                                                        "Button pressed:", buttonNum))
+                                .andThen(andThenCmd);
 
-        xboxController.povDown().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.BOTTOM));
-        xboxController.povRight().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.TEST));
-        xboxController.povUp().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.LEVEL3));
-        xboxController.povLeft().onTrue(elevatorSubsystem.moveTo(ElevatorPosition.LEVEL4));
-
-        xboxController
-                .a()
+        joystick.button(1)
                 .onTrue(
-                        elevatorSubsystem
-                                .moveTo(ElevatorPosition.BOTTOM)
-                                .andThen(arm.moveTo(ArmPositions.UP)));
-        xboxController
-                .b()
+                        buttonCommand.apply(
+                                1, coralManipulator.transitionTo(CoralManipulatorState.L1)));
+        joystick.button(2)
                 .onTrue(
-                        elevatorSubsystem
-                                .moveTo(ElevatorPosition.INTAKE)
-                                .andThen(arm.moveTo(ArmPositions.INTAKE)));
-        // xboxController.y().onTrue(arm.moveTo(ArmPositions.L3));
-        xboxController
-                .x()
+                        buttonCommand.apply(
+                                2, coralManipulator.transitionTo(CoralManipulatorState.L2)));
+        joystick.button(3)
                 .onTrue(
-                        elevatorSubsystem
-                                .moveTo(ElevatorPosition.LEVEL4)
-                                .andThen(arm.moveTo(ArmPositions.L4)));
+                        buttonCommand.apply(
+                                3, coralManipulator.transitionTo(CoralManipulatorState.L3)));
+        joystick.button(4)
+                .onTrue(
+                        buttonCommand.apply(
+                                4, coralManipulator.transitionTo(CoralManipulatorState.L4)));
+        joystick.button(5)
+                .onTrue(
+                        buttonCommand.apply(
+                                5,
+                                coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL)));
+        joystick.button(6)
+                .onTrue(
+                        buttonCommand.apply(
+                                6, coralManipulator.transitionTo(CoralManipulatorState.STOWED)));
+    }
 
-        xboxController.leftBumper().whileTrue(coralIntake.spinClaw(0.5));
-        xboxController.rightBumper().whileTrue(coralIntake.spinClaw(-0.2));
+    private void assembleMechanisms() {
+        liftLigament =
+                elevatorArmMech
+                        .getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
+                        .append(
+                                new MechanismLigament2d(
+                                        "lift",
+                                        Units.feetToMeters(3),
+                                        90,
+                                        6,
+                                        new Color8Bit(Color.kRed)));
+        elevatorArmMech
+                .getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
+                .append(
+                        new MechanismLigament2d(
+                                "bottom",
+                                Units.feetToMeters(3),
+                                0,
+                                6,
+                                new Color8Bit(Color.kGreen)));
+        armLigament =
+                liftLigament.append(
+                        new MechanismLigament2d(
+                                "arm", Units.inchesToMeters(12), 0, 6, new Color8Bit(Color.kBlue)));
+    }
+
+    public void updateMechanisms() {
+        liftLigament.setLength(coralManipulator.elevator.updateMechPos());
+        armLigament.setAngle(coralManipulator.arm.updateMechPos());
+
+        SmartDashboard.putData("Mechanisms/CoralManipulator", elevatorArmMech);
     }
 
     /**

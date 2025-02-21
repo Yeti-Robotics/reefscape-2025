@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.coral.arm;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.*;
@@ -13,7 +13,7 @@ class ArmConfig {
 
     static final double ARM_DEPLOY_LOWER_BOUND = 0;
 
-    static final Slot0Configs SLOT_0_CONFIGS =
+    private static final Slot0Configs SLOT_0_REAL_CONFIGS =
             new Slot0Configs()
                     .withKP(1440)
                     .withKI(0)
@@ -24,7 +24,23 @@ class ArmConfig {
                     .withGravityType(GravityTypeValue.Arm_Cosine);
 
     static final Slot1Configs SLOT_1_WOOD_CONFIGS =
-            new Slot1Configs().withKP(256).withKI(8).withKG(1).withKD(8).withKA(3);
+            new Slot1Configs()
+                    .withKP(256)
+                    .withKI(8)
+                    .withKG(1)
+                    .withKD(8)
+                    .withKA(3)
+                    .withGravityType(GravityTypeValue.Arm_Cosine);
+
+    private static final Slot2Configs SLOT_2_SIM_CONFIGS =
+            new Slot2Configs()
+                    .withKP(300)
+                    .withKI(0)
+                    .withKD(600)
+                    .withKG(0)
+                    .withKV(0)
+                    .withKA(60)
+                    .withGravityType(GravityTypeValue.Arm_Cosine);
 
     static final MotionMagicConfigs motionMagicConfigs =
             new MotionMagicConfigs()
@@ -36,16 +52,18 @@ class ArmConfig {
             new TalonFXConfiguration()
                     .withFeedback(
                             new FeedbackConfigs()
-                                    .withFeedbackRemoteSensorID(0)
+                                    .withFeedbackRemoteSensorID(ARM_CANCODER_ID)
                                     .withFeedbackSensorSource(
                                             FeedbackSensorSourceValue.FusedCANcoder)
-                                    .withSensorToMechanismRatio(1)
-                                    .withRotorToSensorRatio(GEAR_RATIO))
+                                    .withRotorToSensorRatio(GEAR_RATIO)
+                                    .withSensorToMechanismRatio(1))
                     .withMotorOutput(
                             new MotorOutputConfigs()
                                     .withInverted(InvertedValue.Clockwise_Positive)
                                     .withNeutralMode(NeutralModeValue.Brake))
-                    .withSlot0(SLOT_0_CONFIGS)
+                    .withSlot0(SLOT_0_REAL_CONFIGS)
+                    .withSlot1(SLOT_1_WOOD_CONFIGS)
+                    .withSlot2(SLOT_2_SIM_CONFIGS)
                     .withMotionMagic(motionMagicConfigs);
 
     static final CANcoderConfiguration cancoderConfiguration =
@@ -56,4 +74,6 @@ class ArmConfig {
                                             SensorDirectionValue.CounterClockwise_Positive)
                                     .withMagnetOffset(MAGNET_OFFSET)
                                     .withAbsoluteSensorDiscontinuityPoint(0.625));
+
+    static final double ANGLE_TOLERANCE = 0.05;
 }
