@@ -2,8 +2,7 @@ package frc.robot.subsystems.coral.elevator;
 
 import static edu.wpi.first.math.util.Units.inchesToMeters;
 import static frc.robot.constants.Constants.RIO_BUS;
-import static frc.robot.subsystems.coral.elevator.ElevatorConfig.primaryTalonFXConfigs;
-import static frc.robot.subsystems.coral.elevator.ElevatorConfig.secondaryTalonFXConfigs;
+import static frc.robot.subsystems.coral.elevator.ElevatorConfig.*;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -14,6 +13,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,6 +37,8 @@ public class ElevatorSubsystem
     private final MotionMagicTorqueCurrentFOC magicRequest =
             new MotionMagicTorqueCurrentFOC(0).withSlot(Robot.isReal() ? 0 : 1);
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
+    private final StatusSignal<AngularVelocity> elevatorVelocity =
+            primaryElevatorMotor.getVelocity();
 
     public ElevatorSubsystem() {
         super(
@@ -58,6 +60,12 @@ public class ElevatorSubsystem
             PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
             PhysicsSim.getInstance().addTalonFX(secondaryElevatorMotor);
         }
+    }
+
+    @Override
+    public void runPeriodic() {
+        super.runPeriodic();
+        elevatorVelocity.refresh();
     }
 
     private Command zeroPosition() {
@@ -88,5 +96,15 @@ public class ElevatorSubsystem
     @Override
     public double updateMechPos() {
         return inchesToMeters(elevatorPosition.getValueAsDouble());
+    }
+
+    @Override
+    protected boolean isTransitionFinished() {
+        return super.isTransitionFinished()
+                && elevatorVelocity
+                        .getValue()
+                        .isNear(
+                                Units.RotationsPerSecond.of(0),
+                                Units.RotationsPerSecond.of(ELEVATOR_VELOCITY_TOLERANCE));
     }
 }

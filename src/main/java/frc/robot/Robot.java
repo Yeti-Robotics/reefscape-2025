@@ -91,7 +91,8 @@ public class Robot extends TimedRobot {
         robotContainer
                 .coralManipulator
                 .transitionTo(CoralManipulatorState.IDLE)
-                .ignoringDisable(true);
+                .ignoringDisable(true)
+                .schedule();
     }
 
     @Override
