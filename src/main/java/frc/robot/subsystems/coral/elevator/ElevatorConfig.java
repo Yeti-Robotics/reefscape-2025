@@ -14,12 +14,13 @@ class ElevatorConfig {
 
     private static final Slot0Configs SLOT_0_REAL_CONFIGS =
             new Slot0Configs()
-                    .withKP(100)
+                    .withKP(64)
                     .withKI(0)
-                    .withKD(4.5)
-                    .withKG(35.5)
-                    .withKA(0.7)
-                    .withKV(2)
+                    .withKD(32)
+                    .withKG(50)
+                    .withKV(1)
+                    .withKA(1.25)
+                    .withKS(10)
                     .withGravityType(GravityTypeValue.Elevator_Static);
 
     private static final Slot1Configs SLOT_1_SIM_CONFIGS =
@@ -60,5 +61,5 @@ class ElevatorConfig {
                                     .withRotorToSensorRatio(1.0)
                                     .withSensorToMechanismRatio(gearRatio));
 
-    static final double HEIGHT_TOLERANCE = 0.05;
+    static final double HEIGHT_TOLERANCE = 0.03;
 }

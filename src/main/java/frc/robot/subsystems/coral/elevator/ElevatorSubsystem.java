@@ -51,6 +51,9 @@ public class ElevatorSubsystem
         new Trigger(this::getMagSwitch)
                 .onTrue(zeroPosition().andThen(transitionTo(ElevatorPosition.BOTTOM)));
 
+        primaryElevatorMotor.setPosition(0);
+        secondaryElevatorMotor.setPosition(0);
+
         if (Robot.isSimulation()) {
             PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
             PhysicsSim.getInstance().addTalonFX(secondaryElevatorMotor);
