@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
-import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 
@@ -87,20 +86,25 @@ public class RobotContainer {
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
         primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        primaryXboxController.y().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+        primaryXboxController.b().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+        primaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
+        primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
         primaryXboxController
-                .a()
+                .povRight()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2));
+        primaryXboxController
+                .povDown()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3));
+        primaryXboxController
+                .povLeft()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
+        primaryXboxController
+                .leftBumper()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         primaryXboxController
-                .b()
+                .rightBumper()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
-        primaryXboxController
-                .x()
-                .toggleOnTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN))
-                .toggleOnFalse(coralManipulator.grabber.transitionTo(GrabberState.OFF));
-        primaryXboxController
-                .y()
-                .toggleOnTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT))
-                .toggleOnFalse(coralManipulator.grabber.transitionTo(GrabberState.OFF));
     }
 
     private void assembleMechanisms() {

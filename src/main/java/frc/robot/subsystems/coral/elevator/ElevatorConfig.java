@@ -9,12 +9,12 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 class ElevatorConfig {
     static final int primaryElevatorMotorID = 9;
     static final int secondaryElevatorMotorID = 11;
-    static final int magSwitchID = 0; // placeholder
+    static final int magSwitchID = 6;
     static final double gearRatio = 44.0 / 18.0;
 
     private static final Slot0Configs SLOT_0_REAL_CONFIGS =
             new Slot0Configs()
-                    .withKP(512)
+                    .withKP(256)
                     .withKI(0)
                     .withKD(32)
                     .withKG(50)
@@ -22,7 +22,6 @@ class ElevatorConfig {
                     .withKA(.5)
                     .withKS(14)
                     .withGravityType(GravityTypeValue.Elevator_Static);
-
     private static final Slot1Configs SLOT_1_SIM_CONFIGS =
             new Slot1Configs()
                     .withKP(24)
@@ -61,6 +60,6 @@ class ElevatorConfig {
                                     .withRotorToSensorRatio(1.0)
                                     .withSensorToMechanismRatio(gearRatio));
 
-    static final double HEIGHT_TOLERANCE = 0.05;
+    static final double HEIGHT_TOLERANCE = 0.08;
     static final double ELEVATOR_VELOCITY_TOLERANCE = 0.01;
 }

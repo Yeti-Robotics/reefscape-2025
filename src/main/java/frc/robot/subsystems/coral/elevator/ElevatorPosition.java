@@ -8,12 +8,12 @@ public enum ElevatorPosition implements Comparable<ElevatorPosition> {
     // ordering matters!
     // TODO: find actual positions
     BOTTOM(0.0),
-    INTAKE(1.8),
+    INTAKE(1.9),
     SAFE_POSITION(2.2), // or .27, need to test
-    //    L1(27.0),
-    //    L2(36.0),
-    //    L3(45.0),
-    //    L4(54.0),
+    POS_L1(2.1),
+    POS_L2(.32),
+    POS_L3(1.8),
+    POS_L4(3.95),
 
     HOLD(-1); // special case, for when transitions are interrupted
 

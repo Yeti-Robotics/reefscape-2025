@@ -51,6 +51,7 @@ public class ElevatorSubsystem
                 new Follower(ElevatorConfig.primaryElevatorMotorID, true));
 
         new Trigger(this::getMagSwitch)
+                .debounce(2)
                 .onTrue(zeroPosition().andThen(transitionTo(ElevatorPosition.BOTTOM)));
 
         primaryElevatorMotor.setPosition(0);
@@ -73,7 +74,7 @@ public class ElevatorSubsystem
     }
 
     public boolean getMagSwitch() {
-        return magSwitch.get();
+        return !magSwitch.get();
     }
 
     @Override
@@ -100,11 +101,6 @@ public class ElevatorSubsystem
 
     @Override
     protected boolean isTransitionFinished() {
-        return super.isTransitionFinished()
-                && elevatorVelocity
-                        .getValue()
-                        .isNear(
-                                Units.RotationsPerSecond.of(0),
-                                Units.RotationsPerSecond.of(ELEVATOR_VELOCITY_TOLERANCE));
+        return super.isTransitionFinished();
     }
 }
