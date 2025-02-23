@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision.apriltag.impl.limelight;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Logged
 public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSubsystem {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
     private final String limelightName;
