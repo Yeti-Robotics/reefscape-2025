@@ -5,8 +5,8 @@ import com.ctre.phoenix6.signals.*;
 
 class ArmConfig {
 
-    static final int ARM_KRAKEN_ID = 47;
-    static final int ARM_CANCODER_ID = 5;
+    static final int ARM_KRAKEN_ID = 10;
+    static final int ARM_CANCODER_ID = 0;
 
     static final double MAGNET_OFFSET = 0;
     static final double GEAR_RATIO = 75.6055;

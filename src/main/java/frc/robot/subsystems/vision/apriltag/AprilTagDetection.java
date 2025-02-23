@@ -8,7 +8,8 @@ public class AprilTagDetection {
     private final Pose2d targetPose;
     private final double ambiguity;
 
-    public AprilTagDetection(int fiducialID, Pose2d robotPose, Pose2d targetPose, double ambiguity) {
+    public AprilTagDetection(
+            int fiducialID, Pose2d robotPose, Pose2d targetPose, double ambiguity) {
         this.fiducialID = fiducialID;
         this.robotPose = robotPose;
         this.targetPose = targetPose;

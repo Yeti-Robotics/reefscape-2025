@@ -19,11 +19,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.ReefAlignCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
+import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
+import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import java.util.function.BiFunction;
 
 /**
@@ -35,9 +38,14 @@ import java.util.function.BiFunction;
 public class RobotContainer {
 
     public final CommandXboxController primaryXboxController;
+    ;
+
+    public final AprilTagSubsystem reefCamera;
 
     @Logged(name = "Drivetrain")
     final CommandSwerveDrivetrain drivetrain;
+
+    public ReefAlignCommand alignToReef;
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
@@ -56,8 +64,16 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
+        primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
+        reefCamera = new LimelightAprilTagSystem("Dorsal_Cam", drivetrain);
+        alignToReef =
+                new ReefAlignCommand(
+                        drivetrain,
+                        reefCamera,
+                        primaryXboxController::getLeftY,
+                        primaryXboxController::getLeftX,
+                        primaryXboxController::getRightX);
         coralManipulator = new CoralManipulatorSystem();
         configureBindings();
         assembleMechanisms();
@@ -88,6 +104,7 @@ public class RobotContainer {
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
         primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        primaryXboxController.leftTrigger().whileTrue(alignToReef);
 
         BiFunction<Integer, Command, Command> buttonCommand =
                 (buttonNum, andThenCmd) ->

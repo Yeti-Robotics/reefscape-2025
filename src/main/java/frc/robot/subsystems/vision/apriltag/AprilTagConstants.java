@@ -1,7 +1,6 @@
 package frc.robot.subsystems.vision.apriltag;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-
 import java.io.IOException;
 
 public class AprilTagConstants {

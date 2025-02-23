@@ -20,7 +20,6 @@ public interface AprilTagSubsystem {
                     return Optional.of(detection);
                 }
             }
-
         }
 
         return Optional.empty();
@@ -41,11 +40,8 @@ public interface AprilTagSubsystem {
                     break;
                 }
             }
-
         }
 
         return detections;
     }
-
-    void onlyTrackTags(int... ids);
 }

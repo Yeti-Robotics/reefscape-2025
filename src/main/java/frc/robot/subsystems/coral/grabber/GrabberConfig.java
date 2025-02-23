@@ -8,7 +8,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 class GrabberConfig {
-    static final int CLAW_ID = 20;
+    static final int CLAW_ID = 12;
     static final double FORWARD_SPEED = -0.5;
     static final double BACKWARD_SPEED = 1.0;
     static final TalonFXConfiguration coralMotorConfig =
