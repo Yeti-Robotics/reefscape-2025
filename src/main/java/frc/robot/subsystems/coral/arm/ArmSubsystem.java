@@ -20,9 +20,9 @@ import frc.robot.util.state.StatefulSetpointSubsystem;
 @Logged
 public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUnit, Angle, MutAngle>
         implements SimulatableMechanism {
-    private final TalonFX armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS);
+    private final TalonFX armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.RIO_BUS);
     private final MotionMagicTorqueCurrentFOC magicRequest =
-            new MotionMagicTorqueCurrentFOC(0).withSlot(Robot.isReal() ? 0 : 1);
+            new MotionMagicTorqueCurrentFOC(0).withSlot(0);
 
     private final StatusSignal<Angle> armPosition = armKraken.getPosition();
 
