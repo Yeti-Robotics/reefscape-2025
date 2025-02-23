@@ -9,8 +9,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 class GrabberConfig {
     static final int CLAW_ID = 12;
-    static final double FORWARD_SPEED = -0.5;
-    static final double BACKWARD_SPEED = 1.0;
+    static final double FORWARD_SPEED = -0.8;
+    static final double BACKWARD_SPEED = 1;
     static final TalonFXConfiguration coralMotorConfig =
             new TalonFXConfiguration()
                     .withMotorOutput(
@@ -20,5 +20,5 @@ class GrabberConfig {
                     .withSlot0(new Slot0Configs().withKV(1).withKA(1))
                     .withMotionMagic(new MotionMagicConfigs().withMotionMagicAcceleration(1));
 
-    static final int GRABBER_BEAM_BREAK = 4; // TODO: find actual value
+    static final int GRABBER_CANANDCOLOR = 0;
 }

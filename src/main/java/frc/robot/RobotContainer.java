@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -64,8 +63,8 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        drivetrain = TunerConstants.createDrivetrain();
         primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
+        drivetrain = TunerConstants.createDrivetrain();
         reefCamera = new LimelightAprilTagSystem("limelight", drivetrain);
         alignToReef =
                 new ReefAlignCommand(
@@ -104,41 +103,26 @@ public class RobotContainer {
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
         primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+        primaryXboxController.y().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+        primaryXboxController.b().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+        primaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
+        primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
         primaryXboxController.leftTrigger().whileTrue(alignToReef);
-
-        BiFunction<Integer, Command, Command> buttonCommand =
-                (buttonNum, andThenCmd) ->
-                        new InstantCommand(
-                                        () ->
-                                                SmartDashboard.putNumber(
-                                                        "Button pressed:", buttonNum))
-                                .andThen(andThenCmd);
-
-        joystick.button(1)
-                .onTrue(
-                        buttonCommand.apply(
-                                1, coralManipulator.transitionTo(CoralManipulatorState.L1)));
-        joystick.button(2)
-                .onTrue(
-                        buttonCommand.apply(
-                                2, coralManipulator.transitionTo(CoralManipulatorState.L2)));
-        joystick.button(3)
-                .onTrue(
-                        buttonCommand.apply(
-                                3, coralManipulator.transitionTo(CoralManipulatorState.L3)));
-        joystick.button(4)
-                .onTrue(
-                        buttonCommand.apply(
-                                4, coralManipulator.transitionTo(CoralManipulatorState.L4)));
-        joystick.button(5)
-                .onTrue(
-                        buttonCommand.apply(
-                                5,
-                                coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL)));
-        joystick.button(6)
-                .onTrue(
-                        buttonCommand.apply(
-                                6, coralManipulator.transitionTo(CoralManipulatorState.STOWED)));
+        primaryXboxController
+                .povRight()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2));
+        primaryXboxController
+                .povDown()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3));
+        primaryXboxController
+                .povLeft()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
+        primaryXboxController
+                .leftBumper()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        primaryXboxController
+                .rightBumper()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
     }
 
     private void assembleMechanisms() {

@@ -22,7 +22,7 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
         implements SimulatableMechanism {
     private final TalonFX armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.RIO_BUS);
     private final MotionMagicTorqueCurrentFOC magicRequest =
-            new MotionMagicTorqueCurrentFOC(0).withSlot(Robot.isReal() ? 0 : 1);
+            new MotionMagicTorqueCurrentFOC(0).withSlot(0);
 
     private final StatusSignal<Angle> armPosition = armKraken.getPosition();
 
