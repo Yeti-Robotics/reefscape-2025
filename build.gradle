@@ -149,5 +149,4 @@ spotless {
     }
 }
 
-tasks.build.dependsOn(tasks.spotlessApply)
-tasks.deploy.dependsOn(tasks.spotlessApply)
+tasks.compileJava.dependsOn(tasks.spotlessApply)
