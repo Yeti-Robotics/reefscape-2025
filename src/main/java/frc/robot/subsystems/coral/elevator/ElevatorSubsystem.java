@@ -98,9 +98,4 @@ public class ElevatorSubsystem
     public double updateMechPos() {
         return inchesToMeters(elevatorPosition.getValueAsDouble());
     }
-
-    @Override
-    protected boolean isTransitionFinished() {
-        return super.isTransitionFinished();
-    }
 }
