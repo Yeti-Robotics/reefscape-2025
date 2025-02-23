@@ -34,7 +34,6 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
         double yaw = commandSwerveDrivetrain.getRotation3d().getAngle();
         LimelightHelpers.SetRobotOrientation(limelightName, yaw, 0, 0, 0, 0, 0);
         poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
-
         LimelightHelpers.LimelightResults results =
                 LimelightHelpers.getLatestResults(limelightName);
 

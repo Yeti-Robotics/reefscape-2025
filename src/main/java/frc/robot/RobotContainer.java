@@ -66,7 +66,7 @@ public class RobotContainer {
     public RobotContainer() {
         drivetrain = TunerConstants.createDrivetrain();
         primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
-        reefCamera = new LimelightAprilTagSystem("Dorsal_Cam", drivetrain);
+        reefCamera = new LimelightAprilTagSystem("limelight", drivetrain);
         alignToReef =
                 new ReefAlignCommand(
                         drivetrain,

@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
@@ -19,7 +17,7 @@ public class ReefAlignCommand extends Command {
     private final DoubleSupplier rotationalSupplier;
 
     private final AprilTagSubsystem reefCam;
-    private Optional<AprilTagDetection> detection;
+    private AprilTagDetection detection;
 
     public ReefAlignCommand(
             CommandSwerveDrivetrain commandSwerveDrivetrain,
@@ -33,36 +31,43 @@ public class ReefAlignCommand extends Command {
         this.yVelSupplier = joyStickY;
         this.rotationalSupplier = rotationalJoystick;
 
-        poseAimRequest
-                .withVelocityX(
-                        -joyStickY.getAsDouble() * TunerConstants.kSpeedAt12Volts.magnitude())
-                .withVelocityY(
-                        -joyStickX.getAsDouble() * TunerConstants.kSpeedAt12Volts.magnitude());
-
         addRequirements(this.commandSwerveDrivetrain);
+
+        poseAimRequest.HeadingController.setPID(5, 0, 0);
+        poseAimRequest.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     @Override
-    public void initialize() {}
+    public void initialize() {
+        Optional<AprilTagDetection> aprilTagDetectionOpt = reefCam.getBestDetection();
 
-    @Override
-    public void execute() {
-        detection = reefCam.getBestDetection();
-
-        if (detection.isEmpty()) {
+        if (aprilTagDetectionOpt.isEmpty()) {
             cancel();
             return;
         }
 
-        AprilTagDetection det = detection.get();
+        detection = aprilTagDetectionOpt.get();
+        poseAimRequest.setPointToFace((detection.getTargetPose().getTranslation()));
+    }
 
-        Translation2d detectionTranslation = det.getTargetPose().getTranslation();
+    @Override
+    public void execute() {
+        Optional<AprilTagDetection> aprilTagDetectionOptional = reefCam.getBestDetection();
 
-        poseAimRequest.setPointToFace(
-                detectionTranslation.rotateBy(
-                        new Rotation2d(0.2 * rotationalSupplier.getAsDouble())));
+        if (aprilTagDetectionOptional.isEmpty()
+                || aprilTagDetectionOptional.get().getFiducialID() != detection.getFiducialID()) {
+            end(false);
+            return;
+        }
 
-        commandSwerveDrivetrain.applyRequest(() -> poseAimRequest);
+        commandSwerveDrivetrain.setControl(
+                poseAimRequest
+                        .withVelocityX(
+                                -xVelSupplier.getAsDouble()
+                                        * TunerConstants.kSpeedAt12Volts.magnitude())
+                        .withVelocityY(
+                                -yVelSupplier.getAsDouble()
+                                        * TunerConstants.kSpeedAt12Volts.magnitude()));
     }
 
     @Override
