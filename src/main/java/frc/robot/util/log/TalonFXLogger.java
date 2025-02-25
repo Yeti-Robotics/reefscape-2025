@@ -1,4 +1,4 @@
-package frc.robot.util.sim;
+package frc.robot.util.log;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.CustomLoggerFor;

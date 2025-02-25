@@ -8,6 +8,9 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -24,9 +27,9 @@ import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
-import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
-import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
-import java.util.function.BiFunction;
+import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
+import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
+import frc.robot.util.sim.vision.AprilTagSimulator;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -39,7 +42,8 @@ public class RobotContainer {
     public final CommandXboxController primaryXboxController;
     ;
 
-    public final AprilTagSubsystem reefCamera;
+    @Logged(name = "ReefCam")
+    public final PhotonAprilTagSystem reefCamera;
 
     @Logged(name = "Drivetrain")
     final CommandSwerveDrivetrain drivetrain;
@@ -60,12 +64,28 @@ public class RobotContainer {
     private MechanismLigament2d liftLigament;
     private MechanismLigament2d armLigament;
     private final CommandJoystick joystick = new CommandJoystick(0);
+    public AprilTagSimulator tagSimulator;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
-        reefCamera = new LimelightAprilTagSystem("limelight", drivetrain);
+        tagSimulator = new AprilTagSimulator();
+        Transform3d elevCam1Trans =
+                new Transform3d(
+                        new Translation3d(
+                                Units.inchesToMeters(-8),
+                                Units.inchesToMeters(-7),
+                                Units.inchesToMeters(22.5)),
+                        new Rotation3d(0, Math.toRadians(35), Math.toRadians(90)));
+        tagSimulator.addCamera(
+                AprilTagCamSimBuilder.newCamera()
+                        .withCameraName("elevCam1")
+                        .withTransform(elevCam1Trans)
+                        .build());
+        reefCamera = new PhotonAprilTagSystem("elevCam1", elevCam1Trans);
+        reefCamera.setCamera(tagSimulator.getAprilTagCamSims().get(0).getCam());
+
         alignToReef =
                 new ReefAlignCommand(
                         drivetrain,

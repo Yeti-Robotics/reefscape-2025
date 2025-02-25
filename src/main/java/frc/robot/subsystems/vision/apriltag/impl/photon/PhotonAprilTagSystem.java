@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.apriltag.*;
+import frc.robot.util.sim.vision.AprilTagCamSim;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

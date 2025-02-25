@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.vision.util.LimelightHelpers;
 import frc.robot.util.sim.PhysicsSim;
 
@@ -43,6 +44,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         robotContainer = new RobotContainer();
+
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());
         Epilogue.bind(this);
@@ -72,6 +74,7 @@ public class Robot extends TimedRobot {
         //                0);
         //        var mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(llName);
         botPose.set(LimelightHelpers.getLatestResults(llName).getBotPose2d_wpiBlue());
+        robotContainer.tagSimulator.update(robotContainer.drivetrain.getState().Pose);
     }
 
     /** This method is called once each time the robot enters Disabled mode. */
