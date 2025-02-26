@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision.apriltag.impl.limelight;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
@@ -35,12 +36,11 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
 
         double yaw = commandSwerveDrivetrain.getRotation3d().getAngle();
         LimelightHelpers.SetRobotOrientation(limelightName, yaw, 0, 0, 0, 0, 0);
-        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
+        poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
         LimelightHelpers.LimelightResults results =
                 LimelightHelpers.getLatestResults(limelightName);
 
         if (!results.valid) {
-            aprilTagResults = null;
             return;
         }
 
@@ -79,6 +79,31 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
     @Override
     public Optional<AprilTagDetection> getBestDetection() {
         return Optional.ofNullable(currentBestDetection).map(this::mapToDetection);
+    }
+
+    //
+    //    @Logged(name = "targetPoses")
+    //    public List<Pose2d> getLimelightTargetPose() {
+    //        return
+    // aprilTagResults.getResults().stream().map(AprilTagDetection::getTargetPose).toList();
+    //    }
+    //
+    //    @Logged(name = "robotPoses")
+    //    public List<Pose2d> getRobotPose() {
+    //        return
+    // aprilTagResults.getResults().stream().map(AprilTagDetection::getRobotPose).toList();
+    //    }
+    //
+    //    @Logged(name = "estimatedRobotPose")
+    //    public Pose2d getEstimateRobotPose() {
+    //        return poseEstimate.pose;
+    //    }
+
+    @Logged(name = "Detection translation")
+    public Translation2d bestDetectionTranslatedPosePose() {
+        return getBestDetection()
+                .map(p -> p.getTargetPose().getTranslation())
+                .orElse(new Translation2d());
     }
 
     private AprilTagDetection mapToDetection(LimelightHelpers.LimelightTarget_Fiducial aprilTag) {

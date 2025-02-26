@@ -8,9 +8,7 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -27,9 +25,9 @@ import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
-import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
-import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
-import frc.robot.util.sim.vision.AprilTagSimulator;
+import frc.robot.subsystems.vision.apriltag.AprilTagPose;
+import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
+import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -40,10 +38,9 @@ import frc.robot.util.sim.vision.AprilTagSimulator;
 public class RobotContainer {
 
     public final CommandXboxController primaryXboxController;
-    ;
 
-    @Logged(name = "ReefCam")
-    public final PhotonAprilTagSystem reefCamera;
+    @Logged(name = "Vision/Limelight")
+    public final LimelightAprilTagSystem reefCamera;
 
     @Logged(name = "Drivetrain")
     final CommandSwerveDrivetrain drivetrain;
@@ -64,35 +61,18 @@ public class RobotContainer {
     private MechanismLigament2d liftLigament;
     private MechanismLigament2d armLigament;
     private final CommandJoystick joystick = new CommandJoystick(0);
-    public AprilTagSimulator tagSimulator;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
-        tagSimulator = new AprilTagSimulator();
-        Transform3d elevCam1Trans =
-                new Transform3d(
-                        new Translation3d(
-                                Units.inchesToMeters(-8),
-                                Units.inchesToMeters(-7),
-                                Units.inchesToMeters(22.5)),
-                        new Rotation3d(0, Math.toRadians(35), Math.toRadians(90)));
-        tagSimulator.addCamera(
-                AprilTagCamSimBuilder.newCamera()
-                        .withCameraName("elevCam1")
-                        .withTransform(elevCam1Trans)
-                        .build());
-        reefCamera = new PhotonAprilTagSystem("elevCam1", elevCam1Trans);
-        reefCamera.setCamera(tagSimulator.getAprilTagCamSims().get(0).getCam());
-
+        reefCamera = new LimelightAprilTagSystem("limelight", drivetrain);
         alignToReef =
                 new ReefAlignCommand(
                         drivetrain,
                         reefCamera,
                         primaryXboxController::getLeftY,
-                        primaryXboxController::getLeftX,
-                        primaryXboxController::getRightX);
+                        primaryXboxController::getLeftX);
         coralManipulator = new CoralManipulatorSystem();
         configureBindings();
         assembleMechanisms();
@@ -107,6 +87,19 @@ public class RobotContainer {
      * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
      * joysticks}.
      */
+    public void updateVision() {
+        Optional<AprilTagPose> aprilTagPoseOpt = reefCamera.getEstimatedPose();
+
+        if (aprilTagPoseOpt.isPresent()) {
+            AprilTagPose pose = aprilTagPoseOpt.get();
+
+            if (pose.getNumTags() > 0) {
+                drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+                drivetrain.addVisionMeasurement(pose.getEstimatedRobotPose(), pose.getTimestamp());
+            }
+        }
+    }
+
     private void configureBindings() {
         drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(

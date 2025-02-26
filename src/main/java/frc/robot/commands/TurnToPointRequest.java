@@ -4,8 +4,9 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 
 /**
  * The SwerveRequest::apply function runs in a fast (250hz on CAN FD) thread that is timed on the
@@ -16,18 +17,24 @@ import edu.wpi.first.math.geometry.Translation2d;
  */
 public class TurnToPointRequest extends SwerveRequest.FieldCentricFacingAngle {
 
-    private Translation2d pointToFace;
+    private Pose2d targetPoseRelativeToRobot;
 
     @Override
     public StatusCode apply(
             SwerveDrivetrain.SwerveControlParameters parameters, SwerveModule... modulesToApply) {
         this.TargetDirection =
-                pointToFace.minus(parameters.currentPose.getTranslation()).getAngle();
+                parameters
+                        .currentPose
+                        .plus(new Transform2d())
+                        .getTranslation()
+                        .minus(parameters.currentPose.getTranslation())
+                        .getAngle();
         if (ForwardPerspective == SwerveRequest.ForwardPerspectiveValue.OperatorPerspective) {
             // This is an angle from the frame of the reference of the field. Subtract
             // the operator persepctive to counteract CTRE adding it later
             this.TargetDirection = this.TargetDirection.minus(parameters.operatorForwardDirection);
         }
+
         // TODO: Adjust direction we're aiming based on current robot velocity in
         // parameters.currentChassisSpeed
         return super.apply(parameters, modulesToApply);
@@ -40,7 +47,7 @@ public class TurnToPointRequest extends SwerveRequest.FieldCentricFacingAngle {
         return this;
     }
 
-    public void setPointToFace(Translation2d point) {
-        pointToFace = point;
+    public void setTargetPoseRelativeToRobot(Pose2d point) {
+        targetPoseRelativeToRobot = point;
     }
 }

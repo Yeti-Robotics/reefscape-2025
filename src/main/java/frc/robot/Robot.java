@@ -7,16 +7,12 @@ package frc.robot;
 
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.coral.CoralManipulatorState;
-import frc.robot.subsystems.vision.util.LimelightHelpers;
 import frc.robot.util.sim.PhysicsSim;
 
 /**
@@ -30,12 +26,6 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
 
     private RobotContainer robotContainer;
-
-    private final StructPublisher<Pose2d> botPose =
-            NetworkTableInstance.getDefault()
-                    .getTable("BotPose")
-                    .getStructTopic("Pose", Pose2d.struct)
-                    .publish();
 
     /**
      * This method is run when the robot is first started up and should be used for any
@@ -63,6 +53,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         robotContainer.updateMechanisms();
+        robotContainer.updateVision();
         // MegaTag2 implementation. worse than MegaTag1 for some reason - Sam
         //        LimelightHelpers.SetRobotOrientation(
         //                llName,
@@ -73,8 +64,6 @@ public class Robot extends TimedRobot {
         //                0,
         //                0);
         //        var mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(llName);
-        botPose.set(LimelightHelpers.getLatestResults(llName).getBotPose2d_wpiBlue());
-        robotContainer.tagSimulator.update(robotContainer.drivetrain.getState().Pose);
     }
 
     /** This method is called once each time the robot enters Disabled mode. */

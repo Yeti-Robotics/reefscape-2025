@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
@@ -10,11 +11,10 @@ import java.util.function.DoubleSupplier;
 
 public class ReefAlignCommand extends Command {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
-    private final TurnToPointRequest poseAimRequest = new TurnToPointRequest();
 
+    private final TurnToPointRequest poseAimReq = new TurnToPointRequest();
     private final DoubleSupplier xVelSupplier;
     private final DoubleSupplier yVelSupplier;
-    private final DoubleSupplier rotationalSupplier;
 
     private final AprilTagSubsystem reefCam;
     private AprilTagDetection detection;
@@ -23,18 +23,16 @@ public class ReefAlignCommand extends Command {
             CommandSwerveDrivetrain commandSwerveDrivetrain,
             AprilTagSubsystem reefCam,
             DoubleSupplier joyStickX,
-            DoubleSupplier joyStickY,
-            DoubleSupplier rotationalJoystick) {
+            DoubleSupplier joyStickY) {
         this.commandSwerveDrivetrain = commandSwerveDrivetrain;
         this.reefCam = reefCam;
         this.xVelSupplier = joyStickX;
         this.yVelSupplier = joyStickY;
-        this.rotationalSupplier = rotationalJoystick;
 
         addRequirements(this.commandSwerveDrivetrain);
 
-        poseAimRequest.HeadingController.setPID(5, 0, 0);
-        poseAimRequest.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
+        poseAimReq.HeadingController.setPID(5, 0, 0);
+        poseAimReq.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     @Override
@@ -47,11 +45,15 @@ public class ReefAlignCommand extends Command {
         }
 
         detection = aprilTagDetectionOpt.get();
-        poseAimRequest.setPointToFace((detection.getTargetPose().getTranslation()));
+        poseAimReq.setTargetPoseRelativeToRobot(detection.getTargetPose());
     }
 
     @Override
     public void execute() {
+        SmartDashboard.putNumber(
+                "Robot/robotContainer/Vision/Limelight/Turn error",
+                poseAimReq.HeadingController.getPositionError());
+
         Optional<AprilTagDetection> aprilTagDetectionOptional = reefCam.getBestDetection();
 
         if (aprilTagDetectionOptional.isEmpty()
@@ -60,8 +62,10 @@ public class ReefAlignCommand extends Command {
             return;
         }
 
+        AprilTagDetection robotDetection = aprilTagDetectionOptional.get();
+
         commandSwerveDrivetrain.setControl(
-                poseAimRequest
+                poseAimReq
                         .withVelocityX(
                                 -xVelSupplier.getAsDouble()
                                         * TunerConstants.kSpeedAt12Volts.magnitude())
