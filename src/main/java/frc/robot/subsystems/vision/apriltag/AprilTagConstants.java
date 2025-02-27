@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision.apriltag;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import java.io.IOException;
 
 public class AprilTagConstants {
@@ -11,7 +12,7 @@ public class AprilTagConstants {
         try {
             APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadFromResource(TAGS_FILE);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
         }
     }
 }

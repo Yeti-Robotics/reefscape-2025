@@ -34,7 +34,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         robotContainer = new RobotContainer();
-
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());
         Epilogue.bind(this);
@@ -53,17 +52,8 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         robotContainer.updateMechanisms();
-        robotContainer.updateVision();
-        // MegaTag2 implementation. worse than MegaTag1 for some reason - Sam
-        //        LimelightHelpers.SetRobotOrientation(
-        //                llName,
-        //                Math.toDegrees(robotContainer.drivetrain.getRotation3d().getZ()),
-        //                0,
-        //                0,
-        //                0,
-        //                0,
-        //                0);
-        //        var mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(llName);
+        //  robotContainer.updateVision();
+        robotContainer.updateVisionSim();
     }
 
     /** This method is called once each time the robot enters Disabled mode. */

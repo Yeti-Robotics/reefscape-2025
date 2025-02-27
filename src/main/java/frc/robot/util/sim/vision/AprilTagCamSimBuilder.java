@@ -59,7 +59,7 @@ public class AprilTagCamSimBuilder {
         // Approximate detection noise with average and standard deviation error in pixels.
         cameraProp.setCalibError(0.25, 0.08);
         // Set the camera image capture framerate (Note: this is limited by robot loop rate).
-        cameraProp.setFPS(20);
+        cameraProp.setFPS(30);
         // The average and standard deviation in milliseconds of image data latency.
         cameraProp.setAvgLatencyMs(35);
         cameraProp.setLatencyStdDevMs(5);

@@ -1,5 +1,9 @@
 package frc.robot.commands;
 
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
@@ -12,12 +16,12 @@ import java.util.function.DoubleSupplier;
 public class ReefAlignCommand extends Command {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
 
-    private final TurnToPointRequest poseAimReq = new TurnToPointRequest();
+    private final SwerveRequest.RobotCentricFacingAngle poseAimReq =
+            new SwerveRequest.RobotCentricFacingAngle();
     private final DoubleSupplier xVelSupplier;
     private final DoubleSupplier yVelSupplier;
 
     private final AprilTagSubsystem reefCam;
-    private AprilTagDetection detection;
 
     public ReefAlignCommand(
             CommandSwerveDrivetrain commandSwerveDrivetrain,
@@ -37,35 +41,37 @@ public class ReefAlignCommand extends Command {
 
     @Override
     public void initialize() {
-        Optional<AprilTagDetection> aprilTagDetectionOpt = reefCam.getBestDetection();
-
-        if (aprilTagDetectionOpt.isEmpty()) {
-            cancel();
-            return;
-        }
-
-        detection = aprilTagDetectionOpt.get();
-        poseAimReq.setTargetPoseRelativeToRobot(detection.getTargetPose());
+        System.out.println("Reef cmd init");
     }
+
+    Field2d field = new Field2d();
 
     @Override
     public void execute() {
-        SmartDashboard.putNumber(
-                "Robot/robotContainer/Vision/Limelight/Turn error",
-                poseAimReq.HeadingController.getPositionError());
-
         Optional<AprilTagDetection> aprilTagDetectionOptional = reefCam.getBestDetection();
 
-        if (aprilTagDetectionOptional.isEmpty()
-                || aprilTagDetectionOptional.get().getFiducialID() != detection.getFiducialID()) {
-            end(false);
+        if (aprilTagDetectionOptional.isEmpty()) {
             return;
         }
 
-        AprilTagDetection robotDetection = aprilTagDetectionOptional.get();
+        AprilTagDetection detection = aprilTagDetectionOptional.get();
+        Pose2d tagPose = detection.getTargetPose();
 
+        System.out.println("tag id: " + detection.getFiducialID());
+        Pose2d robotPose = commandSwerveDrivetrain.getState().Pose;
+        field.setRobotPose(
+                robotPose.transformBy(
+                        new Transform2d(tagPose.getTranslation(), tagPose.getRotation())));
+        SmartDashboard.putData("ADetection Pose", field);
+
+        // Apply drive control with joystick inputs
         commandSwerveDrivetrain.setControl(
                 poseAimReq
+                        .withTargetDirection(
+                                commandSwerveDrivetrain
+                                        .getPigeon2()
+                                        .getRotation2d()
+                                        .rotateBy(tagPose.getRotation()))
                         .withVelocityX(
                                 -xVelSupplier.getAsDouble()
                                         * TunerConstants.kSpeedAt12Volts.magnitude())

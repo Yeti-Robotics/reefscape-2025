@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision.apriltag.impl.photon;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.apriltag.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +16,10 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsystem {
-    private static final double DEFAULT_ACCEPTABLE_AMBIGUITY = 0.2;
     private final PhotonCamera camera;
     private final Transform3d cameraTransform;
     private final PhotonPoseEstimator photonPoseEstimator;
-
+    private final CommandSwerveDrivetrain drivetrain;
     private AprilTagResults aprilTagResults = null;
     private double maxAmbiguity = 1;
     private PhotonTrackedTarget currentBestDetection;
@@ -28,7 +28,10 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<EstimatedRobotPose> estimatedRobotPose;
 
-    public PhotonAprilTagSystem(String cameraName, Transform3d cameraTransform) {
+    public PhotonAprilTagSystem(
+            String cameraName,
+            Transform3d cameraTransform,
+            CommandSwerveDrivetrain commandSwerveDrivetrain) {
         this.camera = new PhotonCamera(cameraName);
         this.cameraTransform = cameraTransform;
         this.photonPoseEstimator =
@@ -36,6 +39,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
                         AprilTagConstants.APRIL_TAG_FIELD_LAYOUT,
                         PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                         cameraTransform);
+        this.drivetrain = commandSwerveDrivetrain;
 
         photonPoseEstimator.setMultiTagFallbackStrategy(
                 PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
@@ -78,7 +82,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
         if (results.isEmpty()) {
-            aprilTagResults = null;
+            //  aprilTagResults = null;
             return;
         }
 
@@ -91,13 +95,11 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
             Optional<EstimatedRobotPose> estimatedRobotPose =
                     photonPoseEstimator.update(
                             result, camera.getCameraMatrix(), camera.getDistCoeffs());
-            ;
 
             this.estimatedRobotPose = estimatedRobotPose;
 
-            // TODO: update estimate with actual robot pose from drivetrain
             estimatedRobotPose.ifPresent(
-                    robotPose -> photonPoseEstimator.setReferencePose(robotPose.estimatedPose));
+                    robotPose -> photonPoseEstimator.setReferencePose(drivetrain.getState().Pose));
 
             earliestTimestamp = Math.min(earliestTimestamp, result.getTimestampSeconds());
             highestLatency = Math.max(highestLatency, result.metadata.getLatencyMillis());
@@ -145,9 +147,5 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     public PhotonAprilTagSystem withAmbiguityLessThan(double ambiguity) {
         maxAmbiguity = ambiguity;
         return this;
-    }
-
-    public PhotonAprilTagSystem withDefaultAmbiguity() {
-        return withAmbiguityLessThan(DEFAULT_ACCEPTABLE_AMBIGUITY);
     }
 }
