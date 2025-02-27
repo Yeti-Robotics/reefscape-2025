@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,6 +23,7 @@ public class ReefAlignCommand extends Command {
     private final DoubleSupplier yVelSupplier;
 
     private final AprilTagSubsystem reefCam;
+    private AprilTagDetection previousDetection;
 
     public ReefAlignCommand(
             CommandSwerveDrivetrain commandSwerveDrivetrain,
@@ -48,6 +50,7 @@ public class ReefAlignCommand extends Command {
 
     @Override
     public void execute() {
+
         Optional<AprilTagDetection> aprilTagDetectionOptional = reefCam.getBestDetection();
 
         if (aprilTagDetectionOptional.isEmpty()) {
@@ -55,6 +58,13 @@ public class ReefAlignCommand extends Command {
         }
 
         AprilTagDetection detection = aprilTagDetectionOptional.get();
+
+        if (previousDetection == null) {
+            previousDetection = detection;
+        } else if (previousDetection.getFiducialID() != detection.getFiducialID()) {
+            return;
+        }
+
         Pose2d tagPose = detection.getTargetPose();
 
         System.out.println("tag id: " + detection.getFiducialID());
@@ -71,7 +81,8 @@ public class ReefAlignCommand extends Command {
                                 commandSwerveDrivetrain
                                         .getPigeon2()
                                         .getRotation2d()
-                                        .rotateBy(tagPose.getRotation()))
+                                        .rotateBy(tagPose.getRotation())
+                                        .rotateBy(new Rotation2d(Math.PI / 2)))
                         .withVelocityX(
                                 -xVelSupplier.getAsDouble()
                                         * TunerConstants.kSpeedAt12Volts.magnitude())
@@ -81,5 +92,7 @@ public class ReefAlignCommand extends Command {
     }
 
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+        previousDetection = null;
+    }
 }
