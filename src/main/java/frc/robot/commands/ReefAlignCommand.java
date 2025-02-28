@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,12 +15,14 @@ import java.util.function.DoubleSupplier;
 public class ReefAlignCommand extends Command {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
 
-    private final SwerveRequest.RobotCentricFacingAngle poseAimReq =
-            new SwerveRequest.RobotCentricFacingAngle();
+    private final SwerveRequest.FieldCentricFacingAngle poseAimReq;
     private final DoubleSupplier xVelSupplier;
     private final DoubleSupplier yVelSupplier;
 
     private final AprilTagSubsystem reefCam;
+    private Pose2d currPose;
+    private AprilTagDetection detection;
+    private Pose2d tagPose;
 
     public ReefAlignCommand(
             CommandSwerveDrivetrain commandSwerveDrivetrain,
@@ -34,52 +35,49 @@ public class ReefAlignCommand extends Command {
         this.yVelSupplier = joyStickY;
 
         addRequirements(this.commandSwerveDrivetrain);
-
+        poseAimReq = new SwerveRequest.FieldCentricFacingAngle();
         poseAimReq.HeadingController.setPID(5, 0, 0);
+        poseAimReq.HeadingController.setTolerance(0.07);
         poseAimReq.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     @Override
     public void initialize() {
         System.out.println("Reef cmd init");
+        this.currPose = commandSwerveDrivetrain.getState().Pose;
+        Optional<AprilTagDetection> aprilTagDetectionOpt = reefCam.getBestDetection();
+        SmartDashboard.putBoolean("ATag present", aprilTagDetectionOpt.isPresent());
+        if (aprilTagDetectionOpt.isEmpty()) {
+            cancel();
+            return;
+        }
+
+        detection = aprilTagDetectionOpt.get();
+        tagPose = detection.getTargetPose();
     }
 
     Field2d field = new Field2d();
 
     @Override
     public void execute() {
-        Optional<AprilTagDetection> aprilTagDetectionOptional = reefCam.getBestDetection();
-
-        if (aprilTagDetectionOptional.isEmpty()) {
-            return;
-        }
-
-        AprilTagDetection detection = aprilTagDetectionOptional.get();
-        Pose2d tagPose = detection.getTargetPose();
-
         System.out.println("tag id: " + detection.getFiducialID());
-        Pose2d robotPose = commandSwerveDrivetrain.getState().Pose;
-        field.setRobotPose(
-                robotPose.transformBy(
-                        new Transform2d(tagPose.getTranslation(), tagPose.getRotation())));
+        field.setRobotPose(tagPose);
         SmartDashboard.putData("ADetection Pose", field);
 
         // Apply drive control with joystick inputs
         commandSwerveDrivetrain.setControl(
                 poseAimReq
                         .withTargetDirection(
-                                commandSwerveDrivetrain
-                                        .getPigeon2()
-                                        .getRotation2d()
-                                        .rotateBy(tagPose.getRotation()))
+                                tagPose.getTranslation()
+                                        .minus(currPose.getTranslation())
+                                        .getAngle())
                         .withVelocityX(
                                 -xVelSupplier.getAsDouble()
                                         * TunerConstants.kSpeedAt12Volts.magnitude())
                         .withVelocityY(
                                 -yVelSupplier.getAsDouble()
                                         * TunerConstants.kSpeedAt12Volts.magnitude()));
+        SmartDashboard.putNumber(
+                "ADetection Error", poseAimReq.HeadingController.getPositionError());
     }
-
-    @Override
-    public void end(boolean interrupted) {}
 }
