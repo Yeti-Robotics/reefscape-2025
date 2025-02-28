@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.util.sim.PhysicsSim;
-import frc.robot.subsystems.led.LEDSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -85,9 +84,7 @@ public class Robot extends TimedRobot {
 
     /** This method is called periodically during operator control. */
     @Override
-    public void teleopPeriodic() {
-        RobotContainer.leds.setAnimation(LEDSubsystem.Events.IDLETELEOP);
-    }
+    public void teleopPeriodic() {}
 
     @Override
     public void teleopExit() {

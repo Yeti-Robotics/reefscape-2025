@@ -52,7 +52,9 @@ public class Tray extends SubsystemBase {
     public boolean isCoralInTray() {
         ColorData traySensorColor = traySensor.getColor();
 
-        return Utils.isSimulation() ? isInTray : traySensorColor.hue() >= 0.7 && traySensor.getProximity() < 0.1;
+        return Utils.isSimulation()
+                ? isInTray
+                : traySensorColor.hue() >= 0.7 && traySensor.getProximity() < 0.1;
 
         /*
         return traySensorColor.red() == TrayConfigs.coralColor.red()

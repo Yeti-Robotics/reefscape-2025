@@ -22,7 +22,9 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.constants.Constants;
 import java.util.function.Supplier;
 
 /**
@@ -35,6 +37,8 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+
+    public final Trigger zeroedWheels;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -131,6 +135,16 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
             startSimThread();
         }
         registerTelemetry(TunerConstants.logger::telemeterize);
+        CANcoder wheel1 = getCANcoder(0);
+        CANcoder wheel2 = getCANcoder(1);
+        CANcoder wheel3 = getCANcoder(2);
+        CANcoder wheel4 = getCANcoder(3);
+
+        zeroedWheels =
+                new Trigger(() -> isWheelZeroed(wheel1))
+                        .and(() -> isWheelZeroed(wheel2))
+                        .and(() -> isWheelZeroed(wheel3))
+                        .and(() -> isWheelZeroed(wheel4));
     }
 
     /**
@@ -147,8 +161,10 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
     public CommandSwerveDrivetrain(
             SwerveDrivetrainConstants drivetrainConstants,
             double odometryUpdateFrequency,
+            Trigger zeroedWheels,
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, odometryUpdateFrequency, modules);
+        this.zeroedWheels = zeroedWheels;
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -174,6 +190,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
             double odometryUpdateFrequency,
             Matrix<N3, N1> odometryStandardDeviation,
             Matrix<N3, N1> visionStandardDeviation,
+            Trigger zeroedWheels,
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(
                 drivetrainConstants,
@@ -181,9 +198,15 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
                 odometryStandardDeviation,
                 visionStandardDeviation,
                 modules);
+        this.zeroedWheels = zeroedWheels;
         if (Utils.isSimulation()) {
             startSimThread();
         }
+    }
+
+    private boolean isWheelZeroed(CANcoder wheel) {
+        double position = wheel.getPosition().refresh().getValueAsDouble();
+        return position >= 0 || position <= Constants.ZERO_TOLERANCE;
     }
 
     /**
@@ -294,7 +317,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
                 visionMeasurementStdDevs);
     }
 
-    public CANcoder getCANcoder(int id) {
+    private CANcoder getCANcoder(int id) {
         return getModule(id).getEncoder();
     }
 }

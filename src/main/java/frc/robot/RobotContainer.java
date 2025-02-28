@@ -7,14 +7,11 @@ package frc.robot;
 
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,16 +20,13 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.algae.AlgaeArm;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.led.ProgressBar;
 import frc.robot.subsystems.tray.Tray;
@@ -49,16 +43,11 @@ public class RobotContainer {
 
     @Logged(name = "Drivetrain")
     final CommandSwerveDrivetrain drivetrain;
-    ElevatorSubsystem elevatorSubsystem;
+
     Tray tray;
-    AlgaeArm algaeArm;
     Climber climber;
     public static LEDSubsystem leds;
     public ProgressBar progressBar;
-    CANcoder wheel1;
-    CANcoder wheel2;
-    CANcoder wheel3;
-    CANcoder wheel4;
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
@@ -80,18 +69,9 @@ public class RobotContainer {
         primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
         coralManipulator = new CoralManipulatorSystem();
-        xboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
-        elevatorSubsystem = new ElevatorSubsystem();
         leds = new LEDSubsystem();
         progressBar = new ProgressBar(leds);
-        tray = new Tray();
-        algaeArm = new AlgaeArm();
-        drivetrain = TunerConstants.createDrivetrain();
         climber = new Climber();
-        wheel1 = drivetrain.getCANcoder(0);
-        wheel2 = drivetrain.getCANcoder(1);
-        wheel3 = drivetrain.getCANcoder(2);
-        wheel4 = drivetrain.getCANcoder(3);
         configureBindings();
         assembleMechanisms();
         configureTriggers();
@@ -144,18 +124,16 @@ public class RobotContainer {
     }
 
     private void configureTriggers() {
-        new Trigger(tray::isCoralInTray)
+        new Trigger(coralManipulator.grabber::hasCoral)
                 .onTrue(runOnce(() -> progressBar.addProgress()))
                 .and(DriverStation::isDisabled)
                 .onFalse(runOnce(() -> progressBar.subtractProgress()));
-        new Trigger(elevatorSubsystem::getMagSwitch)
+        new Trigger(coralManipulator.elevator::getMagSwitch)
                 .onTrue(runOnce(() -> progressBar.addProgress()))
                 .and(DriverStation::isDisabled)
                 .onFalse(runOnce(() -> progressBar.subtractProgress()));
-        new Trigger(() -> isWheelZeroed(wheel1))
-                .and(() -> isWheelZeroed(wheel2))
-                .and(() -> isWheelZeroed(wheel3))
-                .and(() -> isWheelZeroed(wheel4))
+        drivetrain
+                .zeroedWheels
                 .and(DriverStation::isDisabled)
                 .onTrue(runOnce(() -> progressBar.addProgress()))
                 .onFalse(runOnce(() -> progressBar.subtractProgress()));
@@ -163,15 +141,8 @@ public class RobotContainer {
                 .onTrue(runOnce(() -> progressBar.addProgress()))
                 .and(DriverStation::isDisabled)
                 .onFalse(runOnce(() -> progressBar.subtractProgress()));
-        new Trigger(algaeArm::isArmZero)
-                .onTrue(runOnce(() -> progressBar.addProgress()))
-                .and(DriverStation::isDisabled)
-                .onFalse(runOnce(() -> progressBar.subtractProgress()));
-    }
-
-    public boolean isWheelZeroed(CANcoder wheel) {
-        double position = wheel.getPosition().refresh().getValueAsDouble();
-        return position >= 0 || position <= Constants.ZERO_TOLERANCE;
+        new Trigger(DriverStation::isTeleopEnabled)
+                .onTrue(runOnce(() -> leds.setAnimation(LEDSubsystem.Events.IDLETELEOP)));
     }
 
     private void assembleMechanisms() {

@@ -1,7 +1,5 @@
 package frc.robot.subsystems.led;
 
-import com.ctre.phoenix6.Utils;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -19,9 +17,13 @@ public class ProgressBar extends SubsystemBase {
 
         private final int progress;
 
-        ProgressBarPercents(int progress) { this.progress = progress; }
+        ProgressBarPercents(int progress) {
+            this.progress = progress;
+        }
 
-        public int getProgress() { return progress; }
+        public int getProgress() {
+            return progress;
+        }
     }
 
     public void addProgress() {

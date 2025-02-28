@@ -25,6 +25,7 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
             new MotionMagicTorqueCurrentFOC(0).withSlot(0);
 
     private final StatusSignal<Angle> armPosition = armKraken.getPosition();
+    private CANcoder armEncoder;
 
     public ArmSubsystem() {
         super(
@@ -32,7 +33,7 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
                 StateUtils.mutableRotationSetpoint(),
                 Units.Rotations.of(ArmConfig.ANGLE_TOLERANCE));
         armKraken.getConfigurator().apply(ArmConfig.talonFXConfiguration);
-        CANcoder armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.CANIVORE_BUS);
+        armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.CANIVORE_BUS);
 
         armEncoder.getConfigurator().apply(ArmConfig.cancoderConfiguration);
 
@@ -59,5 +60,10 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
     @Override
     public double updateMechPos() {
         return (armPosition.getValueAsDouble() * 360.0) - 90;
+    }
+
+    public boolean isEncoderZeroed() {
+        double position = armEncoder.getPosition().refresh().getValueAsDouble();
+        return position >= 0 || position <= Constants.ZERO_TOLERANCE;
     }
 }
