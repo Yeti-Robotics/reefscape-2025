@@ -8,7 +8,6 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -27,7 +26,6 @@ import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
-import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
@@ -49,8 +47,9 @@ public class RobotContainer {
     @Logged(name = "Drivetrain")
     final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    public final PhotonAprilTagSystem reefCamSim =
-            new PhotonAprilTagSystem("YetiCam1", new Transform3d(), drivetrain);
+    //
+    //    public final PhotonAprilTagSystem reefCamSim =
+    //            new PhotonAprilTagSystem("YetiCam1", new Transform3d(), drivetrain);
 
     public ReefAlignCommand alignToReef;
 
@@ -81,7 +80,7 @@ public class RobotContainer {
         alignToReef =
                 new ReefAlignCommand(
                         drivetrain,
-                        reefCamSim,
+                        reefCamera,
                         primaryXboxController::getLeftY,
                         primaryXboxController::getLeftX);
         coralManipulator = new CoralManipulatorSystem();
@@ -135,7 +134,7 @@ public class RobotContainer {
         primaryXboxController.b().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
         primaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
         primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
-        primaryXboxController.button(1).whileTrue(alignToReef);
+        primaryXboxController.leftTrigger().whileTrue(alignToReef);
         primaryXboxController
                 .povRight()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2));

@@ -52,8 +52,8 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         robotContainer.updateMechanisms();
-        //  robotContainer.updateVision();
-        robotContainer.updateVisionSim();
+        robotContainer.updateVision();
+        // robotContainer.updateVisionSim();
     }
 
     /** This method is called once each time the robot enters Disabled mode. */
