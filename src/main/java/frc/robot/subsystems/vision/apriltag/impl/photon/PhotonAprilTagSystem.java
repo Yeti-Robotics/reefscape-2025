@@ -16,7 +16,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsystem {
-    private final PhotonCamera camera;
+    private PhotonCamera camera;
     private final Transform3d cameraTransform;
     private final PhotonPoseEstimator photonPoseEstimator;
     private final CommandSwerveDrivetrain drivetrain;
@@ -45,6 +45,10 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
                 PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
     }
 
+    public void setCamera(PhotonCamera camera) {
+        this.camera = camera;
+    }
+
     private Optional<AprilTagDetection> mapToDetection(PhotonTrackedTarget target) {
         if (target.getPoseAmbiguity() > maxAmbiguity) {
             return Optional.empty();
@@ -61,10 +65,10 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
         Pose3d robotPose =
                 PhotonUtils.estimateFieldToRobotAprilTag(
-                        target.bestCameraToTarget, aprilTagPose, cameraTransform);
+                        target.bestCameraToTarget, aprilTagPose, cameraTransform.inverse());
 
         Pose3d targetPose =
-                new Pose3d().transformBy(cameraTransform).transformBy(target.bestCameraToTarget);
+                robotPose.transformBy(cameraTransform).transformBy(target.bestCameraToTarget);
 
         return Optional.of(
                 new AprilTagDetection(
@@ -76,9 +80,6 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
     @Override
     public void periodic() {
-        currentBestDetection = null;
-        currentBestDetectionTimestamp = 0;
-
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
         if (results.isEmpty()) {

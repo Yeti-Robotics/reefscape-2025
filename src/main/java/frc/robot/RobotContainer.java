@@ -8,6 +8,9 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -26,6 +29,7 @@ import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
+import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
@@ -47,11 +51,15 @@ public class RobotContainer {
     @Logged(name = "Drivetrain")
     final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    //
-    //    public final PhotonAprilTagSystem reefCamSim =
-    //            new PhotonAprilTagSystem("YetiCam1", new Transform3d(), drivetrain);
-
-    public ReefAlignCommand alignToReef;
+    Transform3d camTrans =
+            new Transform3d(
+                    new Translation3d(
+                            Units.inchesToMeters(-9.5),
+                            Units.inchesToMeters(0),
+                            Units.inchesToMeters(35.125)),
+                    new Rotation3d(0, 0, Math.toRadians(-180)));
+    public final PhotonAprilTagSystem reefCamSim =
+            new PhotonAprilTagSystem("YetiCam1", camTrans, drivetrain);
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
@@ -72,17 +80,15 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         AprilTagCamSim simCam =
-                AprilTagCamSimBuilder.newCamera().withCameraName("YetiCam1").build();
+                AprilTagCamSimBuilder.newCamera()
+                        .withCameraName("YetiCam1")
+                        .withTransform(camTrans)
+                        .build();
         aprilTagCamSim.addCamera(simCam);
+        reefCamSim.setCamera(aprilTagCamSim.getAprilTagCamSims().get(0).getCam());
 
         primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         reefCamera = new LimelightAprilTagSystem("limelight", drivetrain);
-        alignToReef =
-                new ReefAlignCommand(
-                        drivetrain,
-                        reefCamera,
-                        primaryXboxController::getLeftY,
-                        primaryXboxController::getLeftX);
         coralManipulator = new CoralManipulatorSystem();
         configureBindings();
         assembleMechanisms();
@@ -134,7 +140,14 @@ public class RobotContainer {
         primaryXboxController.b().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
         primaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
         primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
-        primaryXboxController.leftTrigger().whileTrue(alignToReef);
+        primaryXboxController
+                .leftTrigger()
+                .whileTrue(
+                        new ReefAlignCommand(
+                                drivetrain,
+                                reefCamera,
+                                primaryXboxController::getLeftY,
+                                primaryXboxController::getLeftX));
         primaryXboxController
                 .povRight()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2));

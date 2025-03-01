@@ -1,7 +1,8 @@
 package frc.robot.subsystems.vision.apriltag.impl.limelight;
 
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
@@ -107,10 +108,21 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
     }
 
     private AprilTagDetection mapToDetection(LimelightHelpers.LimelightTarget_Fiducial aprilTag) {
+        Pose3d robotPose = aprilTag.getRobotPose_FieldSpace();
+        Transform3d camTranform =
+                new Transform3d(
+                        new Translation3d(
+                                Units.inchesToMeters(-9.5), 0, Units.inchesToMeters(35.125)),
+                        new Rotation3d(0, 0, Math.toRadians(-180)));
+        Transform3d camToTarget =
+                new Transform3d(
+                        LimelightHelpers.getTargetPose3d_CameraSpace("limelight").getTranslation(),
+                        LimelightHelpers.getTargetPose3d_CameraSpace("limelight").getRotation());
+        Pose3d targetPose = robotPose.transformBy(camTranform).transformBy(camToTarget);
         return new AprilTagDetection(
                 (int) aprilTag.fiducialID,
-                aprilTag.getRobotPose_FieldSpace2D(),
-                aprilTag.getTargetPose_RobotSpace2D(),
+                robotPose.toPose2d(),
+                targetPose.toPose2d(),
                 0 // we can trust MegaTag2, as it eliminates pose ambiguity
                 );
     }
