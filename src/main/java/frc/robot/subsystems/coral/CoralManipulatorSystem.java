@@ -39,6 +39,11 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         return transitioningTo().orElse(CoralManipulatorState.IDLE).toString();
     }
 
+    @Logged(name = "States/Wrist State")
+    public String getWristState() {
+        return wrist.getCurrentState().toString();
+    }
+
     @Logged(name = "States/Arm State")
     public String getArmState() {
         return arm.getCurrentState().toString();
@@ -86,11 +91,13 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
             if (targetState == CoralManipulatorState.SCORE_L2) {
                 coralManipulatorCommand =
                         elevator.transitionTo(targetState.getElevatorPosition())
+                                .andThen(wrist.transitionTo(targetState.getWristPosition()))
                                 .andThen(arm.transitionTo(targetState.getArmPosition()))
                                 .andThen(grabber.transitionTo(targetState.getGrabberState()));
             } else {
                 coralManipulatorCommand =
                         elevator.transitionTo(ElevatorPosition.SAFE_POSITION)
+                                .andThen(wrist.transitionTo(targetState.getWristPosition()))
                                 .andThen(arm.transitionTo(targetState.getArmPosition()))
                                 .andThen(elevator.transitionTo(targetState.getElevatorPosition()))
                                 .andThen(grabber.transitionTo(targetState.getGrabberState()));

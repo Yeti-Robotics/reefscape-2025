@@ -1,62 +1,73 @@
 package frc.robot.subsystems.wrist;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import static edu.wpi.first.math.util.Units.inchesToMeters;
+
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.constants.Constants;
+import frc.robot.util.sim.PhysicsSim;
+import frc.robot.util.sim.SimulatableMechanism;
+import frc.robot.util.state.StateUtils;
+import frc.robot.util.state.StatefulSetpointSubsystem;
 
-public class WristSubsystem extends SubsystemBase {
-    private final TalonFX wristMotor;
-    private final CANcoder wristEncoder;
-
-    public enum WristPositions {
-        HORIZONTAL(0),
-        VERTICAL(90);
-
-        private final double angle;
-
-        WristPositions(double angle) {
-            this.angle = angle;
-        }
-
-        public double getAngle() {
-            return angle;
-        }
-    }
+@Logged
+public class WristSubsystem
+        extends StatefulSetpointSubsystem<WristPositions, AngleUnit, Angle, MutAngle>
+        implements SimulatableMechanism {
+    private final TalonFX wristMotor = new TalonFX(WristConfigs.DEVICE_ID, Constants.RIO_BUS);
+    private final CANcoder wristEncoder = new CANcoder(WristConfigs.DEVICE_ID);
+    private final StatusSignal<Angle> wristPosition = wristMotor.getPosition();
+    private final MotionMagicTorqueCurrentFOC magicRequest =
+            new MotionMagicTorqueCurrentFOC(0).withSlot(1);
 
     public WristSubsystem() {
-        wristMotor = new TalonFX(WristConfigs.DEVICE_ID, Constants.RIO_BUS);
-        wristEncoder = new CANcoder(WristConfigs.DEVICE_ID);
-
-        var wristConfigurator = wristMotor.getConfigurator();
-        var configs = new TalonFXConfiguration();
-        configs.MotorOutput.Inverted = WristConfigs.MOTOR_INVERSION;
-        configs.MotorOutput.NeutralMode = WristConfigs.NEUTRAL_MODE_VALUE;
-
-        configs.Slot0.kP = 2;
-        configs.Slot0.kI = 0.0;
-        configs.Slot0.kD = 0.0;
-        configs.MotionMagic.MotionMagicAcceleration = 1;
-        configs.MotionMagic.MotionMagicCruiseVelocity = .04;
-        configs.MotionMagic.MotionMagicJerk = 20;
-        configs.Feedback.RotorToSensorRatio = 1;
-        configs.Feedback.SensorToMechanismRatio = 3.75;
-
-        wristConfigurator.apply(configs);
+        super(
+                WristPositions.HORIZONTAL,
+                StateUtils.mutableRotationSetpoint(),
+                Units.Rotations.of(WristConfigs.WRIST_TOLERANCE));
+        wristMotor.getConfigurator().apply(WristConfigs.wristMotorConfigs);
+        if (Robot.isSimulation()) {
+            PhysicsSim.getInstance().addTalonFX(wristMotor, wristEncoder);
+        }
     }
 
-    public void setPosition(WristPositions position) {
-        wristMotor.setControl(new MotionMagicVoltage(position.getAngle()));
+    public Command moveWristHorizontal() {
+        return runOnce(() -> moveTo(WristPositions.HORIZONTAL.getAngle()));
     }
 
-    public void resetEncoder() {
-        wristEncoder.setPosition(0);
+    public Command moveWristVertical() {
+        return runOnce(() -> moveTo(WristPositions.VERTICAL.getAngle()));
     }
 
-    public Command moveToPosition(WristPositions position) {
-        return runOnce(() -> setPosition(position));
+    @Override
+    public double updateMechPos() {
+        return inchesToMeters(wristPosition.getValueAsDouble());
+    }
+
+    @Override
+    public StatusSignal<Angle> currentStateSignal() {
+        return wristPosition;
+    }
+
+    @Override
+    public Angle determineSetpoint(WristPositions targetState) {
+        return targetState == WristPositions.HOLD
+                ? wristPosition.getValue()
+                : targetState.getAngle();
+    }
+
+    @Override
+    public StatusCode moveTo(Angle setpoint) {
+        return wristMotor.setControl(magicRequest.withPosition(setpoint));
     }
 }

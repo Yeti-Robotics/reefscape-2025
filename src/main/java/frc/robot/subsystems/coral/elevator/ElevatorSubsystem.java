@@ -102,7 +102,8 @@ public class ElevatorSubsystem
 
     @Override
     protected boolean isTransitionFinished() {
-        if (super.isTransitionFinished() && elevatorPosition  == ElevatorPosition.BOTTOM.getHeight()){
+        if (super.isTransitionFinished()
+                && elevatorPosition == ElevatorPosition.BOTTOM.getHeight()) {
             primaryElevatorMotor.setControl(new NeutralOut());
         }
         return super.isTransitionFinished();
