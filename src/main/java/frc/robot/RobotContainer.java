@@ -33,7 +33,6 @@ import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
-
 import java.util.Optional;
 
 /**
@@ -142,11 +141,11 @@ public class RobotContainer {
         primaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
         primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
         primaryXboxController
-                .button(1)
+                .leftTrigger()
                 .whileTrue(
                         new ReefAlignCommand(
                                 drivetrain,
-                                reefCamSim,
+                                reefCamera,
                                 primaryXboxController::getLeftY,
                                 primaryXboxController::getLeftX));
         primaryXboxController
