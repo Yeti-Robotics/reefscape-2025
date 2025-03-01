@@ -46,7 +46,7 @@ public class RobotContainer {
     public final CommandXboxController primaryXboxController;
 
     @Logged(name = "Vision/Limelight")
-    public final LimelightAprilTagSystem reefCamera;
+    public final LimelightAprilTagSystem limelight;
 
     @Logged(name = "Drivetrain")
     final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -88,7 +88,7 @@ public class RobotContainer {
         reefCamSim.setCamera(aprilTagCamSim.getAprilTagCamSims().get(0).getCam());
 
         primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
-        reefCamera = new LimelightAprilTagSystem("limelight", drivetrain);
+        limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         coralManipulator = new CoralManipulatorSystem();
         configureBindings();
         assembleMechanisms();
@@ -104,9 +104,9 @@ public class RobotContainer {
      * joysticks}.
      */
     public void updateVision() {
-        Optional<AprilTagPose> aprilTagPoseOpt = reefCamera.getEstimatedPose();
+        Optional<AprilTagPose> aprilTagPoseOpt = limelight.getEstimatedPose();
 
-        if (aprilTagPoseOpt.isPresent()) {
+        if (aprilTagPoseOpt.isPresent() && !drivetrain.isMotionBlur()) {
             AprilTagPose pose = aprilTagPoseOpt.get();
 
             if (pose.getNumTags() > 0) {
@@ -145,7 +145,7 @@ public class RobotContainer {
                 .whileTrue(
                         new ReefAlignCommand(
                                 drivetrain,
-                                reefCamera,
+                                limelight,
                                 primaryXboxController::getLeftY,
                                 primaryXboxController::getLeftX));
         primaryXboxController

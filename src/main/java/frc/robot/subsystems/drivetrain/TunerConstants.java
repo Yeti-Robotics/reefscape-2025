@@ -201,6 +201,8 @@ public class TunerConstants {
     private static final Distance kBackRightXPos = Inches.of(-10);
     private static final Distance kBackRightYPos = Inches.of(-10);
 
+    public static final AngularVelocity MAX_BLUR_SPEED = RotationsPerSecond.of(3);
+
     public static final SwerveModuleConstants<
                     TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
             FrontLeft =
