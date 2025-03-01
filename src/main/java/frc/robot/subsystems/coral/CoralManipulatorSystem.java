@@ -25,6 +25,9 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         super(CoralManipulatorState.IDLE);
     }
 
+    @Logged(name = "States/Queued State")
+    public static CoralManipulatorState queuedState = CoralManipulatorState.IDLE;
+
     @Logged(name = "States/Coral Manipulator State")
     public String getCoralManipulatorState() {
         return getCurrentState().toString();
@@ -68,6 +71,24 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     @Logged(name = "States/Elevator transitioning State")
     public String elevatorTransitionState() {
         return elevator.transitioningTo().orElse(ElevatorPosition.HOLD).toString();
+    }
+
+    public void queueState(CoralManipulatorState state) {
+        queuedState = state;
+    }
+
+    public Command scoreState() {
+        return switch (queuedState) {
+            case L1 -> transitionTo(CoralManipulatorState.SCORE_L1);
+            case L2 -> transitionTo(CoralManipulatorState.SCORE_L2);
+            case L3 -> transitionTo(CoralManipulatorState.SCORE_L3);
+            case L4 -> transitionTo(CoralManipulatorState.SCORE_L4);
+            default -> transitionTo(CoralManipulatorState.IDLE);
+        };
+    }
+
+    public Command setQueueState(CoralManipulatorState queuedState) {
+        return runOnce(() -> queueState(queuedState));
     }
 
     @Override
