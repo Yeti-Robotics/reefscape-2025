@@ -150,3 +150,10 @@ spotless {
 }
 
 tasks.compileJava.dependsOn(tasks.spotlessApply)
+sourceSets {
+    main {
+        java {
+            srcDir "${buildDir.absolutePath}/generated/sources/annotationProcessor/java/main"
+        }
+    }
+}

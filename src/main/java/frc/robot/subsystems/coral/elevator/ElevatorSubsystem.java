@@ -97,7 +97,7 @@ public class ElevatorSubsystem
 
     @Override
     public double updateMechPos() {
-        return inchesToMeters(elevatorPosition.getValueAsDouble());
+        return inchesToMeters(elevatorPosition.getValueAsDouble() * 6) + inchesToMeters(1);
     }
 
     @Override
