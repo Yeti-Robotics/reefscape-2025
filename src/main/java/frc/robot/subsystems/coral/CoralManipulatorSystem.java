@@ -8,6 +8,7 @@ import frc.robot.subsystems.coral.arm.ArmSubsystem;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
+import frc.robot.subsystems.wrist.WristSubsystem;
 import frc.robot.util.state.StatefulSubsystem;
 
 @Logged
@@ -20,6 +21,9 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
 
     @Logged(name = "Grabber")
     public final GrabberSubsystem grabber = new GrabberSubsystem();
+
+    @Logged(name = "Wrist")
+    public final WristSubsystem wrist = new WristSubsystem();
 
     public CoralManipulatorSystem() {
         super(CoralManipulatorState.IDLE);
