@@ -97,12 +97,13 @@ public class ElevatorSubsystem
 
     @Override
     public double updateMechPos() {
-        return inchesToMeters(elevatorPosition.getValueAsDouble());
+        return inchesToMeters(elevatorPosition.getValueAsDouble() * 6) + inchesToMeters(1);
     }
 
     @Override
     protected boolean isTransitionFinished() {
-        if (super.isTransitionFinished() && elevatorPosition  == ElevatorPosition.BOTTOM.getHeight()){
+        if (super.isTransitionFinished()
+                && elevatorPosition == ElevatorPosition.BOTTOM.getHeight()) {
             primaryElevatorMotor.setControl(new NeutralOut());
         }
         return super.isTransitionFinished();

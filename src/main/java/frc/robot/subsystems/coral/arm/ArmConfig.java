@@ -2,6 +2,7 @@ package frc.robot.subsystems.coral.arm;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.*;
+import frc.robot.Robot;
 
 class ArmConfig {
 
@@ -55,11 +56,14 @@ class ArmConfig {
                                     .withFeedbackRemoteSensorID(ARM_CANCODER_ID)
                                     .withFeedbackSensorSource(
                                             FeedbackSensorSourceValue.FusedCANcoder)
-                                    .withRotorToSensorRatio(GEAR_RATIO)
-                                    .withSensorToMechanismRatio(1))
+                                    .withRotorToSensorRatio(Robot.isReal() ? GEAR_RATIO : 1)
+                                    .withSensorToMechanismRatio(Robot.isReal() ? 1 : GEAR_RATIO))
                     .withMotorOutput(
                             new MotorOutputConfigs()
-                                    .withInverted(InvertedValue.Clockwise_Positive)
+                                    .withInverted(
+                                            Robot.isReal()
+                                                    ? InvertedValue.Clockwise_Positive
+                                                    : InvertedValue.CounterClockwise_Positive)
                                     .withNeutralMode(NeutralModeValue.Brake))
                     .withSlot0(SLOT_0_REAL_CONFIGS)
                     .withSlot1(SLOT_1_WOOD_CONFIGS)
