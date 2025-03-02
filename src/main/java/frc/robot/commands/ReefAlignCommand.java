@@ -4,6 +4,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -68,14 +70,25 @@ public class ReefAlignCommand extends Command {
     @Override
     public void execute() {
         System.out.println("tag id: " + detection.getFiducialID());
-        field.setRobotPose(tagPose);
+        field.setRobotPose(
+                tagPose.transformBy(
+                        new Transform2d(
+                                new Translation2d(
+                                        Units.inchesToMeters(-12), Units.inchesToMeters(6.482)),
+                                new Rotation2d(0, 0))));
         SmartDashboard.putData("ADetection Pose", field);
 
         // Apply drive control with joystick inputs
         commandSwerveDrivetrain.setControl(
                 poseAimReq
                         .withTargetDirection(
-                                tagPose.getTranslation()
+                                tagPose.transformBy(
+                                                new Transform2d(
+                                                        new Translation2d(
+                                                                Units.inchesToMeters(-12),
+                                                                Units.inchesToMeters(6.482)),
+                                                        new Rotation2d(0, 0)))
+                                        .getTranslation()
                                         .minus(currPose.getTranslation())
                                         .getAngle()
                                         .minus(Rotation2d.fromDegrees(270)))
