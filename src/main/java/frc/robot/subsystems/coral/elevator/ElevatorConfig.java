@@ -1,21 +1,32 @@
 package frc.robot.subsystems.coral.elevator;
 
 import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 class ElevatorConfig {
-    static final int primaryElevatorMotorID = 9;
-    static final int secondaryElevatorMotorID = 11;
-    static final int magSwitchID = 0; // placeholder
-    static final double gearRatio = 44.0 / 18.0;
+    static final int primaryElevatorMotorID = 11;
+    static final int secondaryElevatorMotorID = 18;
+    static final int magSwitchID = 6;
+    static final double gearRatio = 42.0 / 20.0;
 
+    private static final Slot0Configs SLOT_0_REAL_CONFIGS =
+            new Slot0Configs()
+                    .withKP(90)
+                    .withKI(0)
+                    .withKD(4.5)
+                    .withKG(31.5)
+                    .withKV(1)
+                    .withKA(.5)
+                    .withKS(2)
+                    .withGravityType(GravityTypeValue.Elevator_Static);
     private static final Slot1Configs SLOT_1_SIM_CONFIGS =
             new Slot1Configs()
-                    .withKP(10)
+                    .withKP(24)
                     .withKI(0)
-                    .withKD(1)
+                    .withKD(24)
                     .withKG(0)
                     .withKV(0)
                     .withKA(0.1)
@@ -23,14 +34,7 @@ class ElevatorConfig {
 
     static final TalonFXConfiguration primaryTalonFXConfigs =
             new TalonFXConfiguration()
-                    .withSlot0(
-                            new Slot0Configs()
-                                    .withKP(90)
-                                    .withKI(0)
-                                    .withKD(4.5)
-                                    .withKG(31.5)
-                                    .withKA(0.5)
-                                    .withKV(2))
+                    .withSlot0(SLOT_0_REAL_CONFIGS)
                     .withSlot1(SLOT_1_SIM_CONFIGS)
                     .withMotionMagic(
                             new MotionMagicConfigs()
@@ -44,7 +48,7 @@ class ElevatorConfig {
                     .withFeedback(
                             new FeedbackConfigs()
                                     .withRotorToSensorRatio(1.0)
-                                    .withSensorToMechanismRatio(gearRatio)); // placeholder
+                                    .withSensorToMechanismRatio(gearRatio));
     static final TalonFXConfiguration secondaryTalonFXConfigs =
             new TalonFXConfiguration()
                     .withMotorOutput(
@@ -56,5 +60,6 @@ class ElevatorConfig {
                                     .withRotorToSensorRatio(1.0)
                                     .withSensorToMechanismRatio(gearRatio));
 
-    static final double HEIGHT_TOLERANCE = 0.05;
+    static final double HEIGHT_TOLERANCE = 0.08;
+    static final double ELEVATOR_VELOCITY_TOLERANCE = 0.01;
 }

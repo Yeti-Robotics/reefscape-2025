@@ -1,13 +1,13 @@
 package frc.robot.subsystems.coral.grabber;
 
+import static frc.robot.constants.Constants.RIO_BUS;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.util.state.StatefulSubsystem;
-
-import static frc.robot.constants.Constants.RIO_BUS;
 
 public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
     private final TalonFX claw = new TalonFX(GrabberConfig.CLAW_ID, RIO_BUS);
@@ -17,14 +17,11 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
     // idk if its DigitalInput or Cancolor, assuming the former for now
     private final DigitalInput clawSwitch = new DigitalInput(GrabberConfig.GRABBER_BEAM_BREAK);
 
-
-
     public GrabberSubsystem() {
         super(GrabberState.OFF);
         claw.getConfigurator().apply(GrabberConfig.coralMotorConfig);
 
-        new Trigger(this::hasCoral)
-                .onChange(transitionTo(GrabberState.OFF));
+        new Trigger(this::hasCoral).onChange(transitionTo(GrabberState.OFF));
     }
 
     @Override

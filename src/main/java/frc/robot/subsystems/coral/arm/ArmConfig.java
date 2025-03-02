@@ -5,10 +5,10 @@ import com.ctre.phoenix6.signals.*;
 
 class ArmConfig {
 
-    static final int ARM_KRAKEN_ID = 47;
-    static final int ARM_CANCODER_ID = 5;
+    static final int ARM_KRAKEN_ID = 29;
+    static final int ARM_CANCODER_ID = 0;
 
-    static final double MAGNET_OFFSET = 0;
+    static final double MAGNET_OFFSET = -0.052002;
     static final double GEAR_RATIO = 113;
 
     static final double ARM_DEPLOY_LOWER_BOUND = 0;
@@ -46,14 +46,15 @@ class ArmConfig {
                                     .withFeedbackRemoteSensorID(ARM_CANCODER_ID)
                                     .withFeedbackSensorSource(
                                             FeedbackSensorSourceValue.FusedCANcoder)
-                                    .withSensorToMechanismRatio(GEAR_RATIO) // alphabot
-                                    .withRotorToSensorRatio(1)) // alphabot
+                                    .withRotorToSensorRatio(GEAR_RATIO)
+                                    .withSensorToMechanismRatio(1) // alphabot
+                            ) // alphabot
                     .withMotorOutput(
                             new MotorOutputConfigs()
-                                    .withInverted(InvertedValue.CounterClockwise_Positive)
+                                    .withInverted(InvertedValue.Clockwise_Positive)
                                     .withNeutralMode(NeutralModeValue.Brake))
                     .withSlot0(SLOT_0_REAL_CONFIGS)
-                    .withSlot1(SLOT_1_SIM_CONFIGS)
+                    // .withSlot1(SLOT_1_SIM_CONFIGS)
                     .withMotionMagic(motionMagicConfigs);
 
     static final CANcoderConfiguration cancoderConfiguration =
@@ -62,7 +63,8 @@ class ArmConfig {
                             new MagnetSensorConfigs()
                                     .withSensorDirection(
                                             SensorDirectionValue.CounterClockwise_Positive)
-                                    .withMagnetOffset(MAGNET_OFFSET));
+                                    .withMagnetOffset(MAGNET_OFFSET)
+                                    .withAbsoluteSensorDiscontinuityPoint(0.625));
 
     static final double ANGLE_TOLERANCE = 0.05;
 }
