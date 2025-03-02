@@ -2,6 +2,8 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,16 +25,21 @@ public class ReefAlignCommand extends Command {
     private Pose2d currPose;
     private AprilTagDetection detection;
     private Pose2d tagPose;
+    private Transform2d branchLeftPose;
+    private Transform2d branchRightPose;
+    private boolean isLeft;
 
     public ReefAlignCommand(
             CommandSwerveDrivetrain commandSwerveDrivetrain,
             AprilTagSubsystem reefCam,
-            DoubleSupplier joyStickX,
-            DoubleSupplier joyStickY) {
+            DoubleSupplier yVelocitySupplier,
+            DoubleSupplier xVelocitySupplier,
+            boolean isLeft) {
+
         this.commandSwerveDrivetrain = commandSwerveDrivetrain;
         this.reefCam = reefCam;
-        this.xVelSupplier = joyStickX;
-        this.yVelSupplier = joyStickY;
+        this.xVelSupplier = xVelocitySupplier;
+        this.yVelSupplier = yVelocitySupplier;
 
         addRequirements(this.commandSwerveDrivetrain);
         poseAimReq = new SwerveRequest.FieldCentricFacingAngle();
@@ -70,7 +77,8 @@ public class ReefAlignCommand extends Command {
                         .withTargetDirection(
                                 tagPose.getTranslation()
                                         .minus(currPose.getTranslation())
-                                        .getAngle())
+                                        .getAngle()
+                                        .minus(Rotation2d.fromDegrees(270)))
                         .withVelocityX(
                                 -xVelSupplier.getAsDouble()
                                         * TunerConstants.kSpeedAt12Volts.magnitude())

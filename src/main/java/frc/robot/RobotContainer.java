@@ -32,7 +32,6 @@ import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSyst
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
-import frc.robot.util.sim.vision.AprilTagSimulator;
 import java.util.Optional;
 
 /**
@@ -54,12 +53,14 @@ public class RobotContainer {
     Transform3d camTrans =
             new Transform3d(
                     new Translation3d(
-                            Units.inchesToMeters(-9.5),
-                            Units.inchesToMeters(0),
-                            Units.inchesToMeters(35.125)),
-                    new Rotation3d(0, 0, Math.toRadians(-180)));
-    public final PhotonAprilTagSystem reefCamSim =
-            new PhotonAprilTagSystem("YetiCam1", camTrans, drivetrain);
+                            Units.inchesToMeters(-8),
+                            Units.inchesToMeters(-7),
+                            Units.inchesToMeters(22.5)),
+                    new Rotation3d(0, Math.toRadians(35), Math.toRadians(90)));
+
+    @Logged(name = "Vision/ScoreCam")
+    public final PhotonAprilTagSystem reefCam =
+            new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
@@ -75,7 +76,8 @@ public class RobotContainer {
     private MechanismLigament2d liftLigament;
     private MechanismLigament2d armLigament;
     private final CommandJoystick joystick = new CommandJoystick(0);
-    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
+
+    //    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -84,8 +86,8 @@ public class RobotContainer {
                         .withCameraName("YetiCam1")
                         .withTransform(camTrans)
                         .build();
-        aprilTagCamSim.addCamera(simCam);
-        reefCamSim.setCamera(aprilTagCamSim.getAprilTagCamSims().get(0).getCam());
+        //        aprilTagCamSim.addCamera(simCam);
+        //        reefCam.setCamera(aprilTagCamSim.getAprilTagCamSims().get(0).getCam());
 
         primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
@@ -116,9 +118,9 @@ public class RobotContainer {
         }
     }
 
-    public void updateVisionSim() {
-        aprilTagCamSim.update(drivetrain.getState().Pose);
-    }
+    //    public void updateVisionSim() {
+    //        aprilTagCamSim.update(drivetrain.getState().Pose);
+    //    }
 
     private void configureBindings() {
         drivetrain.setDefaultCommand(
@@ -145,9 +147,10 @@ public class RobotContainer {
                 .whileTrue(
                         new ReefAlignCommand(
                                 drivetrain,
-                                limelight,
+                                reefCam,
+                                primaryXboxController::getLeftX,
                                 primaryXboxController::getLeftY,
-                                primaryXboxController::getLeftX));
+                                true));
         primaryXboxController
                 .povRight()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2));
