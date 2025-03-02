@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -89,21 +90,22 @@ public class RobotContainer {
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
         primaryXboxController
-                .button(1)
+                .povUp()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
         primaryXboxController
-                .button(2)
+                .povRight()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
         primaryXboxController
-                .button(3)
+                .povDown()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
         primaryXboxController
-                .button(4)
+                .povLeft()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
-        primaryXboxController.button(5).onTrue(coralManipulator.scoreState());
-        primaryXboxController
-                .button(6)
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorSystem.queuedState));
+        primaryXboxController.
+                leftTrigger()
+                .onTrue(coralManipulator.selectQueuedStateCommand());
+        primaryXboxController.
+                rightTrigger().onTrue((coralManipulator.scoreState()));
     }
 
     private void assembleMechanisms() {
