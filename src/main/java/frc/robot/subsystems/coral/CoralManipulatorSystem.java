@@ -3,6 +3,7 @@ package frc.robot.subsystems.coral;
 import com.ctre.phoenix6.StatusCode;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
@@ -73,7 +74,10 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     @Override
     protected StatusCode initializeTransition(CoralManipulatorState targetState) {
         Command coralManipulatorCommand;
+        ClimberSubsystem climberSubsystem;
+        climberSubsystem = new ClimberSubsystem();
 
+        ClimberSubsystem.ClimberPosition
         if (getCurrentState()
                         .getElevatorPosition()
                         .getHeight()

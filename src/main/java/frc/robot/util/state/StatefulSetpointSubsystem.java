@@ -5,6 +5,8 @@ import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Unit;
+import frc.robot.util.state.target.DynamicStateProvider;
+import frc.robot.util.state.target.StateProvider;
 
 public abstract class StatefulSetpointSubsystem<
                 T extends Enum<T>,
@@ -14,11 +16,13 @@ public abstract class StatefulSetpointSubsystem<
         extends StatefulSubsystem<T> {
     private final U setpointTarget;
     private final M errorTolerance;
+    private final StateProvider<T> stateProvider;
 
     public StatefulSetpointSubsystem(T defaultState, U setPointTarget, M errorTolerance) {
         super(defaultState);
         this.setpointTarget = setPointTarget;
         this.errorTolerance = errorTolerance;
+        this.stateProvider = new DynamicStateProvider<>(this::getCurrentState);
     }
 
     public abstract StatusSignal<M> currentStateSignal();
