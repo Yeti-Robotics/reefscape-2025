@@ -90,20 +90,20 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     public Command selectQueuedStateCommand() {
         return new SelectCommand(
                 Map.of(
-                        queuedState.L1, transitionTo(CoralManipulatorState.L1),
-                        queuedState.L2, transitionTo(CoralManipulatorState.L2),
-                        queuedState.L3, transitionTo(CoralManipulatorState.L3),
-                        queuedState.L4, transitionTo(CoralManipulatorState.L4)),
+                        CoralManipulatorState.L1, transitionTo(CoralManipulatorState.L1),
+                        CoralManipulatorState.L2, transitionTo(CoralManipulatorState.L2),
+                        CoralManipulatorState.L3, transitionTo(CoralManipulatorState.L3),
+                        CoralManipulatorState.L4, transitionTo(CoralManipulatorState.L4)),
                 this::getQueuedState);
     }
 
     public Command scoreState() {
         return new SelectCommand(
                 Map.of(
-                        queuedState.L1, transitionTo(CoralManipulatorState.SCORE_L1),
-                        queuedState.L2, transitionTo(CoralManipulatorState.SCORE_L2),
-                        queuedState.L3, transitionTo(CoralManipulatorState.SCORE_L3),
-                        queuedState.L4, transitionTo(CoralManipulatorState.SCORE_L4)),
+                        CoralManipulatorState.L1, transitionTo(CoralManipulatorState.SCORE_L1),
+                        CoralManipulatorState.L2, transitionTo(CoralManipulatorState.SCORE_L2),
+                        CoralManipulatorState.L3, transitionTo(CoralManipulatorState.SCORE_L3),
+                        CoralManipulatorState.L4, transitionTo(CoralManipulatorState.SCORE_L4)),
                 this::getQueuedState);
     }
 
