@@ -1,4 +1,4 @@
-package frc.robot.subsystems.wrist;
+package frc.robot.subsystems.coral.wrist;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -6,10 +6,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 class WristConfigs {
-    static final InvertedValue MOTOR_INVERSION = InvertedValue.Clockwise_Positive;
-    static final NeutralModeValue NEUTRAL_MODE_VALUE = NeutralModeValue.Brake;
     static final double WRIST_TOLERANCE = 0.1;
-    static final int DEVICE_ID = 9;
+    static final int DEVICE_ID = 19;
     static final double MAGNET_OFFSET = 0.501221;
 
     static final Slot0Configs SLOT_0_CONFIGS =
@@ -26,10 +24,10 @@ class WristConfigs {
             new Slot1Configs()
                     .withKP(0)
                     .withKI(0)
-                    .withKD(0)
+                    .withKD(32)
                     .withKS(0)
                     .withKV(0)
-                    .withKA(2.3)
+                    .withKA(1.8)
                     .withKG(0);
 
     static final MotionMagicConfigs MOTION_MAGIC_CONFIGS =
@@ -43,8 +41,8 @@ class WristConfigs {
 
     static final MotorOutputConfigs MOTOR_OUTPUT_CONFIGS =
             new MotorOutputConfigs()
-                    .withInverted(MOTOR_INVERSION)
-                    .withNeutralMode(NEUTRAL_MODE_VALUE);
+                    .withInverted(InvertedValue.Clockwise_Positive)
+                    .withNeutralMode(NeutralModeValue.Brake);
 
     static final TalonFXConfiguration wristMotorConfigs =
             new TalonFXConfiguration()
@@ -54,7 +52,7 @@ class WristConfigs {
                     .withMotionMagic(MOTION_MAGIC_CONFIGS)
                     .withFeedback(FEEDBACK_CONFIGS);
 
-    static final CANcoderConfiguration cancoderConfiguration =
+    static final CANcoderConfiguration wristEncoderConfigs =
             new CANcoderConfiguration()
                     .withMagnetSensor(
                             new MagnetSensorConfigs()

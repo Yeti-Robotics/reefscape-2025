@@ -3,7 +3,7 @@ package frc.robot.subsystems.coral;
 import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
 import frc.robot.subsystems.coral.grabber.GrabberState;
-import frc.robot.subsystems.wrist.WristPositions;
+import frc.robot.subsystems.coral.wrist.WristPositions;
 
 public enum CoralManipulatorState {
     INTAKE_CORAL(
@@ -11,11 +11,7 @@ public enum CoralManipulatorState {
             ElevatorPosition.INTAKE,
             GrabberState.ROLL_IN,
             WristPositions.VERTICAL),
-    L1(
-            ArmPosition.POS_L1,
-            ElevatorPosition.POS_L1,
-            GrabberState.ROLL_OUT,
-            WristPositions.HORIZONTAL),
+    L1(ArmPosition.POS_L1, ElevatorPosition.POS_L1, GrabberState.ROLL_OUT, WristPositions.VERTICAL),
     L2(ArmPosition.POS_L2, ElevatorPosition.POS_L2, GrabberState.OFF, WristPositions.HORIZONTAL),
     SCORE_L2(
             ArmPosition.SCORE_L2,

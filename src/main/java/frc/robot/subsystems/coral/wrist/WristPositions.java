@@ -1,4 +1,4 @@
-package frc.robot.subsystems.wrist;
+package frc.robot.subsystems.coral.wrist;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;

@@ -108,6 +108,8 @@ public class RobotContainer {
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
         simJoy.button(1).onTrue(coralManipulator.wrist.moveWristHorizontal());
         simJoy.button(2).onTrue(coralManipulator.wrist.moveWristVertical());
+        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
+        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
     }
 
     private void assembleMechanisms() {

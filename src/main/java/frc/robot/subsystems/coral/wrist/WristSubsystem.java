@@ -1,6 +1,4 @@
-package frc.robot.subsystems.wrist;
-
-import static edu.wpi.first.math.util.Units.inchesToMeters;
+package frc.robot.subsystems.coral.wrist;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -16,14 +14,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.constants.Constants;
 import frc.robot.util.sim.PhysicsSim;
-import frc.robot.util.sim.SimulatableMechanism;
 import frc.robot.util.state.StateUtils;
 import frc.robot.util.state.StatefulSetpointSubsystem;
 
 @Logged
 public class WristSubsystem
-        extends StatefulSetpointSubsystem<WristPositions, AngleUnit, Angle, MutAngle>
-        implements SimulatableMechanism {
+        extends StatefulSetpointSubsystem<WristPositions, AngleUnit, Angle, MutAngle> {
     private final TalonFX wristMotor = new TalonFX(WristConfigs.DEVICE_ID, Constants.RIO_BUS);
     private final CANcoder wristEncoder = new CANcoder(WristConfigs.DEVICE_ID);
     private final StatusSignal<Angle> wristPosition = wristMotor.getPosition();
@@ -36,6 +32,7 @@ public class WristSubsystem
                 StateUtils.mutableRotationSetpoint(),
                 Units.Rotations.of(WristConfigs.WRIST_TOLERANCE));
         wristMotor.getConfigurator().apply(WristConfigs.wristMotorConfigs);
+        wristEncoder.getConfigurator().apply(WristConfigs.wristEncoderConfigs);
         if (Robot.isSimulation()) {
             PhysicsSim.getInstance().addTalonFX(wristMotor, wristEncoder);
         }
@@ -47,11 +44,6 @@ public class WristSubsystem
 
     public Command moveWristVertical() {
         return runOnce(() -> moveTo(WristPositions.VERTICAL.getAngle()));
-    }
-
-    @Override
-    public double updateMechPos() {
-        return inchesToMeters(wristPosition.getValueAsDouble());
     }
 
     @Override

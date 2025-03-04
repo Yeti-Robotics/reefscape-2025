@@ -8,7 +8,7 @@ import frc.robot.subsystems.coral.arm.ArmSubsystem;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
-import frc.robot.subsystems.wrist.WristSubsystem;
+import frc.robot.subsystems.coral.wrist.WristSubsystem;
 import frc.robot.util.state.StatefulSubsystem;
 
 @Logged
@@ -106,6 +106,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
             coralManipulatorCommand =
                     arm.transitionTo(targetState.getArmPosition())
                             .alongWith(elevator.transitionTo(targetState.getElevatorPosition()))
+                            .andThen(wrist.transitionTo(targetState.getWristPosition()))
                             .andThen(grabber.transitionTo(targetState.getGrabberState()));
         }
 
@@ -116,6 +117,9 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
 
     @Override
     protected boolean isTransitionFinished() {
-        return !arm.isTransitioning() && !elevator.isTransitioning() && !grabber.isTransitioning();
+        return !arm.isTransitioning()
+                && !elevator.isTransitioning()
+                && !grabber.isTransitioning()
+                && !wrist.isTransitioning();
     }
 }
