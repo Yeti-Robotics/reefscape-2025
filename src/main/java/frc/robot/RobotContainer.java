@@ -33,6 +33,7 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
 public class RobotContainer {
 
     public final CommandXboxController primaryXboxController;
+    public final CommandJoystick simJoy;
 
     @Logged(name = "Drivetrain")
     final CommandSwerveDrivetrain drivetrain;
@@ -50,11 +51,11 @@ public class RobotContainer {
             new Mechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
     private MechanismLigament2d liftLigament;
     private MechanismLigament2d armLigament;
-    private final CommandJoystick joystick = new CommandJoystick(0);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
+        simJoy = new CommandJoystick(2);
         drivetrain = TunerConstants.createDrivetrain();
         coralManipulator = new CoralManipulatorSystem();
         configureBindings();
@@ -105,6 +106,10 @@ public class RobotContainer {
         primaryXboxController
                 .rightBumper()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
+        simJoy.button(1).onTrue(coralManipulator.wrist.moveWristHorizontal());
+        simJoy.button(2).onTrue(coralManipulator.wrist.moveWristVertical());
+        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
+        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
     }
 
     private void assembleMechanisms() {
