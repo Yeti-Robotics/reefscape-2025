@@ -93,13 +93,9 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
                 // safety stuff
                 coralManipulatorCommand =
                         elevator.transitionTo(ElevatorPosition.SAFE_POSITION)
-                                .andThen(
-                                        wrist.transitionTo(targetState.getWristPosition())
-                                                .andThen(
-                                                        arm.transitionTo(
-                                                                targetState.getArmPosition())));
+                                .andThen(arm.transitionTo(targetState.getArmPosition()))
+                                .andThen(wrist.transitionTo(targetState.getWristPosition()));
                 elevator.transitionTo(targetState.getElevatorPosition())
-                        .andThen(wrist.transitionTo(targetState.getWristPosition()))
                         .andThen(grabber.transitionTo(targetState.getGrabberState()));
             } else {
                 // not safety stuff
@@ -111,9 +107,9 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
             }
         } else {
             coralManipulatorCommand =
-                    arm.transitionTo(targetState.getArmPosition())
+                    wrist.transitionTo(targetState.getWristPosition())
                             .alongWith(elevator.transitionTo(targetState.getElevatorPosition()))
-                            .andThen(wrist.transitionTo(targetState.getWristPosition()))
+                            .andThen(arm.transitionTo(targetState.getArmPosition()))
                             .andThen(grabber.transitionTo(targetState.getGrabberState()));
         }
 
