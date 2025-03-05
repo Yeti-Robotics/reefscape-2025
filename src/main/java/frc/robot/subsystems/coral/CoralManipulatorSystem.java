@@ -84,32 +84,40 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         Command coralManipulatorCommand;
 
         if (getCurrentState()
-                        .getElevatorPosition()
-                        .getHeight()
-                        .lt(ElevatorPosition.SAFE_POSITION.getHeight())
+                .getElevatorPosition()
+                .getHeight()
+                .lt(ElevatorPosition.SAFE_POSITION.getHeight())
                 && getCurrentState() != targetState) {
-            if (arm.getCurrentState().getAngle().lt(ArmPosition.AWAY.getAngle())
+            if (targetState == CoralManipulatorState.L2
+                    && arm.getCurrentState() != ArmPosition.DOWN) {
+                coralManipulatorCommand =
+                        arm.transitionTo(targetState.getArmPosition())
+                                .alongWith(elevator.transitionTo(targetState.getElevatorPosition()))
+                                .andThen(wrist.transitionTo(targetState.getWristPosition()))
+                                .andThen(grabber.transitionTo(targetState.getGrabberState()));
+            } else if (arm.getCurrentState().getAngle().lt(ArmPosition.AWAY.getAngle())
                     || targetState.getArmPosition().getAngle().lt(ArmPosition.AWAY.getAngle())) {
                 // safety stuff
                 coralManipulatorCommand =
                         elevator.transitionTo(ElevatorPosition.SAFE_POSITION)
+                                .andThen(wrist.transitionTo(targetState.getWristPosition()))
                                 .andThen(arm.transitionTo(targetState.getArmPosition()))
-                                .andThen(wrist.transitionTo(targetState.getWristPosition()));
-                elevator.transitionTo(targetState.getElevatorPosition())
-                        .andThen(grabber.transitionTo(targetState.getGrabberState()));
+                                .andThen(elevator.transitionTo(targetState.getElevatorPosition()))
+                                .andThen(grabber.transitionTo(targetState.getGrabberState()));
+
             } else {
                 // not safety stuff
                 coralManipulatorCommand =
-                        elevator.transitionTo(targetState.getElevatorPosition())
+                        arm.transitionTo(targetState.getArmPosition())
+                                .alongWith(elevator.transitionTo(targetState.getElevatorPosition()))
                                 .andThen(wrist.transitionTo(targetState.getWristPosition()))
-                                .andThen(arm.transitionTo(targetState.getArmPosition()))
                                 .andThen(grabber.transitionTo(targetState.getGrabberState()));
             }
         } else {
             coralManipulatorCommand =
                     wrist.transitionTo(targetState.getWristPosition())
                             .alongWith(elevator.transitionTo(targetState.getElevatorPosition()))
-                            .andThen(arm.transitionTo(targetState.getArmPosition()))
+                            .alongWith(arm.transitionTo(targetState.getArmPosition()))
                             .andThen(grabber.transitionTo(targetState.getGrabberState()));
         }
 
