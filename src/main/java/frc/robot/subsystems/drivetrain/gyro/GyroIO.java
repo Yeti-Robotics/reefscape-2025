@@ -1,0 +1,5 @@
+package frc.robot.subsystems.drivetrain.gyro;
+
+import frc.robot.util.logging.InputLoggingIO;
+
+public interface GyroIO extends InputLoggingIO<GyroIOInputs> {}

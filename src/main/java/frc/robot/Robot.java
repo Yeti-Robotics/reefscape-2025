@@ -5,15 +5,17 @@
 
 package frc.robot;
 
-import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.util.sim.PhysicsSim;
+import org.littletonrobotics.junction.LogFileUtil;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -22,10 +24,34 @@ import frc.robot.util.sim.PhysicsSim;
  * project.
  */
 @Logged
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
     private Command autonomousCommand;
 
     private RobotContainer robotContainer;
+
+    public Robot() {
+        Logger.recordMetadata("Project", "YetiBot");
+
+        if (isReal()) {
+            Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
+            Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+            new PowerDistribution(
+                    1, PowerDistribution.ModuleType.kRev); // Enables power distribution logging
+        } else {
+            setUseTiming(false); // Run as fast as possible
+            //            String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from
+            //            //             AdvantageScope (or prompt
+            //            //                        // the user)
+            //            Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+            Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+            Logger.addDataReceiver(
+                    new WPILOGWriter(
+                            LogFileUtil.addPathSuffix(
+                                    "./logs", "_sim"))); // Save outputs to a new log
+        }
+
+        Logger.start();
+    }
 
     /**
      * This method is run when the robot is first started up and should be used for any
@@ -36,7 +62,6 @@ public class Robot extends TimedRobot {
         robotContainer = new RobotContainer();
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());
-        Epilogue.bind(this);
     }
 
     /**

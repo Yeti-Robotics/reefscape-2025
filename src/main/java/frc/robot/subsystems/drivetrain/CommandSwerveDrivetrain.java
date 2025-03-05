@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -22,6 +21,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.drivetrain.logging.CommandSwerveDrivetrainLogging;
 import java.util.function.Supplier;
 
 /**
@@ -113,6 +113,8 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
     /* The SysId routine to test */
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
 
+    private final CommandSwerveDrivetrainLogging logging = new CommandSwerveDrivetrainLogging(this);
+
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      *
@@ -188,7 +190,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *
-     * @param request Function returning the request to apply
+     * @param requestSupplier Function returning the request to apply
      * @return Command to run
      */
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -237,9 +239,12 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
                                 m_hasAppliedOperatorPerspective = true;
                             });
         }
+
+        logging.log();
     }
 
     private void startSimThread() {
+        logging.start();
         m_lastSimTime = Utils.getCurrentTimeSeconds();
 
         /* Run simulation at a faster rate so PID gains behave more reasonably */
