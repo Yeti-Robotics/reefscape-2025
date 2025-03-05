@@ -3,10 +3,10 @@ package frc.robot.util.state.target;
 import java.util.function.Supplier;
 
 public class DynamicStateProvider<T> extends StateProvider<T> {
-    private final DynamicStateTarget<T> fallbackState;
+    private final SettableStateTarget<T> fallbackState;
 
     public DynamicStateProvider(Supplier<T> stateSupplier) {
-        fallbackState = new DynamicStateTarget<>(stateSupplier);
+        fallbackState = new SettableStateTarget<>(stateSupplier);
     }
 
     @Override
