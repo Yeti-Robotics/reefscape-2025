@@ -106,6 +106,15 @@ public class RobotContainer {
         primaryXboxController
                 .rightBumper()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
+
+        simJoy.button(1).onTrue(coralManipulator.wrist.moveWristHorizontal());
+        simJoy.button(2).onTrue(coralManipulator.wrist.moveWristVertical());
+        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
+        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
+        simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+        simJoy.button(8).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
     }
 
     private void assembleMechanisms() {
