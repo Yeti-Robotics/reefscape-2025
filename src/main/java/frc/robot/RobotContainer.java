@@ -27,6 +27,7 @@ import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
+import frc.robot.subsystems.led.Events;
 import frc.robot.subsystems.led.LEDSubsystem;
 
 /**
@@ -134,8 +135,8 @@ public class RobotContainer {
                 .onTrue(runOnce(() -> leds.progressBar.addProgress()))
                 .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
         new Trigger(DriverStation::isTeleopEnabled)
-                .onTrue(runOnce(() -> leds.setAnimation(LEDSubsystem.Events.IDLETELEOP)))
-                .onTrue(runOnce(() -> leds.setAnimation(LEDSubsystem.Events.CLEARPROGRESS)));
+                .onTrue(runOnce(() -> leds.setAnimation(Events.CLEARPROGRESS)))
+                .onTrue(runOnce(() -> leds.setAnimation(Events.IDLETELEOP)));
     }
 
     private void assembleMechanisms() {

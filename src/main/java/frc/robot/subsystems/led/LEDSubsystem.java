@@ -17,19 +17,6 @@ public class LEDSubsystem extends SubsystemBase {
     public ProgressBar progressBar;
     private Events event;
 
-    public enum Events {
-        NICK,
-        CORALINTAKE,
-        CORALSTOWED,
-        ALGAEINTAKE,
-        IDLETELEOP,
-        OFF,
-        SINGLEFADE,
-        LOS,
-        PROGRESSBAR,
-        CLEARPROGRESS
-    }
-
     public LEDSubsystem() {
         configAll = new CANdleConfiguration();
         configAll.statusLedOffWhenActive = false;
@@ -106,6 +93,8 @@ public class LEDSubsystem extends SubsystemBase {
                 break;
             case CLEARPROGRESS:
                 candle.setLEDs(0, 0, 0);
+            case ELEVATORSCORE:
+                toAnimate = new StrobeAnimation(0, 0, 255, 0, 4, ledCount);
             default:
                 if (toAnimate == null) {
                     toAnimate =
@@ -164,6 +153,7 @@ public class LEDSubsystem extends SubsystemBase {
         if (DriverStation.isDisabled() && event == Events.PROGRESSBAR) {
             progressBar.setProgress(progressBar.progressBarState);
         }
+        setAnimation(event);
     }
 
     public static boolean isRedAlliance() {
