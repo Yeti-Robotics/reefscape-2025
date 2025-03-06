@@ -58,6 +58,8 @@ public class ElevatorSubsystem
         primaryElevatorMotor.setPosition(0);
         secondaryElevatorMotor.setPosition(0);
 
+        primaryElevatorMotor.setControl(neutralOut);
+
         if (Robot.isSimulation()) {
             PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
             PhysicsSim.getInstance().addTalonFX(secondaryElevatorMotor);
