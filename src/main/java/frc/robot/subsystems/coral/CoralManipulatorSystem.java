@@ -79,69 +79,65 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         return elevator.transitioningTo().orElse(ElevatorPosition.HOLD).toString();
     }
 
-    public boolean isReadyToTransition(CoralManipulatorState targetState) {
-        return getCurrentState()
-                        .getElevatorPosition()
-                        .getHeight()
-                        .lt(ElevatorPosition.SAFE_POSITION.getHeight())
-                && getCurrentState() != targetState;
+    public boolean isElevMovingUp(CoralManipulatorState targetState) {
+        return targetState
+                .getElevatorPosition()
+                .getHeight()
+                .gt(getCurrentState().getElevatorPosition().getHeight());
     }
 
-    public boolean isL2(CoralManipulatorState targetState) {
+    public boolean isMovingL2(CoralManipulatorState targetState) {
         return targetState == CoralManipulatorState.L2 && arm.getCurrentState() != ArmPosition.DOWN;
     }
 
     public boolean isWristFirst(CoralManipulatorState targetState) {
-        return targetState == CoralManipulatorState.SCOREREEF
-                || targetState == CoralManipulatorState.SCORE_L2
-                || targetState == CoralManipulatorState.SCORE_L3
-                || targetState == CoralManipulatorState.SCORE_L4
-                || getCurrentState() == CoralManipulatorState.SCOREREEF
-                || getCurrentState() == CoralManipulatorState.SCORE_L2
-                || getCurrentState() == CoralManipulatorState.SCORE_L3
-                || getCurrentState() == CoralManipulatorState.SCORE_L4;
+        return getCurrentState() == CoralManipulatorState.L1
+                || targetState == CoralManipulatorState.HP_INTAKE
+                || getCurrentState() == CoralManipulatorState.HP_INTAKE;
+    }
+
+    public boolean isArmMovingBelowZero(CoralManipulatorState targetState) {
+        return arm.getCurrentState().getAngle().lt(ArmPosition.AWAY.getAngle())
+                || targetState.getArmPosition().getAngle().lt(ArmPosition.AWAY.getAngle());
     }
 
     @Override
     protected StatusCode initializeTransition(CoralManipulatorState targetState) {
         Command coralManipulatorCommand;
 
-        if (isReadyToTransition(targetState)) {
-            if (isL2(targetState)) {
-                coralManipulatorCommand =
-                        arm.transitionTo(targetState.getArmPosition())
+        if (isArmMovingBelowZero(targetState)) {
+            if (isMovingL2(targetState)) {
+                coralManipulatorCommand = arm.transitionTo(targetState.getArmPosition())
                                 .alongWith(elevator.transitionTo(targetState.getElevatorPosition()))
                                 .andThen(grabber.transitionTo(targetState.getGrabberState()));
-            } else if (arm.getCurrentState().getAngle().lt(ArmPosition.AWAY.getAngle())
-                    || targetState.getArmPosition().getAngle().lt(ArmPosition.AWAY.getAngle())) {
+            } else if (isElevMovingUp(targetState)) {
                 // safety stuff
-                coralManipulatorCommand =
-                        elevator.transitionTo(ElevatorPosition.SAFE_POSITION)
-                                .andThen(arm.transitionTo(targetState.getArmPosition()))
-                                .andThen(elevator.transitionTo(targetState.getElevatorPosition()))
+                coralManipulatorCommand = elevator.transitionTo(ElevatorPosition.SAFE_POSITION)
+                                .andThen(
+                                        arm.transitionTo(targetState.getArmPosition())
+                                                .alongWith(
+                                                        elevator.transitionTo(
+                                                                targetState.getElevatorPosition())))
                                 .andThen(grabber.transitionTo(targetState.getGrabberState()));
 
             } else {
                 // not safety stuff
-                coralManipulatorCommand =
-                        arm.transitionTo(targetState.getArmPosition())
-                                .alongWith(elevator.transitionTo(targetState.getElevatorPosition()))
+                coralManipulatorCommand = elevator.transitionTo(ElevatorPosition.SAFE_POSITION)
+                                .andThen(arm.transitionTo(targetState.getArmPosition()))
+                                .andThen(elevator.transitionTo(targetState.getElevatorPosition()))
                                 .andThen(grabber.transitionTo(targetState.getGrabberState()));
             }
         } else {
-            coralManipulatorCommand =
-                    elevator.transitionTo(targetState.getElevatorPosition())
+            coralManipulatorCommand = elevator.transitionTo(targetState.getElevatorPosition())
                             .alongWith(arm.transitionTo(targetState.getArmPosition()))
                             .andThen(grabber.transitionTo(targetState.getGrabberState()));
         }
 
         if (isWristFirst(targetState)) {
-            coralManipulatorCommand =
-                    wrist.transitionTo(targetState.getWristPosition())
+            coralManipulatorCommand = wrist.transitionTo(targetState.getWristPosition())
                             .andThen(coralManipulatorCommand);
         } else {
-            coralManipulatorCommand =
-                    coralManipulatorCommand.andThen(
+            coralManipulatorCommand = coralManipulatorCommand.andThen(
                             wrist.transitionTo(targetState.getWristPosition()));
         }
 
