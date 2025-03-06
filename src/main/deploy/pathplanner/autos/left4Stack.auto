@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "lineJ"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "jLeftStack"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "leftStackL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "lMidStack"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "midStackA"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "aRightStack"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "rightStackB"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

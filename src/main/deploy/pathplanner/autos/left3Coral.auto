@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "cornerJ"
+            "pathName": "lineJ"
           }
         },
         {
@@ -38,12 +38,6 @@
           "type": "path",
           "data": {
             "pathName": "lHP"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "hpA"
           }
         }
       ]
