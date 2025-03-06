@@ -111,7 +111,15 @@ public class LEDSubsystem extends SubsystemBase {
                     toAnimate =
                             isRedAlliance()
                                     ? new LarsonAnimation(
-                                            255, 0, 0, 0, 0.4, ledCount, BounceMode.Front, 3, ledOffset)
+                                            255,
+                                            0,
+                                            0,
+                                            0,
+                                            0.4,
+                                            ledCount,
+                                            BounceMode.Front,
+                                            3,
+                                            ledOffset)
                                     : new LarsonAnimation(
                                             84,
                                             229,
@@ -124,19 +132,28 @@ public class LEDSubsystem extends SubsystemBase {
                                             ledOffset);
                     candle.animate(toAnimate);
                 } else {
-                    candle.animate(isRedAlliance()
-                            ? new LarsonAnimation(
-                            255, 0, 0, 0, 0.4, ledCount, BounceMode.Front, 3, ledOffset)
-                            : new LarsonAnimation(
-                            84,
-                            229,
-                            182,
-                            0,
-                            0.3,
-                            ledCount,
-                            BounceMode.Front,
-                            3,
-                            ledOffset));
+                    candle.animate(
+                            isRedAlliance()
+                                    ? new LarsonAnimation(
+                                            255,
+                                            0,
+                                            0,
+                                            0,
+                                            0.4,
+                                            ledCount,
+                                            BounceMode.Front,
+                                            3,
+                                            ledOffset)
+                                    : new LarsonAnimation(
+                                            84,
+                                            229,
+                                            182,
+                                            0,
+                                            0.3,
+                                            ledCount,
+                                            BounceMode.Front,
+                                            3,
+                                            ledOffset));
                 }
         }
         candle.animate(toAnimate);

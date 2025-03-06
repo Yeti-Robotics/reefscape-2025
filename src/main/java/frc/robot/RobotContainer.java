@@ -111,11 +111,8 @@ public class RobotContainer {
         secondaryXboxController
                 .povLeft()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
-        primaryXboxController.
-                leftTrigger()
-                .onTrue(coralManipulator.selectQueuedStateCommand());
-        primaryXboxController.
-                rightTrigger().onTrue((coralManipulator.scoreState()));
+        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
+        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
     }
 
     private void configureTriggers() {
