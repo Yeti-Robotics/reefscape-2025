@@ -106,6 +106,38 @@ public class LEDSubsystem extends SubsystemBase {
                 break;
             case CLEARPROGRESS:
                 candle.setLEDs(0, 0, 0);
+            default:
+                if (toAnimate == null) {
+                    toAnimate =
+                            isRedAlliance()
+                                    ? new LarsonAnimation(
+                                            255, 0, 0, 0, 0.4, ledCount, BounceMode.Front, 3, ledOffset)
+                                    : new LarsonAnimation(
+                                            84,
+                                            229,
+                                            182,
+                                            0,
+                                            0.3,
+                                            ledCount,
+                                            BounceMode.Front,
+                                            3,
+                                            ledOffset);
+                    candle.animate(toAnimate);
+                } else {
+                    candle.animate(isRedAlliance()
+                            ? new LarsonAnimation(
+                            255, 0, 0, 0, 0.4, ledCount, BounceMode.Front, 3, ledOffset)
+                            : new LarsonAnimation(
+                            84,
+                            229,
+                            182,
+                            0,
+                            0.3,
+                            ledCount,
+                            BounceMode.Front,
+                            3,
+                            ledOffset));
+                }
         }
         candle.animate(toAnimate);
     }

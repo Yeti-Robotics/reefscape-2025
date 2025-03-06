@@ -40,9 +40,9 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
 
     public final Trigger zeroedWheels =
             new Trigger(() -> isWheelZeroed(getCANcoder(0)))
-            .and(() -> isWheelZeroed(getCANcoder(1)))
-            .and(() -> isWheelZeroed(getCANcoder(2)))
-            .and(() -> isWheelZeroed(getCANcoder(3)));
+                    .and(() -> isWheelZeroed(getCANcoder(1)))
+                    .and(() -> isWheelZeroed(getCANcoder(2)))
+                    .and(() -> isWheelZeroed(getCANcoder(3)));
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
