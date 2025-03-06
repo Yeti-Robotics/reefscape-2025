@@ -64,6 +64,6 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
 
     public boolean isEncoderZeroed() {
         double position = armEncoder.getPosition().refresh().getValueAsDouble();
-        return position >= 0 || position <= Constants.ZERO_TOLERANCE;
+        return position >= 0 && position <= Constants.ZERO_TOLERANCE;
     }
 }

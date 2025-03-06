@@ -22,14 +22,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.led.LEDSubsystem;
-import frc.robot.subsystems.led.ProgressBar;
-import frc.robot.subsystems.tray.Tray;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -44,10 +42,8 @@ public class RobotContainer {
     @Logged(name = "Drivetrain")
     final CommandSwerveDrivetrain drivetrain;
 
-    Tray tray;
-    Climber climber;
-    public static LEDSubsystem leds;
-    public ProgressBar progressBar;
+    ClimberSubsystem climber;
+    public LEDSubsystem leds;
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
@@ -70,8 +66,7 @@ public class RobotContainer {
         drivetrain = TunerConstants.createDrivetrain();
         coralManipulator = new CoralManipulatorSystem();
         leds = new LEDSubsystem();
-        progressBar = new ProgressBar(leds);
-        climber = new Climber();
+        climber = new ClimberSubsystem();
         configureBindings();
         assembleMechanisms();
         configureTriggers();
@@ -125,24 +120,25 @@ public class RobotContainer {
 
     private void configureTriggers() {
         new Trigger(coralManipulator.grabber::hasCoral)
-                .onTrue(runOnce(() -> progressBar.addProgress()))
                 .and(DriverStation::isDisabled)
-                .onFalse(runOnce(() -> progressBar.subtractProgress()));
+                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
+                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
         new Trigger(coralManipulator.elevator::getMagSwitch)
-                .onTrue(runOnce(() -> progressBar.addProgress()))
                 .and(DriverStation::isDisabled)
-                .onFalse(runOnce(() -> progressBar.subtractProgress()));
+                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
+                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
         drivetrain
                 .zeroedWheels
                 .and(DriverStation::isDisabled)
-                .onTrue(runOnce(() -> progressBar.addProgress()))
-                .onFalse(runOnce(() -> progressBar.subtractProgress()));
-        new Trigger(climber::isClimberZero)
-                .onTrue(runOnce(() -> progressBar.addProgress()))
+                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
+                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
+        new Trigger(climber::isEncoderZeroed)
                 .and(DriverStation::isDisabled)
-                .onFalse(runOnce(() -> progressBar.subtractProgress()));
+                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
+                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
         new Trigger(DriverStation::isTeleopEnabled)
-                .onTrue(runOnce(() -> leds.setAnimation(LEDSubsystem.Events.IDLETELEOP)));
+                .onTrue(runOnce(() -> leds.setAnimation(LEDSubsystem.Events.IDLETELEOP)))
+                .onTrue(runOnce(() -> leds.setAnimation(LEDSubsystem.Events.CLEARPROGRESS)));
     }
 
     private void assembleMechanisms() {

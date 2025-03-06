@@ -38,7 +38,11 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
-    public final Trigger zeroedWheels;
+    public Trigger zeroedWheels;
+    private final CANcoder wheel1 = getCANcoder(0);
+    private final CANcoder wheel2 = getCANcoder(1);
+    private final CANcoder wheel3 = getCANcoder(2);
+    private final CANcoder wheel4 = getCANcoder(3);
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -135,11 +139,6 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
             startSimThread();
         }
         registerTelemetry(TunerConstants.logger::telemeterize);
-        CANcoder wheel1 = getCANcoder(0);
-        CANcoder wheel2 = getCANcoder(1);
-        CANcoder wheel3 = getCANcoder(2);
-        CANcoder wheel4 = getCANcoder(3);
-
         zeroedWheels =
                 new Trigger(() -> isWheelZeroed(wheel1))
                         .and(() -> isWheelZeroed(wheel2))
@@ -161,13 +160,16 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
     public CommandSwerveDrivetrain(
             SwerveDrivetrainConstants drivetrainConstants,
             double odometryUpdateFrequency,
-            Trigger zeroedWheels,
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, odometryUpdateFrequency, modules);
-        this.zeroedWheels = zeroedWheels;
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        zeroedWheels =
+                new Trigger(() -> isWheelZeroed(wheel1))
+                        .and(() -> isWheelZeroed(wheel2))
+                        .and(() -> isWheelZeroed(wheel3))
+                        .and(() -> isWheelZeroed(wheel4));
     }
 
     /**
@@ -190,7 +192,6 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
             double odometryUpdateFrequency,
             Matrix<N3, N1> odometryStandardDeviation,
             Matrix<N3, N1> visionStandardDeviation,
-            Trigger zeroedWheels,
             SwerveModuleConstants<?, ?, ?>... modules) {
         super(
                 drivetrainConstants,
@@ -198,10 +199,14 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
                 odometryStandardDeviation,
                 visionStandardDeviation,
                 modules);
-        this.zeroedWheels = zeroedWheels;
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        zeroedWheels =
+                new Trigger(() -> isWheelZeroed(wheel1))
+                        .and(() -> isWheelZeroed(wheel2))
+                        .and(() -> isWheelZeroed(wheel3))
+                        .and(() -> isWheelZeroed(wheel4));
     }
 
     private boolean isWheelZeroed(CANcoder wheel) {

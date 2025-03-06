@@ -25,6 +25,11 @@ public class ClimberSubsystem extends SubsystemBase {
         cancoder.getConfigurator().apply(cancoderConfiguration);
     }
 
+    public boolean isEncoderZeroed() {
+        double position = cancoder.getPosition().refresh().getValueAsDouble();
+        return position >= 0 && position <= Constants.ZERO_TOLERANCE;
+    }
+
     private void setClimberSpeed(double speed) {
         climber.set(speed);
     }
