@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+}
+
+group = 'frc.robot.codegen'
+version = '0.1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("com.palantir.javapoet:javapoet:0.6.0")
+}
