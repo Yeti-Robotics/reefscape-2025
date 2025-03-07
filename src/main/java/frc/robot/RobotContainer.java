@@ -86,8 +86,12 @@ public class RobotContainer {
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
         primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        primaryXboxController.y().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
-        primaryXboxController.b().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+        primaryXboxController
+                .y()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+        primaryXboxController
+                .b()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
         primaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
         primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
         primaryXboxController

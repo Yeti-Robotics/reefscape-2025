@@ -54,7 +54,11 @@ public class Robot extends TimedRobot {
 
     /** This method is called once each time the robot enters Disabled mode. */
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        if (autonomousCommand != null) {
+            autonomousCommand.cancel();
+        }
+    }
 
     @Override
     public void disabledPeriodic() {}
@@ -65,7 +69,6 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         autonomousCommand = robotContainer.getAutonomousCommand();
-
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
         }
@@ -77,9 +80,12 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        if (autonomousCommand != null) {
-            autonomousCommand.cancel();
-        }
+        CommandScheduler.getInstance().cancelAll();
+        robotContainer
+                .coralManipulator
+                .transitionTo(CoralManipulatorState.IDLE)
+                .ignoringDisable(true)
+                .schedule();
     }
 
     /** This method is called periodically during operator control. */
@@ -98,6 +104,11 @@ public class Robot extends TimedRobot {
     @Override
     public void testInit() {
         CommandScheduler.getInstance().cancelAll();
+        robotContainer
+                .coralManipulator
+                .transitionTo(CoralManipulatorState.IDLE)
+                .ignoringDisable(true)
+                .schedule();
     }
 
     /** This method is called periodically during test mode. */
@@ -106,7 +117,14 @@ public class Robot extends TimedRobot {
 
     /** This method is called once when the robot is first started up. */
     @Override
-    public void simulationInit() {}
+    public void simulationInit() {
+        CommandScheduler.getInstance().cancelAll();
+        robotContainer
+                .coralManipulator
+                .transitionTo(CoralManipulatorState.IDLE)
+                .ignoringDisable(true)
+                .schedule();
+    }
 
     /** This method is called periodically whilst in simulation. */
     @Override
