@@ -1,7 +1,5 @@
-package frc.robot.util.logging.inputs;
+package frc.robot.util.akit.logging.inputs.impl;
 
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.BridgeOutputValue;
 import org.littletonrobotics.junction.AutoLog;
 
 @AutoLog

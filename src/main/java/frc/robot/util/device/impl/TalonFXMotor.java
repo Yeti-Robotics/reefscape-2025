@@ -1,6 +1,5 @@
 package frc.robot.util.device.impl;
 
-
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.Follower;

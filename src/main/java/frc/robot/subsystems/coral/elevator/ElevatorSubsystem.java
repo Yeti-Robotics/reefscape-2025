@@ -20,8 +20,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
-import frc.robot.util.device.impl.CANCoder;
-import frc.robot.util.device.impl.TalonFXMotor;
 import frc.robot.util.sim.PhysicsSim;
 import frc.robot.util.sim.SimulatableMechanism;
 import frc.robot.util.state.StateUtils;

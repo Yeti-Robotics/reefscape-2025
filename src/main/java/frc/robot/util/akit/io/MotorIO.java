@@ -1,4 +1,4 @@
-package frc.robot.util.logging.io;
+package frc.robot.util.akit.io;
 
 public interface MotorIO<M> {
     M getMotor();

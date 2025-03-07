@@ -22,9 +22,11 @@ public class CANCoder extends DeviceBuilder<CANcoder, CANcoderConfiguration, CAN
     }
 
     protected CANcoderConfiguration getDefaultConfig() {
-        return new CANcoderConfiguration().withMagnetSensor(
-                new MagnetSensorConfigs()
-                        .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive));
+        return new CANcoderConfiguration()
+                .withMagnetSensor(
+                        new MagnetSensorConfigs()
+                                .withSensorDirection(
+                                        SensorDirectionValue.CounterClockwise_Positive));
     }
 
     @Override

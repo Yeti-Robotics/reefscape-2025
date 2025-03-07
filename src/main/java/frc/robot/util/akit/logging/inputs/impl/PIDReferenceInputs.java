@@ -1,7 +1,4 @@
-package frc.robot.util.logging.inputs;
-
-import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
+package frc.robot.util.akit.logging.inputs.impl;
 
 public class PIDReferenceInputs {
     public double positionReferenceRotations;

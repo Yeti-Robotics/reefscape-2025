@@ -13,7 +13,7 @@ import frc.robot.subsystems.drivetrain.gyro.GyroIOPigeon2;
 import frc.robot.subsystems.drivetrain.module.SwerveModuleIO;
 import frc.robot.subsystems.drivetrain.module.SwerveModuleIOInputsAutoLogged;
 import frc.robot.subsystems.drivetrain.module.SwerveModuleIOTalonFX;
-import frc.robot.util.logging.LoggingUtils;
+import frc.robot.util.akit.LoggingUtils;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 

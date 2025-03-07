@@ -1,4 +1,4 @@
-package frc.robot.util.logging.inputs;
+package frc.robot.util.akit.logging.inputs.impl;
 
 public class ExhaustiveMotorInputs {
     public MotorInputs motor;
