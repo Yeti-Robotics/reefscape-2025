@@ -12,6 +12,7 @@ public abstract class InputsTalonFXLogger<T> implements InputLoggingIO<T> {
     }
 
     protected abstract StatusSignal<?>[] statusSignal();
+
     protected abstract void talonInputs(T t);
 
     public void refreshSignals(BaseStatusSignal... signals) {
@@ -19,7 +20,7 @@ public abstract class InputsTalonFXLogger<T> implements InputLoggingIO<T> {
     }
 
     @Override
-    final public void updateInputs(T inputs) {
+    public final void updateInputs(T inputs) {
         if (shouldRefresh) {
             refreshSignals(statusSignal());
         }
