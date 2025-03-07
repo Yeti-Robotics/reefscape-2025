@@ -69,7 +69,7 @@ public class RobotContainer {
                 new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
         coralManipulator = new CoralManipulatorSystem();
-        leds = new LEDSubsystem(coralManipulator);
+        leds = new LEDSubsystem();
         climber = new ClimberSubsystem();
         configureBindings();
         assembleMechanisms();
@@ -140,8 +140,7 @@ public class RobotContainer {
         new Trigger(coralManipulator.grabber::hasCoral)
                 .and(DriverStation::isEnabled)
                 .onTrue(runOnce(() -> leds.setAnimation(Events.CORALINTAKE)));
-        new Trigger(coralManipulator::isTransitioning).onTrue(leds.selectAnimationCommand());
-        new Trigger(coralManipulator::isTransitioning).onTrue(leds.selectAnimationCommand());
+        new Trigger(coralManipulator::isTransitioning).onFalse(leds.selectAnimationCommand(coralManipulator::getCurrentState));
     }
 
     private void assembleMechanisms() {

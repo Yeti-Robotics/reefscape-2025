@@ -6,11 +6,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
-import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class LEDSubsystem extends SubsystemBase {
     public final CANdle candle = new CANdle(0, Constants.RIO_BUS);
@@ -20,9 +19,8 @@ public class LEDSubsystem extends SubsystemBase {
     private CANdleConfiguration configAll;
     public ProgressBar progressBar;
     private Events event;
-    private final CoralManipulatorSystem cms;
 
-    public LEDSubsystem(CoralManipulatorSystem cms) {
+    public LEDSubsystem() {
         configAll = new CANdleConfiguration();
         configAll.statusLedOffWhenActive = false;
         configAll.disableWhenLOS = false;
@@ -31,8 +29,6 @@ public class LEDSubsystem extends SubsystemBase {
         configAll.vBatOutputMode = CANdle.VBatOutputMode.On;
         candle.configAllSettings(configAll, 100);
         progressBar = new ProgressBar(this);
-        this.cms = cms;
-        new Trigger(cms::isTransitioning).onTrue(selectAnimationCommand());
     }
 
     public void clearAnimation() {
@@ -155,13 +151,7 @@ public class LEDSubsystem extends SubsystemBase {
         candle.animate(toAnimate);
     }
 
-    private CoralManipulatorState queuedState = CoralManipulatorState.IDLE;
-
-    private void queueState(CoralManipulatorState state) {
-        queuedState = state;
-    }
-
-    public Command selectAnimationCommand() {
+    public Command selectAnimationCommand(Supplier<CoralManipulatorState> getCMS) {
         return new SelectCommand<>(
                 Map.ofEntries(
                         Map.entry(
@@ -197,7 +187,7 @@ public class LEDSubsystem extends SubsystemBase {
                         Map.entry(
                                 CoralManipulatorState.STOWED,
                                 runOnce(() -> setAnimation(Events.CORALSTOWED)))),
-                cms::getQueuedState);
+                getCMS);
     }
 
     @Override
