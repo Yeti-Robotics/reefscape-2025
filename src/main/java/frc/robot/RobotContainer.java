@@ -5,22 +5,21 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
@@ -44,6 +43,8 @@ public class RobotContainer {
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
 
+    private final SendableChooser<Command> autoChooser;
+
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
@@ -65,6 +66,11 @@ public class RobotContainer {
         coralManipulator = new CoralManipulatorSystem();
         configureBindings();
         assembleMechanisms();
+
+        var namedCommands = new AutoNamedCommands(coralManipulator);
+        namedCommands.registerCommands();
+
+        autoChooser = AutoBuilder.buildAutoChooser();
     }
 
     /**
@@ -103,11 +109,8 @@ public class RobotContainer {
         secondaryXboxController
                 .povLeft()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
-        primaryXboxController.
-                leftTrigger()
-                .onTrue(coralManipulator.selectQueuedStateCommand());
-        primaryXboxController.
-                rightTrigger().onTrue((coralManipulator.scoreState()));
+        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
+        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
     }
 
     private void assembleMechanisms() {
@@ -149,6 +152,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return null;
+        return autoChooser.getSelected();
     }
 }
