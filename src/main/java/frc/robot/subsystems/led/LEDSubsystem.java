@@ -1,12 +1,17 @@
 package frc.robot.subsystems.led;
 
-import static frc.robot.subsystems.led.LEDConfigs.*;
-
 import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.coral.CoralManipulatorState;
+import frc.robot.subsystems.coral.CoralManipulatorSystem;
+
+import java.util.Map;
 
 public class LEDSubsystem extends SubsystemBase {
     public final CANdle candle = new CANdle(0, Constants.RIO_BUS);
@@ -16,8 +21,9 @@ public class LEDSubsystem extends SubsystemBase {
     private CANdleConfiguration configAll;
     public ProgressBar progressBar;
     private Events event;
+    private final CoralManipulatorSystem cms;
 
-    public LEDSubsystem() {
+    public LEDSubsystem(CoralManipulatorSystem cms) {
         configAll = new CANdleConfiguration();
         configAll.statusLedOffWhenActive = false;
         configAll.disableWhenLOS = false;
@@ -26,6 +32,8 @@ public class LEDSubsystem extends SubsystemBase {
         configAll.vBatOutputMode = CANdle.VBatOutputMode.On;
         candle.configAllSettings(configAll, 100);
         progressBar = new ProgressBar(this);
+        this.cms = cms;
+        new Trigger(cms::isTransitioning).onTrue(selectAnimationCommand());
     }
 
     public void clearAnimation() {
@@ -146,6 +154,51 @@ public class LEDSubsystem extends SubsystemBase {
                 }
         }
         candle.animate(toAnimate);
+    }
+
+    private CoralManipulatorState queuedState = CoralManipulatorState.IDLE;
+
+    private void queueState(CoralManipulatorState state) {
+        queuedState = state;
+    }
+
+    public Command selectAnimationCommand() {
+        return new SelectCommand<>(
+                Map.ofEntries(
+                        Map.entry(
+                                CoralManipulatorState.INTAKE_CORAL,
+                                runOnce(() -> setAnimation(Events.CORALINTAKE))),
+                        Map.entry(
+                                CoralManipulatorState.L1,
+                                runOnce(() -> setAnimation(Events.ELEVATORMOVING))),
+                        Map.entry(
+                                CoralManipulatorState.SCORE_L1,
+                                runOnce(() -> setAnimation(Events.ELEVATORSCORE))),
+                        Map.entry(
+                                CoralManipulatorState.L2,
+                                runOnce(() -> setAnimation(Events.ELEVATORMOVING))),
+                        Map.entry(
+                                CoralManipulatorState.SCORE_L2,
+                                runOnce(() -> setAnimation(Events.ELEVATORSCORE))),
+                        Map.entry(
+                                CoralManipulatorState.L3,
+                                runOnce(() -> setAnimation(Events.ELEVATORMOVING))),
+                        Map.entry(
+                                CoralManipulatorState.SCORE_L3,
+                                runOnce(() -> setAnimation(Events.ELEVATORSCORE))),
+                        Map.entry(
+                                CoralManipulatorState.L4,
+                                runOnce(() -> setAnimation(Events.ELEVATORMOVING))),
+                        Map.entry(
+                                CoralManipulatorState.SCORE_L4,
+                                runOnce(() -> setAnimation(Events.ELEVATORSCORE))),
+                        Map.entry(
+                                CoralManipulatorState.IDLE,
+                                runOnce(() -> setAnimation(Events.IDLETELEOP))),
+                        Map.entry(
+                                CoralManipulatorState.STOWED,
+                                runOnce(() -> setAnimation(Events.CORALSTOWED)))),
+                cms::getQueuedState);
     }
 
     @Override

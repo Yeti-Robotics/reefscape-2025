@@ -25,10 +25,13 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
+import frc.robot.subsystems.coral.elevator.ElevatorPosition;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.led.Events;
 import frc.robot.subsystems.led.LEDSubsystem;
+
+import java.sql.Driver;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -69,7 +72,7 @@ public class RobotContainer {
                 new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
         coralManipulator = new CoralManipulatorSystem();
-        leds = new LEDSubsystem();
+        leds = new LEDSubsystem(coralManipulator);
         climber = new ClimberSubsystem();
         configureBindings();
         assembleMechanisms();
@@ -134,9 +137,16 @@ public class RobotContainer {
                 .and(DriverStation::isDisabled)
                 .onTrue(runOnce(() -> leds.progressBar.addProgress()))
                 .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
-        new Trigger(DriverStation::isTeleopEnabled)
+        new Trigger(DriverStation::isEnabled)
                 .onTrue(runOnce(() -> leds.setAnimation(Events.CLEARPROGRESS)))
                 .onTrue(runOnce(() -> leds.setAnimation(Events.IDLETELEOP)));
+        new Trigger(coralManipulator.grabber::hasCoral)
+                .and(DriverStation::isEnabled)
+                .onTrue(runOnce(() -> leds.setAnimation(Events.CORALINTAKE)));
+        new Trigger(coralManipulator::isTransitioning)
+                .onTrue(leds.selectAnimationCommand());
+        new Trigger(coralManipulator::isTransitioning)
+                .onTrue(leds.selectAnimationCommand());
     }
 
     private void assembleMechanisms() {
