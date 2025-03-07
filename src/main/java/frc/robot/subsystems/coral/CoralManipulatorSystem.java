@@ -91,7 +91,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         return targetState == CoralManipulatorState.L2 && arm.getCurrentState() != ArmPosition.DOWN;
     }
 
-    public boolean isWristFirst(CoralManipulatorState targetState) {
+    public boolean isWristFirst() {
         return getCurrentState().getWristPosition() == WristPositions.UNSAFE;
     }
 
@@ -135,7 +135,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
                             .andThen(grabber.transitionTo(targetState.getGrabberState()));
         }
 
-        if (isWristFirst(targetState)) {
+        if (isWristFirst()) {
             coralManipulatorCommand =
                     wrist.transitionTo(targetState.getWristPosition())
                             .andThen(coralManipulatorCommand);
