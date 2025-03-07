@@ -20,7 +20,7 @@ public class TalonFXMotor extends DeviceBuilder<TalonFX, TalonFXConfiguration, T
         return new TalonFXMotor(new TalonFX(deviceID, canbus));
     }
 
-    public TalonFXMotor withCANCoder(CANcoder canCoder) {
+    public TalonFXMotor withFusedCANcoder(CANcoder canCoder) {
         getConfig().Feedback.withFusedCANcoder(canCoder);
         return this;
     }

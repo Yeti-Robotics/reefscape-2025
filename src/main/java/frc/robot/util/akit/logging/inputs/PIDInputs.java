@@ -1,4 +1,4 @@
-package frc.robot.util.akit.logging.inputs.impl;
+package frc.robot.util.akit.logging.inputs;
 
 import org.littletonrobotics.junction.AutoLog;
 

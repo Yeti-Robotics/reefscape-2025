@@ -13,6 +13,4 @@ public abstract class PositionalMotorIOTalonFX<T, V extends Angle>
 
     @Override
     public void setPosition(V value) {}
-
-    public abstract void updateInputs(T inputs);
 }

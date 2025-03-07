@@ -6,17 +6,17 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import frc.robot.util.device.DeviceBuilder;
 
-public class CANCoder extends DeviceBuilder<CANcoder, CANcoderConfiguration, CANCoder> {
-    private CANCoder(CANcoder device) {
+public class CANCoderDevice extends DeviceBuilder<CANcoder, CANcoderConfiguration, CANCoderDevice> {
+    private CANCoderDevice(CANcoder device) {
         super(device);
     }
 
-    public static CANCoder configure(int deviceID, String canBus) {
-        return new CANCoder(new CANcoder(deviceID, canBus));
+    public static CANCoderDevice configure(int deviceID, String canBus) {
+        return new CANCoderDevice(new CANcoder(deviceID, canBus));
     }
 
     @Override
-    public CANCoder syncConfigs() {
+    public CANCoderDevice syncConfigs() {
         getDevice().getConfigurator().apply(getConfig());
         return this;
     }
@@ -30,7 +30,7 @@ public class CANCoder extends DeviceBuilder<CANcoder, CANcoderConfiguration, CAN
     }
 
     @Override
-    protected CANCoder getDeviceBuilderClass() {
+    protected CANCoderDevice getDeviceBuilderClass() {
         return this;
     }
 }
