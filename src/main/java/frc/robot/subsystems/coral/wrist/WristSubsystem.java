@@ -28,7 +28,7 @@ public class WristSubsystem
 
     public WristSubsystem() {
         super(
-                WristPositions.HORIZONTAL,
+                WristPositions.SAFE,
                 StateUtils.mutableRotationSetpoint(),
                 Units.Rotations.of(WristConfigs.WRIST_TOLERANCE));
         wristMotor.getConfigurator().apply(WristConfigs.wristMotorConfigs);
@@ -39,11 +39,11 @@ public class WristSubsystem
     }
 
     public Command moveWristHorizontal() {
-        return runOnce(() -> moveTo(WristPositions.HORIZONTAL.getAngle()));
+        return runOnce(() -> moveTo(WristPositions.SAFE.getAngle()));
     }
 
     public Command moveWristVertical() {
-        return runOnce(() -> moveTo(WristPositions.VERTICAL.getAngle()));
+        return runOnce(() -> moveTo(WristPositions.UNSAFE.getAngle()));
     }
 
     @Override

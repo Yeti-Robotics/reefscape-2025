@@ -4,8 +4,8 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 
 public enum WristPositions {
-    HORIZONTAL(0),
-    VERTICAL(0.25),
+    SAFE(0),
+    UNSAFE(0.25),
     HOLD(-1);
 
     private final Angle angle;

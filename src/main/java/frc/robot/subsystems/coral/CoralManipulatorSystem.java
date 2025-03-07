@@ -8,6 +8,7 @@ import frc.robot.subsystems.coral.arm.ArmSubsystem;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
+import frc.robot.subsystems.coral.wrist.WristPositions;
 import frc.robot.subsystems.coral.wrist.WristSubsystem;
 import frc.robot.util.state.StatefulSubsystem;
 
@@ -91,8 +92,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     }
 
     public boolean isWristFirst(CoralManipulatorState targetState) {
-        return getCurrentState() == CoralManipulatorState.L1
-                || getCurrentState() == CoralManipulatorState.HP_INTAKE;
+        return getCurrentState().getWristPosition() == WristPositions.UNSAFE;
     }
 
     public boolean isArmMovingBelowZero(CoralManipulatorState targetState) {
