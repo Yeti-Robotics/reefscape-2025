@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.coral.*;
 
 public class AutoNamedCommands {
@@ -16,14 +17,24 @@ public class AutoNamedCommands {
                 "intake", coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
 
         NamedCommands.registerCommand(
-                "L1", coralManipulator.transitionTo(CoralManipulatorState.L1));
+                "L1",
+                new SequentialCommandGroup(
+                        coralManipulator.transitionTo(CoralManipulatorState.L1),
+                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L1)));
         NamedCommands.registerCommand(
-                "L2", coralManipulator.transitionTo(CoralManipulatorState.L2));
+                "L2",
+                new SequentialCommandGroup(
+                        coralManipulator.transitionTo(CoralManipulatorState.L2),
+                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2)));
         NamedCommands.registerCommand(
-                "L3", coralManipulator.transitionTo(CoralManipulatorState.L3));
+                "L3",
+                new SequentialCommandGroup(
+                        coralManipulator.transitionTo(CoralManipulatorState.L3),
+                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3)));
         NamedCommands.registerCommand(
-                "L4", coralManipulator.transitionTo(CoralManipulatorState.L4));
-
-        NamedCommands.registerCommand("scoreState", coralManipulator.scoreState());
+                "L4",
+                new SequentialCommandGroup(
+                        coralManipulator.transitionTo(CoralManipulatorState.L4),
+                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4)));
     }
 }
