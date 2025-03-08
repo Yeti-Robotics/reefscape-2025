@@ -14,6 +14,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,10 +29,9 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import org.json.simple.parser.ParseException;
-
 import java.io.IOException;
 import java.util.function.Supplier;
+import org.json.simple.parser.ParseException;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements Subsystem so it can easily
@@ -44,6 +44,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
     RobotConfig config;
+    @NotLogged SwerveDriveKinematics m_kinematics;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -62,12 +63,6 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
 
     private final SwerveRequest.ApplyRobotSpeeds AutoReq = new SwerveRequest.ApplyRobotSpeeds();
 
-    protected SwerveDriveKinematics m_kinematics =
-            new SwerveDriveKinematics(config.moduleLocations);
-
-    public ChassisSpeeds getChassisSpeeds() {
-        return m_kinematics.toChassisSpeeds(getState().ModuleStates);
-    }
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation =
             new SysIdRoutine(
@@ -140,6 +135,10 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
      * @param drivetrainConstants Drivetrain-wide constants for the swerve drive
      * @param modules Constants for each specific module
      */
+    public ChassisSpeeds getChassisSpeeds() {
+        return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+    }
+
     public CommandSwerveDrivetrain(
             SwerveDrivetrainConstants drivetrainConstants,
             SwerveModuleConstants<?, ?, ?>... modules) {
@@ -151,9 +150,12 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
         {
             try {
                 config = RobotConfig.fromGUISettings();
+                m_kinematics = new SwerveDriveKinematics(config.moduleLocations);
+
             } catch (IOException | ParseException e) {
                 throw new RuntimeException(e);
             }
+
             AutoBuilder.configure(
                     () -> this.getState().Pose,
                     this::resetPose,
@@ -162,11 +164,13 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
                     new PPHolonomicDriveController(
                             new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
                     config,
-                    () -> DriverStation.getAlliance().filter(value -> value == Alliance.Red).isPresent(),
+                    () ->
+                            DriverStation.getAlliance()
+                                    .filter(value -> value == Alliance.Red)
+                                    .isPresent(),
                     this);
         }
     }
-
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.

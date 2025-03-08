@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "lineBack"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "bargeLine"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "lineJ"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "jHP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "hpK"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "kHP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "hpL"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
