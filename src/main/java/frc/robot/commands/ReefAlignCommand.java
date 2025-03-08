@@ -46,7 +46,7 @@ public class ReefAlignCommand extends Command {
 
         addRequirements(this.commandSwerveDrivetrain);
         poseAimReq = new SwerveRequest.FieldCentricFacingAngle();
-        poseAimReq.HeadingController.setPID(5, 0, 0);
+        poseAimReq.HeadingController.setPID(5.691, 0, 0.024675);
         poseAimReq.HeadingController.setTolerance(0.07);
         poseAimReq.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
     }

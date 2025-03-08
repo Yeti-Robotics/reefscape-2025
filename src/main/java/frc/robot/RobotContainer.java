@@ -42,14 +42,14 @@ import java.util.Optional;
  */
 public class RobotContainer {
 
-    public final CommandXboxController primaryXboxController;
-    public final CommandXboxController secondaryXboxController;
+    public CommandXboxController primaryXboxController;
+    public CommandXboxController secondaryXboxController;
 
     @Logged(name = "Vision/Limelight")
-    public final LimelightAprilTagSystem limelight;
+    public  LimelightAprilTagSystem limelight;
 
     @Logged(name = "Drivetrain")
-    final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public CommandSwerveDrivetrain drivetrain;
 
     Transform3d camTrans =
             new Transform3d(
@@ -60,7 +60,7 @@ public class RobotContainer {
                     new Rotation3d(0, Math.toRadians(35), Math.toRadians(90)));
 
     @Logged(name = "Vision/ScoreCam")
-    public final PhotonAprilTagSystem reefCam =
+    public  PhotonAprilTagSystem reefCam =
             new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
 
     @Logged(name = "CoralManipulator")
@@ -81,6 +81,8 @@ public class RobotContainer {
 
     //    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
 
+    //    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         AprilTagCamSim simCam =
@@ -92,6 +94,11 @@ public class RobotContainer {
         //        reefCam.setCamera(aprilTagCamSim.getAprilTagCamSims().get(0).getCam());
 
         primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
+        secondaryXboxController =
+                new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
+         drivetrain = TunerConstants.createDrivetrain();
+        limelight = new LimelightAprilTagSystem("limelight", drivetrain);
+        reefCam = new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
         secondaryXboxController = new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         coralManipulator = new CoralManipulatorSystem();
@@ -108,6 +115,23 @@ public class RobotContainer {
      * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
      * joysticks}.
      */
+    public void updateVision() {
+        Optional<AprilTagPose> aprilTagPoseOpt = limelight.getEstimatedPose();
+
+        if (aprilTagPoseOpt.isPresent() && !drivetrain.isMotionBlur()) {
+            AprilTagPose pose = aprilTagPoseOpt.get();
+
+            if (pose.getNumTags() > 0) {
+                // drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+                drivetrain.addVisionMeasurement(pose.getEstimatedRobotPose(), pose.getTimestamp());
+            }
+        }
+    }
+
+    //    public void updateVisionSim() {
+    //        aprilTagCamSim.update(drivetrain.getState().Pose);
+    //    }
+
     private void configureBindings() {
         drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(
