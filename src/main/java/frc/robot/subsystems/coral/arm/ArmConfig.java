@@ -16,10 +16,10 @@ class ArmConfig {
 
     private static final Slot0Configs SLOT_0_REAL_CONFIGS =
             new Slot0Configs()
-                    .withKP(1440)
+                    .withKP(1100)
                     .withKI(0)
-                    .withKD(300)
-                    .withKG(7.5)
+                    .withKD(350)
+                    .withKG(10)
                     .withKV(1)
                     .withKA(2)
                     .withGravityType(GravityTypeValue.Arm_Cosine);
@@ -45,7 +45,7 @@ class ArmConfig {
 
     static final MotionMagicConfigs motionMagicConfigs =
             new MotionMagicConfigs()
-                    .withMotionMagicCruiseVelocity(0.5)
+                    .withMotionMagicCruiseVelocity(2)
                     .withMotionMagicAcceleration(1)
                     .withMotionMagicJerk(0);
 
