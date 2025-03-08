@@ -3,12 +3,14 @@ package frc.robot.subsystems.coral;
 import com.ctre.phoenix6.StatusCode;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
 import frc.robot.util.state.StatefulSubsystem;
+import java.util.Map;
 
 @Logged
 public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorState> {
@@ -23,6 +25,17 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
 
     public CoralManipulatorSystem() {
         super(CoralManipulatorState.IDLE);
+    }
+
+    private CoralManipulatorState queuedState = CoralManipulatorState.IDLE;
+
+    @Logged(name = "States/Queued State")
+    public String getCQueuedState() {
+        return queuedState.toString();
+    }
+
+    private CoralManipulatorState getQueuedState() {
+        return queuedState;
     }
 
     @Logged(name = "States/Coral Manipulator State")
@@ -68,6 +81,34 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     @Logged(name = "States/Elevator transitioning State")
     public String elevatorTransitionState() {
         return elevator.transitioningTo().orElse(ElevatorPosition.HOLD).toString();
+    }
+
+    public void queueState(CoralManipulatorState state) {
+        queuedState = state;
+    }
+
+    public Command selectQueuedStateCommand() {
+        return new SelectCommand(
+                Map.of(
+                        CoralManipulatorState.L1, transitionTo(CoralManipulatorState.L1),
+                        CoralManipulatorState.L2, transitionTo(CoralManipulatorState.L2),
+                        CoralManipulatorState.L3, transitionTo(CoralManipulatorState.L3),
+                        CoralManipulatorState.L4, transitionTo(CoralManipulatorState.L4)),
+                this::getQueuedState);
+    }
+
+    public Command scoreState() {
+        return new SelectCommand(
+                Map.of(
+                        CoralManipulatorState.L1, transitionTo(CoralManipulatorState.SCORE_L1),
+                        CoralManipulatorState.L2, transitionTo(CoralManipulatorState.SCORE_L2),
+                        CoralManipulatorState.L3, transitionTo(CoralManipulatorState.SCORE_L3),
+                        CoralManipulatorState.L4, transitionTo(CoralManipulatorState.SCORE_L4)),
+                this::getQueuedState);
+    }
+
+    public Command setQueueState(CoralManipulatorState queuedState) {
+        return runOnce(() -> queueState(queuedState));
     }
 
     @Override
