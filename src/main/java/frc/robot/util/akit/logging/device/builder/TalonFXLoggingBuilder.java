@@ -3,7 +3,7 @@ package frc.robot.util.akit.logging.device.builder;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.robot.util.akit.logging.device.DeviceLogger;
-import frc.robot.util.akit.logging.device.TalonFXLogger;
+
 import java.util.*;
 import java.util.function.Consumer;
 import org.littletonrobotics.junction.LogTable;
