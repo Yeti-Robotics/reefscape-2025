@@ -34,7 +34,7 @@ public class ElevatorSubsystem
     private final TalonFX secondaryElevatorMotor =
             new TalonFX(ElevatorConfig.secondaryElevatorMotorID, RIO_BUS);
     private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
-
+    private final NeutralOut neutralOut = new NeutralOut();
     private final MotionMagicTorqueCurrentFOC magicRequest =
             new MotionMagicTorqueCurrentFOC(0).withSlot(Robot.isReal() ? 0 : 1);
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
@@ -57,6 +57,8 @@ public class ElevatorSubsystem
 
         primaryElevatorMotor.setPosition(0);
         secondaryElevatorMotor.setPosition(0);
+
+        primaryElevatorMotor.setControl(neutralOut);
 
         if (Robot.isSimulation()) {
             PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
@@ -102,10 +104,12 @@ public class ElevatorSubsystem
 
     @Override
     protected boolean isTransitionFinished() {
-        if (super.isTransitionFinished()
-                && elevatorPosition == ElevatorPosition.BOTTOM.getHeight()) {
-            primaryElevatorMotor.setControl(new NeutralOut());
+        boolean transitionFinished = super.isTransitionFinished();
+        if (transitionFinished
+                && transitioningTo().isPresent()
+                && transitioningTo().get().equals(ElevatorPosition.BOTTOM)) {
+            primaryElevatorMotor.setControl(neutralOut);
         }
-        return super.isTransitionFinished();
+        return transitionFinished;
     }
 }
