@@ -33,7 +33,7 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
 public class RobotContainer {
 
     public final CommandXboxController primaryXboxController;
-    public final CommandJoystick simJoy;
+    public final CommandXboxController secondaryXboxController;
 
     @Logged(name = "Drivetrain")
     final CommandSwerveDrivetrain drivetrain;
@@ -51,11 +51,13 @@ public class RobotContainer {
             new Mechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
     private MechanismLigament2d liftLigament;
     private MechanismLigament2d armLigament;
+    private final CommandJoystick joystick = new CommandJoystick(0);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
-        simJoy = new CommandJoystick(2);
+        primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
+        secondaryXboxController =
+                new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
         coralManipulator = new CoralManipulatorSystem();
         configureBindings();
@@ -99,22 +101,21 @@ public class RobotContainer {
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3));
         primaryXboxController
                 .povLeft()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
-        primaryXboxController
-                .leftBumper()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        primaryXboxController
-                .rightBumper()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
-
-        simJoy.button(1).onTrue(coralManipulator.wrist.moveWristHorizontal());
-        simJoy.button(2).onTrue(coralManipulator.wrist.moveWristVertical());
-        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
-        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
-        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
-        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
-        simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
-        simJoy.button(8).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        secondaryXboxController
+                .povUp()
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
+        secondaryXboxController
+                .povRight()
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
+        secondaryXboxController
+                .povDown()
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
+        secondaryXboxController
+                .povLeft()
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
+        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
     }
 
     private void assembleMechanisms() {
