@@ -71,7 +71,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
             new SysIdRoutine(
                     new SysIdRoutine.Config(
                             null, // Use default ramp rate (1 V/s)
-                            Volts.of(5), // Use dynamic voltage of 7 V
+                            Volts.of(7), // Use dynamic voltage of 7 V
                             null, // Use default timeout (10 s)
                             // Log state with SignalLogger class
                             state ->
@@ -111,7 +111,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
                             this));
 
     /* The SysId routine to test */
-    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineSteer;
+    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
