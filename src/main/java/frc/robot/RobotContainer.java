@@ -24,8 +24,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ReefAlignCommand;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
@@ -61,8 +61,7 @@ public class RobotContainer {
                     new Rotation3d(0, Math.toRadians(35), Math.toRadians(90)));
 
     @Logged(name = "Vision/ScoreCam")
-    public final PhotonAprilTagSystem reefCam =
-            new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
+    public final PhotonAprilTagSystem reefCam;
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
@@ -94,6 +93,7 @@ public class RobotContainer {
         primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
+        reefCam = new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
         coralManipulator = new CoralManipulatorSystem();
         configureBindings();
         assembleMechanisms();
@@ -154,47 +154,30 @@ public class RobotContainer {
                                 primaryXboxController::getLeftX,
                                 primaryXboxController::getLeftY,
                                 true));
-        primaryXboxController
-                .y()
-                .whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        primaryXboxController
-                .b()
-                .whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
 
+
+        primaryXboxController.y().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+
+        primaryXboxController.b().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+
+        primaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
+
+        primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
         primaryXboxController
-                .a()
-                .whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
+                .povRight()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2));
         primaryXboxController
-                .x()
-                .whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-        //
-        //
-        // primaryXboxController.y().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
-        //
-        //
-        // primaryXboxController.b().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
-        //
-        //
-        // primaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
-        //
-        //
-        // primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
-        //        primaryXboxController
-        //                .povRight()
-        //                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2));
-        //        primaryXboxController
-        //                .povDown()
-        //                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3));
-        //        primaryXboxController
-        //                .povLeft()
-        //                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
-        //        primaryXboxController
-        //                .leftBumper()
-        //                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        //        primaryXboxController
-        //                .rightBumper()
-        //
-        // .onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
+                .povDown()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3));
+        primaryXboxController
+                .povLeft()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
+        primaryXboxController
+                .leftBumper()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        primaryXboxController
+                .rightBumper()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
     }
 
     private void assembleMechanisms() {
