@@ -43,7 +43,7 @@ import java.util.Optional;
 public class RobotContainer {
 
     public final CommandXboxController primaryXboxController;
-    public final CommandXboxController seconaryXboxController;
+    public final CommandXboxController secondaryXboxController;
 
     @Logged(name = "Vision/Limelight")
     public final LimelightAprilTagSystem limelight;
@@ -91,8 +91,8 @@ public class RobotContainer {
         //        aprilTagCamSim.addCamera(simCam);
         //        reefCam.setCamera(aprilTagCamSim.getAprilTagCamSims().get(0).getCam());
 
-        primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER);
-        seconaryXboxController = new CommandXboxController(Constants.SECONDARY_CONTROLLER_PORT);
+        primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
+        secondaryXboxController = new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         coralManipulator = new CoralManipulatorSystem();
         configureBindings();
@@ -108,23 +108,6 @@ public class RobotContainer {
      * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
      * joysticks}.
      */
-    public void updateVision() {
-        Optional<AprilTagPose> aprilTagPoseOpt = limelight.getEstimatedPose();
-
-        if (aprilTagPoseOpt.isPresent() && !drivetrain.isMotionBlur()) {
-            AprilTagPose pose = aprilTagPoseOpt.get();
-
-            if (pose.getNumTags() > 0) {
-                // drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
-                drivetrain.addVisionMeasurement(pose.getEstimatedRobotPose(), pose.getTimestamp());
-            }
-        }
-    }
-
-    //    public void updateVisionSim() {
-    //        aprilTagCamSim.update(drivetrain.getState().Pose);
-    //    }
-
     private void configureBindings() {
         drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(
@@ -154,23 +137,15 @@ public class RobotContainer {
                         () -> isTargetBranchLeft));
         primaryXboxController
                 .povRight()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2));
-        primaryXboxController
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
+        secondaryXboxController
                 .povDown()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3));
-        primaryXboxController
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
+        secondaryXboxController
                 .povLeft()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
-        primaryXboxController
-                .leftBumper()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        primaryXboxController
-                .rightBumper()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
-
-        seconaryXboxController.leftBumper().onTrue(setTargetBranch(ReefAlignCommand.Branches.LEFT));
-        seconaryXboxController.rightTrigger().onTrue(setTargetBranch(ReefAlignCommand.Branches.RIGHT));
-
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
+        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
     }
 
     private void assembleMechanisms() {
@@ -219,7 +194,4 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return null;
     }
-
-
-
 }

@@ -8,6 +8,7 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.AngleUnit;
@@ -96,6 +97,15 @@ public class ElevatorSubsystem
 
     @Override
     public double updateMechPos() {
-        return inchesToMeters(elevatorPosition.getValueAsDouble());
+        return inchesToMeters(elevatorPosition.getValueAsDouble() * 6) + inchesToMeters(1);
+    }
+
+    @Override
+    protected boolean isTransitionFinished() {
+        if (super.isTransitionFinished()
+                && elevatorPosition == ElevatorPosition.BOTTOM.getHeight()) {
+            primaryElevatorMotor.setControl(new NeutralOut());
+        }
+        return super.isTransitionFinished();
     }
 }
