@@ -106,7 +106,8 @@ public class ElevatorSubsystem
     protected boolean isTransitionFinished() {
         boolean transitionFinished = super.isTransitionFinished();
         if (transitionFinished
-                && transitioningTo().isPresent() && transitioningTo().get().equals(ElevatorPosition.BOTTOM)) {
+                && transitioningTo().isPresent()
+                && transitioningTo().get().equals(ElevatorPosition.BOTTOM)) {
             primaryElevatorMotor.setControl(neutralOut);
         }
         return transitionFinished;
