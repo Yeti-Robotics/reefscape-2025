@@ -14,7 +14,8 @@ package frc.robot.constants;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static final int XBOX_CONTROLLER_PORT = 0;
+    public static final int PRIMARY_XBOX_CONTROLLER = 0;
+    public static final int SECONDARY_CONTROLLER_PORT = 1;
     public static final String CANIVORE_BUS = "canivoreBus";
     public static final String RIO_BUS = "rio";
 }

@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ReefAlignCommand;
@@ -43,6 +43,7 @@ import java.util.Optional;
 public class RobotContainer {
 
     public final CommandXboxController primaryXboxController;
+    public final CommandXboxController seconaryXboxController;
 
     @Logged(name = "Vision/Limelight")
     public final LimelightAprilTagSystem limelight;
@@ -75,7 +76,8 @@ public class RobotContainer {
             new Mechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
     private MechanismLigament2d liftLigament;
     private MechanismLigament2d armLigament;
-    private final CommandJoystick joystick = new CommandJoystick(0);
+
+    public boolean isTargetBranchLeft;
 
     //    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
 
@@ -89,7 +91,8 @@ public class RobotContainer {
         //        aprilTagCamSim.addCamera(simCam);
         //        reefCam.setCamera(aprilTagCamSim.getAprilTagCamSims().get(0).getCam());
 
-        primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
+        primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER);
+        seconaryXboxController = new CommandXboxController(Constants.SECONDARY_CONTROLLER_PORT);
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         coralManipulator = new CoralManipulatorSystem();
         configureBindings();
@@ -144,13 +147,11 @@ public class RobotContainer {
         primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
         primaryXboxController
                 .leftTrigger()
-                .whileTrue(
-                        new ReefAlignCommand(
-                                drivetrain,
-                                reefCam,
-                                primaryXboxController::getLeftX,
-                                primaryXboxController::getLeftY,
-                                true));
+                .whileTrue(new ReefAlignCommand(drivetrain,
+                        reefCam,
+                        primaryXboxController::getLeftX,
+                        primaryXboxController::getLeftY,
+                        () -> isTargetBranchLeft));
         primaryXboxController
                 .povRight()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2));
@@ -166,6 +167,10 @@ public class RobotContainer {
         primaryXboxController
                 .rightBumper()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
+
+        seconaryXboxController.leftBumper().onTrue(setTargetBranch(ReefAlignCommand.Branches.LEFT));
+        seconaryXboxController.rightTrigger().onTrue(setTargetBranch(ReefAlignCommand.Branches.RIGHT));
+
     }
 
     private void assembleMechanisms() {
@@ -201,6 +206,11 @@ public class RobotContainer {
         SmartDashboard.putData("Mechanisms/CoralManipulator", elevatorArmMech);
     }
 
+    public Command setTargetBranch(ReefAlignCommand.Branches branch){
+
+        return Commands.runOnce(() -> isTargetBranchLeft = branch.getBoolean());
+    }
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
@@ -209,4 +219,7 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return null;
     }
+
+
+
 }
