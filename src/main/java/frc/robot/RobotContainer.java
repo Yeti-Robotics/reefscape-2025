@@ -5,7 +5,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.epilogue.Logged;
@@ -16,11 +15,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
@@ -36,6 +33,7 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
 public class RobotContainer {
 
     public final CommandXboxController primaryXboxController;
+    public final CommandXboxController secondaryXboxController;
 
     @Logged(name = "Drivetrain")
     final CommandSwerveDrivetrain drivetrain;
@@ -57,7 +55,9 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        primaryXboxController = new CommandXboxController(Constants.XBOX_CONTROLLER_PORT);
+        primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
+        secondaryXboxController =
+                new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
         coralManipulator = new CoralManipulatorSystem();
         configureBindings();
@@ -88,31 +88,23 @@ public class RobotContainer {
                                         .withRotationalRate(
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
-        primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-
-         primaryXboxController.y().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
-
-         primaryXboxController.b().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
-
-         primaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
-
-         primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
-                primaryXboxController
-                        .povRight()
-                        .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2));
-                primaryXboxController
-                        .povDown()
-                        .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3));
-                primaryXboxController
-                        .povLeft()
-                        .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
-                primaryXboxController
-                        .leftBumper()
-                        .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-                primaryXboxController
-                        .rightBumper()
-
-         .onTrue(coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
+        secondaryXboxController
+                .povUp()
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
+        secondaryXboxController
+                .povRight()
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
+        secondaryXboxController
+                .povDown()
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
+        secondaryXboxController
+                .povLeft()
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        primaryXboxController.
+                leftTrigger()
+                .onTrue(coralManipulator.selectQueuedStateCommand());
+        primaryXboxController.
+                rightTrigger().onTrue((coralManipulator.scoreState()));
     }
 
     private void assembleMechanisms() {
