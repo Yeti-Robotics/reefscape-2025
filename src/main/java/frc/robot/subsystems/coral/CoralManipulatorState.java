@@ -9,7 +9,11 @@ public enum CoralManipulatorState {
     INTAKE_CORAL(
             ArmPosition.DOWN, ElevatorPosition.INTAKE, GrabberState.ROLL_IN, WristPositions.UNSAFE),
     L1(ArmPosition.POS_L1, ElevatorPosition.POS_L1, GrabberState.OFF, WristPositions.UNSAFE),
-    SCORE_L1(ArmPosition.POS_L1, ElevatorPosition.POS_L1, GrabberState.ROLL_OUT, WristPositions.UNSAFE),
+    SCORE_L1(
+            ArmPosition.POS_L1,
+            ElevatorPosition.POS_L1,
+            GrabberState.ROLL_OUT,
+            WristPositions.UNSAFE),
     L2(ArmPosition.POS_L2, ElevatorPosition.POS_L2, GrabberState.OFF, WristPositions.SAFE),
     SCORE_L2(
             ArmPosition.SCORE_L2,

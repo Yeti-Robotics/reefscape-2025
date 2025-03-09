@@ -9,11 +9,11 @@ class WristConfigs {
     static final double WRIST_TOLERANCE = 0.1;
     static final int WRIST_KRAKEN_ID = 19;
     static final int WRIST_CANCODER_ID = 30;
-    static final double MAGNET_OFFSET = 0.501221;
+    static final double MAGNET_OFFSET = -0.177001953125;
 
     static final Slot0Configs SLOT_0_CONFIGS =
             new Slot0Configs()
-                    .withKP(0)
+                    .withKP(5)
                     .withKI(0)
                     .withKD(0)
                     .withKS(0)
@@ -38,7 +38,7 @@ class WristConfigs {
                     .withMotionMagicJerk(0);
 
     static final FeedbackConfigs FEEDBACK_CONFIGS =
-            new FeedbackConfigs().withRotorToSensorRatio(1).withSensorToMechanismRatio(3.75);
+            new FeedbackConfigs().withRotorToSensorRatio(1).withSensorToMechanismRatio(2.75);
 
     static final MotorOutputConfigs MOTOR_OUTPUT_CONFIGS =
             new MotorOutputConfigs()
@@ -57,7 +57,8 @@ class WristConfigs {
             new CANcoderConfiguration()
                     .withMagnetSensor(
                             new MagnetSensorConfigs()
-                                    .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
+                                    .withSensorDirection(
+                                            SensorDirectionValue.CounterClockwise_Positive)
                                     .withMagnetOffset(MAGNET_OFFSET)
                                     .withAbsoluteSensorDiscontinuityPoint(0.625));
 }
