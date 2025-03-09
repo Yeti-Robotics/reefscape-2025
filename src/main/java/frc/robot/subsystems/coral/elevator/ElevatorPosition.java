@@ -11,7 +11,7 @@ public enum ElevatorPosition implements Comparable<ElevatorPosition> {
     POS_L2(.32),
     POS_L3(1.8),
     POS_L4(3.95),
-
+    HP(2.1), // get actual
     HOLD(-1); // special case, for when transitions are interrupted
 
     private final Angle height;

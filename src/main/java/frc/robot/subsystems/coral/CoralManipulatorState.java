@@ -8,7 +8,8 @@ import frc.robot.subsystems.coral.wrist.WristPositions;
 public enum CoralManipulatorState {
     INTAKE_CORAL(
             ArmPosition.DOWN, ElevatorPosition.INTAKE, GrabberState.ROLL_IN, WristPositions.UNSAFE),
-    L1(ArmPosition.POS_L1, ElevatorPosition.POS_L1, GrabberState.ROLL_OUT, WristPositions.UNSAFE),
+    L1(ArmPosition.POS_L1, ElevatorPosition.POS_L1, GrabberState.OFF, WristPositions.UNSAFE),
+    SCORE_L1(ArmPosition.POS_L1, ElevatorPosition.POS_L1, GrabberState.ROLL_OUT, WristPositions.UNSAFE),
     L2(ArmPosition.POS_L2, ElevatorPosition.POS_L2, GrabberState.OFF, WristPositions.SAFE),
     SCORE_L2(
             ArmPosition.SCORE_L2,
@@ -27,11 +28,7 @@ public enum CoralManipulatorState {
             ElevatorPosition.POS_L4,
             GrabberState.ROLL_OUT,
             WristPositions.SAFE),
-    SCOREREEF(
-            ArmPosition.DOWN,
-            ElevatorPosition.SAFE_POSITION,
-            GrabberState.OFF,
-            WristPositions.SAFE),
+    HP_INTAKE(ArmPosition.HP, ElevatorPosition.HP, GrabberState.ROLL_IN, WristPositions.UNSAFE),
     STOWED(ArmPosition.UP, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.SAFE),
     IDLE(ArmPosition.HOLD, ElevatorPosition.HOLD, GrabberState.OFF, WristPositions.SAFE);
 
