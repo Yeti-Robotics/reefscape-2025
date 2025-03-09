@@ -20,8 +20,8 @@ import frc.robot.util.state.StatefulSetpointSubsystem;
 @Logged
 public class WristSubsystem
         extends StatefulSetpointSubsystem<WristPositions, AngleUnit, Angle, MutAngle> {
-    private final TalonFX wristMotor = new TalonFX(WristConfigs.DEVICE_ID, Constants.RIO_BUS);
-    private final CANcoder wristEncoder = new CANcoder(WristConfigs.DEVICE_ID);
+    private final TalonFX wristMotor = new TalonFX(WristConfigs.WRIST_KRAKEN_ID, Constants.RIO_BUS);
+    private final CANcoder wristEncoder = new CANcoder(WristConfigs.WRIST_CANCODER_ID);
     private final StatusSignal<Angle> wristPosition = wristMotor.getPosition();
     private final MotionMagicTorqueCurrentFOC magicRequest =
             new MotionMagicTorqueCurrentFOC(0).withSlot(1);
