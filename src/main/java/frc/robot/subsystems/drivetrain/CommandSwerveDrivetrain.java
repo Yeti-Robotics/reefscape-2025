@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -60,6 +61,15 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
             new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization =
             new SwerveRequest.SysIdSwerveRotation();
+
+    @Logged(name = "spin")
+    public AngularVelocity getSpin() {
+        return this.getPigeon2().getAngularVelocityZWorld().getValue();
+    }
+
+    public boolean isMotionBlur() {
+        return getSpin().gte(TunerConstants.MAX_BLUR_SPEED);
+    }
 
     private final SwerveRequest.ApplyRobotSpeeds AutoReq = new SwerveRequest.ApplyRobotSpeeds();
 
@@ -124,7 +134,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
                             this));
 
     /* The SysId routine to test */
-    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineRotation;
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -146,6 +156,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        registerTelemetry(TunerConstants.logger::telemeterize);
 
         {
             try {
