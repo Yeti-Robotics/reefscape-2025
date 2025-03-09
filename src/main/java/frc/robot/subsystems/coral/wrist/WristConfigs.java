@@ -57,7 +57,7 @@ class WristConfigs {
             new CANcoderConfiguration()
                     .withMagnetSensor(
                             new MagnetSensorConfigs()
-                                    .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
+                                    .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
                                     .withMagnetOffset(MAGNET_OFFSET)
                                     .withAbsoluteSensorDiscontinuityPoint(0.625));
 }
