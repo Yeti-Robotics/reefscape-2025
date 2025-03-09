@@ -108,9 +108,11 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         return getCurrentState().getWristPosition() == WristPositions.UNSAFE;
     }
 
-    public boolean isArmMovingBelowZero(CoralManipulatorState targetState) {
-        return arm.getCurrentState().getAngle().lt(ArmPosition.AWAY.getAngle())
-                || targetState.getArmPosition().getAngle().lt(ArmPosition.AWAY.getAngle());
+    public boolean isArmInDanger(CoralManipulatorState targetState) {
+        return arm.currentStateSignal().getValue().lt(ArmPosition.AWAY.getAngle())
+                || targetState.getArmPosition().getAngle().lt(ArmPosition.AWAY.getAngle())
+                || arm.currentStateSignal().getValue().gte(ArmPosition.UP.getAngle())
+                || targetState.getArmPosition().getAngle().gte(ArmPosition.UP.getAngle());
     }
 
     public void queueState(CoralManipulatorState state) {
@@ -145,7 +147,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     protected StatusCode initializeTransition(CoralManipulatorState targetState) {
         Command coralManipulatorCommand;
 
-        if (isArmMovingBelowZero(targetState)) {
+        if (isArmInDanger(targetState)) {
             if (isMovingL2(targetState)) {
                 coralManipulatorCommand =
                         arm.transitionTo(targetState.getArmPosition())

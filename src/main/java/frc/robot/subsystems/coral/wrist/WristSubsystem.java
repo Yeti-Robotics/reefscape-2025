@@ -2,7 +2,7 @@ package frc.robot.subsystems.coral.wrist;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
@@ -23,8 +23,7 @@ public class WristSubsystem
     private final TalonFX wristMotor = new TalonFX(WristConfigs.WRIST_KRAKEN_ID, Constants.RIO_BUS);
     private final CANcoder wristEncoder = new CANcoder(WristConfigs.WRIST_CANCODER_ID);
     private final StatusSignal<Angle> wristPosition = wristMotor.getPosition();
-    private final MotionMagicTorqueCurrentFOC magicRequest =
-            new MotionMagicTorqueCurrentFOC(0).withSlot(1);
+    private final PositionVoltage motionRequest = new PositionVoltage(0).withSlot(0);
 
     public WristSubsystem() {
         super(
@@ -60,6 +59,6 @@ public class WristSubsystem
 
     @Override
     public StatusCode moveTo(Angle setpoint) {
-        return wristMotor.setControl(magicRequest.withPosition(setpoint));
+        return wristMotor.setControl(motionRequest.withPosition(setpoint));
     }
 }

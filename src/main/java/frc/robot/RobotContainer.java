@@ -21,10 +21,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.ReefAlignCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
+import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
@@ -142,19 +142,13 @@ public class RobotContainer {
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
         primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        primaryXboxController.y().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
-        primaryXboxController.b().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
-        primaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
-        primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+
         primaryXboxController
-                .povRight()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2));
+                .leftBumper()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
         primaryXboxController
-                .povDown()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3));
-        primaryXboxController
-                .povLeft()
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+                .rightBumper()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
         secondaryXboxController
                 .povUp()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
@@ -167,16 +161,12 @@ public class RobotContainer {
         secondaryXboxController
                 .povLeft()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
-        primaryXboxController
-                .leftTrigger()
-                .whileTrue(
-                        new ReefAlignCommand(
-                                drivetrain,
-                                reefCam,
-                                primaryXboxController::getLeftX,
-                                primaryXboxController::getLeftY,
-                                true));
+        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
+        primaryXboxController
+                .a()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        secondaryXboxController.a().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
     }
 
     private void assembleMechanisms() {
