@@ -28,6 +28,7 @@ import frc.robot.commands.ReefAlignCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
+import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
@@ -80,6 +81,7 @@ public class RobotContainer {
             new Mechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
     private MechanismLigament2d liftLigament;
     private MechanismLigament2d armLigament;
+    private final CommandJoystick joystick = new CommandJoystick(0);
 
     //    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
 
@@ -151,6 +153,14 @@ public class RobotContainer {
                                         .withRotationalRate(
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
+        primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+        primaryXboxController
+                .leftBumper()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
+        primaryXboxController
+                .rightBumper()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
         gigaStation
                 .button(7)
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
@@ -163,16 +173,12 @@ public class RobotContainer {
         gigaStation
                 .button(10)
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
-        primaryXboxController
-                .leftTrigger()
-                .whileTrue(
-                        new ReefAlignCommand(
-                                drivetrain,
-                                reefCam,
-                                primaryXboxController::getLeftX,
-                                primaryXboxController::getLeftY,
-                                true));
+        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
+        primaryXboxController
+                .a()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        gigaStation.button(11).onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
     }
 
     private void assembleMechanisms() {
