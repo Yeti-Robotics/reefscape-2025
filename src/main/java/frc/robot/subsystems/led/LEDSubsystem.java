@@ -36,6 +36,9 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public void setAnimation(Events animation) {
+        if (animation == null) {
+            animation = Events.IDLETELEOP;
+        }
         switch (animation) {
             case NICK:
                 event = Events.NICK;
