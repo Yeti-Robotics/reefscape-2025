@@ -23,6 +23,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "GroundIntake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "leftStackL"
@@ -41,6 +47,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "GroundIntake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "midStackA"
@@ -56,6 +68,12 @@
           "type": "path",
           "data": {
             "pathName": "aRightStack"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GroundIntake"
           }
         },
         {
