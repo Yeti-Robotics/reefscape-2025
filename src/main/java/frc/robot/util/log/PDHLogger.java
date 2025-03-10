@@ -1,4 +1,4 @@
-package frc.robot.util.sim;
+package frc.robot.util.log;
 
 import edu.wpi.first.epilogue.CustomLoggerFor;
 import edu.wpi.first.epilogue.logging.ClassSpecificLogger;

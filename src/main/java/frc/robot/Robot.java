@@ -46,10 +46,14 @@ public class Robot extends TimedRobot {
      * <p>This runs after the mode specific periodic methods, but before LiveWindow and
      * SmartDashboard integrated updating.
      */
+    String llName = "limelight";
+
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         robotContainer.updateMechanisms();
+        robotContainer.updateVision();
+        // robotContainer.updateVisionSim();
     }
 
     /** This method is called once each time the robot enters Disabled mode. */

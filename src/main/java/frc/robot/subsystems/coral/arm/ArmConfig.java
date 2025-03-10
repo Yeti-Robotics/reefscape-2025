@@ -9,17 +9,17 @@ class ArmConfig {
     static final int ARM_KRAKEN_ID = 10;
     static final int ARM_CANCODER_ID = 0;
 
-    static final double MAGNET_OFFSET = 0.501221;
+    static final double MAGNET_OFFSET = -0.490479;
     static final double GEAR_RATIO = 75.6055;
 
     static final double ARM_DEPLOY_LOWER_BOUND = 0;
 
     private static final Slot0Configs SLOT_0_REAL_CONFIGS =
             new Slot0Configs()
-                    .withKP(1440)
+                    .withKP(1100)
                     .withKI(0)
-                    .withKD(300)
-                    .withKG(7.5)
+                    .withKD(350)
+                    .withKG(10)
                     .withKV(1)
                     .withKA(2)
                     .withGravityType(GravityTypeValue.Arm_Cosine);
@@ -45,7 +45,7 @@ class ArmConfig {
 
     static final MotionMagicConfigs motionMagicConfigs =
             new MotionMagicConfigs()
-                    .withMotionMagicCruiseVelocity(0.5)
+                    .withMotionMagicCruiseVelocity(2)
                     .withMotionMagicAcceleration(1)
                     .withMotionMagicJerk(0);
 
