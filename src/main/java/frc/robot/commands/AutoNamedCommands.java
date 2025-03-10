@@ -14,7 +14,9 @@ public class AutoNamedCommands {
 
     public void registerCommands() {
         NamedCommands.registerCommand(
-                "intake", coralManipulator.transitionTo(CoralManipulatorState.INTAKE_CORAL));
+                "GroundIntake", coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+        NamedCommands.registerCommand(
+                "HPIntake", coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
 
         NamedCommands.registerCommand(
                 "L1",
