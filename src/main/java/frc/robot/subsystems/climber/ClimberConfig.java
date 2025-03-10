@@ -6,7 +6,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 class ClimberConfig {
-    static final int climberId = 13;
+    static final int climberId = 15;
     static final InvertedValue climberInversion = InvertedValue.Clockwise_Positive;
     static final NeutralModeValue climberNeutralMode = NeutralModeValue.Brake;
     static final int canCoderId = 5;

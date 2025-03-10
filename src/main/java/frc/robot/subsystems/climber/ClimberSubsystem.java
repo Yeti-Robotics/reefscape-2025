@@ -2,7 +2,7 @@ package frc.robot.subsystems.climber;
 
 import static frc.robot.subsystems.climber.ClimberConfig.*;
 
-import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
@@ -14,12 +14,12 @@ import frc.robot.constants.Constants;
 public class ClimberSubsystem extends SubsystemBase {
     private final TalonFX climber;
     private final CANcoder cancoder;
-    final MotionMagicTorqueCurrentFOC magicRequest;
+    final DutyCycleOut magicRequest;
 
     public ClimberSubsystem() {
         climber = new TalonFX(climberId, Constants.RIO_BUS);
         cancoder = new CANcoder(canCoderId, Constants.RIO_BUS);
-        magicRequest = new MotionMagicTorqueCurrentFOC(0);
+        magicRequest = new DutyCycleOut(0);
 
         climber.getConfigurator().apply(climberTalonFXConfigs);
         cancoder.getConfigurator().apply(cancoderConfiguration);
@@ -37,7 +37,7 @@ public class ClimberSubsystem extends SubsystemBase {
         return startEnd(() -> setClimberSpeed(speed), this::stop);
     }
 
-    public void target(ClimberPosition position) {
-        climber.setControl(magicRequest.withPosition(position.getAngle()));
+    public void move(double speed) {
+        climber.setControl(new DutyCycleOut(speed));
     }
 }

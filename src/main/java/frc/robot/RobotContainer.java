@@ -18,11 +18,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ReefAlignCommand;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
@@ -43,13 +44,15 @@ import java.util.Optional;
 public class RobotContainer {
 
     public final CommandXboxController primaryXboxController;
-    public final CommandJoystick gigaStation;
+    public final CommandXboxController secondaryXboxController;
 
     @Logged(name = "Vision/Limelight")
     public final LimelightAprilTagSystem limelight;
 
     @Logged(name = "Drivetrain")
     public CommandSwerveDrivetrain drivetrain;
+
+    public ClimberSubsystem climber;
 
     Transform3d camTrans =
             new Transform3d(
@@ -81,8 +84,8 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
-        gigaStation =
-                new CommandJoystick(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
+        secondaryXboxController =
+                new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
         AprilTagCamSim simCam =
                 AprilTagCamSimBuilder.newCamera()
                         .withCameraName("YetiCam1")
@@ -95,6 +98,7 @@ public class RobotContainer {
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         reefCam = new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
         coralManipulator = new CoralManipulatorSystem();
+        climber = new ClimberSubsystem();
         configureBindings();
         assembleMechanisms();
     }
@@ -140,18 +144,7 @@ public class RobotContainer {
                                         .withRotationalRate(
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
-        gigaStation
-                .button(7)
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
-        gigaStation
-                .button(8)
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
-        gigaStation
-                .button(9)
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
-        gigaStation
-                .button(10)
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+
         primaryXboxController
                 .leftTrigger()
                 .whileTrue(
@@ -162,6 +155,16 @@ public class RobotContainer {
                                 primaryXboxController::getLeftY,
                                 true));
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
+
+        primaryXboxController
+                .rightBumper()
+                .whileTrue(Commands.runEnd(() -> climber.move(0.4), () -> climber.move(0)));
+        primaryXboxController
+                .leftBumper()
+                .whileTrue(Commands.runEnd(() -> climber.move(-0.4), () -> climber.move(0)));
+        primaryXboxController
+                .a()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
     }
 
     private void assembleMechanisms() {
