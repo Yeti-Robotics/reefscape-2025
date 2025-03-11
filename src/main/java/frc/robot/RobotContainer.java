@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNamedCommands;
-import frc.robot.commands.ReefAlignCommand;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
@@ -47,7 +46,7 @@ import java.util.Optional;
 public class RobotContainer {
 
     public final CommandXboxController primaryXboxController;
-    public final CommandJoystick gigaStation;
+    public final CommandXboxController secondaryXboxController;
 
     @Logged(name = "Vision/Limelight")
     public final LimelightAprilTagSystem limelight;
@@ -88,8 +87,8 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
-        gigaStation =
-                new CommandJoystick(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
+        secondaryXboxController =
+                new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
         AprilTagCamSim simCam =
                 AprilTagCamSimBuilder.newCamera()
                         .withCameraName("YetiCam1")
@@ -161,24 +160,24 @@ public class RobotContainer {
         primaryXboxController
                 .rightBumper()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
-        gigaStation
-                .button(7)
+        secondaryXboxController
+                .povUp()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
-        gigaStation
-                .button(8)
+        secondaryXboxController
+                .povRight()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
-        gigaStation
-                .button(9)
+        secondaryXboxController
+                .povDown()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
-        gigaStation
-                .button(10)
+        secondaryXboxController
+                .povLeft()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
         primaryXboxController
                 .a()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        gigaStation.button(11).onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+        secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
     }
 
     private void assembleMechanisms() {
