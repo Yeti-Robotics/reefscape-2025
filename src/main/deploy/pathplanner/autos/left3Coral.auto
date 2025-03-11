@@ -37,7 +37,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Score"
+            "name": "HPIntake"
           }
         },
         {
