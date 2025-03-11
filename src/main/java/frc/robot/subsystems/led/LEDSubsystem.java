@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class LEDSubsystem extends SubsystemBase {
-    public final CANdle candle = new CANdle(0, Constants.RIO_BUS);
+    public final CANdle candle = new CANdle(25, Constants.RIO_BUS);
     private Animation toAnimate = null;
     public int ledCount = 36;
     public int ledOffset = 8;
