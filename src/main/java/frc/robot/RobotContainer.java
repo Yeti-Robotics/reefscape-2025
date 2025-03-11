@@ -30,8 +30,7 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
-import frc.robot.util.sim.vision.AprilTagCamSim;
-import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
+
 import java.util.Optional;
 
 /**
@@ -46,7 +45,7 @@ public class RobotContainer {
     public CommandXboxController secondaryXboxController;
 
     @Logged(name = "Vision/Limelight")
-    public  LimelightAprilTagSystem limelight;
+    public LimelightAprilTagSystem limelight;
 
     @Logged(name = "Drivetrain")
     public CommandSwerveDrivetrain drivetrain;
@@ -60,8 +59,7 @@ public class RobotContainer {
                     new Rotation3d(0, Math.toRadians(35), Math.toRadians(90)));
 
     @Logged(name = "Vision/ScoreCam")
-    public  PhotonAprilTagSystem reefCam =
-            new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
+    public PhotonAprilTagSystem reefCam;
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
@@ -77,31 +75,38 @@ public class RobotContainer {
     private MechanismLigament2d liftLigament;
     private MechanismLigament2d armLigament;
 
-    public boolean isTargetBranchLeft;
-
-    //    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
+    private final ReefAlignCommand reefAlignCommand;
+   // private final AprilTagCamSim camSim;
+  //  AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
 
     //    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        AprilTagCamSim simCam =
-                AprilTagCamSimBuilder.newCamera()
-                        .withCameraName("YetiCam1")
-                        .withTransform(camTrans)
-                        .build();
-        //        aprilTagCamSim.addCamera(simCam);
-        //        reefCam.setCamera(aprilTagCamSim.getAprilTagCamSims().get(0).getCam());
+        drivetrain = TunerConstants.createDrivetrain();
+        reefCam = new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
+
+//        camSim =
+//                AprilTagCamSimBuilder.newCamera()
+//                        .withCameraName("ScoreCam")
+//                        .withTransform(camTrans)
+//                        .build();
+//        aprilTagCamSim.addCamera(camSim);
+//        reefCam.setCamera(camSim.getCam());
 
         primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
         secondaryXboxController =
                 new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
-         drivetrain = TunerConstants.createDrivetrain();
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
-        reefCam = new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
-        secondaryXboxController = new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
-        limelight = new LimelightAprilTagSystem("limelight", drivetrain);
+        secondaryXboxController =
+                new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
         coralManipulator = new CoralManipulatorSystem();
+        reefAlignCommand =
+                new ReefAlignCommand(
+                        drivetrain,
+                        reefCam,
+                        primaryXboxController::getLeftX,
+                        primaryXboxController::getLeftY);
         configureBindings();
         assembleMechanisms();
     }
@@ -128,9 +133,9 @@ public class RobotContainer {
         }
     }
 
-    //    public void updateVisionSim() {
-    //        aprilTagCamSim.update(drivetrain.getState().Pose);
-    //    }
+//    public void updateVisionSim() {
+//        aprilTagCamSim.update(drivetrain.getState().Pose);
+//    }
 
     private void configureBindings() {
         drivetrain.setDefaultCommand(
@@ -153,13 +158,6 @@ public class RobotContainer {
         primaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
         primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
         primaryXboxController
-                .leftTrigger()
-                .whileTrue(new ReefAlignCommand(drivetrain,
-                        reefCam,
-                        primaryXboxController::getLeftX,
-                        primaryXboxController::getLeftY,
-                        () -> isTargetBranchLeft));
-        primaryXboxController
                 .povRight()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
         secondaryXboxController
@@ -168,8 +166,23 @@ public class RobotContainer {
         secondaryXboxController
                 .povLeft()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
-        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
+        //
+        // primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
+
+        primaryXboxController.leftTrigger().whileTrue(reefAlignCommand);
+        primaryXboxController
+                .leftBumper()
+                .toggleOnTrue(
+                        Commands.runOnce(
+                                () ->
+                                        reefAlignCommand.setSelectedBranch(
+                                                ReefAlignCommand.Branches.LEFT)))
+                .toggleOnFalse(
+                        Commands.runOnce(
+                                () ->
+                                        reefAlignCommand.setSelectedBranch(
+                                                ReefAlignCommand.Branches.RIGHT)));
     }
 
     private void assembleMechanisms() {
@@ -203,11 +216,6 @@ public class RobotContainer {
         armLigament.setAngle(coralManipulator.arm.updateMechPos());
 
         SmartDashboard.putData("Mechanisms/CoralManipulator", elevatorArmMech);
-    }
-
-    public Command setTargetBranch(ReefAlignCommand.Branches branch){
-
-        return Commands.runOnce(() -> isTargetBranchLeft = branch.getBoolean());
     }
 
     /**

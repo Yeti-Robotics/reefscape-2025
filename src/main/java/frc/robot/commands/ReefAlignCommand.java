@@ -12,9 +12,7 @@ import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
-
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class ReefAlignCommand extends Command {
@@ -28,21 +26,18 @@ public class ReefAlignCommand extends Command {
     private Pose2d currPose;
     private AprilTagDetection detection;
     private Pose2d tagPose;
-    private Transform2d targetTransform = FieldConstants.RIGHT_BRANCH_TRANSFORM;
-    private boolean isLeft;
+    private Branches selectedBranch = Branches.RIGHT;
 
     public ReefAlignCommand(
             CommandSwerveDrivetrain commandSwerveDrivetrain,
             AprilTagSubsystem reefCam,
             DoubleSupplier yVelocitySupplier,
-            DoubleSupplier xVelocitySupplier,
-            BooleanSupplier isLeft) {
+            DoubleSupplier xVelocitySupplier) {
 
         this.commandSwerveDrivetrain = commandSwerveDrivetrain;
         this.reefCam = reefCam;
         this.xVelSupplier = xVelocitySupplier;
         this.yVelSupplier = yVelocitySupplier;
-        this.isLeft = isLeft.getAsBoolean();
 
         addRequirements(this.commandSwerveDrivetrain);
         poseAimReq = new SwerveRequest.FieldCentricFacingAngle();
@@ -62,13 +57,6 @@ public class ReefAlignCommand extends Command {
             return;
         }
 
-        if (isLeft){
-            targetTransform = FieldConstants.LEFT_BRANCH_TRANSFORM;
-        }
-        else{
-            targetTransform = FieldConstants.RIGHT_BRANCH_TRANSFORM;
-        }
-
         detection = aprilTagDetectionOpt.get();
         tagPose = detection.getTargetPose();
     }
@@ -78,15 +66,18 @@ public class ReefAlignCommand extends Command {
     @Override
     public void execute() {
         System.out.println("tag id: " + detection.getFiducialID());
-        field.setRobotPose(
-                tagPose.transformBy(targetTransform));
+        Transform2d branchTransform =
+                selectedBranch == Branches.LEFT
+                        ? FieldConstants.LEFT_BRANCH_TRANSFORM
+                        : FieldConstants.RIGHT_BRANCH_TRANSFORM;
+        field.setRobotPose(tagPose.transformBy(branchTransform));
         SmartDashboard.putData("ADetection Pose", field);
 
         // Apply drive control with joystick inputs
         commandSwerveDrivetrain.setControl(
                 poseAimReq
                         .withTargetDirection(
-                                tagPose.transformBy(targetTransform)
+                                tagPose.transformBy(branchTransform)
                                         .getTranslation()
                                         .minus(currPose.getTranslation())
                                         .getAngle()
@@ -101,18 +92,12 @@ public class ReefAlignCommand extends Command {
                 "ADetection Error", poseAimReq.HeadingController.getPositionError());
     }
 
-    public enum Branches{
-        LEFT(true),
-        RIGHT(false);
+    public void setSelectedBranch(Branches selectedBranch) {
+        this.selectedBranch = selectedBranch;
+    }
 
-        private final boolean isLeft;
-
-        Branches(final boolean isLeft) {
-            this.isLeft = isLeft;
-        }
-        public boolean getBoolean() {
-            return isLeft;
-        }
-
+    public enum Branches {
+        LEFT,
+        RIGHT
     }
 }
