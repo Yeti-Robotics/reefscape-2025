@@ -19,24 +19,17 @@ public class AutoNamedCommands {
                 "HPIntake", coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
 
         NamedCommands.registerCommand(
-                "L1",
-                new SequentialCommandGroup(
-                        coralManipulator.transitionTo(CoralManipulatorState.L1),
-                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L1)));
+                "L1", coralManipulator.transitionTo(CoralManipulatorState.L1));
         NamedCommands.registerCommand(
-                "L2",
-                new SequentialCommandGroup(
-                        coralManipulator.transitionTo(CoralManipulatorState.L2),
-                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2)));
+                "L2", coralManipulator.transitionTo(CoralManipulatorState.L2));
         NamedCommands.registerCommand(
-                "L3",
-                new SequentialCommandGroup(
-                        coralManipulator.transitionTo(CoralManipulatorState.L3),
-                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3)));
+                "L3", coralManipulator.transitionTo(CoralManipulatorState.L3));
         NamedCommands.registerCommand(
-                "L4",
-                new SequentialCommandGroup(
-                        coralManipulator.transitionTo(CoralManipulatorState.L4),
-                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4)));
+                "L4", coralManipulator.transitionTo(CoralManipulatorState.L4));
+
+        NamedCommands.registerCommand(
+                "Score", coralManipulator.scoreState());
+        NamedCommands.registerCommand(
+                "Stow", coralManipulator.transitionTo(CoralManipulatorState.STOWED));
     }
 }
