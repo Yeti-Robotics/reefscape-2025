@@ -12,11 +12,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -30,6 +25,7 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
+import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import java.util.Optional;
@@ -71,18 +67,13 @@ public class RobotContainer {
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
-    Mechanism2d elevatorArmMech =
-            new Mechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
-    private MechanismLigament2d liftLigament;
-    private MechanismLigament2d armLigament;
-
-    //    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
+    private final CommandJoystick joystick = new CommandJoystick(0);
+    private final Mechanisms mechanisms;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
-        gigaStation =
-                new CommandJoystick(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
+        gigaStation = new CommandJoystick(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
         AprilTagCamSim simCam =
                 AprilTagCamSimBuilder.newCamera()
                         .withCameraName("YetiCam1")
@@ -95,8 +86,8 @@ public class RobotContainer {
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         reefCam = new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
         coralManipulator = new CoralManipulatorSystem();
+        mechanisms = new Mechanisms();
         configureBindings();
-        assembleMechanisms();
     }
 
     /**
@@ -140,18 +131,10 @@ public class RobotContainer {
                                         .withRotationalRate(
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
-        gigaStation
-                .button(7)
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
-        gigaStation
-                .button(8)
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
-        gigaStation
-                .button(9)
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
-        gigaStation
-                .button(10)
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        gigaStation.button(7).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
+        gigaStation.button(8).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
+        gigaStation.button(9).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
+        gigaStation.button(10).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
         primaryXboxController
                 .leftTrigger()
                 .whileTrue(
@@ -164,37 +147,19 @@ public class RobotContainer {
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
     }
 
-    private void assembleMechanisms() {
-        liftLigament =
-                elevatorArmMech
-                        .getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
-                        .append(
-                                new MechanismLigament2d(
-                                        "lift",
-                                        Units.feetToMeters(3),
-                                        90,
-                                        6,
-                                        new Color8Bit(Color.kRed)));
-        elevatorArmMech
-                .getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
-                .append(
-                        new MechanismLigament2d(
-                                "bottom",
-                                Units.feetToMeters(3),
-                                0,
-                                6,
-                                new Color8Bit(Color.kGreen)));
-        armLigament =
-                liftLigament.append(
-                        new MechanismLigament2d(
-                                "arm", Units.inchesToMeters(12), 0, 6, new Color8Bit(Color.kBlue)));
-    }
-
     public void updateMechanisms() {
-        liftLigament.setLength(coralManipulator.elevator.updateMechPos());
-        armLigament.setAngle(coralManipulator.arm.updateMechPos());
+        mechanisms.publishComponentPoses(
+                coralManipulator.elevator.getCurrentPosition(),
+                coralManipulator.arm.getCurrentPosition(),
+                true);
+        mechanisms.publishComponentPoses(
+                coralManipulator.elevator.getTargetPosition(),
+                coralManipulator.arm.getTargetPosition(),
+                false);
 
-        SmartDashboard.putData("Mechanisms/CoralManipulator", elevatorArmMech);
+        mechanisms.updateElevatorArmMech(
+                coralManipulator.elevator.getCurrentPosition(),
+                coralManipulator.arm.getCurrentPosition());
     }
 
     /**
