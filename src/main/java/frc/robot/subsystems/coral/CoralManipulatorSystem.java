@@ -111,8 +111,15 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     public boolean isArmInDanger(CoralManipulatorState targetState) {
         return arm.currentStateSignal().getValue().lt(ArmPosition.AWAY.getAngle())
                 || targetState.getArmPosition().getAngle().lt(ArmPosition.AWAY.getAngle())
-                || arm.currentStateSignal().getValue().gte(ArmPosition.UP.getAngle())
-                || targetState.getArmPosition().getAngle().gte(ArmPosition.UP.getAngle());
+                || arm.currentStateSignal().getValue().gte(ArmPosition.DOWN.getAngle())
+                || targetState.getArmPosition().getAngle().gte(ArmPosition.DOWN.getAngle());
+    }
+
+    public boolean isIntaking(CoralManipulatorState targetState) {
+        return (targetState == CoralManipulatorState.HP_INTAKE
+                        && getCurrentState() == CoralManipulatorState.STOWED)
+                || (targetState == CoralManipulatorState.STOWED
+                        && getCurrentState() == CoralManipulatorState.HP_INTAKE);
     }
 
     public void queueState(CoralManipulatorState state) {
@@ -147,8 +154,15 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     protected StatusCode initializeTransition(CoralManipulatorState targetState) {
         Command coralManipulatorCommand;
 
-        if (isArmInDanger(targetState)) {
-            if (isMovingL2(targetState)) {
+        if (getCurrentState() == targetState) return StatusCode.OK;
+
+        if (isIntaking(targetState)) {
+            coralManipulatorCommand =
+                    arm.transitionTo(targetState.getArmPosition())
+                            .andThen(grabber.transitionTo(targetState.getGrabberState()));
+        } else if (isArmInDanger(targetState)) {
+            if (isMovingL2(targetState) || isIntaking(targetState)) {
+
                 coralManipulatorCommand =
                         arm.transitionTo(targetState.getArmPosition())
                                 .alongWith(elevator.transitionTo(targetState.getElevatorPosition()))

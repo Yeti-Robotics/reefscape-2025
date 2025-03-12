@@ -75,7 +75,7 @@ public class RobotContainer {
             new Mechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
     private MechanismLigament2d liftLigament;
     private MechanismLigament2d armLigament;
-    private final CommandJoystick joystick = new CommandJoystick(0);
+    private CommandJoystick joystick = new CommandJoystick(2);
 
     //    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
 
