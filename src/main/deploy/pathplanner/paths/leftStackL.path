@@ -36,13 +36,23 @@
       "name": "Stow",
       "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+                                                "type": "named",
+                                                "data": {
+                                                  "name": "Stow"
+                                                }
+                                              }
     },
     {
       "name": "L4",
       "waypointRelativePos": 0.7,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+                                                "type": "named",
+                                                "data": {
+                                                  "name": "L4"
+                                                }
+                                              }
     }
   ],
   "globalConstraints": {
