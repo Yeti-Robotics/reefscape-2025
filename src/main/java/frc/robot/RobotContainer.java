@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
@@ -52,9 +51,6 @@ public class RobotContainer {
     @Logged(name = "Drivetrain")
     public CommandSwerveDrivetrain drivetrain;
 
-    @Logged(name = "Climber")
-    public ClimberSubsystem climber;
-
     Transform3d camTrans =
             new Transform3d(
                     new Translation3d(
@@ -68,6 +64,9 @@ public class RobotContainer {
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
+
+    @Logged(name = "Climber")
+    public ClimberSubsystem climber;
 
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
@@ -98,6 +97,7 @@ public class RobotContainer {
         drivetrain = TunerConstants.createDrivetrain();
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         reefCam = new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
+        climber = new ClimberSubsystem();
         coralManipulator = new CoralManipulatorSystem();
         configureBindings();
         assembleMechanisms();
@@ -172,7 +172,8 @@ public class RobotContainer {
         primaryXboxController.a().whileTrue(climber.spinClimber(0.4));
         primaryXboxController.b().whileTrue(climber.spinClimber(-0.4));
 
-        coralManipulator.grabber.hasCoralTrigger.onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        coralManipulator.grabber.hasCoralTrigger.onTrue(
+                coralManipulator.transitionTo(CoralManipulatorState.STOWED));
     }
 
     private void assembleMechanisms() {
