@@ -25,6 +25,7 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
             new MotionMagicTorqueCurrentFOC(0).withSlot(0);
 
     private final StatusSignal<Angle> armPosition = armKraken.getPosition();
+    private final StatusSignal<Double> armTargetPos = armKraken.getClosedLoopReference();
 
     public ArmSubsystem() {
         super(
@@ -57,7 +58,12 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
     }
 
     @Override
-    public double updateMechPos() {
-        return (armPosition.getValueAsDouble() * 360.0) - 90;
+    public Angle getCurrentPosition() {
+        return armPosition.getValue();
+    }
+
+    @Override
+    public Angle getTargetPosition() {
+        return Units.Rotations.of(armTargetPos.getValue());
     }
 }

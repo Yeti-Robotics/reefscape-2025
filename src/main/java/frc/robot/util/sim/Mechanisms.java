@@ -1,10 +1,16 @@
 package frc.robot.util.sim;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,12 +21,16 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 public class Mechanisms {
     public Mechanism2d elevatorArmMech;
 
-    private MechanismLigament2d liftLigament;
-    private MechanismLigament2d armLigament;
+    private final MechanismLigament2d liftLigament;
+    private final MechanismLigament2d armLigament;
 
-    private StructArrayPublisher<Pose3d> componentPosePublisher =
+    private final StructArrayPublisher<Pose3d> realComponentPosePublisher =
             NetworkTableInstance.getDefault()
-                    .getStructArrayTopic("ComponentPoses", Pose3d.struct)
+                    .getStructArrayTopic("ComponentPoses/Real", Pose3d.struct)
+                    .publish();
+    private final StructArrayPublisher<Pose3d> targetComponentPosePublisher =
+            NetworkTableInstance.getDefault()
+                    .getStructArrayTopic("ComponentPoses/Target", Pose3d.struct)
                     .publish();
 
     public Mechanisms() {
@@ -56,14 +66,43 @@ public class Mechanisms {
         return elevatorArmMech;
     }
 
-    public void updateElevatorArmMech(double elevatorPos, double armPos) {
-        liftLigament.setLength(elevatorPos);
-        armLigament.setAngle(armPos);
+    public void updateElevatorArmMech(Angle elevatorPos, Angle armPos) {
+        liftLigament.setLength(Units.inchesToMeters((elevatorPos.magnitude() * 6) + 1));
+        armLigament.setAngle(armPos.in(Degrees) - 90);
+
         SmartDashboard.putData("Mechanisms/CoralManipulator", elevatorArmMech);
-        publishComponentZeroes();
     }
 
-    private void publishComponentZeroes() {
-        componentPosePublisher.set(new Pose3d[] {Pose3d.kZero, Pose3d.kZero, Pose3d.kZero});
+    public void publishComponentPoses(Angle elevatorPos, Angle armPos, boolean useRealPoses) {
+        double elevatorStageHeight = Units.inchesToMeters(elevatorPos.times(8.6).magnitude());
+        double carriageHeight = Units.inchesToMeters(elevatorPos.times(15).magnitude());
+        double armAngle = armPos.in(Radians);
+        Pose3d armPose =
+                new Pose3d(
+                        Units.inchesToMeters(-2.81),
+                        0,
+                        Units.inchesToMeters(10.22) + carriageHeight,
+                        new Rotation3d(armAngle, 0, 0));
+        Pose3d grabberPose = new Pose3d(0, Units.inchesToMeters(14.76), 0, new Rotation3d(0, 0, 0));
+
+        (useRealPoses ? realComponentPosePublisher : targetComponentPosePublisher)
+                .set(
+                        new Pose3d[] {
+                            new Pose3d(
+                                    Units.inchesToMeters(-8),
+                                    0.0,
+                                    Units.inchesToMeters(2.625) + elevatorStageHeight,
+                                    Rotation3d.kZero),
+                            new Pose3d(
+                                    Units.inchesToMeters(-4.13),
+                                    0,
+                                    Units.inchesToMeters(10.22) + carriageHeight,
+                                    Rotation3d.kZero),
+                            armPose,
+                            armPose.transformBy(
+                                    new Transform3d(
+                                            grabberPose.getTranslation(),
+                                            grabberPose.getRotation()))
+                        });
     }
 }

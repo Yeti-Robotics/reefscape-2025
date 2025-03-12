@@ -120,8 +120,18 @@ public class RobotContainer {
     }
 
     public void updateMechanisms() {
+        mechanisms.publishComponentPoses(
+                coralManipulator.elevator.getCurrentPosition(),
+                coralManipulator.arm.getCurrentPosition(),
+                true);
+        mechanisms.publishComponentPoses(
+                coralManipulator.elevator.getTargetPosition(),
+                coralManipulator.arm.getTargetPosition(),
+                false);
+
         mechanisms.updateElevatorArmMech(
-                coralManipulator.elevator.updateMechPos(), coralManipulator.arm.updateMechPos());
+                coralManipulator.elevator.getCurrentPosition(),
+                coralManipulator.arm.getCurrentPosition());
     }
 
     /**
