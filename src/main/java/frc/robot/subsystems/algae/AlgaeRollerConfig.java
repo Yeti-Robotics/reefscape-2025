@@ -10,8 +10,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 class AlgaeRollerConfig {
-    static final int ROLLER_ID = 8;
-    static final int ROLLER_CANCODER_ID = 5;
+    static final int ROLLER_ID = 14;
+    static final int ROLLER_CANCODER_ID = 6;
 
     static final double POSITION_STATUS_FRAME = 0.05;
     static final double VELOCITY_STATUS_FRAME = 0.01;
