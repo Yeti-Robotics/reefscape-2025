@@ -1,6 +1,5 @@
 package frc.robot.subsystems.coral.elevator;
 
-import static edu.wpi.first.math.util.Units.inchesToMeters;
 import static frc.robot.constants.Constants.RIO_BUS;
 import static frc.robot.subsystems.coral.elevator.ElevatorConfig.*;
 
@@ -34,10 +33,12 @@ public class ElevatorSubsystem
     private final TalonFX secondaryElevatorMotor =
             new TalonFX(ElevatorConfig.secondaryElevatorMotorID, RIO_BUS);
     private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
-
+    private final NeutralOut neutralOut = new NeutralOut();
     private final MotionMagicTorqueCurrentFOC magicRequest =
             new MotionMagicTorqueCurrentFOC(0).withSlot(Robot.isReal() ? 0 : 1);
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
+    private final StatusSignal<Double> elevatorTargetPosition =
+            primaryElevatorMotor.getClosedLoopReference();
     private final StatusSignal<AngularVelocity> elevatorVelocity =
             primaryElevatorMotor.getVelocity();
 
@@ -57,6 +58,8 @@ public class ElevatorSubsystem
 
         primaryElevatorMotor.setPosition(0);
         secondaryElevatorMotor.setPosition(0);
+
+        primaryElevatorMotor.setControl(neutralOut);
 
         if (Robot.isSimulation()) {
             PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
@@ -96,16 +99,23 @@ public class ElevatorSubsystem
     }
 
     @Override
-    public double updateMechPos() {
-        return inchesToMeters(elevatorPosition.getValueAsDouble() * 6) + inchesToMeters(1);
+    public Angle getCurrentPosition() {
+        return elevatorPosition.getValue();
+    }
+
+    @Override
+    public Angle getTargetPosition() {
+        return Units.Rotations.of(elevatorTargetPosition.getValue());
     }
 
     @Override
     protected boolean isTransitionFinished() {
-        if (super.isTransitionFinished()
-                && elevatorPosition == ElevatorPosition.BOTTOM.getHeight()) {
-            primaryElevatorMotor.setControl(new NeutralOut());
+        boolean transitionFinished = super.isTransitionFinished();
+        if (transitionFinished
+                && transitioningTo().isPresent()
+                && transitioningTo().get().equals(ElevatorPosition.BOTTOM)) {
+            primaryElevatorMotor.setControl(neutralOut);
         }
-        return super.isTransitionFinished();
+        return transitionFinished;
     }
 }

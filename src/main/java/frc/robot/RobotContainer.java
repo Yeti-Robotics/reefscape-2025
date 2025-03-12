@@ -12,13 +12,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ReefAlignCommand;
@@ -30,7 +25,9 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
-
+import frc.robot.util.sim.Mechanisms;
+import frc.robot.util.sim.vision.AprilTagCamSim;
+import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import java.util.Optional;
 
 /**
@@ -41,11 +38,11 @@ import java.util.Optional;
  */
 public class RobotContainer {
 
-    public CommandXboxController primaryXboxController;
-    public CommandXboxController secondaryXboxController;
+    public final CommandXboxController primaryXboxController;
+    public final CommandJoystick gigaStation;
 
     @Logged(name = "Vision/Limelight")
-    public LimelightAprilTagSystem limelight;
+    public final LimelightAprilTagSystem limelight;
 
     @Logged(name = "Drivetrain")
     public CommandSwerveDrivetrain drivetrain;
@@ -59,7 +56,7 @@ public class RobotContainer {
                     new Rotation3d(0, Math.toRadians(35), Math.toRadians(90)));
 
     @Logged(name = "Vision/ScoreCam")
-    public PhotonAprilTagSystem reefCam;
+    public final PhotonAprilTagSystem reefCam;
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
@@ -70,45 +67,27 @@ public class RobotContainer {
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
-    Mechanism2d elevatorArmMech =
-            new Mechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
-    private MechanismLigament2d liftLigament;
-    private MechanismLigament2d armLigament;
-
-    private final ReefAlignCommand reefAlignCommand;
-   // private final AprilTagCamSim camSim;
-  //  AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
-
-    //    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
+    private final CommandJoystick joystick = new CommandJoystick(0);
+    private final Mechanisms mechanisms;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        drivetrain = TunerConstants.createDrivetrain();
-        reefCam = new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
-
-//        camSim =
-//                AprilTagCamSimBuilder.newCamera()
-//                        .withCameraName("ScoreCam")
-//                        .withTransform(camTrans)
-//                        .build();
-//        aprilTagCamSim.addCamera(camSim);
-//        reefCam.setCamera(camSim.getCam());
-
         primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
-        secondaryXboxController =
-                new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
+        gigaStation = new CommandJoystick(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
+        AprilTagCamSim simCam =
+                AprilTagCamSimBuilder.newCamera()
+                        .withCameraName("YetiCam1")
+                        .withTransform(camTrans)
+                        .build();
+        //        aprilTagCamSim.addCamera(simCam);
+        //        reefCam.setCamera(aprilTagCamSim.getAprilTagCamSims().get(0).getCam());
+
+        drivetrain = TunerConstants.createDrivetrain();
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
-        secondaryXboxController =
-                new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
+        reefCam = new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
         coralManipulator = new CoralManipulatorSystem();
-        reefAlignCommand =
-                new ReefAlignCommand(
-                        drivetrain,
-                        reefCam,
-                        primaryXboxController::getLeftX,
-                        primaryXboxController::getLeftY);
+        mechanisms = new Mechanisms();
         configureBindings();
-        assembleMechanisms();
     }
 
     /**
@@ -133,9 +112,9 @@ public class RobotContainer {
         }
     }
 
-//    public void updateVisionSim() {
-//        aprilTagCamSim.update(drivetrain.getState().Pose);
-//    }
+    //    public void updateVisionSim() {
+    //        aprilTagCamSim.update(drivetrain.getState().Pose);
+    //    }
 
     private void configureBindings() {
         drivetrain.setDefaultCommand(
@@ -152,70 +131,34 @@ public class RobotContainer {
                                         .withRotationalRate(
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
-        primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        primaryXboxController.y().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
-        primaryXboxController.b().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
-        primaryXboxController.a().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
-        primaryXboxController.x().onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+        gigaStation.button(7).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
+        gigaStation.button(8).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
+        gigaStation.button(9).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
+        gigaStation.button(10).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
         primaryXboxController
-                .povRight()
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
-        secondaryXboxController
-                .povDown()
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
-        secondaryXboxController
-                .povLeft()
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
-        //
-        // primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
+                .leftTrigger()
+                .whileTrue(
+                        new ReefAlignCommand(
+                                drivetrain,
+                                reefCam,
+                                primaryXboxController::getLeftX,
+                                primaryXboxController::getLeftY));
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-
-        primaryXboxController.leftTrigger().whileTrue(reefAlignCommand);
-        primaryXboxController
-                .leftBumper()
-                .toggleOnTrue(
-                        Commands.runOnce(
-                                () ->
-                                        reefAlignCommand.setSelectedBranch(
-                                                ReefAlignCommand.Branches.LEFT)))
-                .toggleOnFalse(
-                        Commands.runOnce(
-                                () ->
-                                        reefAlignCommand.setSelectedBranch(
-                                                ReefAlignCommand.Branches.RIGHT)));
-    }
-
-    private void assembleMechanisms() {
-        liftLigament =
-                elevatorArmMech
-                        .getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
-                        .append(
-                                new MechanismLigament2d(
-                                        "lift",
-                                        Units.feetToMeters(3),
-                                        90,
-                                        6,
-                                        new Color8Bit(Color.kRed)));
-        elevatorArmMech
-                .getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
-                .append(
-                        new MechanismLigament2d(
-                                "bottom",
-                                Units.feetToMeters(3),
-                                0,
-                                6,
-                                new Color8Bit(Color.kGreen)));
-        armLigament =
-                liftLigament.append(
-                        new MechanismLigament2d(
-                                "arm", Units.inchesToMeters(12), 0, 6, new Color8Bit(Color.kBlue)));
     }
 
     public void updateMechanisms() {
-        liftLigament.setLength(coralManipulator.elevator.updateMechPos());
-        armLigament.setAngle(coralManipulator.arm.updateMechPos());
+        mechanisms.publishComponentPoses(
+                coralManipulator.elevator.getCurrentPosition(),
+                coralManipulator.arm.getCurrentPosition(),
+                true);
+        mechanisms.publishComponentPoses(
+                coralManipulator.elevator.getTargetPosition(),
+                coralManipulator.arm.getTargetPosition(),
+                false);
 
-        SmartDashboard.putData("Mechanisms/CoralManipulator", elevatorArmMech);
+        mechanisms.updateElevatorArmMech(
+                coralManipulator.elevator.getCurrentPosition(),
+                coralManipulator.arm.getCurrentPosition());
     }
 
     /**
