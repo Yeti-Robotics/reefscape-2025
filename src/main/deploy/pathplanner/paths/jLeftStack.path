@@ -37,11 +37,11 @@
       "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
       "command": {
-                                                "type": "named",
-                                                "data": {
-                                                  "name": "Stow"
-                                                }
-                                              }
+        "type": "named",
+        "data": {
+          "name": "Stow"
+        }
+      }
     }
   ],
   "globalConstraints": {
