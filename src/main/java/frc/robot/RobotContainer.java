@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.coral.grabber.GrabberState;
@@ -50,6 +51,9 @@ public class RobotContainer {
 
     @Logged(name = "Drivetrain")
     public CommandSwerveDrivetrain drivetrain;
+
+    @Logged(name = "Climber")
+    public ClimberSubsystem climber;
 
     Transform3d camTrans =
             new Transform3d(
@@ -162,10 +166,13 @@ public class RobotContainer {
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-        primaryXboxController
-                .a()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+
         secondaryXboxController.a().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+
+        primaryXboxController.a().whileTrue(climber.spinClimber(0.4));
+        primaryXboxController.b().whileTrue(climber.spinClimber(-0.4));
+
+        coralManipulator.grabber.hasCoralTrigger.onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
     }
 
     private void assembleMechanisms() {
