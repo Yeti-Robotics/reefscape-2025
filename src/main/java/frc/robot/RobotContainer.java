@@ -8,11 +8,13 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -23,6 +25,7 @@ import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
+import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.Mechanisms;
@@ -69,6 +72,7 @@ public class RobotContainer {
 
     private final CommandJoystick joystick = new CommandJoystick(0);
     private final Mechanisms mechanisms;
+    private final ReefAlignCommand reefAlignCommand;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -87,6 +91,12 @@ public class RobotContainer {
         reefCam = new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
         coralManipulator = new CoralManipulatorSystem();
         mechanisms = new Mechanisms();
+        reefAlignCommand =
+                new ReefAlignCommand(
+                        drivetrain,
+                        reefCam,
+                        primaryXboxController::getLeftX,
+                        primaryXboxController::getLeftY);
         configureBindings();
     }
 
@@ -100,14 +110,19 @@ public class RobotContainer {
      * joysticks}.
      */
     public void updateVision() {
-        Optional<AprilTagPose> aprilTagPoseOpt = limelight.getEstimatedPose();
+        AprilTagSubsystem[] aprilTagSubsystems = new AprilTagSubsystem[] {limelight, reefCam};
+        drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
 
-        if (aprilTagPoseOpt.isPresent() && !drivetrain.isMotionBlur()) {
-            AprilTagPose pose = aprilTagPoseOpt.get();
+        for (AprilTagSubsystem aprilTagSubsystem : aprilTagSubsystems) {
+            Optional<AprilTagPose> aprilTagPoseOpt = aprilTagSubsystem.getEstimatedPose();
 
-            if (pose.getNumTags() > 0) {
-                // drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
-                drivetrain.addVisionMeasurement(pose.getEstimatedRobotPose(), pose.getTimestamp());
+            if (aprilTagPoseOpt.isPresent() && !drivetrain.isMotionBlur()) {
+                AprilTagPose pose = aprilTagPoseOpt.get();
+
+                if (pose.getNumTags() > 0) {
+                    drivetrain.addVisionMeasurement(
+                            pose.getEstimatedRobotPose(), pose.getTimestamp());
+                }
             }
         }
     }
@@ -135,14 +150,21 @@ public class RobotContainer {
         gigaStation.button(8).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
         gigaStation.button(9).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
         gigaStation.button(10).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        primaryXboxController.leftTrigger().whileTrue(reefAlignCommand);
         primaryXboxController
-                .leftTrigger()
-                .whileTrue(
-                        new ReefAlignCommand(
-                                drivetrain,
-                                reefCam,
-                                primaryXboxController::getLeftX,
-                                primaryXboxController::getLeftY));
+                .leftBumper()
+                .onTrue(
+                        new InstantCommand(
+                                () ->
+                                        reefAlignCommand.setSelectedBranch(
+                                                ReefAlignCommand.Branches.LEFT)));
+        primaryXboxController
+                .rightBumper()
+                .onTrue(
+                        new InstantCommand(
+                                () ->
+                                        reefAlignCommand.setSelectedBranch(
+                                                ReefAlignCommand.Branches.RIGHT)));
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
     }
 
