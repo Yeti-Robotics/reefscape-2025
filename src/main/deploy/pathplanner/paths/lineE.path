@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 7.2,
-        "y": 2.777
+        "y": 2.5
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.488287213740458,
-        "y": 2.7187977099236638
+        "y": 2.4417977099236636
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.325,
-        "y": 2.777
+        "x": 5.225,
+        "y": 2.877
       },
       "prevControl": {
-        "x": 6.2379532442748085,
-        "y": 2.760663167938931
+        "x": 6.137953244274808,
+        "y": 2.8606631679389305
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,6 +32,12 @@
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
+    {
+      "name": "Stow",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
     {
       "name": "L4",
       "waypointRelativePos": 0.8196721311475427,

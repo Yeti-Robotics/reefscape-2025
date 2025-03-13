@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.375,
-        "y": 5.03
+        "x": 3.475,
+        "y": 4.93
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.261552465462907,
-        "y": 5.591015304094351
+        "x": 1.361552465462907,
+        "y": 5.491015304094351
       },
       "isLocked": false,
       "linkedName": null
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 1.533,
-        "y": 7.115
+        "y": 7.215
       },
       "prevControl": {
         "x": 2.442506463705318,
-        "y": 6.1014564868631105
+        "y": 6.20145648686311
       },
       "nextControl": null,
       "isLocked": false,
