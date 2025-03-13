@@ -24,7 +24,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private final PhotonPoseEstimator photonPoseEstimator;
     private final CommandSwerveDrivetrain drivetrain;
     private AprilTagResults aprilTagResults = null;
-    private double maxAmbiguity = 1;
+    private double maxAmbiguity = 0.5;
     private PhotonTrackedTarget currentBestDetection;
     private double currentBestDetectionTimestamp;
 
@@ -40,7 +40,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private Optional<EstimatedRobotPose> estimatedRobotPose;
+    private Optional<EstimatedRobotPose> estimatedRobotPose = Optional.empty();
 
     public PhotonAprilTagSystem(
             String cameraName,
@@ -97,7 +97,6 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
         if (results.isEmpty()) {
-            aprilTagResults = null;
             return;
         }
 
@@ -107,11 +106,9 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         double highestLatency = 0;
 
         for (PhotonPipelineResult result : results) {
-            Optional<EstimatedRobotPose> estimatedRobotPose =
+            estimatedRobotPose =
                     photonPoseEstimator.update(
                             result, camera.getCameraMatrix(), camera.getDistCoeffs());
-
-            this.estimatedRobotPose = estimatedRobotPose;
 
             estimatedRobotPose.ifPresent(
                     robotPose -> photonPoseEstimator.setReferencePose(drivetrain.getState().Pose));

@@ -18,11 +18,14 @@ import java.util.function.DoubleSupplier;
 public class ReefAlignCommand extends Command {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
 
-    private final SwerveRequest.FieldCentricFacingAngle poseAimReq;
+    private final SwerveRequest.FieldCentricFacingAngle poseAimReq =
+            new SwerveRequest.FieldCentricFacingAngle();
+
     private final DoubleSupplier xVelSupplier;
     private final DoubleSupplier yVelSupplier;
 
-    private final AprilTagSubsystem reefCam;
+    private final AprilTagSubsystem reefCam1;
+    private final AprilTagSubsystem reefCam2;
     private Pose2d currPose;
     private AprilTagDetection detection;
     private Pose2d tagPose;
@@ -30,17 +33,18 @@ public class ReefAlignCommand extends Command {
 
     public ReefAlignCommand(
             CommandSwerveDrivetrain commandSwerveDrivetrain,
-            AprilTagSubsystem reefCam,
+            AprilTagSubsystem reefCam1,
+            AprilTagSubsystem reefCam2,
             DoubleSupplier yVelocitySupplier,
             DoubleSupplier xVelocitySupplier) {
 
         this.commandSwerveDrivetrain = commandSwerveDrivetrain;
-        this.reefCam = reefCam;
+        this.reefCam1 = reefCam1;
+        this.reefCam2 = reefCam2;
         this.xVelSupplier = xVelocitySupplier;
         this.yVelSupplier = yVelocitySupplier;
 
         addRequirements(this.commandSwerveDrivetrain);
-        poseAimReq = new SwerveRequest.FieldCentricFacingAngle();
         poseAimReq.HeadingController.setPID(5.691, 0, 0.024675);
         poseAimReq.HeadingController.setTolerance(0.07);
         poseAimReq.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
@@ -50,7 +54,10 @@ public class ReefAlignCommand extends Command {
     public void initialize() {
         System.out.println("Reef cmd init");
         this.currPose = commandSwerveDrivetrain.getState().Pose;
-        Optional<AprilTagDetection> aprilTagDetectionOpt = reefCam.getBestDetection();
+        Optional<AprilTagDetection> aprilTagDetectionOpt =
+                reefCam1.getBestDetection()
+                        .or(() -> reefCam2.getBestDetection().or(reefCam1::getBestDetection));
+
         SmartDashboard.putBoolean("ATag present", aprilTagDetectionOpt.isPresent());
         if (aprilTagDetectionOpt.isEmpty()) {
             cancel();
