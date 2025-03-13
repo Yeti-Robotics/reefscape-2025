@@ -69,11 +69,11 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
     }
 
     @Override
-    public boolean isTransitionFinished(){
+    public boolean isTransitionFinished() {
         boolean transtionFinished = super.isTransitionFinished();
-        if(transtionFinished
+        if (transtionFinished
                 && transitioningTo().isPresent()
-                && transitioningTo().get().equals(ArmPosition.GROUND)){
+                && transitioningTo().get().equals(ArmPosition.GROUND)) {
             armKraken.setControl(neutralOut);
         }
         return transtionFinished;

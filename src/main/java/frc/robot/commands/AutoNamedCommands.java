@@ -29,19 +29,23 @@ public class AutoNamedCommands {
                 "L4", coralManipulator.transitionTo(CoralManipulatorState.L4));
 
         NamedCommands.registerCommand(
-                "Score1", new ParallelCommandGroup(
+                "Score1",
+                new ParallelCommandGroup(
                         coralManipulator.transitionTo(CoralManipulatorState.SCORE_L1),
                         new WaitCommand(1)));
         NamedCommands.registerCommand(
-                "Score2", new ParallelCommandGroup(
+                "Score2",
+                new ParallelCommandGroup(
                         coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2),
                         new WaitCommand(1)));
         NamedCommands.registerCommand(
-                "Score3", new ParallelCommandGroup(
+                "Score3",
+                new ParallelCommandGroup(
                         coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3),
                         new WaitCommand(1)));
         NamedCommands.registerCommand(
-                "Score4", new ParallelCommandGroup(
+                "Score4",
+                new ParallelCommandGroup(
                         coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
                         new WaitCommand(1)));
 
