@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.coral.*;
 
 public class AutoNamedCommands {
@@ -35,7 +34,6 @@ public class AutoNamedCommands {
                 "Score3", coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3));
         NamedCommands.registerCommand(
                 "Score4", coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
-
 
         NamedCommands.registerCommand(
                 "Stow", coralManipulator.transitionTo(CoralManipulatorState.STOWED));
