@@ -16,6 +16,7 @@ public enum ArmPosition implements SetpointEnum {
     POS_L4(.15),
     SCORE_L4(.05),
     AWAY(0),
+    GROUND(0), //TODO: get real value fr
     HP(0.193359),
     HOLD(-1); // special case, for when transitions are interrupted
 
