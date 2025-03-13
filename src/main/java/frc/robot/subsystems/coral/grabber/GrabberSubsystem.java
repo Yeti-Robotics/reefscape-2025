@@ -14,6 +14,7 @@ import frc.robot.util.state.StatefulSubsystem;
 public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
     private final TalonFX claw = new TalonFX(GrabberConfig.CLAW_ID, RIO_BUS);
     private final DutyCycleOut dutyCycleReq = new DutyCycleOut(0);
+    public final Trigger hasCoralTrigger;
 
     private final Canandcolor clawSwitch = new Canandcolor(GrabberConfig.GRABBER_CANANDCOLOR);
 
@@ -25,6 +26,7 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
         new Trigger(() -> getCurrentState() == GrabberState.ROLL_OUT)
                 .debounce(1)
                 .onTrue(transitionTo(GrabberState.OFF));
+        hasCoralTrigger = new Trigger(this::hasCoral);
     }
 
     @Override
