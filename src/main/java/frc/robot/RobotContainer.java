@@ -170,6 +170,7 @@ public class RobotContainer {
                 .a()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+
     }
 
     public void updateMechanisms() {
