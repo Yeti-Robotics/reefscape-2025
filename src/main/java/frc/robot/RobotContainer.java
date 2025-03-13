@@ -31,7 +31,6 @@ import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.Mechanisms;
-import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import java.util.Optional;
@@ -183,7 +182,6 @@ public class RobotContainer {
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
     }
-
 
     public void updateMechanisms() {
         mechanisms.publishComponentPoses(
