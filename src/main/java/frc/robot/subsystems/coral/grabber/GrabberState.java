@@ -1,8 +1,8 @@
 package frc.robot.subsystems.coral.grabber;
 
 public enum GrabberState {
-    ROLL_OUT(GrabberConfig.FORWARD_SPEED),
-    ROLL_IN(GrabberConfig.BACKWARD_SPEED),
+    ROLL_OUT(GrabberConfig.OUTSPIT),
+    ROLL_IN(GrabberConfig.INTAKE),
     OFF(0);
 
     private final double speed;
