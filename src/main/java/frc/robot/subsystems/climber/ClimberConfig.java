@@ -32,11 +32,8 @@ class ClimberConfig {
                                     .withNeutralMode(climberNeutralMode))
                     .withFeedback(
                             new FeedbackConfigs()
-                                    .withRotorToSensorRatio(
-                                            5.333333333333333)
-                                    .withSensorToMechanismRatio(
-                                            3.47222222222222)
-                            )
+                                    .withRotorToSensorRatio(5.333333333333333)
+                                    .withSensorToMechanismRatio(3.47222222222222))
                     .withSoftwareLimitSwitch(
                             new SoftwareLimitSwitchConfigs()
                                     .withForwardSoftLimitEnable(true)

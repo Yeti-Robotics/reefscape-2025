@@ -77,7 +77,6 @@ public class RobotContainer {
     private final CommandJoystick joystick = new CommandJoystick(0);
     private final Mechanisms mechanisms;
 
-
     Mechanism2d elevatorArmMech =
             new Mechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
     private MechanismLigament2d liftLigament;

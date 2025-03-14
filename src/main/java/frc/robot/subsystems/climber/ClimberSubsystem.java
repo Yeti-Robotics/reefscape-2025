@@ -19,7 +19,6 @@ public class ClimberSubsystem extends SubsystemBase {
     public final double climbSpeed = 0.4;
     public final double unClimbSpeed = -0.4;
 
-
     public ClimberSubsystem() {
         climber = new TalonFX(climberId, Constants.RIO_BUS);
         cancoder = new CANcoder(canCoderId, Constants.RIO_BUS);
