@@ -14,15 +14,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.constants.Constants;
 import frc.robot.util.sim.PhysicsSim;
+import frc.robot.util.sim.SimulatableMechanism;
 import frc.robot.util.state.StateUtils;
 import frc.robot.util.state.StatefulSetpointSubsystem;
 
 @Logged
 public class WristSubsystem
-        extends StatefulSetpointSubsystem<WristPositions, AngleUnit, Angle, MutAngle> {
+        extends StatefulSetpointSubsystem<WristPositions, AngleUnit, Angle, MutAngle>
+        implements SimulatableMechanism {
     private final TalonFX wristMotor = new TalonFX(WristConfigs.WRIST_KRAKEN_ID, Constants.RIO_BUS);
     private final CANcoder wristEncoder = new CANcoder(WristConfigs.WRIST_CANCODER_ID);
     private final StatusSignal<Angle> wristPosition = wristMotor.getPosition();
+    private final StatusSignal<Double> targetWristPosition = wristMotor.getClosedLoopReference();
     private final PositionVoltage motionRequest = new PositionVoltage(0).withSlot(0);
 
     public WristSubsystem() {
@@ -61,5 +64,15 @@ public class WristSubsystem
     @Override
     public StatusCode moveTo(Angle setpoint) {
         return wristMotor.setControl(motionRequest.withPosition(setpoint));
+    }
+
+    @Override
+    public Angle getCurrentPosition() {
+        return wristPosition.getValue();
+    }
+
+    @Override
+    public Angle getTargetPosition() {
+        return Units.Rotations.of(targetWristPosition.getValue());
     }
 }

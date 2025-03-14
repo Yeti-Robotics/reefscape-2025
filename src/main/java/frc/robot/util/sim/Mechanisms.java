@@ -73,17 +73,21 @@ public class Mechanisms {
         SmartDashboard.putData("Mechanisms/CoralManipulator", elevatorArmMech);
     }
 
-    public void publishComponentPoses(Angle elevatorPos, Angle armPos, boolean useRealPoses) {
+    public void publishComponentPoses(
+            Angle elevatorPos, Angle armPos, Angle wristPos, boolean useRealPoses) {
         double elevatorStageHeight = Units.inchesToMeters(elevatorPos.times(8.6).magnitude());
         double carriageHeight = Units.inchesToMeters(elevatorPos.times(15).magnitude());
         double armAngle = armPos.in(Radians);
+        double wristAngle = wristPos.in(Radians);
+
         Pose3d armPose =
                 new Pose3d(
                         Units.inchesToMeters(-2.81),
                         0,
                         Units.inchesToMeters(10.22) + carriageHeight,
                         new Rotation3d(armAngle, 0, 0));
-        Pose3d grabberPose = new Pose3d(0, Units.inchesToMeters(14.76), 0, new Rotation3d(0, 0, 0));
+        Pose3d grabberPose =
+                new Pose3d(0, Units.inchesToMeters(14.76), 0, new Rotation3d(0, wristAngle, 0));
 
         (useRealPoses ? realComponentPosePublisher : targetComponentPosePublisher)
                 .set(
