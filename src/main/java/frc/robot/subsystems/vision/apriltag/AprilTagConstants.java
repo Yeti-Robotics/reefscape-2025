@@ -14,7 +14,8 @@ public class AprilTagConstants {
                     AprilTagFieldLayout.loadFromResource(
                             AprilTagFields.kDefaultField.m_resourceFile);
         } catch (IOException e) {
-            APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+            APRIL_TAG_FIELD_LAYOUT =
+                    AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
         }
     }
 }
