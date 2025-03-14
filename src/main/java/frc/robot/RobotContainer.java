@@ -14,10 +14,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
@@ -30,6 +28,7 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
+import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import java.util.Optional;
@@ -74,12 +73,15 @@ public class RobotContainer {
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
+    //    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
+    private final CommandJoystick joystick = new CommandJoystick(0);
+    private final Mechanisms mechanisms;
+
+
     Mechanism2d elevatorArmMech =
             new Mechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
     private MechanismLigament2d liftLigament;
     private MechanismLigament2d armLigament;
-
-    //    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -99,8 +101,8 @@ public class RobotContainer {
         reefCam = new PhotonAprilTagSystem("ScoreCam", camTrans, drivetrain);
         climber = new ClimberSubsystem();
         coralManipulator = new CoralManipulatorSystem();
+        mechanisms = new Mechanisms();
         configureBindings();
-        assembleMechanisms();
     }
 
     /**
@@ -184,37 +186,19 @@ public class RobotContainer {
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
     }
 
-    private void assembleMechanisms() {
-        liftLigament =
-                elevatorArmMech
-                        .getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
-                        .append(
-                                new MechanismLigament2d(
-                                        "lift",
-                                        Units.feetToMeters(3),
-                                        90,
-                                        6,
-                                        new Color8Bit(Color.kRed)));
-        elevatorArmMech
-                .getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
-                .append(
-                        new MechanismLigament2d(
-                                "bottom",
-                                Units.feetToMeters(3),
-                                0,
-                                6,
-                                new Color8Bit(Color.kGreen)));
-        armLigament =
-                liftLigament.append(
-                        new MechanismLigament2d(
-                                "arm", Units.inchesToMeters(12), 0, 6, new Color8Bit(Color.kBlue)));
-    }
-
     public void updateMechanisms() {
-        liftLigament.setLength(coralManipulator.elevator.updateMechPos());
-        armLigament.setAngle(coralManipulator.arm.updateMechPos());
+        mechanisms.publishComponentPoses(
+                coralManipulator.elevator.getCurrentPosition(),
+                coralManipulator.arm.getCurrentPosition(),
+                true);
+        mechanisms.publishComponentPoses(
+                coralManipulator.elevator.getTargetPosition(),
+                coralManipulator.arm.getTargetPosition(),
+                false);
 
-        SmartDashboard.putData("Mechanisms/CoralManipulator", elevatorArmMech);
+        mechanisms.updateElevatorArmMech(
+                coralManipulator.elevator.getCurrentPosition(),
+                coralManipulator.arm.getCurrentPosition());
     }
 
     /**

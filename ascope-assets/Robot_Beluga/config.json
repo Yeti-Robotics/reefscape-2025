@@ -1,0 +1,68 @@
+{
+  "name": "Beluga",
+  "rotations": [
+    { "axis": "y", "degrees": 180 },
+    { "axis": "z", "degrees": 270 }
+  ],
+"position": [0,0,0.05],
+"cameras": [
+  {
+    "name": "ScoreCam",
+    "rotations": [
+      { "axis": "y", "degrees": 35 },
+      { "axis": "z", "degrees": 90 }
+    ],
+    "position": [-0.2032, 0.1778, 0.5715],
+    "resolution": [640, 480],
+    "fov": 100
+  },
+  {
+    "name": "ClimberCam",
+    "rotations": [
+      { "axis": "y", "degrees": 35 },
+      { "axis": "z", "degrees": -90 }
+    ],
+    "position": [-0.2032, -0.1778, 0.5715],
+    "resolution": [640, 480],
+    "fov": 100
+  },
+  {
+    "name": "limelight",
+    "rotations": [
+      { "axis": "z", "degrees": -180 }
+    ],
+    "position": [-0.2413, 0, 0.892175],
+    "resolution": [640, 480],
+    "fov": 100
+  }
+],
+"components": [
+  {
+    "zeroedRotations": [
+      { "axis": "x", "degrees": 90 },
+      { "axis": "z", "degrees": 90 }
+    ],
+    "zeroedPosition": [0.025,-0.1,0.01]
+  },
+  {
+    "zeroedRotations": [
+      { "axis": "z", "degrees": 270 },
+      { "axis": "x", "degrees": 180 }
+    ],
+    "zeroedPosition": [-0.025,0,-0.05]
+  },
+  {
+    "zeroedRotations": [
+      { "axis": "z", "degrees": 90 }
+    ],
+    "zeroedPosition": [0.1,0,0.06]
+  },
+  {
+    "zeroedRotations": [
+      { "axis": "z", "degrees": 90 },
+      { "axis": "y", "degrees": 180 }
+    ],
+    "zeroedPosition": [-0.15,0.142,-0.025]
+  }
+]
+}
