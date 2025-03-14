@@ -7,67 +7,73 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lineStack"
+            "pathName": "lineJ"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake Algae"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
+            "name": "Score4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "lowStackProc"
+            "pathName": "jHP"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Process Algae 6pts"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
+            "name": "HPIntake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "procMidStack"
+            "pathName": "hpK"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake Algae"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
+            "name": "Score4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "midStackProc"
+            "pathName": "kHP"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Process Algae 6pts"
+            "name": "HPIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "hpL"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "lHP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "HPIntake"
           }
         }
       ]

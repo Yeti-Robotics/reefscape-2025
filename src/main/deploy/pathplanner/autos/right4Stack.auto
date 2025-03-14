@@ -1,0 +1,97 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "lineE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "eRightStack"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GroundIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "rightStackC"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "cMidStack"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "midStackA"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "aLeftStack"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GroundIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "leftStackB"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score4"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

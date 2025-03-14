@@ -7,43 +7,67 @@
         {
           "type": "path",
           "data": {
-            "pathName": "cornerJ"
+            "pathName": "lineE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "jHP"
+            "pathName": "eHP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "HPIntake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "hpK"
+            "pathName": "hpD"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "kHP"
+            "pathName": "dHP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "HPIntake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "hpL"
+            "pathName": "hpC"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "lHP"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "hpA"
+            "pathName": "cHP"
           }
         }
       ]

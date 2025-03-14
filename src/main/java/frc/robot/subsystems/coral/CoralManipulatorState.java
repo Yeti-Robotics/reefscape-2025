@@ -10,7 +10,7 @@ public enum CoralManipulatorState {
             ArmPosition.GROUND,
             ElevatorPosition.BOTTOM,
             GrabberState.ROLL_IN,
-            WristPositions.GROUND),
+            WristPositions.UNSAFE),
     L1(ArmPosition.POS_L1, ElevatorPosition.POS_L1, GrabberState.OFF, WristPositions.UNSAFE),
     SCORE_L1(
             ArmPosition.POS_L1,
@@ -18,26 +18,14 @@ public enum CoralManipulatorState {
             GrabberState.ROLL_OUT,
             WristPositions.UNSAFE),
     L2(ArmPosition.POS_L2, ElevatorPosition.POS_L2, GrabberState.OFF, WristPositions.SAFE),
-    SCORE_L2(
-            ArmPosition.SCORE_L2,
-            ElevatorPosition.POS_L2,
-            GrabberState.ROLL_OUT,
-            WristPositions.SAFE),
+    SCORE_L2(ArmPosition.SCORE_L2, ElevatorPosition.POS_L2, GrabberState.OFF, WristPositions.SAFE),
     L3(ArmPosition.POS_L3, ElevatorPosition.SAFE_POSITION, GrabberState.OFF, WristPositions.SAFE),
-    SCORE_L3(
-            ArmPosition.SCORE_L3,
-            ElevatorPosition.POS_L3,
-            GrabberState.ROLL_OUT,
-            WristPositions.SAFE),
+    SCORE_L3(ArmPosition.SCORE_L3, ElevatorPosition.POS_L3, GrabberState.OFF, WristPositions.SAFE),
     L4(ArmPosition.POS_L4, ElevatorPosition.POS_L4, GrabberState.OFF, WristPositions.SAFE),
-    SCORE_L4(
-            ArmPosition.SCORE_L4,
-            ElevatorPosition.POS_L4,
-            GrabberState.ROLL_OUT,
-            WristPositions.SAFE),
+    SCORE_L4(ArmPosition.SCORE_L4, ElevatorPosition.POS_L4, GrabberState.OFF, WristPositions.SAFE),
     HP_INTAKE(ArmPosition.HP, ElevatorPosition.BOTTOM, GrabberState.ROLL_IN, WristPositions.UNSAFE),
     STOWED(ArmPosition.UP, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.SAFE),
-    CLIMB(ArmPosition.AWAY, ElevatorPosition.BOTTOM, GrabberState.ROLL_OUT, WristPositions.SAFE),
+    CLIMB(ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.SAFE),
     IDLE(ArmPosition.HOLD, ElevatorPosition.HOLD, GrabberState.OFF, WristPositions.SAFE);
 
     private final ArmPosition armPosition;

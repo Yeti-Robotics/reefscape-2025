@@ -7,17 +7,19 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AutoNamedCommands;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
@@ -68,6 +70,8 @@ public class RobotContainer {
     @Logged(name = "Climber")
     public ClimberSubsystem climber;
 
+    private final SendableChooser<Command> autoChooser;
+
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
@@ -76,11 +80,6 @@ public class RobotContainer {
 
     //    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
     private final Mechanisms mechanisms;
-
-    Mechanism2d elevatorArmMech =
-            new Mechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
-    private MechanismLigament2d liftLigament;
-    private MechanismLigament2d armLigament;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -102,6 +101,13 @@ public class RobotContainer {
         coralManipulator = new CoralManipulatorSystem();
         mechanisms = new Mechanisms();
         configureBindings();
+
+        var namedCommands = new AutoNamedCommands(coralManipulator);
+        namedCommands.registerCommands();
+
+        autoChooser = AutoBuilder.buildAutoChooser("driveForward");
+
+        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     /**
@@ -168,7 +174,10 @@ public class RobotContainer {
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
 
-        secondaryXboxController.a().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+        secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+        secondaryXboxController
+                .b()
+                .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
 
         primaryXboxController.a().whileTrue(climber.spinClimber(climber.climbSpeed));
         primaryXboxController.b().whileTrue(climber.spinClimber(climber.unClimbSpeed));
@@ -178,7 +187,7 @@ public class RobotContainer {
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
 
         secondaryXboxController
-                .b()
+                .a()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(
@@ -216,6 +225,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return null;
+        return autoChooser.getSelected();
     }
 }

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.533,
-        "y": 7.215
+        "x": 3.231,
+        "y": 3.9
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6032500000000005,
-        "y": 6.0945
+        "x": 2.4836713732482045,
+        "y": 3.364073123503827
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.206,
-        "y": 3.958015267175572
+        "x": 1.926,
+        "y": 2.066
       },
       "prevControl": {
-        "x": 2.9300601145038168,
-        "y": 5.39
+        "x": 2.3494098271352035,
+        "y": 3.646299843322396
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,17 +42,6 @@
           "name": "Stow"
         }
       }
-    },
-    {
-      "name": "L4",
-      "waypointRelativePos": 0.85,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "L4"
-        }
-      }
     }
   ],
   "globalConstraints": {
@@ -65,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 35.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }
