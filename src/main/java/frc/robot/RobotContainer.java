@@ -169,8 +169,8 @@ public class RobotContainer {
 
         secondaryXboxController.a().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
 
-        primaryXboxController.a().whileTrue(climber.spinClimber(0.4));
-        primaryXboxController.b().whileTrue(climber.spinClimber(-0.4));
+        primaryXboxController.a().whileTrue(climber.spinClimber(climber.climbSpeed));
+        primaryXboxController.b().whileTrue(climber.spinClimber(climber.unClimbSpeed));
 
         primaryXboxController
                 .x()
