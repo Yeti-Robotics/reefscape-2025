@@ -9,8 +9,8 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 class WristConfigs {
     static final double WRIST_TOLERANCE = 0.1;
     static final int WRIST_KRAKEN_ID = 19;
-    static final int WRIST_CANCODER_ID = 30;
-    static final double MAGNET_OFFSET = 0.081299;
+    static final int WRIST_CANCODER_ID = 42;
+    static final double MAGNET_OFFSET = -0.352539;
 
     static final Slot0Configs SLOT_0_CONFIGS =
             new Slot0Configs()
