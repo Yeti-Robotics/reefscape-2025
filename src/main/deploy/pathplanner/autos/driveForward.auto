@@ -7,19 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lineJ"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Stow"
+            "pathName": "driveForward"
           }
         }
       ]

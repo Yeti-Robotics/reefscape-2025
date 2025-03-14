@@ -105,7 +105,8 @@ public class RobotContainer {
         var namedCommands = new AutoNamedCommands(coralManipulator);
         namedCommands.registerCommands();
 
-        autoChooser = AutoBuilder.buildAutoChooser("midForwardOnly");
+        autoChooser = AutoBuilder.buildAutoChooser("driveForward");
+
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
