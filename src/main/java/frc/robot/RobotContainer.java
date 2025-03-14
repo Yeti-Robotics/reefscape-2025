@@ -15,6 +15,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -171,13 +173,19 @@ public class RobotContainer {
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-        primaryXboxController
-                .x()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+
         secondaryXboxController.a().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
 
-        primaryXboxController.a().whileTrue(climber.spinClimber(0.4));
-        primaryXboxController.b().whileTrue(climber.spinClimber(-0.4));
+        primaryXboxController.a().whileTrue(climber.spinClimber(climber.climbSpeed));
+        primaryXboxController.b().whileTrue(climber.spinClimber(climber.unClimbSpeed));
+
+        primaryXboxController
+                .x()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
+
+        secondaryXboxController
+                .b()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
