@@ -35,6 +35,7 @@ public class WristSubsystem
         if (Robot.isSimulation()) {
             PhysicsSim.getInstance().addTalonFX(wristMotor, wristEncoder);
         }
+        wristMotor.setPosition(WristPositions.SAFE.getAngle());
     }
 
     public Command moveWristHorizontal() {

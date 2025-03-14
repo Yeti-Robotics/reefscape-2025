@@ -172,6 +172,14 @@ public class RobotContainer {
         primaryXboxController.a().whileTrue(climber.spinClimber(0.4));
         primaryXboxController.b().whileTrue(climber.spinClimber(-0.4));
 
+        primaryXboxController
+                .x()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
+
+        secondaryXboxController
+                .b()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
     }
