@@ -1,5 +1,9 @@
 package frc.robot.util.sim;
 
+import edu.wpi.first.units.measure.Angle;
+
 public interface SimulatableMechanism {
-    double updateMechPos();
+    Angle getCurrentPosition();
+
+    Angle getTargetPosition();
 }
