@@ -184,7 +184,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         if (isWristFirst(targetState)) {
             if (getCurrentState() == CoralManipulatorState.GROUND_INTAKE) {
                 coralManipulatorCommand =
-                        arm.transitionTo(ArmPosition.AWAY)
+                        arm.transitionTo(ArmPosition.AWAYBUMPER)
                                 .andThen(wrist.transitionTo(targetState.getWristPosition()))
                                 .andThen(coralManipulatorCommand);
             } else {
