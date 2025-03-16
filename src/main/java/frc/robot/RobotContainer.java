@@ -35,6 +35,7 @@ import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
+
 import java.util.Optional;
 
 /**
@@ -91,13 +92,15 @@ public class RobotContainer {
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
-    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
+   // AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
     private final Mechanisms mechanisms;
     private final ReefAlignCommand alignToReefCmd;
 
     private final AprilTagSubsystem[] aprilTagSubsystems;
 
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
     public RobotContainer() {
         primaryXboxController = new CommandXboxController(1);
         secondaryXboxController = new CommandXboxController(2);
@@ -106,21 +109,21 @@ public class RobotContainer {
         reefCam1 = new PhotonAprilTagSystem("ScoreCam", camTrans1, drivetrain);
         reefCam2 = new PhotonAprilTagSystem("ClimbCam", camTrans2, drivetrain);
 
-        AprilTagCamSim simCam1 =
-                AprilTagCamSimBuilder.newCamera()
-                        .withCameraName("ScoreCam")
-                        .withTransform(camTrans1)
-                        .build();
-        aprilTagCamSim.addCamera(simCam1);
-        reefCam1.setCamera(aprilTagCamSim.getAprilTagCamSims().get(0).getCam());
+//        AprilTagCamSim simCam1 =
+//                AprilTagCamSimBuilder.newCamera()
+//                        .withCameraName("ScoreCam")
+//                        .withTransform(camTrans1)
+//                        .build();
+//        aprilTagCamSim.addCamera(simCam1);
+//        reefCam1.setCamera(aprilTagCamSim.getAprilTagCamSims().get(0).getCam());
 
-        AprilTagCamSim simCam2 =
-                AprilTagCamSimBuilder.newCamera()
-                        .withCameraName("ClimbCam")
-                        .withTransform(camTrans2)
-                        .build();
-        aprilTagCamSim.addCamera(simCam2);
-        reefCam2.setCamera(aprilTagCamSim.getAprilTagCamSims().get(1).getCam());
+//        AprilTagCamSim simCam2 =
+//                AprilTagCamSimBuilder.newCamera()
+//                        .withCameraName("ClimbCam")
+//                        .withTransform(camTrans2)
+//                        .build();
+//        aprilTagCamSim.addCamera(simCam2);
+//        reefCam2.setCamera(aprilTagCamSim.getAprilTagCamSims().get(1).getCam());
 
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         climber = new ClimberSubsystem();
@@ -134,7 +137,7 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("driveForward");
         alignToReefCmd = new ReefAlignCommand(drivetrain, reefCam1, reefCam2);
         SmartDashboard.putData("Auto Chooser", autoChooser);
-        aprilTagSubsystems = new AprilTagSubsystem[] {limelight, reefCam1, reefCam2};
+        aprilTagSubsystems = new AprilTagSubsystem[]{limelight, reefCam1, reefCam2};
     }
 
     /**
@@ -161,9 +164,9 @@ public class RobotContainer {
         }
     }
 
-    public void updateVisionSim() {
-        aprilTagCamSim.update(drivetrain.getState().Pose);
-    }
+//    public void updateVisionSim() {
+//        aprilTagCamSim.update(drivetrain.getState().Pose);
+//    }
 
     private void configureBindings() {
         drivetrain.setDefaultCommand(
@@ -172,11 +175,11 @@ public class RobotContainer {
                                 drive.withVelocityX(
                                                 -primaryXboxController.getLeftY()
                                                         * TunerConstants.kSpeedAt12Volts
-                                                                .magnitude())
+                                                        .magnitude())
                                         .withVelocityY(
                                                 -primaryXboxController.getLeftX()
                                                         * TunerConstants.kSpeedAt12Volts
-                                                                .magnitude())
+                                                        .magnitude())
                                         .withRotationalRate(
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
@@ -222,13 +225,13 @@ public class RobotContainer {
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
 
-        //  simJoy.button(1).onTrue(alignToReefCmd);
-        //        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
-        //        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
-        //        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
-        //        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
-        simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+        simJoy.button(1).onTrue(alignToReefCmd);
+        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
+        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
     }
 
     public void updateMechanisms() {
