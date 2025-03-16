@@ -191,16 +191,16 @@ public class RobotContainer {
                 .y()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
 
-        //
-        // simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        //        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
-        //        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
-        //        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
-        //        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
-        //
-        // simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
-        //
-        // simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+        coralManipulator.grabber.hasCoralTrigger.onTrue(
+                coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+
+//        simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+//        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+//        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+//        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
+//        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+//        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
+//        simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
     }
 
     public void updateMechanisms() {
