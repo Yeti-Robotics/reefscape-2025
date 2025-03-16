@@ -12,20 +12,20 @@
         "y": 6.01875
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "jReef"
     },
     {
       "anchor": {
-        "x": 1.5333,
+        "x": 1.533,
         "y": 7.215
       },
       "prevControl": {
-        "x": 3.26625,
+        "x": 3.2659499999999997,
         "y": 6.55275
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "leftHP"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "Stow",
-      "waypointRelativePos": 0.09836065573770345,
+      "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

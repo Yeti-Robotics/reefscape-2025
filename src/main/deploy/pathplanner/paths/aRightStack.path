@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.231,
-        "y": 3.9
+        "x": 3.206,
+        "y": 3.958015267175572
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4836713732482045,
-        "y": 3.364073123503827
+        "x": 2.4586713732482046,
+        "y": 3.422088390679399
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "aReef"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "rightStack"
     }
   ],
   "rotationTargets": [],

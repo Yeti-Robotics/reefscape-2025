@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 5.76,
-        "y": 4.2
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.5665000000000004,
-        "y": 4.4735
+        "y": 4.273499999999999
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "gReef"
     },
     {
       "anchor": {
-        "x": 7.722,
-        "y": 4.7465
+        "x": 7.929317748091604,
+        "y": 5.5
       },
       "prevControl": {
-        "x": 6.93225,
-        "y": 4.561249999999999
+        "x": 7.139567748091603,
+        "y": 5.314749999999999
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "leftBarge"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.65854317756356
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,

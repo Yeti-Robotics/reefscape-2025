@@ -12,20 +12,20 @@
         "y": 2.6261564885496176
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "dReef"
     },
     {
       "anchor": {
-        "x": 1.7583492366412217,
+        "x": 1.758,
         "y": 0.752
       },
       "prevControl": {
-        "x": 2.4765,
+        "x": 2.4761507633587785,
         "y": 1.663401717557253
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "rightHP"
     }
   ],
   "rotationTargets": [],

@@ -12,20 +12,20 @@
         "y": 4.086387113403372
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "midStack"
     },
     {
       "anchor": {
-        "x": 3.231,
-        "y": 3.9
+        "x": 3.206,
+        "y": 3.958015267175572
       },
       "prevControl": {
-        "x": 2.483047829444128,
-        "y": 3.92209518548616
+        "x": 2.458047829444128,
+        "y": 3.980110452661732
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "aReef"
     }
   ],
   "rotationTargets": [],

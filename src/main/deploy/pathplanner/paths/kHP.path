@@ -12,20 +12,20 @@
         "y": 5.339156859162233
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "kReef"
     },
     {
       "anchor": {
-        "x": 1.5333,
+        "x": 1.533,
         "y": 7.215
       },
       "prevControl": {
-        "x": 2.538570076686712,
+        "x": 2.538270076686712,
         "y": 5.642173743462627
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "leftHP"
     }
   ],
   "rotationTargets": [],

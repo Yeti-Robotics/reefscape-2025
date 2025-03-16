@@ -12,7 +12,7 @@
         "y": 4.93702569958882
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "leftHP"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "kReef"
     }
   ],
   "rotationTargets": [],

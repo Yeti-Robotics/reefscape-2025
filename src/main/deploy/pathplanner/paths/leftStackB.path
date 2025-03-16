@@ -12,7 +12,7 @@
         "y": 4.69775
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "leftStack"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "bReef"
     }
   ],
   "rotationTargets": [],
