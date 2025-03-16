@@ -35,6 +35,7 @@ import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import java.util.Optional;
 
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -193,6 +194,9 @@ public class RobotContainer {
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+
+        coralManipulator.grabber.dropCoralTrigger.and(primaryXboxController.rightTrigger().negate()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED)));
 
 //        simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
 //        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));

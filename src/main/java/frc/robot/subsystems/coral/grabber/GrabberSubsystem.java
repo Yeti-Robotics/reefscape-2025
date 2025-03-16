@@ -15,6 +15,7 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
     private final TalonFX claw = new TalonFX(GrabberConfig.CLAW_ID, RIO_BUS);
     private final DutyCycleOut dutyCycleReq = new DutyCycleOut(0);
     public final Trigger hasCoralTrigger;
+    public final Trigger dropCoralTrigger;
 
     private final Canandcolor clawSwitch = new Canandcolor(GrabberConfig.GRABBER_CANANDCOLOR);
 
@@ -27,6 +28,7 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
                 .debounce(1)
                 .onTrue(transitionTo(GrabberState.OFF));
         hasCoralTrigger = new Trigger(this::hasCoral);
+        dropCoralTrigger = new Trigger(this::doesNotHaveCoral);
     }
 
     @Override
