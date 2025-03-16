@@ -18,8 +18,8 @@ class ElevatorConfig {
                     .withKI(0)
                     .withKD(32)
                     .withKG(50)
-                    .withKV(1)
-                    .withKA(.5)
+                    .withKV(7)
+                    .withKA(2)
                     .withKS(14)
                     .withGravityType(GravityTypeValue.Elevator_Static);
     private static final Slot1Configs SLOT_1_SIM_CONFIGS =
@@ -38,8 +38,8 @@ class ElevatorConfig {
                     .withSlot1(SLOT_1_SIM_CONFIGS)
                     .withMotionMagic(
                             new MotionMagicConfigs()
-                                    .withMotionMagicCruiseVelocity(7)
-                                    .withMotionMagicAcceleration(14)
+                                    .withMotionMagicCruiseVelocity(15)
+                                    .withMotionMagicAcceleration(25)
                                     .withMotionMagicJerk(0))
                     .withMotorOutput(
                             new MotorOutputConfigs()
