@@ -5,12 +5,13 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import frc.robot.Robot;
 
 class WristConfigs {
     static final double WRIST_TOLERANCE = 0.1;
     static final int WRIST_KRAKEN_ID = 19;
-    static final int WRIST_CANCODER_ID = 30;
-    static final double MAGNET_OFFSET = -0.4326171875;
+    static final int WRIST_CANCODER_ID = 42;
+    static final double MAGNET_OFFSET = 0.342041015625;
 
     static final Slot0Configs SLOT_0_CONFIGS =
             new Slot0Configs()
@@ -56,7 +57,9 @@ class WristConfigs {
                     .withMagnetSensor(
                             new MagnetSensorConfigs()
                                     .withSensorDirection(
-                                            SensorDirectionValue.CounterClockwise_Positive)
+                                            Robot.isReal()
+                                                    ? SensorDirectionValue.CounterClockwise_Positive
+                                                    : SensorDirectionValue.Clockwise_Positive)
                                     .withMagnetOffset(MAGNET_OFFSET)
                                     .withAbsoluteSensorDiscontinuityPoint(0.625));
 }

@@ -104,9 +104,9 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         return targetState == CoralManipulatorState.L2 && arm.getCurrentState() != ArmPosition.DOWN;
     }
 
-    public boolean isWristFirst() {
+    public boolean isWristFirst(CoralManipulatorState targetState) {
         return getCurrentState().getWristPosition() == WristPositions.UNSAFE
-                || getCurrentState().getWristPosition() == WristPositions.GROUND;
+                || targetState.getWristPosition() == WristPositions.SAFE;
     }
 
     public boolean isArmInDanger(CoralManipulatorState targetState) {
@@ -160,6 +160,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         if (isIntaking(targetState)) {
             coralManipulatorCommand =
                     arm.transitionTo(targetState.getArmPosition())
+                            .andThen(elevator.transitionTo(targetState.getElevatorPosition()))
                             .andThen(grabber.transitionTo(targetState.getGrabberState()));
         } else if (isArmInDanger(targetState) && !isMovingL2(targetState)) {
 
@@ -180,15 +181,26 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
                             .andThen(grabber.transitionTo(targetState.getGrabberState()));
         }
 
-        if (isWristFirst()) {
-            coralManipulatorCommand =
-                    wrist.transitionTo(targetState.getWristPosition())
-                            .andThen(coralManipulatorCommand);
+        if (isWristFirst(targetState)) {
+            if (getCurrentState() == CoralManipulatorState.GROUND_INTAKE) {
+                coralManipulatorCommand =
+                        arm.transitionTo(ArmPosition.AWAY)
+                                .andThen(wrist.transitionTo(targetState.getWristPosition()))
+                                .andThen(coralManipulatorCommand);
+            } else {
+                coralManipulatorCommand =
+                        wrist.transitionTo(targetState.getWristPosition())
+                                .andThen(coralManipulatorCommand);
+            }
         } else {
             coralManipulatorCommand =
                     coralManipulatorCommand.andThen(
                             wrist.transitionTo(targetState.getWristPosition()));
         }
+
+        coralManipulatorCommand =
+                wrist.transitionTo(getCurrentState().getWristPosition())
+                        .andThen(coralManipulatorCommand);
 
         coralManipulatorCommand.schedule();
 

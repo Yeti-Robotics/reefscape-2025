@@ -51,30 +51,6 @@
           "data": {
             "name": "HPIntake"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "hpL"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "lHP"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "HPIntake"
-          }
         }
       ]
     }

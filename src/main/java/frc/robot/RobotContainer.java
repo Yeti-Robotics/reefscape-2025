@@ -45,6 +45,7 @@ public class RobotContainer {
 
     public final CommandXboxController primaryXboxController;
     public final CommandXboxController secondaryXboxController;
+    private final CommandJoystick simJoy = new CommandJoystick(2);
 
     @Logged(name = "Vision/Limelight")
     public final LimelightAprilTagSystem limelight;
@@ -77,7 +78,7 @@ public class RobotContainer {
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
-    private final CommandJoystick joystick = new CommandJoystick(0);
+    //    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
     private final Mechanisms mechanisms;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -104,7 +105,8 @@ public class RobotContainer {
         var namedCommands = new AutoNamedCommands(coralManipulator);
         namedCommands.registerCommands();
 
-        autoChooser = AutoBuilder.buildAutoChooser();
+        autoChooser = AutoBuilder.buildAutoChooser("driveForward");
+
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
@@ -171,26 +173,45 @@ public class RobotContainer {
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
+
+        secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+        secondaryXboxController
+                .b()
+                .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
+
+        primaryXboxController.a().whileTrue(climber.spinClimber(climber.climbSpeed));
+        primaryXboxController.b().whileTrue(climber.spinClimber(climber.unClimbSpeed));
+
         primaryXboxController
                 .x()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        secondaryXboxController.a().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
 
-        primaryXboxController.a().whileTrue(climber.spinClimber(0.4));
-        primaryXboxController.b().whileTrue(climber.spinClimber(-0.4));
+        secondaryXboxController
+                .a()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+
+        simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
+        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
+        simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
     }
 
     public void updateMechanisms() {
         mechanisms.publishComponentPoses(
                 coralManipulator.elevator.getCurrentPosition(),
                 coralManipulator.arm.getCurrentPosition(),
+                coralManipulator.wrist.getCurrentPosition(),
                 true);
         mechanisms.publishComponentPoses(
                 coralManipulator.elevator.getTargetPosition(),
                 coralManipulator.arm.getTargetPosition(),
+                coralManipulator.wrist.getTargetPosition(),
                 false);
 
         mechanisms.updateElevatorArmMech(
