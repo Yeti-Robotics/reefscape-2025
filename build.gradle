@@ -1,7 +1,8 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2025.3.1"
+    id "edu.wpi.first.GradleRIO" version "2025.3.2"
     id 'com.diffplug.spotless' version '6.25.0'
+    id "com.peterabeles.gversion" version "1.10"
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -149,6 +150,16 @@ spotless {
     }
 }
 
+project.compileJava.dependsOn(createVersionFile)
+gversion {
+    srcDir       = "src/main/java/"
+    classPackage = "org.littletonrobotics.frc2025"
+    className    = "BuildConstants"
+    dateFormat   = "yyyy-MM-dd HH:mm:ss z"
+    timeZone     = "America/New_York"
+    indent       = "  "
+}
+
 tasks.compileJava.dependsOn(tasks.spotlessApply)
 sourceSets {
     main {
@@ -156,4 +167,14 @@ sourceSets {
             srcDir "${buildDir.absolutePath}/generated/sources/annotationProcessor/java/main"
         }
     }
+}
+
+project.compileJava.dependsOn(createVersionFile)
+gversion {
+    srcDir       = "src/main/java/"
+    classPackage = "frc.robot"
+    className    = "BuildConstants"
+    dateFormat   = "yyyy-MM-dd HH:mm:ss z"
+    timeZone     = "America/New_York" // Use preferred time zone
+    indent       = "  "
 }
