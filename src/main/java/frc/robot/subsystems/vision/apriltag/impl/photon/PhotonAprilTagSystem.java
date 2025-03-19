@@ -30,13 +30,15 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
     @Logged(name = "TagPoses")
     public List<Pose2d> getTagPoses() {
-        return aprilTagResults.getResults().stream().map(AprilTagDetection::getTargetPose).toList();
+        return aprilTagResults.getResults().stream()
+                .map(AprilTagDetection::getRobotToTargetPose)
+                .toList();
     }
 
     @Logged(name = "Best Detection")
     public Pose2d getBestDetectionPose() {
         var bestDet = getBestDetection();
-        return bestDet.map(AprilTagDetection::getTargetPose).orElse(null);
+        return bestDet.map(AprilTagDetection::getRobotToTargetPose).orElse(null);
     }
 
     @Logged(name = "Best Estimated Pose")
