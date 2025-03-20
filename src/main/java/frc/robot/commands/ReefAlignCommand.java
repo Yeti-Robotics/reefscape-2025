@@ -26,17 +26,17 @@ public class ReefAlignCommand extends Command {
             new Transform2d(
                     edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(8.04)),
                     edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(6.47)),
-                    Rotation2d.fromDegrees(-45));
+                    Rotation2d.kZero);
     private final Transform2d rightBranchTransform =
             new Transform2d(
-                    edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(-8.04)),
-                    edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(6.47)),
-                    Rotation2d.fromDegrees(-45));
+                    edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(8.04)),
+                    edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(-6.47)),
+                    Rotation2d.kZero);
     private final SwerveRequest.RobotCentricFacingAngle swerveReq =
             new SwerveRequest.RobotCentricFacingAngle();
     private final SwerveRequest.Idle stopReq = new SwerveRequest.Idle();
     AprilTagDetection lockedOnAprilTag;
-    boolean isLeftBranch = true;
+    boolean isLeftBranch = false;
     boolean isFinished = false;
     ProfiledPIDController movementXPIDController =
             new ProfiledPIDController(
@@ -117,7 +117,7 @@ public class ReefAlignCommand extends Command {
         Pose2d targetBranchPose =
                 targetVisionPose
                         .transformBy(isLeftBranch ? leftBranchTransform : rightBranchTransform)
-                        .transformBy(new Transform2d(1, 0, new Rotation2d()));
+                        .transformBy(new Transform2d(0.15, 0, new Rotation2d()));
         field.setRobotPose(
                 reefCamDetection
                         .getRobotInFieldPose()

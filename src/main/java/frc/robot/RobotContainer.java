@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNamedCommands;
 import frc.robot.commands.ReefAlignCommand;
 import frc.robot.subsystems.climber.ClimberSubsystem;
-import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
@@ -235,12 +234,15 @@ public class RobotContainer {
         //                coralManipulator.transitionTo(CoralManipulatorState.STOWED));
 
         simJoy.button(1).whileTrue(alignToReefCmd);
-        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
-        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
-        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
-        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
-        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+        simJoy.button(2).onTrue(alignToReefCmd.toggleBranchSelection());
+        //        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+        //        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+        //        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
+        //        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+        //
+        // simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        //
+        // simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
     }
 
     public void updateMechanisms() {
