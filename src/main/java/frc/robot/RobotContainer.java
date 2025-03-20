@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,7 +28,6 @@ import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
-import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
@@ -35,7 +35,6 @@ import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
-import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -112,7 +111,7 @@ public class RobotContainer {
                         .withTransform(camTrans1)
                         .build();
         aprilTagCamSim.addCamera(simCam1);
-        reefCam1.setCamera(aprilTagCamSim.getAprilTagCamSims().get(0).getCam());
+        reefCam1.setCamera(simCam1.getCam());
 
         AprilTagCamSim simCam2 =
                 AprilTagCamSimBuilder.newCamera()
@@ -120,7 +119,7 @@ public class RobotContainer {
                         .withTransform(camTrans2)
                         .build();
         aprilTagCamSim.addCamera(simCam2);
-        reefCam2.setCamera(aprilTagCamSim.getAprilTagCamSims().get(1).getCam());
+        reefCam2.setCamera(simCam2.getCam());
 
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         climber = new ClimberSubsystem();
@@ -154,18 +153,18 @@ public class RobotContainer {
      * joysticks}.
      */
     public void updateVision() {
-        for (AprilTagSubsystem aprilTagSubsystem : aprilTagSubsystems) {
-            Optional<AprilTagPose> aprilTagPoseOpt = aprilTagSubsystem.getEstimatedPose();
-
-            if (aprilTagPoseOpt.isPresent() && !drivetrain.isMotionBlur()) {
-                AprilTagPose pose = aprilTagPoseOpt.get();
-
-                if (pose.getNumTags() > 0) {
-                    drivetrain.addVisionMeasurement(
-                            pose.getEstimatedRobotPose(), pose.getTimestamp());
-                }
-            }
-        }
+        //        for (AprilTagSubsystem aprilTagSubsystem : aprilTagSubsystems) {
+        //            Optional<AprilTagPose> aprilTagPoseOpt = aprilTagSubsystem.getEstimatedPose();
+        //
+        //            if (aprilTagPoseOpt.isPresent() && !drivetrain.isMotionBlur()) {
+        //                AprilTagPose pose = aprilTagPoseOpt.get();
+        //
+        //                if (pose.getNumTags() > 0) {
+        //                    drivetrain.addVisionMeasurement(
+        //                            pose.getEstimatedRobotPose(), pose.getTimestamp());
+        //                }
+        //            }
+        //        }
     }
 
     public void updateVisionSim() {
@@ -173,6 +172,8 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        DriverStation.silenceJoystickConnectionWarning(true);
+
         drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(
                         () ->

@@ -23,7 +23,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private final Transform3d cameraTransform;
     private final PhotonPoseEstimator photonPoseEstimator;
     private final CommandSwerveDrivetrain drivetrain;
-    private AprilTagResults aprilTagResults = null;
+    private AprilTagResults aprilTagResults;
     private double maxAmbiguity = 0.3;
     private PhotonTrackedTarget currentBestDetection;
     private double currentBestDetectionTimestamp;
@@ -69,6 +69,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     @Override
     public void periodic() {
         photonPoseEstimator.setLastPose(drivetrain.getState().Pose);
+
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
         if (results.isEmpty()) {
