@@ -109,7 +109,7 @@ public class ReefAlignCommand extends Command {
         Pose2d targetBranchPose =
                 targetVisionPose
                         .transformBy(isLeftBranch ? leftBranchTransform : rightBranchTransform)
-                        .transformBy(new Transform2d(0.4, 0, Rotation2d.kZero));
+                        .transformBy(new Transform2d(0.2, 0, Rotation2d.kZero));
         field.setRobotPose(
                 reefCamDetection
                         .getRobotInFieldPose()
