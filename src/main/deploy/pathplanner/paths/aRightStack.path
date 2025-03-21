@@ -16,12 +16,28 @@
     },
     {
       "anchor": {
-        "x": 1.926,
-        "y": 2.066
+        "x": 2.5286736641221377,
+        "y": 2.358754770992365
       },
       "prevControl": {
-        "x": 2.3494098271352035,
-        "y": 3.646299843322396
+        "x": 2.627153488766931,
+        "y": 2.588541028496879
+      },
+      "nextControl": {
+        "x": 2.430193839477344,
+        "y": 2.128968513487851
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.7332299618320612,
+        "y": 2.1661736641221365
+      },
+      "prevControl": {
+        "x": 2.110019083969466,
+        "y": 2.1326812977099223
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +50,7 @@
   "eventMarkers": [
     {
       "name": "Stow",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.2,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -45,8 +61,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 1.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

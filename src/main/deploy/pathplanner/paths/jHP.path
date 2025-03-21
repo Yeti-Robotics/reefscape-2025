@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.78,
+        "x": 4.75,
         "y": 5.3
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.83175,
+        "x": 3.8017499999999997,
         "y": 6.01875
       },
       "isLocked": false,
@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 1.533,
+        "x": 1.5333,
         "y": 7.215
       },
       "prevControl": {
-        "x": 3.2659499999999997,
+        "x": 3.26625,
         "y": 6.55275
       },
       "nextControl": null,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "Stow",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.09836065573770345,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -45,8 +45,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 1.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

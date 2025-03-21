@@ -114,7 +114,7 @@ public class RobotContainer {
      * Use this method to define your trigger->command mappings. Triggers can be created via the
      * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
      * predicate, or via the named factories in {@link
-     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
+     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID} subclasses for {@link
      * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
      * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
      * joysticks}.
@@ -132,7 +132,7 @@ public class RobotContainer {
         }
     }
 
-    //    public void updateVisionSim() {
+    //    publihc void updateVisionSim() {
     //        aprilTagCamSim.update(drivetrain.getState().Pose);
     //    }
 
@@ -151,6 +151,7 @@ public class RobotContainer {
                                         .withRotationalRate(
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
+
         primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         primaryXboxController
@@ -159,6 +160,19 @@ public class RobotContainer {
         primaryXboxController
                 .rightBumper()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
+        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
+        primaryXboxController
+                .x()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
+
+        secondaryXboxController
+                .a()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+        secondaryXboxController
+                .b()
+                .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
         secondaryXboxController
                 .povUp()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
@@ -193,13 +207,13 @@ public class RobotContainer {
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
 
-        simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
-        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
-        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
-        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
-        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
-        simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+//        simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+//        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+//        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+//        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
+//        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+//        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
+//        simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
     }
 
     public void updateMechanisms() {
