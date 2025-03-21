@@ -15,6 +15,7 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 public class ReefAlignCommand extends Command {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
@@ -42,14 +43,23 @@ public class ReefAlignCommand extends Command {
     PIDController movementXPIDController = new PIDController(3, 0, 0);
     PIDController movementYPIDController = new PIDController(3, 0, 0);
     Pose2d initialBranchPos;
+    DoubleSupplier joyX;
+    DoubleSupplier joyY;
+    DoubleSupplier rotation;
 
     public ReefAlignCommand(
             CommandSwerveDrivetrain commandSwerveDrivetrain,
             AprilTagSubsystem reefCam1,
-            AprilTagSubsystem reefCam2) {
+            AprilTagSubsystem reefCam2,
+            DoubleSupplier joyX,
+            DoubleSupplier joyY,
+            DoubleSupplier rotation) {
         this.commandSwerveDrivetrain = commandSwerveDrivetrain;
         this.reefCam1 = reefCam1;
         this.reefCam2 = reefCam2;
+        this.joyX = joyX;
+        this.joyY = joyY;
+        this.rotation = rotation;
 
         swerveReq.HeadingController.setPID(4, 0, 0);
         swerveReq.HeadingController.setTolerance(0.07);
@@ -109,7 +119,7 @@ public class ReefAlignCommand extends Command {
         Pose2d targetBranchPose =
                 targetVisionPose
                         .transformBy(isLeftBranch ? leftBranchTransform : rightBranchTransform)
-                        .transformBy(new Transform2d(0.2, 0, Rotation2d.kZero));
+                        .transformBy(new Transform2d(0.05, 0, Rotation2d.kZero));
         field.setRobotPose(
                 reefCamDetection
                         .getRobotInFieldPose()
@@ -121,6 +131,8 @@ public class ReefAlignCommand extends Command {
         Pose2d drivetrainPose = commandSwerveDrivetrain.getState().Pose;
         SmartDashboard.putData("ATarget Branch Pose", field);
         SmartDashboard.putData("ATarget Vision Pose", field2);
+        SmartDashboard.putNumber("ErrorX", movementXPIDController.getError());
+        SmartDashboard.putNumber("ErrorY", movementYPIDController.getError());
 
         double degreeAprilTag = lockedOnAprilTag.getRobotToTargetPose().getRotation().getDegrees();
         boolean isRightFacingReef = Math.abs(degreeAprilTag - 90) > Math.abs(degreeAprilTag + 90);

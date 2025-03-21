@@ -126,7 +126,14 @@ public class RobotContainer {
         climber = new ClimberSubsystem();
         coralManipulator = new CoralManipulatorSystem();
         mechanisms = new Mechanisms();
-        alignToReefCmd = new ReefAlignCommand(drivetrain, reefCam1, reefCam2);
+        alignToReefCmd =
+                new ReefAlignCommand(
+                        drivetrain,
+                        reefCam1,
+                        reefCam2,
+                        primaryXboxController::getLeftX,
+                        primaryXboxController::getLeftY,
+                        primaryXboxController::getRightX);
 
         configureBindings();
 
@@ -191,6 +198,8 @@ public class RobotContainer {
                                                         * TunerConstants.MaFxAngularRate)));
 
         primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+        primaryXboxController.y().onTrue(coralManipulator.selectQueuedStateCommand());
 
         primaryXboxController
                 .leftBumper()
