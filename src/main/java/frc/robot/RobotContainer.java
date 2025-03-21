@@ -132,6 +132,10 @@ public class RobotContainer {
         }
     }
 
+    //    public void updateVisionSim() {
+    //        aprilTagCamSim.update(drivetrain.getState().Pose);
+    //    }
+
     private void configureBindings() {
         drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(
