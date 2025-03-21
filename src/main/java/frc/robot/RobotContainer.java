@@ -235,11 +235,6 @@ public class RobotContainer {
                 .povLeft()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
 
-        //
-        // primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
-        //
-        // primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-
         primaryXboxController.leftTrigger().whileTrue(alignToReefCmd);
         secondaryXboxController.start().onTrue(alignToReefCmd.toggleBranchSelection());
 
