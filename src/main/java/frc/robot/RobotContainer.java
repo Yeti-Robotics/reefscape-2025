@@ -225,8 +225,8 @@ public class RobotContainer {
         //
         // primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
 
-        primaryXboxController.leftTrigger().whileTrue(alignToReefCmd);
-        secondaryXboxController.y().onTrue(alignToReefCmd.toggleBranchSelection());
+        primaryXboxController.y().whileTrue(alignToReefCmd);
+        secondaryXboxController.start().onTrue(alignToReefCmd.toggleBranchSelection());
 
         secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         secondaryXboxController
@@ -235,6 +235,8 @@ public class RobotContainer {
 
         primaryXboxController.a().whileTrue(climber.spinClimber(climber.climbSpeed));
         primaryXboxController.b().whileTrue(climber.spinClimber(climber.unClimbSpeed));
+
+        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
 
         primaryXboxController
                 .x()
