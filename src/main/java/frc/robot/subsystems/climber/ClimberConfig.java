@@ -33,11 +33,7 @@ class ClimberConfig {
                     .withFeedback(
                             new FeedbackConfigs()
                                     .withRotorToSensorRatio(5.333333333333333)
-                                    .withSensorToMechanismRatio(3.47222222222222))
-                    .withSoftwareLimitSwitch(
-                            new SoftwareLimitSwitchConfigs()
-                                    .withForwardSoftLimitEnable(true)
-                                    .withForwardSoftLimitThreshold(0.05));
+                                    .withSensorToMechanismRatio(3.47222222222222));
     static final CANcoderConfiguration cancoderConfiguration =
             new CANcoderConfiguration()
                     .withMagnetSensor(

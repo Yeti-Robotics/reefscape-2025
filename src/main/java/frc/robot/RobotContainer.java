@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNamedCommands;
+import frc.robot.constants.Constants;
 import frc.robot.commands.ReefAlignCommand;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
@@ -34,6 +35,8 @@ import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.Mechanisms;
+import frc.robot.util.sim.vision.AprilTagCamSim;
+import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
 import java.util.Optional;
 
@@ -47,7 +50,7 @@ public class RobotContainer {
 
     public final CommandXboxController primaryXboxController;
     public final CommandXboxController secondaryXboxController;
-    private final CommandJoystick simJoy = new CommandJoystick(0);
+    private final CommandJoystick simJoy = new CommandJoystick(2);
 
     @Logged(name = "Vision/Limelight")
     public final LimelightAprilTagSystem limelight;
@@ -94,7 +97,6 @@ public class RobotContainer {
     AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
     private final Mechanisms mechanisms;
     private final ReefAlignCommand alignToReefCmd;
-
     private final AprilTagSubsystem[] aprilTagSubsystems;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -155,7 +157,7 @@ public class RobotContainer {
      * Use this method to define your trigger->command mappings. Triggers can be created via the
      * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
      * predicate, or via the named factories in {@link
-     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
+     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID} subclasses for {@link
      * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
      * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
      * joysticks}.
@@ -207,6 +209,19 @@ public class RobotContainer {
         primaryXboxController
                 .rightBumper()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
+        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
+        primaryXboxController
+                .x()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
+
+        secondaryXboxController
+                .a()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+        secondaryXboxController
+                .b()
+                .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
         secondaryXboxController
                 .povUp()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
@@ -225,40 +240,18 @@ public class RobotContainer {
         //
         // primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
 
-        primaryXboxController.y().whileTrue(alignToReefCmd);
+        primaryXboxController.leftTrigger().whileTrue(alignToReefCmd);
         secondaryXboxController.start().onTrue(alignToReefCmd.toggleBranchSelection());
 
         secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+        secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));
+        secondaryXboxController.rightBumper().whileTrue(climber.spinClimber(climber.unClimbSpeed));
         secondaryXboxController
-                .b()
-                .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
-
-        primaryXboxController.a().whileTrue(climber.spinClimber(climber.climbSpeed));
-        primaryXboxController.b().whileTrue(climber.spinClimber(climber.unClimbSpeed));
-
-        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
-
-        primaryXboxController
-                .x()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
-
-        secondaryXboxController
-                .a()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+                .y()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-
-        //        simJoy.button(1).whileTrue(alignToReefCmd);
-        //        simJoy.button(2).onTrue(alignToReefCmd.toggleBranchSelection());
-        //        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
-        //        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
-        //        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
-        //        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
-        //
-        // simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        //
-        // simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
     }
 
     public void updateMechanisms() {

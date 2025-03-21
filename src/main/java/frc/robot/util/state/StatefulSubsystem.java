@@ -76,17 +76,18 @@ public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase
     public Command transitionTo(T state, T fallbackState) {
         Runnable finishOrFail =
                 () -> {
-                    if (!isTransitioning()) {
-                        finishTransition();
-                    } else {
+                    if (!isTransitionFinished()) {
                         failTransition();
+                    } else {
+                        finishTransition();
                     }
 
                     if (currentState == null) {
                         currentState = defaultState;
                     }
                 };
-        return startEnd(() -> transitionToState(state), finishOrFail)
+
+        return startEnd(() -> transitionToState(state), () -> {})
                 .until(() -> !isTransitioning())
                 .handleInterrupt(finishOrFail);
     }
