@@ -13,19 +13,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lineG"
+            "pathName": "lineK"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Score4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "gBarge"
+            "name": "AutoAlignRightBranch"
           }
         }
       ]

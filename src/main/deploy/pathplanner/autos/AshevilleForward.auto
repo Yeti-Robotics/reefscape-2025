@@ -13,7 +13,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lineG"
+            "pathName": "midStartPath"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "midEndPath"
           }
         },
         {
@@ -23,9 +35,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "gBarge"
+            "name": "Stow"
           }
         }
       ]

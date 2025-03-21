@@ -13,19 +13,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lineG"
+            "pathName": "lineBack"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "backline"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "midStartPath"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "midEndPath"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Score4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "gBarge"
           }
         }
       ]

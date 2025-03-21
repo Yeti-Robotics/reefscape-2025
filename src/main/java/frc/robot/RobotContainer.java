@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNamedCommands;
-import frc.robot.constants.Constants;
 import frc.robot.commands.ReefAlignCommand;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
@@ -138,7 +136,7 @@ public class RobotContainer {
 
         configureBindings();
 
-        var namedCommands = new AutoNamedCommands(coralManipulator);
+        var namedCommands = new AutoNamedCommands(coralManipulator, alignToReefCmd);
         namedCommands.registerCommands();
 
         autoChooser = AutoBuilder.buildAutoChooser("driveForward");
@@ -181,7 +179,7 @@ public class RobotContainer {
     //    }
 
     private void configureBindings() {
-        DriverStation.silenceJoystickConnectionWarning(true);
+        //        DriverStation.silenceJoystickConnectionWarning(true);
 
         drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(
@@ -209,7 +207,6 @@ public class RobotContainer {
         primaryXboxController
                 .x()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
-
         secondaryXboxController
                 .a()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
@@ -236,7 +233,9 @@ public class RobotContainer {
         secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));
         secondaryXboxController.rightBumper().whileTrue(climber.spinClimber(climber.unClimbSpeed));
-        secondaryXboxController.y().onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
+        secondaryXboxController
+                .y()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
