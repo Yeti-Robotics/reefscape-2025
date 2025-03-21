@@ -1,11 +1,10 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,25 +32,15 @@ public class ReefAlignCommand extends Command {
                     edu.wpi.first.units.Units.Meters.of(Units.inchesToMeters(-6.47)),
                     Rotation2d.kZero);
     private final SwerveRequest.RobotCentricFacingAngle swerveReq =
-            new SwerveRequest.RobotCentricFacingAngle();
+            new SwerveRequest.RobotCentricFacingAngle()
+                    .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
+                    .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1);
     private final SwerveRequest.Idle stopReq = new SwerveRequest.Idle();
     AprilTagDetection lockedOnAprilTag;
     boolean isLeftBranch = false;
     boolean isFinished = false;
-    ProfiledPIDController movementXPIDController =
-            new ProfiledPIDController(
-                    3,
-                    0,
-                    0,
-                    new TrapezoidProfile.Constraints(
-                            TunerConstants.MAX_VELOCITY_METERS_PER_SECOND - 1, 3.0));
-    ProfiledPIDController movementYPIDController =
-            new ProfiledPIDController(
-                    3,
-                    0,
-                    0,
-                    new TrapezoidProfile.Constraints(
-                            TunerConstants.MAX_VELOCITY_METERS_PER_SECOND - 1, 3.0));
+    PIDController movementXPIDController = new PIDController(3, 0, 0);
+    PIDController movementYPIDController = new PIDController(3, 0, 0);
     Pose2d initialBranchPos;
 
     public ReefAlignCommand(
@@ -62,9 +51,12 @@ public class ReefAlignCommand extends Command {
         this.reefCam1 = reefCam1;
         this.reefCam2 = reefCam2;
 
-        swerveReq.HeadingController.setPID(8.2032, 0, 0.97656);
+        swerveReq.HeadingController.setPID(4, 0, 0);
         swerveReq.HeadingController.setTolerance(0.07);
         swerveReq.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
+
+        movementXPIDController.setTolerance(0.07);
+        movementYPIDController.setTolerance(0.07);
     }
 
     public Optional<AprilTagDetection> getReefCamDetection() {
@@ -117,7 +109,7 @@ public class ReefAlignCommand extends Command {
         Pose2d targetBranchPose =
                 targetVisionPose
                         .transformBy(isLeftBranch ? leftBranchTransform : rightBranchTransform)
-                        .transformBy(new Transform2d(0.15, 0, new Rotation2d()));
+                        .transformBy(new Transform2d(0.4, 0, Rotation2d.kZero));
         field.setRobotPose(
                 reefCamDetection
                         .getRobotInFieldPose()
@@ -141,11 +133,8 @@ public class ReefAlignCommand extends Command {
         Rotation2d driveTargetDirection =
                 drivetrainPose.getRotation().minus(visionTargetAngularDistance);
 
-        Pose2d placeHolderPose = new Pose2d();
-        double veloX =
-                movementXPIDController.calculate(placeHolderPose.getX(), targetBranchPose.getX());
-        double veloY =
-                movementYPIDController.calculate(placeHolderPose.getY(), targetBranchPose.getY());
+        double veloX = movementXPIDController.calculate(0, targetBranchPose.getX());
+        double veloY = movementYPIDController.calculate(0, targetBranchPose.getY());
 
         commandSwerveDrivetrain.setControl(
                 swerveReq

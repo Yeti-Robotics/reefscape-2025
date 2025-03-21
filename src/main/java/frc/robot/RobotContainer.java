@@ -24,16 +24,18 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNamedCommands;
 import frc.robot.commands.ReefAlignCommand;
 import frc.robot.subsystems.climber.ClimberSubsystem;
+import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
+import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
+import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.Mechanisms;
-import frc.robot.util.sim.vision.AprilTagCamSim;
-import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
+import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -65,7 +67,7 @@ public class RobotContainer {
             new Transform3d(
                     new Translation3d(
                             Units.inchesToMeters(-8),
-                            Units.inchesToMeters(-7),
+                            Units.inchesToMeters(7),
                             Units.inchesToMeters(22.5 - 7)),
                     new Rotation3d(0, Math.toRadians(15), Math.toRadians(-90)));
 
@@ -98,27 +100,27 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         primaryXboxController = new CommandXboxController(0);
-        secondaryXboxController = new CommandXboxController(2);
+        secondaryXboxController = new CommandXboxController(1);
         drivetrain = TunerConstants.createDrivetrain();
 
         reefCam1 = new PhotonAprilTagSystem("ScoreCam", camTrans1, drivetrain);
         reefCam2 = new PhotonAprilTagSystem("ClimbCam", camTrans2, drivetrain);
 
-        AprilTagCamSim simCam1 =
-                AprilTagCamSimBuilder.newCamera()
-                        .withCameraName("ScoreCam")
-                        .withTransform(camTrans1)
-                        .build();
-        aprilTagCamSim.addCamera(simCam1);
-        reefCam1.setCamera(simCam1.getCam());
-
-        AprilTagCamSim simCam2 =
-                AprilTagCamSimBuilder.newCamera()
-                        .withCameraName("ClimbCam")
-                        .withTransform(camTrans2)
-                        .build();
-        aprilTagCamSim.addCamera(simCam2);
-        reefCam2.setCamera(simCam2.getCam());
+        //        AprilTagCamSim simCam1 =
+        //                AprilTagCamSimBuilder.newCamera()
+        //                        .withCameraName("ScoreCam")
+        //                        .withTransform(camTrans1)
+        //                        .build();
+        //        aprilTagCamSim.addCamera(simCam1);
+        //        reefCam1.setCamera(simCam1.getCam());
+        //
+        //        AprilTagCamSim simCam2 =
+        //                AprilTagCamSimBuilder.newCamera()
+        //                        .withCameraName("ClimbCam")
+        //                        .withTransform(camTrans2)
+        //                        .build();
+        //        aprilTagCamSim.addCamera(simCam2);
+        //        reefCam2.setCamera(simCam2.getCam());
 
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         climber = new ClimberSubsystem();
@@ -152,23 +154,23 @@ public class RobotContainer {
      * joysticks}.
      */
     public void updateVision() {
-        //        for (AprilTagSubsystem aprilTagSubsystem : aprilTagSubsystems) {
-        //            Optional<AprilTagPose> aprilTagPoseOpt = aprilTagSubsystem.getEstimatedPose();
-        //
-        //            if (aprilTagPoseOpt.isPresent() && !drivetrain.isMotionBlur()) {
-        //                AprilTagPose pose = aprilTagPoseOpt.get();
-        //
-        //                if (pose.getNumTags() > 0) {
-        //                    drivetrain.addVisionMeasurement(
-        //                            pose.getEstimatedRobotPose(), pose.getTimestamp());
-        //                }
-        //            }
-        //        }
+        for (AprilTagSubsystem aprilTagSubsystem : aprilTagSubsystems) {
+            Optional<AprilTagPose> aprilTagPoseOpt = aprilTagSubsystem.getEstimatedPose();
+
+            if (aprilTagPoseOpt.isPresent() && !drivetrain.isMotionBlur()) {
+                AprilTagPose pose = aprilTagPoseOpt.get();
+
+                if (pose.getNumTags() > 0) {
+                    drivetrain.addVisionMeasurement(
+                            pose.getEstimatedRobotPose(), pose.getTimestamp());
+                }
+            }
+        }
     }
 
-    public void updateVisionSim() {
-        aprilTagCamSim.update(drivetrain.getState().Pose);
-    }
+    //    public void updateVisionSim() {
+    //        aprilTagCamSim.update(drivetrain.getState().Pose);
+    //    }
 
     private void configureBindings() {
         DriverStation.silenceJoystickConnectionWarning(true);
@@ -187,54 +189,57 @@ public class RobotContainer {
                                         .withRotationalRate(
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
-        //
-        // primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-        //
-        //        primaryXboxController
-        //                .leftBumper()
-        //                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
-        //        primaryXboxController
-        //                .rightBumper()
-        //
-        // .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
-        //        secondaryXboxController
-        //                .povUp()
-        //                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
-        //        secondaryXboxController
-        //                .povRight()
-        //                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
-        //        secondaryXboxController
-        //                .povDown()
-        //                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
-        //        secondaryXboxController
-        //                .povLeft()
-        //                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+
+        primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+
+        primaryXboxController
+                .leftBumper()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
+        primaryXboxController
+                .rightBumper()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+        secondaryXboxController
+                .povUp()
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
+        secondaryXboxController
+                .povRight()
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
+        secondaryXboxController
+                .povDown()
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
+        secondaryXboxController
+                .povLeft()
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+
         //
         // primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
-        //        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
         //
-        //
-        // secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
-        //        secondaryXboxController
-        //                .b()
-        //                .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
-        //
-        //        primaryXboxController.a().whileTrue(climber.spinClimber(climber.climbSpeed));
-        //        primaryXboxController.b().whileTrue(climber.spinClimber(climber.unClimbSpeed));
-        //
-        //        primaryXboxController
-        //                .x()
-        //                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
-        //
-        //        secondaryXboxController
-        //                .a()
-        //                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        //
-        //        coralManipulator.grabber.hasCoralTrigger.onTrue(
-        //                coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        // primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
 
-        simJoy.button(1).whileTrue(alignToReefCmd);
-        simJoy.button(2).onTrue(alignToReefCmd.toggleBranchSelection());
+        primaryXboxController.leftTrigger().whileTrue(alignToReefCmd);
+        secondaryXboxController.y().onTrue(alignToReefCmd.toggleBranchSelection());
+
+        secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+        secondaryXboxController
+                .b()
+                .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
+
+        primaryXboxController.a().whileTrue(climber.spinClimber(climber.climbSpeed));
+        primaryXboxController.b().whileTrue(climber.spinClimber(climber.unClimbSpeed));
+
+        primaryXboxController
+                .x()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
+
+        secondaryXboxController
+                .a()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+
+        coralManipulator.grabber.hasCoralTrigger.onTrue(
+                coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+
+        //        simJoy.button(1).whileTrue(alignToReefCmd);
+        //        simJoy.button(2).onTrue(alignToReefCmd.toggleBranchSelection());
         //        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
         //        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
         //        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
