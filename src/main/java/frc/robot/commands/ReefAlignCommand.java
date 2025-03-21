@@ -61,7 +61,7 @@ public class ReefAlignCommand extends Command {
         this.joyY = joyY;
         this.rotation = rotation;
 
-        swerveReq.HeadingController.setPID(4, 0, 0);
+        swerveReq.HeadingController.setPID(6, 0, 0);
         swerveReq.HeadingController.setTolerance(0.07);
         swerveReq.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -119,7 +119,7 @@ public class ReefAlignCommand extends Command {
         Pose2d targetBranchPose =
                 targetVisionPose
                         .transformBy(isLeftBranch ? leftBranchTransform : rightBranchTransform)
-                        .transformBy(new Transform2d(0.05, 0, Rotation2d.kZero));
+                        .transformBy(new Transform2d(0.1, 0, Rotation2d.kZero));
         field.setRobotPose(
                 reefCamDetection
                         .getRobotInFieldPose()
