@@ -34,7 +34,6 @@ import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSyst
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagSimulator;
-
 import java.util.Optional;
 
 /**
@@ -202,6 +201,7 @@ public class RobotContainer {
         primaryXboxController
                 .rightBumper()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
         primaryXboxController
                 .x()
@@ -225,6 +225,9 @@ public class RobotContainer {
         secondaryXboxController
                 .povLeft()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        secondaryXboxController
+                .leftTrigger()
+                .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
 
         primaryXboxController.y().whileTrue(alignToReefCmd);
         secondaryXboxController.start().onTrue(alignToReefCmd.toggleBranchSelection());
