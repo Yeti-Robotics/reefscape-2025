@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.800102459016393,
-        "y": 5.277715163934426
+        "x": 3.861,
+        "y": 5.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.925102459016393,
-        "y": 5.0612088129883155
+        "x": 3.986,
+        "y": 5.28349364905389
       },
       "isLocked": false,
       "linkedName": "KLReef"
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -150.0
+    "rotation": -150.89526837258134
   },
   "useDefaultConstraints": false
 }

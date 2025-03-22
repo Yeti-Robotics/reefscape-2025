@@ -23,15 +23,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Score4"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "midMid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score4"
           }
         },
         {
