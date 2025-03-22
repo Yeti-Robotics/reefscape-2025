@@ -39,6 +39,12 @@
           "data": {
             "name": "Stow"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rollout"
+          }
         }
       ]
     }
