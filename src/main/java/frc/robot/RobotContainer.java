@@ -72,11 +72,11 @@ public class RobotContainer {
                             Units.inchesToMeters(22.5 - 7)),
                     new Rotation3d(0, Math.toRadians(15), Math.toRadians(-90)));
 
-        @Logged(name = "Vision/ScoreCam")
-        public final PhotonAprilTagSystem reefCam1;
+    @Logged(name = "Vision/ScoreCam")
+    public final PhotonAprilTagSystem reefCam1;
 
-        @Logged(name = "Vision/ClimbCam")
-        public final PhotonAprilTagSystem reefCam2;
+    @Logged(name = "Vision/ClimbCam")
+    public final PhotonAprilTagSystem reefCam2;
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
@@ -103,37 +103,37 @@ public class RobotContainer {
         secondaryXboxController = new CommandXboxController(1);
         drivetrain = TunerConstants.createDrivetrain();
 
-                reefCam1 = new PhotonAprilTagSystem("ScoreCam", camTrans1, drivetrain);
-                reefCam2 = new PhotonAprilTagSystem("ClimbCam", camTrans2, drivetrain);
+        reefCam1 = new PhotonAprilTagSystem("ScoreCam", camTrans1, drivetrain);
+        reefCam2 = new PhotonAprilTagSystem("ClimbCam", camTrans2, drivetrain);
 
-                AprilTagCamSim simCam1 =
-                        AprilTagCamSimBuilder.newCamera()
-                                .withCameraName("ScoreCam")
-                                .withTransform(camTrans1)
-                                .build();
-                aprilTagCamSim.addCamera(simCam1);
-                reefCam1.setCamera(simCam1.getCam());
+        AprilTagCamSim simCam1 =
+                AprilTagCamSimBuilder.newCamera()
+                        .withCameraName("ScoreCam")
+                        .withTransform(camTrans1)
+                        .build();
+        aprilTagCamSim.addCamera(simCam1);
+        reefCam1.setCamera(simCam1.getCam());
 
-                AprilTagCamSim simCam2 =
-                        AprilTagCamSimBuilder.newCamera()
-                                .withCameraName("ClimbCam")
-                                .withTransform(camTrans2)
-                                .build();
-                aprilTagCamSim.addCamera(simCam2);
-                reefCam2.setCamera(simCam2.getCam());
+        AprilTagCamSim simCam2 =
+                AprilTagCamSimBuilder.newCamera()
+                        .withCameraName("ClimbCam")
+                        .withTransform(camTrans2)
+                        .build();
+        aprilTagCamSim.addCamera(simCam2);
+        reefCam2.setCamera(simCam2.getCam());
 
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         climber = new ClimberSubsystem();
         coralManipulator = new CoralManipulatorSystem();
         mechanisms = new Mechanisms();
-        alignToReefCmd = null;
-                        new ReefAlignCommand(
-                                drivetrain,
-                                reefCam1,
-                                reefCam2,
-                                primaryXboxController::getLeftX,
-                                primaryXboxController::getLeftY,
-                                primaryXboxController::getRightX);
+        alignToReefCmd =
+        new ReefAlignCommand(
+                drivetrain,
+                reefCam1,
+                reefCam2,
+                primaryXboxController::getLeftX,
+                primaryXboxController::getLeftY,
+                primaryXboxController::getRightX);
 
         configureBindings();
 
@@ -175,9 +175,9 @@ public class RobotContainer {
         }
     }
 
-        public void updateVisionSim() {
-            aprilTagCamSim.update(drivetrain.getState().Pose);
-        }
+    public void updateVisionSim() {
+        aprilTagCamSim.update(drivetrain.getState().Pose);
+    }
 
     private void configureBindings() {
 
@@ -231,8 +231,8 @@ public class RobotContainer {
                 .leftTrigger()
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
 
-                primaryXboxController.y().whileTrue(alignToReefCmd);
-                secondaryXboxController.start().onTrue(alignToReefCmd.toggleBranchSelection());
+        primaryXboxController.y().whileTrue(alignToReefCmd);
+        secondaryXboxController.start().onTrue(alignToReefCmd.toggleBranchSelection());
 
         secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));
