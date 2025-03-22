@@ -179,7 +179,6 @@ public class RobotContainer {
     //    }
 
     private void configureBindings() {
-        //        DriverStation.silenceJoystickConnectionWarning(true);
 
         drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(
