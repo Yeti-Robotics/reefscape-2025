@@ -35,7 +35,6 @@ import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSyst
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagSimulator;
-
 import java.util.Optional;
 
 /**
@@ -138,7 +137,8 @@ public class RobotContainer {
         driveForwardALittleCommand = new DriveForwardALittleCommand(drivetrain);
         configureBindings();
 
-        var namedCommands = new AutoNamedCommands(coralManipulator, alignToReefCmd, driveForwardALittleCommand);
+        var namedCommands =
+                new AutoNamedCommands(coralManipulator, alignToReefCmd, driveForwardALittleCommand);
         namedCommands.registerCommands();
 
         autoChooser = AutoBuilder.buildAutoChooser("driveForward");

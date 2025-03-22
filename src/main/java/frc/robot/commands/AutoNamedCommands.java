@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -11,7 +13,9 @@ public class AutoNamedCommands {
     private final DriveForwardALittleCommand driveForwardALittleCommand;
 
     public AutoNamedCommands(
-            CoralManipulatorSystem coralManipulator, ReefAlignCommand reefAlignCommand, DriveForwardALittleCommand driveForwardALittleCommand) {
+            CoralManipulatorSystem coralManipulator,
+            ReefAlignCommand reefAlignCommand,
+            DriveForwardALittleCommand driveForwardALittleCommand) {
         this.coralManipulator = coralManipulator;
         this.reefAlignCommand = reefAlignCommand;
         this.driveForwardALittleCommand = driveForwardALittleCommand;
@@ -25,7 +29,9 @@ public class AutoNamedCommands {
                 "HPIntake", coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
 
         NamedCommands.registerCommand("Reef align", reefAlignCommand);
-        NamedCommands.registerCommand("Drive Forward a Little Bit", driveForwardALittleCommand);
+        NamedCommands.registerCommand(
+                "Drive Forward a Little Bit",
+                driveForwardALittleCommand.withDistance(Inches.of(5)));
 
         NamedCommands.registerCommand(
                 "L1", coralManipulator.transitionTo(CoralManipulatorState.L1));
