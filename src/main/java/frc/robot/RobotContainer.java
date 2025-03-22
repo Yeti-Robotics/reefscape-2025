@@ -203,8 +203,7 @@ public class RobotContainer {
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-        primaryXboxController
-                .x()
+        secondaryXboxController.rightTrigger()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
         secondaryXboxController
                 .a()
