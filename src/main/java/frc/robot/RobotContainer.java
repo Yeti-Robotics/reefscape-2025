@@ -31,7 +31,6 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
-import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagSimulator;
 import java.util.Optional;
@@ -70,11 +69,11 @@ public class RobotContainer {
                             Units.inchesToMeters(22.5 - 7)),
                     new Rotation3d(0, Math.toRadians(15), Math.toRadians(-90)));
 
-//    @Logged(name = "Vision/ScoreCam")
-//    public final PhotonAprilTagSystem reefCam1;
-//
-//    @Logged(name = "Vision/ClimbCam")
-//    public final PhotonAprilTagSystem reefCam2;
+    //    @Logged(name = "Vision/ScoreCam")
+    //    public final PhotonAprilTagSystem reefCam1;
+    //
+    //    @Logged(name = "Vision/ClimbCam")
+    //    public final PhotonAprilTagSystem reefCam2;
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
@@ -101,8 +100,8 @@ public class RobotContainer {
         secondaryXboxController = new CommandXboxController(1);
         drivetrain = TunerConstants.createDrivetrain();
 
-//        reefCam1 = new PhotonAprilTagSystem("ScoreCam", camTrans1, drivetrain);
-//        reefCam2 = new PhotonAprilTagSystem("ClimbCam", camTrans2, drivetrain);
+        //        reefCam1 = new PhotonAprilTagSystem("ScoreCam", camTrans1, drivetrain);
+        //        reefCam2 = new PhotonAprilTagSystem("ClimbCam", camTrans2, drivetrain);
 
         //        AprilTagCamSim simCam1 =
         //                AprilTagCamSimBuilder.newCamera()
@@ -125,13 +124,13 @@ public class RobotContainer {
         coralManipulator = new CoralManipulatorSystem();
         mechanisms = new Mechanisms();
         alignToReefCmd = null;
-//                new ReefAlignCommand(
-//                        drivetrain,
-//                        reefCam1,
-//                        reefCam2,
-//                        primaryXboxController::getLeftX,
-//                        primaryXboxController::getLeftY,
-//                        primaryXboxController::getRightX);
+        //                new ReefAlignCommand(
+        //                        drivetrain,
+        //                        reefCam1,
+        //                        reefCam2,
+        //                        primaryXboxController::getLeftX,
+        //                        primaryXboxController::getLeftY,
+        //                        primaryXboxController::getRightX);
 
         configureBindings();
 
@@ -140,7 +139,7 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooser("driveForward");
         SmartDashboard.putData("Auto Chooser", autoChooser);
-        aprilTagSubsystems = new AprilTagSubsystem[] {limelight/*, reefCam1, reefCam2*/};
+        aprilTagSubsystems = new AprilTagSubsystem[] {limelight /*, reefCam1, reefCam2*/};
 
         // Set standard deviations to prevent jitter
         // odo data is more trustworthy, lower stddev
@@ -216,7 +215,8 @@ public class RobotContainer {
         secondaryXboxController
                 .povUp()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
-        secondaryXboxController .povRight()
+        secondaryXboxController
+                .povRight()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
         secondaryXboxController
                 .povDown()
