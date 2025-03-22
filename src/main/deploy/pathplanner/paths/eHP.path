@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 5.225,
-        "y": 2.877
+        "y": 2.977
       },
       "prevControl": null,
       "nextControl": {
         "x": 4.384713740458015,
-        "y": 2.2038406488572946
+        "y": 2.3038406488572947
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "eReef"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "rightHP"
     }
   ],
   "rotationTargets": [],
@@ -45,8 +45,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

@@ -5,9 +5,27 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Stow"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "lineE"
+            "pathName": "midStartPath"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "midEndPath"
           }
         },
         {
@@ -17,39 +35,9 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "eHP"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "HPIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "hpD"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "dHP"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "HPIntake"
+            "name": "Stow"
           }
         }
       ]

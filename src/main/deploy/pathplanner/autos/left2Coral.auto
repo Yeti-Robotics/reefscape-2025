@@ -7,18 +7,6 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lineBack"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "bargeLine"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "lineJ"
           }
         },
@@ -62,18 +50,6 @@
           "type": "named",
           "data": {
             "name": "HPIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "hpL"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score4"
           }
         }
       ]
