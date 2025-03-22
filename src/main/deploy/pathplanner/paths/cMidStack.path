@@ -8,24 +8,40 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2327500000000002,
-        "y": 3.269499999999999
+        "x": 2.7798664122137406,
+        "y": 2.827647900763358
+      },
+      "isLocked": false,
+      "linkedName": "cReef"
+    },
+    {
+      "anchor": {
+        "x": 2.3947041984732826,
+        "y": 3.8742843511450378
+      },
+      "prevControl": {
+        "x": 2.548189351852013,
+        "y": 3.676946296800956
+      },
+      "nextControl": {
+        "x": 2.2412190450945526,
+        "y": 4.071622405489119
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.926,
-        "y": 3.9
+        "x": 1.7332299618320612,
+        "y": 4.008253816793893
       },
       "prevControl": {
-        "x": 2.09625,
-        "y": 3.2352499999999993
+        "x": 2.2356154580152663,
+        "y": 4.091984732824427
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "midStack"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +50,7 @@
   "eventMarkers": [
     {
       "name": "Stow",
-      "waypointRelativePos": 0.2,
+      "waypointRelativePos": 0.4,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -45,8 +61,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

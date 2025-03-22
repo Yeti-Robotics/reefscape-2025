@@ -13,25 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Score4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "eHP"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "HPIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "hpD"
+            "name": "L4"
           }
         },
         {
@@ -41,15 +23,9 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "dHP"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "HPIntake"
+            "name": "Stow"
           }
         }
       ]

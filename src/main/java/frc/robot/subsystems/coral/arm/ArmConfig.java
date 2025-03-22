@@ -20,8 +20,8 @@ class ArmConfig {
                     .withKI(0)
                     .withKD(350)
                     .withKG(10)
-                    .withKV(1)
-                    .withKA(2)
+                    .withKV(2)
+                    .withKA(4)
                     .withGravityType(GravityTypeValue.Arm_Cosine);
 
     static final Slot1Configs SLOT_1_WOOD_CONFIGS =
@@ -45,8 +45,8 @@ class ArmConfig {
 
     static final MotionMagicConfigs motionMagicConfigs =
             new MotionMagicConfigs()
-                    .withMotionMagicCruiseVelocity(2)
-                    .withMotionMagicAcceleration(1)
+                    .withMotionMagicCruiseVelocity(4)
+                    .withMotionMagicAcceleration(2)
                     .withMotionMagicJerk(0);
 
     static final TalonFXConfiguration talonFXConfiguration =

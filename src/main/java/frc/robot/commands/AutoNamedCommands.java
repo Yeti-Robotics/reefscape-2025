@@ -7,9 +7,12 @@ import frc.robot.subsystems.coral.*;
 
 public class AutoNamedCommands {
     private final CoralManipulatorSystem coralManipulator;
+    private final ReefAlignCommand reefAlignCommand;
 
-    public AutoNamedCommands(CoralManipulatorSystem coralManipulator) {
+    public AutoNamedCommands(
+            CoralManipulatorSystem coralManipulator, ReefAlignCommand reefAlignCommand) {
         this.coralManipulator = coralManipulator;
+        this.reefAlignCommand = reefAlignCommand;
         registerCommands();
     }
 
@@ -18,6 +21,8 @@ public class AutoNamedCommands {
                 "GroundIntake", coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
         NamedCommands.registerCommand(
                 "HPIntake", coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
+
+        NamedCommands.registerCommand("Reef align", reefAlignCommand);
 
         NamedCommands.registerCommand(
                 "L1", coralManipulator.transitionTo(CoralManipulatorState.L1));
