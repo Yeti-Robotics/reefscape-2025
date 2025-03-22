@@ -19,31 +19,25 @@
         {
           "type": "named",
           "data": {
-            "name": "L2"
+            "name": "L4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Score2"
+            "name": "Score4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "midEndPath"
+            "pathName": "midMid"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Stow"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rollout"
           }
         }
       ]
