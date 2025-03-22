@@ -3,50 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.225,
-        "y": 2.977
+        "x": 7.326455152671757,
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.989213740458015,
-        "y": 2.440340648854962
+        "x": 7.077938725364642,
+        "y": 4.027195318687359
       },
       "isLocked": false,
-      "linkedName": "eReef"
+      "linkedName": "startMid"
     },
     {
       "anchor": {
-        "x": 1.7332299618320612,
-        "y": 2.1661736641221365
+        "x": 6.0840000000000005,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 3.2403864503816795,
-        "y": 2.115935114503816
+        "x": 7.0840000000000005,
+        "y": 4.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "rightStack"
+      "linkedName": "end1stpart"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Stow",
-      "waypointRelativePos": 0.1,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Stow"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -60,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 29.32047587758076
+    "rotation": 88.70817294390783
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

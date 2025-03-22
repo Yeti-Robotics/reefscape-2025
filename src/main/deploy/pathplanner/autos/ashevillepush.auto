@@ -5,75 +5,45 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Stow"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "lineJ"
+            "pathName": "lineBack"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "backline"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "midStartPath"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "midEndPath"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Score4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "jHP"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "HPIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "hpK"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "kHP"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "HPIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "hpL"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "lHP"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "HPIntake"
           }
         }
       ]

@@ -3,7 +3,7 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.533,
+        "x": 1.5333,
         "y": 7.215
       },
       "prevControl": null,
@@ -12,20 +12,20 @@
         "y": 6.6039122137404584
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "leftHP"
     },
     {
       "anchor": {
-        "x": 4.78,
-        "y": 5.3
+        "x": 4.70925,
+        "y": 4.951249999999999
       },
       "prevControl": {
-        "x": 4.060949427480916,
-        "y": 5.884780534351145
+        "x": 3.990199427480916,
+        "y": 5.536030534351144
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "jReef"
     }
   ],
   "rotationTargets": [],
@@ -56,8 +56,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

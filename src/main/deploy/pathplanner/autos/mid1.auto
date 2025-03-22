@@ -9,6 +9,12 @@
           "data": {
             "pathName": "lineG"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score4"
+          }
         }
       ]
     }

@@ -20,11 +20,11 @@ public class AprilTagDetection {
         return fiducialID;
     }
 
-    public Pose2d getRobotPose() {
+    public Pose2d getRobotInFieldPose() {
         return robotPose;
     }
 
-    public Pose2d getTargetPose() {
+    public Pose2d getRobotToTargetPose() {
         return targetPose;
     }
 
