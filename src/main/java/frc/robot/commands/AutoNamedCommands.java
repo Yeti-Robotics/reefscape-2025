@@ -34,7 +34,8 @@ public class AutoNamedCommands {
         NamedCommands.registerCommand(
                 "L4", coralManipulator.transitionTo(CoralManipulatorState.L4));
 
-        NamedCommands.registerCommand("Rollout", coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
+        NamedCommands.registerCommand(
+                "Rollout", coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
 
         NamedCommands.registerCommand(
                 "Score1",
