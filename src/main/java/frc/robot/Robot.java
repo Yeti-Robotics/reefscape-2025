@@ -39,7 +39,9 @@ public class Robot extends TimedRobot {
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());
         Epilogue.bind(this);
-        SmartDashboard.putString("Build Constants", BuildConstants.BUILD_DATE);
+        SmartDashboard.putString("Build Date", BuildConstants.BUILD_DATE);
+        SmartDashboard.putString("GIT SHA", BuildConstants.GIT_SHA);
+        SmartDashboard.putString("Git Branch", BuildConstants.GIT_BRANCH);
     }
 
     /**
