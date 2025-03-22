@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNamedCommands;
+import frc.robot.commands.DriveForwardALittleCommand;
 import frc.robot.commands.ReefAlignCommand;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
@@ -95,6 +96,7 @@ public class RobotContainer {
     private final Mechanisms mechanisms;
     private final ReefAlignCommand alignToReefCmd;
     private final AprilTagSubsystem[] aprilTagSubsystems;
+    private final DriveForwardALittleCommand driveForwardALittleCommand;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -133,10 +135,10 @@ public class RobotContainer {
                         primaryXboxController::getLeftX,
                         primaryXboxController::getLeftY,
                         primaryXboxController::getRightX);
-
+        driveForwardALittleCommand = new DriveForwardALittleCommand(drivetrain);
         configureBindings();
 
-        var namedCommands = new AutoNamedCommands(coralManipulator, alignToReefCmd);
+        var namedCommands = new AutoNamedCommands(coralManipulator, alignToReefCmd, driveForwardALittleCommand);
         namedCommands.registerCommands();
 
         autoChooser = AutoBuilder.buildAutoChooser("driveForward");

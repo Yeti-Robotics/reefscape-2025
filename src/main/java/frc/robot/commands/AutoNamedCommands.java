@@ -8,11 +8,13 @@ import frc.robot.subsystems.coral.*;
 public class AutoNamedCommands {
     private final CoralManipulatorSystem coralManipulator;
     private final ReefAlignCommand reefAlignCommand;
+    private final DriveForwardALittleCommand driveForwardALittleCommand;
 
     public AutoNamedCommands(
-            CoralManipulatorSystem coralManipulator, ReefAlignCommand reefAlignCommand) {
+            CoralManipulatorSystem coralManipulator, ReefAlignCommand reefAlignCommand, DriveForwardALittleCommand driveForwardALittleCommand) {
         this.coralManipulator = coralManipulator;
         this.reefAlignCommand = reefAlignCommand;
+        this.driveForwardALittleCommand = driveForwardALittleCommand;
         registerCommands();
     }
 
@@ -23,6 +25,7 @@ public class AutoNamedCommands {
                 "HPIntake", coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
 
         NamedCommands.registerCommand("Reef align", reefAlignCommand);
+        NamedCommands.registerCommand("Drive Forward a Little Bit", driveForwardALittleCommand);
 
         NamedCommands.registerCommand(
                 "L1", coralManipulator.transitionTo(CoralManipulatorState.L1));
