@@ -127,13 +127,13 @@ public class RobotContainer {
         coralManipulator = new CoralManipulatorSystem();
         mechanisms = new Mechanisms();
         alignToReefCmd =
-        new ReefAlignCommand(
-                drivetrain,
-                reefCam1,
-                reefCam2,
-                primaryXboxController::getLeftX,
-                primaryXboxController::getLeftY,
-                primaryXboxController::getRightX);
+                new ReefAlignCommand(
+                        drivetrain,
+                        reefCam1,
+                        reefCam2,
+                        primaryXboxController::getLeftX,
+                        primaryXboxController::getLeftY,
+                        primaryXboxController::getRightX);
 
         configureBindings();
 
