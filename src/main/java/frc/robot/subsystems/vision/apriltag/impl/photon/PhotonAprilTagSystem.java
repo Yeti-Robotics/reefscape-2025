@@ -27,24 +27,6 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private PhotonTrackedTarget currentBestDetection;
     private double currentBestDetectionTimestamp;
 
-//    @Logged(name = "TagPoses")
-//    public List<Pose2d> getTagPoses() {
-//        return aprilTagResults.getResults().stream()
-//                .map(AprilTagDetection::getRobotToTargetPose)
-//                .toList();
-//    }
-//
-//    @Logged(name = "Best Detection")
-//    public Pose2d getBestDetectionPose() {
-//        var bestDet = getBestDetection();
-//        return bestDet.map(AprilTagDetection::getRobotToTargetPose).orElse(null);
-//    }
-//
-//    @Logged(name = "Best Estimated Pose")
-//    public Pose2d logBestEstimatedPose() {
-//        return getEstimatedPose().map(AprilTagPose::getEstimatedRobotPose).orElse(null);
-//    }
-
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<EstimatedRobotPose> estimatedRobotPose = Optional.empty();
 
