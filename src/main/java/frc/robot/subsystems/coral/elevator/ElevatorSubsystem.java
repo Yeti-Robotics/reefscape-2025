@@ -10,7 +10,6 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -25,7 +24,6 @@ import frc.robot.util.sim.SimulatableMechanism;
 import frc.robot.util.state.StateUtils;
 import frc.robot.util.state.StatefulSetpointSubsystem;
 
-@Logged
 public class ElevatorSubsystem
         extends StatefulSetpointSubsystem<ElevatorPosition, AngleUnit, Angle, MutAngle>
         implements SimulatableMechanism {

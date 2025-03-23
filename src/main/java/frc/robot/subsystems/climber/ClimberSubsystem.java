@@ -5,12 +5,10 @@ import static frc.robot.subsystems.climber.ClimberConfig.*;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 
-@Logged
 public class ClimberSubsystem extends SubsystemBase {
     private final TalonFX climber;
     private final CANcoder cancoder;

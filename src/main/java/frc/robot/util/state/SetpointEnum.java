@@ -1,5 +1,5 @@
 package frc.robot.util.state;
 
-public interface SetpointEnum {
-    void validateOrdering();
+public interface SetpointEnum<V> {
+    V getSetpoint();
 }

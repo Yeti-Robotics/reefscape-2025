@@ -4,7 +4,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.util.state.SetpointEnum;
 
-public enum ArmPosition implements SetpointEnum {
+public enum ArmPosition implements SetpointEnum<Angle> {
     DOWN(-0.254),
     UP(0.254),
     POS_L1(-0.1),
@@ -14,10 +14,7 @@ public enum ArmPosition implements SetpointEnum {
     POS_L3(.13),
     SCORE_L3(.06),
     POS_L4(.15),
-    SCORE_L4(.05),
-    AWAY(0),
-    HOLD(-1); // special case, for when transitions are interrupted
-
+    SCORE_L4(.05);
     private final Angle angle;
 
     ArmPosition(double angle) {
@@ -28,10 +25,8 @@ public enum ArmPosition implements SetpointEnum {
         this.angle = angle;
     }
 
-    public Angle getAngle() {
+    @Override
+    public Angle getSetpoint() {
         return angle;
     }
-
-    @Override
-    public void validateOrdering() {}
 }

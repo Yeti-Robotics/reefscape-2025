@@ -1,5 +1,5 @@
 package frc.robot.util.akit.io;
 
-public interface ControllableMotorIO<T> {
+public interface MotorControlIO<T> {
     void setControl(T controlData);
 }

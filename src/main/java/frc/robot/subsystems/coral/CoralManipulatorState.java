@@ -15,9 +15,7 @@ public enum CoralManipulatorState {
     L4(ArmPosition.POS_L4, ElevatorPosition.POS_L4, GrabberState.OFF),
     SCORE_L4(ArmPosition.SCORE_L4, ElevatorPosition.POS_L4, GrabberState.ROLL_OUT),
     SCOREREEF(ArmPosition.DOWN, ElevatorPosition.SAFE_POSITION, GrabberState.OFF),
-    STOWED(ArmPosition.UP, ElevatorPosition.BOTTOM, GrabberState.OFF),
-    IDLE(ArmPosition.HOLD, ElevatorPosition.HOLD, GrabberState.OFF);
-
+    STOWED(ArmPosition.UP, ElevatorPosition.BOTTOM, GrabberState.OFF);
     private final ArmPosition armPosition;
     private final ElevatorPosition elevatorPosition;
     private final GrabberState grabberState;

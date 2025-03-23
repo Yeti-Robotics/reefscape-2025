@@ -6,11 +6,9 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.util.state.StatefulSubsystem;
 
-@Logged
 public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
     private final TalonFX claw = new TalonFX(GrabberConfig.CLAW_ID, RIO_BUS);
     private final DutyCycleOut dutyCycleReq = new DutyCycleOut(0);

@@ -1,8 +1,6 @@
 package frc.robot.util.device.impl;
 
-import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -29,15 +27,25 @@ public class TalonFXMotor extends DeviceBuilder<TalonFX, TalonFXConfiguration, T
     }
 
     public TalonFXMotor follow(TalonFX master) {
-        return followWithRequest(new Follower(master.getDeviceID(), false));
+        return followWithRequest(master.getDeviceID(), false);
     }
 
     public TalonFXMotor oppose(TalonFX master) {
-        return followWithRequest(new Follower(master.getDeviceID(), true));
+        return followWithRequest(master.getDeviceID(), true);
     }
 
-    private TalonFXMotor followWithRequest(ControlRequest req) {
-        getDevice().setControl(req);
+    public TalonFXMotor usingFusedCANcoder(CANcoder cancoder) {
+        return usingCANcoder(cancoder, FeedbackSensorSourceValue.FusedCANcoder);
+    }
+
+    public TalonFXMotor usingCANcoder(CANcoder cancoder, FeedbackSensorSourceValue source) {
+        getConfig().Feedback.FeedbackSensorSource = source;
+        getConfig().Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
+        return this;
+    }
+
+    private TalonFXMotor followWithRequest(int primaryDeviceID, boolean oppose) {
+        getDevice().setControl(new Follower(primaryDeviceID, false));
         return this;
     }
 
