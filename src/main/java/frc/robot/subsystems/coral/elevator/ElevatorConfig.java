@@ -38,7 +38,7 @@ class ElevatorConfig {
                     .withSlot1(SLOT_1_SIM_CONFIGS)
                     .withMotionMagic(
                             new MotionMagicConfigs()
-                                    .withMotionMagicCruiseVelocity(15)
+                                    .withMotionMagicCruiseVelocity(10)
                                     .withMotionMagicAcceleration(25)
                                     .withMotionMagicJerk(0))
                     .withMotorOutput(
