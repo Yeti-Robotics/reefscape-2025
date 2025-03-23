@@ -60,6 +60,6 @@ class ElevatorConfig {
                                     .withRotorToSensorRatio(1.0)
                                     .withSensorToMechanismRatio(gearRatio));
 
-    static final double HEIGHT_TOLERANCE = 0.16;
+    static final double HEIGHT_TOLERANCE = 0.18;
     static final double ELEVATOR_VELOCITY_TOLERANCE = 0.01;
 }
