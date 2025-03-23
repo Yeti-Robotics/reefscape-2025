@@ -177,7 +177,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         } else {
             coralManipulatorCommand =
                     elevator.transitionTo(targetState.getElevatorPosition())
-                            .alongWith(arm.transitionTo(targetState.getArmPosition()))
+                            .andThen(arm.transitionTo(targetState.getArmPosition()))
                             .andThen(grabber.transitionTo(targetState.getGrabberState()));
         }
 
