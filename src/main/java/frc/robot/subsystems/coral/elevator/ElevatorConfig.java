@@ -39,7 +39,7 @@ class ElevatorConfig {
                     .withMotionMagic(
                             new MotionMagicConfigs()
                                     .withMotionMagicCruiseVelocity(10)
-                                    .withMotionMagicAcceleration(25)
+                                    .withMotionMagicAcceleration(15)
                                     .withMotionMagicJerk(0))
                     .withMotorOutput(
                             new MotorOutputConfigs()
