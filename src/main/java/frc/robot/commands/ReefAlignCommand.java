@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.FieldConstants;
+import frc.robot.constants.FieldConstants.Reef;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
@@ -26,12 +27,13 @@ import java.util.function.DoubleSupplier;
 public class ReefAlignCommand extends Command {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
 
+    private static final int MAX_RETRIES = 5;
     private final AprilTagSubsystem reefCam1;
     private final AprilTagSubsystem reefCam2;
     private final CoralManipulatorSystem coralManipulatorSystem;
 
-    private final SwerveRequest.RobotCentricFacingAngle swerveReq =
-            new SwerveRequest.RobotCentricFacingAngle()
+    private final SwerveRequest.FieldCentricFacingAngle swerveReq =
+            new SwerveRequest.FieldCentricFacingAngle()
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1);
     private final SwerveRequest.Idle stopReq = new SwerveRequest.Idle();
@@ -44,6 +46,7 @@ public class ReefAlignCommand extends Command {
     PIDController movementYPIDController = new PIDController(3, 0, 0);
 
     private Pose2d reefTargetPose;
+    private int retries = 0;
 
     public ReefAlignCommand(
             CommandSwerveDrivetrain commandSwerveDrivetrain,
@@ -69,26 +72,21 @@ public class ReefAlignCommand extends Command {
     }
 
     public Pose2d getBranchPoseFromTagID(int id) {
-        boolean isRedAlliance = AllianceFlipUtil.shouldFlip();
+        boolean isRedAllianceReef = AllianceFlipUtil.shouldFlip();
+        int branchPoseIndex = id - (isRedAllianceReef ? 18 : 7);
 
-        int branchPoseIndex = id - (isRedAlliance ? 18 : 7);
-
-        if (branchPoseIndex < 0) {
-            branchPoseIndex = isRedAlliance ? 6 : 17;
+        if (branchPoseIndex > 5) {
+            isFinished = true;
+            return new Pose2d();
         }
 
-        Map<FieldConstants.ReefLevel, Pose2d> poseMap = FieldConstants.Reef.branchPositions2d.get(branchPoseIndex);
+        if (branchPoseIndex < 0) {
+            branchPoseIndex = Reef.centerFaces.length - 1;
+        }
 
-        CoralManipulatorState queuedState = coralManipulatorSystem.getQueuedState();
+        Pose2d reefTargetPose = Reef.centerFaces[branchPoseIndex];
 
-        FieldConstants.ReefLevel reefLevelPose = switch (queuedState) {
-            case L1 -> FieldConstants.ReefLevel.L1;
-            case L2 -> FieldConstants.ReefLevel.L2;
-            case L3 -> FieldConstants.ReefLevel.L3;
-            default -> FieldConstants.ReefLevel.L4;
-        };
-
-        return poseMap.get(reefLevelPose);
+        return AllianceFlipUtil.apply(reefTargetPose);
     }
 
     @Override
@@ -107,55 +105,28 @@ public class ReefAlignCommand extends Command {
 
     @Override
     public void execute() {
-        Optional<AprilTagDetection> reefCamDetectionOpt = getReefCamDetection();
-        if (reefCamDetectionOpt.isEmpty()) {
-            return;
-        }
-
-        AprilTagDetection reefCamDetection = reefCamDetectionOpt.get();
-        if (lockedOnAprilTag == null // probably will never happen, but who knows?
-                || reefCamDetection.getFiducialID() != lockedOnAprilTag.getFiducialID()) {
-            isFinished = true;
-            return;
-        }
-        field.setRobotPose(
-                reefCamDetection
-                        .getRobotInFieldPose()
-                        .transformBy(
-                                new Transform2d(
-                                        targetBranchPose.getTranslation(),
-                                        targetBranchPose.getRotation())));
-        field2.setRobotPose(targetVisionPose);
         Pose2d drivetrainPose = commandSwerveDrivetrain.getState().Pose;
-        SmartDashboard.putData("ATarget Branch Pose", field);
-        SmartDashboard.putData("ATarget Vision Pose", field2);
-        SmartDashboard.putNumber("ErrorX", movementXPIDController.getError());
-        SmartDashboard.putNumber("ErrorY", movementYPIDController.getError());
+        
+        double veloX = movementXPIDController.calculate(
+            drivetrainPose.getX(), reefTargetPose.getX()
+        );
 
-        double degreeAprilTag = lockedOnAprilTag.getRobotToTargetPose().getRotation().getDegrees();
-        boolean isRightFacingReef = Math.abs(degreeAprilTag - 90) > Math.abs(degreeAprilTag + 90);
-
-        // right cam, 90 | left cam, -90
-        Rotation2d visionTargetAngularDistance =
-                Rotation2d.fromDegrees(isRightFacingReef ? 90 : -90)
-                        .minus(targetVisionPose.getRotation());
-
-        Rotation2d driveTargetDirection =
-                drivetrainPose.getRotation().minus(visionTargetAngularDistance);
-
-        double veloX = movementXPIDController.calculate(0, targetBranchPose.getX());
-        double veloY = movementYPIDController.calculate(0, targetBranchPose.getY());
-
+        double veloY = movementXPIDController.calculate(
+            drivetrainPose.getY(), reefTargetPose.getY()
+        );
+       
         commandSwerveDrivetrain.setControl(
                 swerveReq
                         .withVelocityX(veloX)
                         .withVelocityY(veloY)
-                        .withTargetDirection(driveTargetDirection));
+                        .withTargetDirection(reefTargetPose.getRotation())
+                        );
     }
 
     @Override
     public void end(boolean interrupted) {
         commandSwerveDrivetrain.setControl(stopReq);
+        retries = 0;
     }
 
     @Override
