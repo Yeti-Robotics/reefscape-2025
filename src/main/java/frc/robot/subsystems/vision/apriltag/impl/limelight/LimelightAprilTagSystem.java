@@ -103,7 +103,7 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
     @Logged(name = "Detection translation")
     public Translation2d bestDetectionTranslatedPosePose() {
         return getBestDetection()
-                .map(p -> p.getTargetPose().getTranslation())
+                .map(p -> p.getRobotToTargetPose().getTranslation())
                 .orElse(new Translation2d());
     }
 

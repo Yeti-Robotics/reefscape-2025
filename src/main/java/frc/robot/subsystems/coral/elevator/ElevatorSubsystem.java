@@ -1,6 +1,5 @@
 package frc.robot.subsystems.coral.elevator;
 
-import static edu.wpi.first.math.util.Units.inchesToMeters;
 import static frc.robot.constants.Constants.RIO_BUS;
 import static frc.robot.subsystems.coral.elevator.ElevatorConfig.*;
 
@@ -38,6 +37,8 @@ public class ElevatorSubsystem
     private final MotionMagicTorqueCurrentFOC magicRequest =
             new MotionMagicTorqueCurrentFOC(0).withSlot(Robot.isReal() ? 0 : 1);
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
+    private final StatusSignal<Double> elevatorTargetPosition =
+            primaryElevatorMotor.getClosedLoopReference();
     private final StatusSignal<AngularVelocity> elevatorVelocity =
             primaryElevatorMotor.getVelocity();
 
@@ -98,8 +99,13 @@ public class ElevatorSubsystem
     }
 
     @Override
-    public double updateMechPos() {
-        return inchesToMeters(elevatorPosition.getValueAsDouble() * 6) + inchesToMeters(1);
+    public Angle getCurrentPosition() {
+        return elevatorPosition.getValue();
+    }
+
+    @Override
+    public Angle getTargetPosition() {
+        return Units.Rotations.of(elevatorTargetPosition.getValue());
     }
 
     @Override

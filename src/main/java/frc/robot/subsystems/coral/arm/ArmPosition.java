@@ -16,6 +16,12 @@ public enum ArmPosition implements SetpointEnum {
     POS_L4(.15),
     SCORE_L4(.05),
     AWAY(0),
+    GROUND(-0.029785),
+    HP(0.193359),
+    AWAY_BUMPER(0.05),
+    CLIMB_L4(0.35),
+    SCORE_CLIMB_L4(0.45),
+    CLIMB_L3(0.37),
     HOLD(-1); // special case, for when transitions are interrupted
 
     private final Angle angle;

@@ -7,67 +7,85 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lineStack"
+            "pathName": "lineJ"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake Algae"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
+            "name": "Score4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "lowStackProc"
+            "pathName": "jLeftStack"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Process Algae 6pts"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
+            "name": "GroundIntake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "procMidStack"
+            "pathName": "leftStackL"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake Algae"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
+            "name": "Score4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "midStackProc"
+            "pathName": "lMidStack"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Process Algae 6pts"
+            "name": "GroundIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "midStackA"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "aRightStack"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GroundIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "rightStackB"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
           }
         }
       ]

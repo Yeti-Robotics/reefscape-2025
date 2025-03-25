@@ -74,9 +74,22 @@ public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase
      * @see StatefulSubsystem#transitionTo(Enum) if you don't want to specify a fallback state
      */
     public Command transitionTo(T state, T fallbackState) {
+        Runnable finishOrFail =
+                () -> {
+                    if (!isTransitionFinished()) {
+                        failTransition();
+                    } else {
+                        finishTransition();
+                    }
+
+                    if (currentState == null) {
+                        currentState = defaultState;
+                    }
+                };
+
         return startEnd(() -> transitionToState(state), () -> {})
                 .until(() -> !isTransitioning())
-                .handleInterrupt(() -> transitionToState(fallbackState));
+                .handleInterrupt(finishOrFail);
     }
 
     public T getCurrentState() {

@@ -21,10 +21,12 @@ import frc.robot.util.state.StatefulSetpointSubsystem;
 public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUnit, Angle, MutAngle>
         implements SimulatableMechanism {
     private final TalonFX armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.RIO_BUS);
+    private final NeutralOut neutralOut = new NeutralOut();
     private final MotionMagicTorqueCurrentFOC magicRequest =
             new MotionMagicTorqueCurrentFOC(0).withSlot(0);
 
     private final StatusSignal<Angle> armPosition = armKraken.getPosition();
+    private final StatusSignal<Double> armTargetPos = armKraken.getClosedLoopReference();
     private CANcoder armEncoder;
 
     public ArmSubsystem() {
@@ -58,8 +60,24 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
     }
 
     @Override
-    public double updateMechPos() {
-        return (armPosition.getValueAsDouble() * 360.0) - 90;
+    public Angle getCurrentPosition() {
+        return armPosition.getValue();
+    }
+
+    @Override
+    public Angle getTargetPosition() {
+        return Units.Rotations.of(armTargetPos.getValue());
+    }
+
+    @Override
+    public boolean isTransitionFinished() {
+        boolean transtionFinished = super.isTransitionFinished();
+        if (transtionFinished
+                && transitioningTo().isPresent()
+                && transitioningTo().get().equals(ArmPosition.GROUND)) {
+            armKraken.setControl(neutralOut);
+        }
+        return transtionFinished;
     }
 
     public boolean isEncoderZeroed() {

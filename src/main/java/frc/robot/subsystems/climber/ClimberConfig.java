@@ -6,7 +6,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 class ClimberConfig {
-    static final int climberId = 13;
+    static final int climberId = 15;
     static final InvertedValue climberInversion = InvertedValue.Clockwise_Positive;
     static final NeutralModeValue climberNeutralMode = NeutralModeValue.Brake;
     static final int canCoderId = 5;
@@ -32,11 +32,8 @@ class ClimberConfig {
                                     .withNeutralMode(climberNeutralMode))
                     .withFeedback(
                             new FeedbackConfigs()
-                                    .withRotorToSensorRatio(
-                                            5.333333333333333) // def change that later
-                                    .withSensorToMechanismRatio(
-                                            3.47222222222222) // def change that later
-                            );
+                                    .withRotorToSensorRatio(5.333333333333333)
+                                    .withSensorToMechanismRatio(3.47222222222222));
     static final CANcoderConfiguration cancoderConfiguration =
             new CANcoderConfiguration()
                     .withMagnetSensor(

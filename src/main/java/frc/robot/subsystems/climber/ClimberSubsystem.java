@@ -16,6 +16,9 @@ public class ClimberSubsystem extends SubsystemBase {
     private final CANcoder cancoder;
     final MotionMagicTorqueCurrentFOC magicRequest;
 
+    public final double climbSpeed = 0.75;
+    public final double unClimbSpeed = -0.7;
+
     public ClimberSubsystem() {
         climber = new TalonFX(climberId, Constants.RIO_BUS);
         cancoder = new CANcoder(canCoderId, Constants.RIO_BUS);

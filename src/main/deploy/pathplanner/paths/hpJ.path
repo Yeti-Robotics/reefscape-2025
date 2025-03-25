@@ -3,38 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.533,
-        "y": 7.115
+        "x": 1.5333,
+        "y": 7.215
       },
       "prevControl": null,
       "nextControl": {
         "x": 2.9817748091603047,
-        "y": 6.503912213740459
+        "y": 6.6039122137404584
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "leftHP"
     },
     {
       "anchor": {
-        "x": 4.78,
-        "y": 5.5
+        "x": 4.70925,
+        "y": 4.951249999999999
       },
       "prevControl": {
-        "x": 4.060949427480916,
-        "y": 6.084780534351145
+        "x": 3.990199427480916,
+        "y": 5.536030534351144
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "jReef"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Stow",
+      "waypointRelativePos": 0.1,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Stow"
+        }
+      }
+    },
+    {
+      "name": "L4",
+      "waypointRelativePos": 0.8,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L4"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -48,7 +71,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 125.00000000000001
+    "rotation": 35.0
   },
   "useDefaultConstraints": true
 }
