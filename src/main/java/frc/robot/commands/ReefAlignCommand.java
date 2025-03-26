@@ -3,26 +3,16 @@ package frc.robot.commands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.constants.FieldConstants;
 import frc.robot.constants.FieldConstants.Reef;
-import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.util.AllianceFlipUtil;
-
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
 
 public class ReefAlignCommand extends Command {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
@@ -57,7 +47,6 @@ public class ReefAlignCommand extends Command {
         this.coralManipulatorSystem = coralManipulatorSystem;
         this.reefCam1 = reefCam1;
         this.reefCam2 = reefCam2;
-
 
         swerveReq.HeadingController.setPID(6, 0, 0);
         swerveReq.HeadingController.setTolerance(0.07);
@@ -106,21 +95,18 @@ public class ReefAlignCommand extends Command {
     @Override
     public void execute() {
         Pose2d drivetrainPose = commandSwerveDrivetrain.getState().Pose;
-        
-        double veloX = movementXPIDController.calculate(
-            drivetrainPose.getX(), reefTargetPose.getX()
-        );
 
-        double veloY = movementXPIDController.calculate(
-            drivetrainPose.getY(), reefTargetPose.getY()
-        );
-       
+        double veloX =
+                movementXPIDController.calculate(drivetrainPose.getX(), reefTargetPose.getX());
+
+        double veloY =
+                movementXPIDController.calculate(drivetrainPose.getY(), reefTargetPose.getY());
+
         commandSwerveDrivetrain.setControl(
                 swerveReq
                         .withVelocityX(veloX)
                         .withVelocityY(veloY)
-                        .withTargetDirection(reefTargetPose.getRotation())
-                        );
+                        .withTargetDirection(reefTargetPose.getRotation()));
     }
 
     @Override

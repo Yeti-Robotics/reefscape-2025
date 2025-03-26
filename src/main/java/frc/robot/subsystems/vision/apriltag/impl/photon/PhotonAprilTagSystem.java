@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.apriltag.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -23,7 +24,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private final Transform3d cameraTransform;
     private final PhotonPoseEstimator photonPoseEstimator;
     private final CommandSwerveDrivetrain drivetrain;
-    private AprilTagResults aprilTagResults;
+    private AprilTagResults aprilTagResults = new AprilTagResults(0, 0, Collections.emptyList());
     private double maxAmbiguity = 0.3;
     private PhotonTrackedTarget currentBestDetection;
     private double currentBestDetectionTimestamp;

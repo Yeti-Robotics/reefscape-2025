@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.util.sim.PhysicsSim;
 import org.littletonrobotics.frc2025.BuildConstants;
 
@@ -97,11 +96,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopExit() {
-        robotContainer
-                .coralManipulator
-                .transitionTo(CoralManipulatorState.IDLE)
-                .ignoringDisable(true)
-                .schedule();
+        //        robotContainer
+        //                .coralManipulator
+        //                .transitionTo(CoralManipulatorState.IDLE)
+        //                .ignoringDisable(true)
+        //                .schedule();
     }
 
     @Override
