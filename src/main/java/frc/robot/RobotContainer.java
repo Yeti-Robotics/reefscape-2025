@@ -209,29 +209,28 @@ public class RobotContainer {
         primaryXboxController
                 .x()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
-        secondaryXboxController
-                .a()
+        gigaStation
+                .button(11)
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         secondaryXboxController
                 .b()
                 .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
-        secondaryXboxController
-                .povUp()
+        gigaStation
+                .button(7)
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
-        secondaryXboxController
-                .povRight()
+        gigaStation
+                .button(8)
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
-        secondaryXboxController
-                .povDown()
+        gigaStation
+                .button(9)
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
-        secondaryXboxController
-                .povLeft()
+        gigaStation
+                .button(10)
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
 
         primaryXboxController.y().whileTrue(alignToReefCmd);
-        secondaryXboxController.start().onTrue(alignToReefCmd.toggleBranchSelection());
-
+        gigaStation.button(4).onTrue(alignToReefCmd.toggleBranchSelection()).onFalse(alignToReefCmd.toggleBranchSelection());
         secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));
         secondaryXboxController.rightBumper().whileTrue(climber.spinClimber(climber.unClimbSpeed));
