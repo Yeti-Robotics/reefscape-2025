@@ -3,7 +3,9 @@ package frc.robot.subsystems.led;
 import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
@@ -98,9 +100,17 @@ public class LEDSubsystem extends SubsystemBase {
                 }
                 break;
             case CLEARPROGRESS:
+                event = Events.CLEARPROGRESS;
                 candle.setLEDs(0, 0, 0);
+                break;
             case ELEVATORSCORE:
+                event = Events.ELEVATORSCORE;
                 toAnimate = new StrobeAnimation(0, 0, 255, 0, 4, ledCount);
+                break;
+            case ELEVATORMOVING:
+                event = Events.ELEVATORMOVING;
+                toAnimate = new StrobeAnimation(255, 0, 255, 0, 4, ledCount);
+                break;
             default:
                 if (toAnimate == null) {
                     toAnimate =
@@ -155,42 +165,48 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public Command selectAnimationCommand(Supplier<CoralManipulatorState> getCMS) {
-        return new SelectCommand<>(
-                Map.ofEntries(
-                        Map.entry(
-                                CoralManipulatorState.INTAKE_CORAL,
-                                runOnce(() -> setAnimation(Events.CORALINTAKE))),
-                        Map.entry(
-                                CoralManipulatorState.L1,
-                                runOnce(() -> setAnimation(Events.ELEVATORMOVING))),
-                        Map.entry(
-                                CoralManipulatorState.SCORE_L1,
-                                runOnce(() -> setAnimation(Events.ELEVATORSCORE))),
-                        Map.entry(
-                                CoralManipulatorState.L2,
-                                runOnce(() -> setAnimation(Events.ELEVATORMOVING))),
-                        Map.entry(
-                                CoralManipulatorState.SCORE_L2,
-                                runOnce(() -> setAnimation(Events.ELEVATORSCORE))),
-                        Map.entry(
-                                CoralManipulatorState.L3,
-                                runOnce(() -> setAnimation(Events.ELEVATORMOVING))),
-                        Map.entry(
-                                CoralManipulatorState.SCORE_L3,
-                                runOnce(() -> setAnimation(Events.ELEVATORSCORE))),
-                        Map.entry(
-                                CoralManipulatorState.L4,
-                                runOnce(() -> setAnimation(Events.ELEVATORMOVING))),
-                        Map.entry(
-                                CoralManipulatorState.SCORE_L4,
-                                runOnce(() -> setAnimation(Events.ELEVATORSCORE))),
-                        Map.entry(
-                                CoralManipulatorState.IDLE,
-                                runOnce(() -> setAnimation(Events.IDLETELEOP))),
-                        Map.entry(
-                                CoralManipulatorState.STOWED,
-                                runOnce(() -> setAnimation(Events.CORALSTOWED)))),
-                getCMS);
+        return new SelectCommand<CoralManipulatorState>(
+                        Map.ofEntries(
+                                Map.entry(
+                                        CoralManipulatorState.DISABLED,
+                                        runOnce(() -> setAnimation(Events.PROGRESSBAR))),
+                                Map.entry(
+                                        CoralManipulatorState.HP_INTAKE,
+                                        runOnce(() -> setAnimation(Events.CORALINTAKE))),
+                                Map.entry(
+                                        CoralManipulatorState.GROUND_INTAKE,
+                                        runOnce(() -> setAnimation(Events.CORALINTAKE))),
+                                Map.entry(
+                                        CoralManipulatorState.L1,
+                                        runOnce(() -> setAnimation(Events.ELEVATORMOVING))),
+                                Map.entry(
+                                        CoralManipulatorState.SCORE_L1,
+                                        runOnce(() -> setAnimation(Events.ELEVATORSCORE))),
+                                Map.entry(
+                                        CoralManipulatorState.L2,
+                                        runOnce(() -> setAnimation(Events.ELEVATORMOVING))),
+                                Map.entry(
+                                        CoralManipulatorState.SCORE_L2,
+                                        runOnce(() -> setAnimation(Events.ELEVATORSCORE))),
+                                Map.entry(
+                                        CoralManipulatorState.L3,
+                                        runOnce(() -> setAnimation(Events.ELEVATORMOVING))),
+                                Map.entry(
+                                        CoralManipulatorState.SCORE_L3,
+                                        runOnce(() -> setAnimation(Events.ELEVATORSCORE))),
+                                Map.entry(
+                                        CoralManipulatorState.L4,
+                                        runOnce(() -> setAnimation(Events.ELEVATORMOVING))),
+                                Map.entry(
+                                        CoralManipulatorState.SCORE_L4,
+                                        runOnce(() -> setAnimation(Events.ELEVATORSCORE))),
+                                Map.entry(
+                                        CoralManipulatorState.IDLE,
+                                        runOnce(() -> setAnimation(Events.IDLETELEOP))),
+                                Map.entry(
+                                        CoralManipulatorState.STOWED,
+                                        runOnce(() -> setAnimation(Events.CORALSTOWED)))),
+                        getCMS);
     }
 
     @Override
@@ -199,6 +215,7 @@ public class LEDSubsystem extends SubsystemBase {
             progressBar.setProgress(progressBar.progressBarState);
         }
         setAnimation(event);
+        SmartDashboard.putString("LED State", event.toString());
     }
 
     public static boolean isRedAlliance() {

@@ -31,7 +31,8 @@ public enum CoralManipulatorState {
             ElevatorPosition.POS_L3,
             GrabberState.ROLL_IN,
             WristPositions.UNSAFE),
-    IDLE(ArmPosition.HOLD, ElevatorPosition.HOLD, GrabberState.OFF, WristPositions.SAFE);
+    IDLE(ArmPosition.HOLD, ElevatorPosition.HOLD, GrabberState.OFF, WristPositions.SAFE),
+    DISABLED(ArmPosition.HOLD, ElevatorPosition.HOLD, GrabberState.OFF, WristPositions.SAFE);
 
     private final ArmPosition armPosition;
     private final ElevatorPosition elevatorPosition;
