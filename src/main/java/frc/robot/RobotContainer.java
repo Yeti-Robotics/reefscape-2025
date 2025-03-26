@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNamedCommands;
 import frc.robot.commands.ReefAlignCommand;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
@@ -48,6 +49,7 @@ public class RobotContainer {
     public final CommandXboxController primaryXboxController;
     public final CommandXboxController secondaryXboxController;
     private final CommandJoystick simJoy = new CommandJoystick(2);
+    public final CommandJoystick gigaStation;
 
     @Logged(name = "Vision/Limelight")
     public final LimelightAprilTagSystem limelight;
@@ -98,8 +100,9 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        primaryXboxController = new CommandXboxController(0);
-        secondaryXboxController = new CommandXboxController(1);
+        primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
+        secondaryXboxController = new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
+        gigaStation = new CommandJoystick(Constants.GIGA_PORT);
         drivetrain = TunerConstants.createDrivetrain();
 
         reefCam1 = new PhotonAprilTagSystem("ScoreCam", camTrans1, drivetrain);
