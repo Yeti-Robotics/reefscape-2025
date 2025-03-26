@@ -60,6 +60,6 @@ class ElevatorConfig {
                                     .withRotorToSensorRatio(1.0)
                                     .withSensorToMechanismRatio(gearRatio));
 
-    static final double HEIGHT_TOLERANCE = 0.12; //TODO: Lower than actual bc umbilical
+    static final double HEIGHT_TOLERANCE = 0.08;
     static final double ELEVATOR_VELOCITY_TOLERANCE = 0.01;
 }
