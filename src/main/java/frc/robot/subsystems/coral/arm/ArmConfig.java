@@ -9,7 +9,7 @@ class ArmConfig {
     static final int ARM_KRAKEN_ID = 10;
     static final int ARM_CANCODER_ID = 0;
 
-    static final double MAGNET_OFFSET = -0.490479;
+    static final double MAGNET_OFFSET = -0.326904296875;
     static final double GEAR_RATIO = 75.6055;
 
     static final double ARM_DEPLOY_LOWER_BOUND = 0;
