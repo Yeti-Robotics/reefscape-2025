@@ -253,7 +253,6 @@ public class RobotContainer {
                 coralManipulator.arm.getTargetPosition(),
                 coralManipulator.wrist.getTargetPosition(),
                 false);
-
         mechanisms.updateElevatorArmMech(
                 coralManipulator.elevator.getCurrentPosition(),
                 coralManipulator.arm.getCurrentPosition());
