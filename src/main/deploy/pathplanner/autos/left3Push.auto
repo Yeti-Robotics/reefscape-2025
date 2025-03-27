@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Stow"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "lineBack"
@@ -19,25 +13,61 @@
         {
           "type": "path",
           "data": {
-            "pathName": "backline"
+            "pathName": "bargeLine"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "midStartPath"
+            "pathName": "lineJ"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L4"
+            "name": "Score4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "midMid"
+            "pathName": "jHP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "HPIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "hpK"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "kHP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "HPIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "hpL"
           }
         },
         {
