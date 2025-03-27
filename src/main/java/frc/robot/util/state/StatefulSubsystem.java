@@ -3,7 +3,6 @@ package frc.robot.util.state;
 import com.ctre.phoenix6.StatusCode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import java.util.Optional;
 
 public abstract class StatefulSubsystem<T extends Enum<T>> extends SubsystemBase {

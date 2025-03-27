@@ -14,7 +14,6 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.util.AllianceFlipUtil;
-
 import java.util.Optional;
 
 public class ReefAlignCommand extends Command {
@@ -39,7 +38,6 @@ public class ReefAlignCommand extends Command {
     PIDController movementYPIDController = new PIDController(3, 0, 0);
 
     private Pose2d reefTargetPose;
-    private int retries = 0;
 
     public ReefAlignCommand(
             CommandSwerveDrivetrain commandSwerveDrivetrain,
@@ -65,26 +63,77 @@ public class ReefAlignCommand extends Command {
                 .publish();
     }
 
+    public boolean isRedReef(int id) {
+        return switch (id) {
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+                yield true;
+            default:
+                yield false;
+        };
+    }
+
+    public boolean isBlueReef(int id) {
+        return switch (id) {
+            case 17:
+            case 18:
+            case 19:
+            case 20:
+            case 21:
+            case 22:
+                yield true;
+            default:
+                yield false;
+        };
+    }
+
     public Optional<AprilTagDetection> getReefCamDetection() {
-        return reefCam1.getBestDetection().or(reefCam2::getBestDetection);
+        Optional<AprilTagDetection> detection1 = reefCam1.getBestDetection();
+        Optional<AprilTagDetection> detection2 = reefCam2.getBestDetection();
+
+        if (detection1.isPresent() && detection2.isPresent()) {
+            int fiducial1 = detection1.get().getFiducialID();
+
+            if (isRedReef(fiducial1) || isBlueReef(fiducial1)) {
+                return detection1;
+            }
+        }
+
+        return detection1.or(() -> detection2);
     }
 
     public Pose2d getBranchPoseFromTagID(int id) {
-        boolean isRedAllianceReef = id < 16;
-        int branchPoseIndex = id - (isRedAllianceReef ? 18 : 7);
+        System.out.println("Inited with id = " + id);
+        boolean isRedAllianceReef = isRedReef(id);
+
+        if (!isRedAllianceReef && !isBlueReef(id)) {
+            isFinished = true;
+            return Pose2d.kZero;
+        }
+
+        int branchPoseIndex = id - (isRedAllianceReef ? 7 : 18);
 
         if (branchPoseIndex > 5) {
+            isFinished = true;
+            return Pose2d.kZero;
+        }
+
+        if (branchPoseIndex == -1) {
+            branchPoseIndex = Reef.centerFaces.length - 1;
+        }
+
+        if (branchPoseIndex < 0) {
             isFinished = true;
             return new Pose2d();
         }
 
-        if (branchPoseIndex < 0) {
-            branchPoseIndex = Reef.centerFaces.length - 1;
-        }
-
         Pose2d reefTargetPose = Reef.centerFaces[branchPoseIndex];
 
-        return AllianceFlipUtil.apply(reefTargetPose);
+        return AllianceFlipUtil.apply(reefTargetPose, isRedAllianceReef);
     }
 
     StructPublisher<Pose2d> reefTargetPublisher = pose2dStructPublisher("ReefTarget");
@@ -106,25 +155,31 @@ public class ReefAlignCommand extends Command {
 
     @Override
     public void execute() {
+        System.out.print("e: " + reefTargetPose);
+        if (reefTargetPose == null) {
+            isFinished = true;
+            return;
+        }
+
         Pose2d drivetrainPose = commandSwerveDrivetrain.getState().Pose;
 
         double veloX =
                 movementXPIDController.calculate(drivetrainPose.getX(), reefTargetPose.getX());
 
         double veloY =
-                movementXPIDController.calculate(drivetrainPose.getY(), reefTargetPose.getY());
-
+                movementYPIDController.calculate(drivetrainPose.getY(), reefTargetPose.getY());
+        System.out.println(" VeloX: " + veloX + " VeloY: " + veloY);
         commandSwerveDrivetrain.setControl(
                 swerveReq
-                        .withVelocityX(veloX)
-                        .withVelocityY(veloY)
+                        .withVelocityX(-veloX)
+                        .withVelocityY(-veloY)
                         .withTargetDirection(reefTargetPose.getRotation()));
     }
 
     @Override
     public void end(boolean interrupted) {
         commandSwerveDrivetrain.setControl(stopReq);
-        retries = 0;
+        reefTargetPose = null;
     }
 
     @Override

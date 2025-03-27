@@ -55,6 +55,15 @@ public class AllianceFlipUtil {
         }
     }
 
+    /** Flips a pose to the correct side of the field based on {@code shouldApply} */
+    public static Pose2d apply(Pose2d pose, boolean shouldApply) {
+        if (shouldApply) {
+            return new Pose2d(apply(pose.getTranslation()), apply(pose.getRotation()));
+        } else {
+            return pose;
+        }
+    }
+
     public static Translation3d apply(Translation3d translation3d) {
         if (shouldFlip()) {
             return new Translation3d(

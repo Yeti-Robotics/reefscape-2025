@@ -1,5 +1,7 @@
 package frc.robot.subsystems.coral.grabber;
 
+import static frc.robot.constants.Constants.RIO_BUS;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -7,8 +9,6 @@ import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.util.state.StatefulSubsystem;
-
-import static frc.robot.constants.Constants.RIO_BUS;
 
 @Logged
 public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
