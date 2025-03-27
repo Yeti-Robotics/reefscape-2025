@@ -5,7 +5,6 @@ import edu.wpi.first.units.measure.Angle;
 
 public enum ElevatorPosition implements Comparable<ElevatorPosition> {
     BOTTOM(0.0),
-    INTAKE(1.9),
     SAFE_POSITION(2.2),
     POS_L1(2.4),
     POS_L2(0.367920),
