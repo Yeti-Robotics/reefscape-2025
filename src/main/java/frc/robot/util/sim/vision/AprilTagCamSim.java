@@ -7,11 +7,12 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
 import frc.robot.subsystems.vision.apriltag.AprilTagResults;
-import java.util.ArrayList;
-import java.util.List;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.targeting.PhotonTrackedTarget;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AprilTagCamSim {
     private final PhotonCamera cam;

@@ -1,7 +1,6 @@
 package frc.robot.subsystems.coral.elevator;
 
 import com.ctre.phoenix6.configs.*;
-import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;

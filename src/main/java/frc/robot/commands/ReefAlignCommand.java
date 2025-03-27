@@ -3,6 +3,8 @@ package frc.robot.commands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.FieldConstants.Reef;
@@ -12,6 +14,7 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.util.AllianceFlipUtil;
+
 import java.util.Optional;
 
 public class ReefAlignCommand extends Command {
@@ -56,12 +59,18 @@ public class ReefAlignCommand extends Command {
         movementYPIDController.setTolerance(0.07);
     }
 
+    public static StructPublisher<Pose2d> pose2dStructPublisher(String key) {
+        return NetworkTableInstance.getDefault()
+                .getStructTopic("ReefAlignCmd/" + key, Pose2d.struct)
+                .publish();
+    }
+
     public Optional<AprilTagDetection> getReefCamDetection() {
         return reefCam1.getBestDetection().or(reefCam2::getBestDetection);
     }
 
     public Pose2d getBranchPoseFromTagID(int id) {
-        boolean isRedAllianceReef = AllianceFlipUtil.shouldFlip();
+        boolean isRedAllianceReef = id < 16;
         int branchPoseIndex = id - (isRedAllianceReef ? 18 : 7);
 
         if (branchPoseIndex > 5) {
@@ -78,6 +87,8 @@ public class ReefAlignCommand extends Command {
         return AllianceFlipUtil.apply(reefTargetPose);
     }
 
+    StructPublisher<Pose2d> reefTargetPublisher = pose2dStructPublisher("ReefTarget");
+
     @Override
     public void initialize() {
         Optional<AprilTagDetection> detectionOpt = getReefCamDetection();
@@ -90,6 +101,7 @@ public class ReefAlignCommand extends Command {
         int fiducialId = detectionOpt.get().getFiducialID();
 
         reefTargetPose = getBranchPoseFromTagID(fiducialId);
+        reefTargetPublisher.set(reefTargetPose);
     }
 
     @Override

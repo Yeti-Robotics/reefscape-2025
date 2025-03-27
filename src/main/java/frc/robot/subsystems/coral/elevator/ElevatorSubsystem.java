@@ -1,8 +1,5 @@
 package frc.robot.subsystems.coral.elevator;
 
-import static frc.robot.constants.Constants.RIO_BUS;
-import static frc.robot.subsystems.coral.elevator.ElevatorConfig.*;
-
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.Follower;
@@ -23,6 +20,10 @@ import frc.robot.util.sim.PhysicsSim;
 import frc.robot.util.sim.SimulatableMechanism;
 import frc.robot.util.state.StateUtils;
 import frc.robot.util.state.StatefulSetpointSubsystem;
+
+import static frc.robot.constants.Constants.RIO_BUS;
+import static frc.robot.subsystems.coral.elevator.ElevatorConfig.primaryTalonFXConfigs;
+import static frc.robot.subsystems.coral.elevator.ElevatorConfig.secondaryTalonFXConfigs;
 
 @Logged
 public class ElevatorSubsystem

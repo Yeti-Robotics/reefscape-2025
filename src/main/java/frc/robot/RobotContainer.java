@@ -25,6 +25,7 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
+
 import java.util.Optional;
 
 /**
@@ -46,7 +47,7 @@ public class RobotContainer {
     @Logged(name = "Drivetrain")
     public CommandSwerveDrivetrain drivetrain;
 
-    Transform3d camTrans1 =
+    Transform3d camTrans2 =
             new Transform3d(
                     new Translation3d(
                             Units.inchesToMeters(-9),
@@ -54,7 +55,7 @@ public class RobotContainer {
                             Units.inchesToMeters(11)),
                     new Rotation3d(0, Math.toRadians(-15), Math.toRadians(90)));
 
-    Transform3d camTrans2 =
+    Transform3d camTrans1 =
             new Transform3d(
                     new Translation3d(
                             Units.inchesToMeters(-9),

@@ -3,7 +3,8 @@ package frc.robot.commands;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.coral.*;
+import frc.robot.subsystems.coral.CoralManipulatorState;
+import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.coral.grabber.GrabberState;
 
 public class AutoNamedCommands {
