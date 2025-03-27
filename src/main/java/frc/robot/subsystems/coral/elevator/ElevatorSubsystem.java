@@ -44,7 +44,7 @@ public class ElevatorSubsystem
 
     public ElevatorSubsystem() {
         super(
-                ElevatorPosition.BOTTOM,
+                ElevatorPosition.HOLD,
                 StateUtils.mutableRotationSetpoint(),
                 Units.Rotations.of(ElevatorConfig.HEIGHT_TOLERANCE));
         primaryElevatorMotor.getConfigurator().apply(primaryTalonFXConfigs);

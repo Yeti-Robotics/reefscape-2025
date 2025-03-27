@@ -33,8 +33,9 @@ import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.Mechanisms;
+import frc.robot.util.sim.vision.AprilTagCamSim;
+import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
-
 import java.util.Optional;
 
 /**
@@ -105,21 +106,21 @@ public class RobotContainer {
         reefCam1 = new PhotonAprilTagSystem("ScoreCam", camTrans1, drivetrain);
         reefCam2 = new PhotonAprilTagSystem("ClimbCam", camTrans2, drivetrain);
 
-        //        AprilTagCamSim simCam1 =
-        //                AprilTagCamSimBuilder.newCamera()
-        //                        .withCameraName("ScoreCam")
-        //                        .withTransform(camTrans1)
-        //                        .build();
-        //        aprilTagCamSim.addCamera(simCam1);
-        //        reefCam1.setCamera(simCam1.getCam());
-        //
-        //        AprilTagCamSim simCam2 =
-        //                AprilTagCamSimBuilder.newCamera()
-        //                        .withCameraName("ClimbCam")
-        //                        .withTransform(camTrans2)
-        //                        .build();
-        //        aprilTagCamSim.addCamera(simCam2);
-        //        reefCam2.setCamera(simCam2.getCam());
+        AprilTagCamSim simCam1 =
+                AprilTagCamSimBuilder.newCamera()
+                        .withCameraName("ScoreCam")
+                        .withTransform(camTrans1)
+                        .build();
+        aprilTagCamSim.addCamera(simCam1);
+        reefCam1.setCamera(simCam1.getCam());
+
+        AprilTagCamSim simCam2 =
+                AprilTagCamSimBuilder.newCamera()
+                        .withCameraName("ClimbCam")
+                        .withTransform(camTrans2)
+                        .build();
+        aprilTagCamSim.addCamera(simCam2);
+        reefCam2.setCamera(simCam2.getCam());
 
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         climber = new ClimberSubsystem();
@@ -141,7 +142,7 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooser("driveForward");
         SmartDashboard.putData("Auto Chooser", autoChooser);
-        aprilTagSubsystems = new AprilTagSubsystem[] {limelight, reefCam1, reefCam2};
+        aprilTagSubsystems = new AprilTagSubsystem[] {limelight /*, reefCam1, reefCam2*/};
 
         // Set standard deviations to prevent jitter
         // odo data is more trustworthy, lower stddev
@@ -174,9 +175,9 @@ public class RobotContainer {
         }
     }
 
-    //    public void updateVisionSim() {
-    //        aprilTagCamSim.update(drivetrain.getState().Pose);
-    //    }
+    public void updateVisionSim() {
+        aprilTagCamSim.update(drivetrain.getState().Pose);
+    }
 
     private void configureBindings() {
 
@@ -202,9 +203,10 @@ public class RobotContainer {
         primaryXboxController
                 .rightBumper()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-        primaryXboxController
-                .x()
+        secondaryXboxController
+                .rightTrigger()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
         secondaryXboxController
                 .a()
@@ -225,6 +227,9 @@ public class RobotContainer {
         secondaryXboxController
                 .povLeft()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        secondaryXboxController
+                .leftTrigger()
+                .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
 
         primaryXboxController.y().whileTrue(alignToReefCmd);
         secondaryXboxController.start().onTrue(alignToReefCmd.toggleBranchSelection());

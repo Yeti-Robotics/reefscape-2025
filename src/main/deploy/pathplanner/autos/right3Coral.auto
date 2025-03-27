@@ -51,6 +51,24 @@
           "data": {
             "name": "HPIntake"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "hpC"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "cHP"
+          }
         }
       ]
     }
