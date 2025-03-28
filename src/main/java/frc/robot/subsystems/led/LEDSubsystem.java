@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Robot;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import java.util.Map;
@@ -32,7 +31,10 @@ public class LEDSubsystem extends SubsystemBase {
         configAll.vBatOutputMode = CANdle.VBatOutputMode.On;
         candle.configAllSettings(configAll, 100);
         progressBar = new ProgressBar(this);
-        new Trigger(DriverStation::isDisabled).onTrue(runOnce(this::clearAnimation).andThen(runOnce(() -> setAnimation(Events.PROGRESSBAR))));
+        new Trigger(DriverStation::isDisabled)
+                .onTrue(
+                        runOnce(this::clearAnimation)
+                                .andThen(runOnce(() -> setAnimation(Events.PROGRESSBAR))));
     }
 
     private void clearAnimation() {
