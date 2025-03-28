@@ -1,25 +1,22 @@
 package frc.robot.subsystems.vision.apriltag.impl.photon;
 
-import com.ctre.phoenix6.Utils;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.apriltag.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 @Logged
 public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsystem {
@@ -67,16 +64,17 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         this.drivetrain = commandSwerveDrivetrain;
 
         photonPoseEstimator.setMultiTagFallbackStrategy(
-                PhotonPoseEstimator.PoseStrategy.PNP_DISTANCE_TRIG_SOLVE);
+                PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
     }
 
     @Override
     public void periodic() {
-        double timestamp =
-                drivetrain.getState().Timestamp
-                        - Utils.getCurrentTimeSeconds()
-                        + Timer.getFPGATimestamp();
-        photonPoseEstimator.addHeadingData(timestamp, drivetrain.getRotation3d().toRotation2d());
+        //        double timestamp =
+        //                drivetrain.getState().Timestamp
+        //                        - Utils.getCurrentTimeSeconds()
+        //                        + Timer.getFPGATimestamp();
+        //        photonPoseEstimator.addHeadingData(timestamp,
+        // drivetrain.getRotation3d().toRotation2d());
 
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 

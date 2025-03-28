@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import dev.doglog.DogLog;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -19,7 +21,7 @@ import java.util.Optional;
 public class ReefAlignCommand extends Command {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
 
-    private static final int MAX_RETRIES = 5;
+    private static int commandCount = 0;
     private final AprilTagSubsystem reefCam1;
     private final AprilTagSubsystem reefCam2;
     private final CoralManipulatorSystem coralManipulatorSystem;
@@ -34,8 +36,8 @@ public class ReefAlignCommand extends Command {
     boolean isLeftBranch = false;
     boolean isFinished = false;
 
-    PIDController movementXPIDController = new PIDController(3, 0, 0);
-    PIDController movementYPIDController = new PIDController(3, 0, 0);
+    PIDController movementXPIDController = new PIDController(1, 0, 0);
+    PIDController movementYPIDController = new PIDController(1, 0, 0);
 
     private Pose2d reefTargetPose;
 
@@ -107,7 +109,9 @@ public class ReefAlignCommand extends Command {
     }
 
     public Pose2d getBranchPoseFromTagID(int id) {
-        System.out.println("Inited with id = " + id);
+        DogLog.log("ReefAlignCmd/TagID", id);
+        DogLog.log("ReefAlignCmd/isRedReef", isRedReef(id));
+        DogLog.log("ReefAlignCmd/isBlueReef", isBlueReef(id));
         boolean isRedAllianceReef = isRedReef(id);
 
         if (!isRedAllianceReef && !isBlueReef(id)) {
@@ -119,6 +123,7 @@ public class ReefAlignCommand extends Command {
 
         if (branchPoseIndex > 5) {
             isFinished = true;
+            cancel();
             return Pose2d.kZero;
         }
 
@@ -140,6 +145,10 @@ public class ReefAlignCommand extends Command {
 
     @Override
     public void initialize() {
+        commandCount++;
+
+        DogLog.log("CommandCount", commandCount);
+
         Optional<AprilTagDetection> detectionOpt = getReefCamDetection();
 
         if (detectionOpt.isEmpty()) {
@@ -155,7 +164,7 @@ public class ReefAlignCommand extends Command {
 
     @Override
     public void execute() {
-        System.out.print("e: " + reefTargetPose);
+        DogLog.log("ReefAlignCmd/TargetPoseNull", reefTargetPose == null);
         if (reefTargetPose == null) {
             isFinished = true;
             return;
@@ -168,7 +177,13 @@ public class ReefAlignCommand extends Command {
 
         double veloY =
                 movementYPIDController.calculate(drivetrainPose.getY(), reefTargetPose.getY());
-        System.out.println(" VeloX: " + veloX + " VeloY: " + veloY);
+
+        DogLog.log("ReefAlignCmd/XVelocity", veloX);
+        DogLog.log("ReefAlignCmd/YVelocity", veloY);
+
+        veloX = MathUtil.clamp(veloX, -3, 3);
+        veloY = MathUtil.clamp(veloY, -3, 3);
+
         commandSwerveDrivetrain.setControl(
                 swerveReq
                         .withVelocityX(-veloX)
@@ -184,7 +199,7 @@ public class ReefAlignCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return isFinished;
+        return false;
     }
 
     public Command toggleBranchSelection() {
