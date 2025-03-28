@@ -98,9 +98,8 @@ public class LEDSubsystem extends SubsystemBase {
                 toAnimate = new SingleFadeAnimation(191, 255, 0, 0, 0.2, ledCount, ledOffset);
                 break;
             case PROGRESSBAR:
-                if (DriverStation.isDisabled()) {
-                    event = Events.PROGRESSBAR;
-                }
+                event = Events.PROGRESSBAR;
+                progressBar.setProgress(ProgressBar.ProgressBarPercents.ZERO);
                 break;
             case CLEARPROGRESS:
                 event = Events.CLEARPROGRESS;
