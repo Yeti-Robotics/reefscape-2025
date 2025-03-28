@@ -260,6 +260,7 @@ public class RobotContainer {
         simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
         simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         simJoy.button(8).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
+        simJoy.button(9).onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
     }
 
     public void updateMechanisms() {

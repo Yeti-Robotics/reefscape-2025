@@ -93,7 +93,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         return elevator.transitioningTo().orElse(ElevatorPosition.HOLD).toString();
     }
 
-    @Logged(name = "States/Is CMS Transitioning")
+    @Logged(name = "States/Is CMS Transitioning?")
     public boolean isCMSTransitioning() {
         return isTransitioning();
     }

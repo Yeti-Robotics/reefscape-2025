@@ -21,7 +21,7 @@
         }
       ],
       "axisCount": 5,
-      "buttonCount": 8,
+      "buttonCount": 9,
       "buttonKeys": [
         49,
         50,
@@ -30,7 +30,8 @@
         53,
         54,
         55,
-        56
+        56,
+        57
       ],
       "povConfig": [
         {
@@ -98,8 +99,7 @@
     {},
     {},
     {
-      "guid": "78696e70757401000000000000000000",
-      "useGamepad": true
+      "guid": "Keyboard0"
     },
     {
       "guid": "78696e70757401000000000000000000",
