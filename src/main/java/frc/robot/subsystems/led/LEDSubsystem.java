@@ -86,6 +86,9 @@ public class LEDSubsystem extends SubsystemBase {
                 event = Events.OFF;
                 toAnimate = new StrobeAnimation(0, 0, 0, 0, 4, ledCount);
                 break;
+            case LYNK_FIRE:
+                event = Events.LYNK_FIRE;
+                toAnimate = new FireAnimation(1.0, 0.38, ledCount, 0.8, 0.2, false, ledOffset);
             case LOS:
                 event = Events.LOS;
                 toAnimate =
@@ -174,7 +177,7 @@ public class LEDSubsystem extends SubsystemBase {
                                 runOnce(() -> setAnimation(Events.PROGRESSBAR))),
                         Map.entry(
                                 CoralManipulatorState.HP_INTAKE,
-                                runOnce(() -> setAnimation(Events.CORALINTAKE))),
+                                runOnce(() -> setAnimation(Events.LYNK_FIRE))),
                         Map.entry(
                                 CoralManipulatorState.GROUND_INTAKE,
                                 runOnce(() -> setAnimation(Events.CORALINTAKE))),

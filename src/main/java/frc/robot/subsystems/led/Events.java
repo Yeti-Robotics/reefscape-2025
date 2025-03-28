@@ -8,6 +8,7 @@ public enum Events {
     IDLETELEOP,
     ELEVATORMOVING,
     ELEVATORSCORE,
+    LYNK_FIRE,
     OFF,
     SINGLEFADE,
     LOS,
