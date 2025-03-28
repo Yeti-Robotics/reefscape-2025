@@ -7,7 +7,7 @@ public enum ElevatorPosition implements Comparable<ElevatorPosition> {
     BOTTOM(0.0),
     SAFE_POSITION(2.2),
     POS_L1(2.4),
-    POS_L2(0.367920),
+    POS_L2(0.4),
     POS_L3(1.8),
     POS_L4(3.95),
     HOLD(-1); // special case, for when transitions are interrupted
