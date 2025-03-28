@@ -88,7 +88,7 @@ public class ElevatorSubsystem
 
     @Override
     public Angle determineSetpoint(ElevatorPosition targetState) {
-        return targetState == ElevatorPosition.HOLD
+        return targetState == ElevatorPosition.BOTTOM
                 ? elevatorPosition.getValue()
                 : targetState.getHeight();
     }
