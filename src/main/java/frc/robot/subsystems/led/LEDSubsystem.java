@@ -49,40 +49,52 @@ public class LEDSubsystem extends SubsystemBase {
         switch (animation) {
             case NICK:
                 event = Events.NICK;
-                toAnimate = new StrobeAnimation(255, 0, 25, 0, 4, ledCount);
+                candle.setLEDs(255, 0, 25, 0, ledOffset, ledCount);
+//                toAnimate = new StrobeAnimation(255, 0, 25, 0, 4, ledCount);
                 break;
             case ALGAEINTAKE:
                 event = Events.ALGAEINTAKE;
-                toAnimate =
-                        new LarsonAnimation(
-                                79, 165, 181, 0, 0.3, ledCount, BounceMode.Front, 3, ledOffset);
+                candle.setLEDs(79, 165, 181, 0, ledOffset, ledCount);
+//                toAnimate =
+//                        new LarsonAnimation(
+//                                79, 165, 181, 0, 0.3, ledCount, BounceMode.Front, 3, ledOffset);
                 break;
             case CORALINTAKE:
                 event = Events.CORALINTAKE;
-                toAnimate =
-                        new LarsonAnimation(
-                                255, 255, 255, 255, 0.3, ledCount, BounceMode.Front, 7, ledOffset);
+                candle.setLEDs(255, 255, 255, 255, ledOffset, ledCount);
+//                toAnimate =
+//                        new LarsonAnimation(
+//                                255, 255, 255, 255, 0.3, ledCount, BounceMode.Front, 7, ledOffset);
                 break;
             case CORALSTOWED:
                 event = Events.CORALSTOWED;
-                toAnimate = new StrobeAnimation(255, 255, 255, 255, 3, ledCount);
+                candle.setLEDs(255, 255, 255, 255, ledOffset, ledCount);
+//                toAnimate = new StrobeAnimation(255, 255, 255, 255, 3, ledCount);
                 break;
             case IDLETELEOP:
                 event = Events.IDLETELEOP;
-                toAnimate =
-                        isRedAlliance()
-                                ? new LarsonAnimation(
-                                        255, 0, 0, 0, 0.4, ledCount, BounceMode.Front, 3, ledOffset)
-                                : new LarsonAnimation(
-                                        84,
-                                        229,
-                                        182,
-                                        0,
-                                        0.3,
-                                        ledCount,
-                                        BounceMode.Front,
-                                        3,
-                                        ledOffset);
+                candle.clearAnimation(0);
+                candle.setLEDs(0, 0, 0, 0, ledOffset, ledCount);
+                if (isRedAlliance()) {
+                    candle.animate(new LarsonAnimation(
+                            255, 0, 0, 0, 0.4, ledCount, BounceMode.Front, 3, ledOffset));
+                } else {
+                    candle.animate(new LarsonAnimation(
+                            84, 229, 182, 0, 0.3, ledCount, BounceMode.Front, 3, ledOffset));
+                }
+//                toAnimate =
+//                        isRedAlliance()
+//                                ?
+//                                : new LarsonAnimation(
+//                                        84,
+//                                        229,
+//                                        182,
+//                                        0,
+//                                        0.3,
+//                                        ledCount,
+//                                        BounceMode.Front,
+//                                        3,
+//                                        ledOffset);
                 break;
             case OFF:
                 event = Events.OFF;
@@ -90,7 +102,9 @@ public class LEDSubsystem extends SubsystemBase {
                 break;
             case LYNK_FIRE:
                 event = Events.LYNK_FIRE;
-                toAnimate = new FireAnimation(1.0, 0.38, ledCount, 0.8, 0.2, false, ledOffset);
+                candle.clearAnimation(0);
+                candle.setLEDs(0, 0, 0, 0, ledOffset, ledCount);
+                candle.animate(new FireAnimation(1.0, 0.38, ledCount, 0.8, 0.2, false, ledOffset));
             case LOS:
                 event = Events.LOS;
                 toAnimate =
@@ -112,11 +126,17 @@ public class LEDSubsystem extends SubsystemBase {
                 break;
             case ELEVATORSCORE:
                 event = Events.ELEVATORSCORE;
-                toAnimate = new StrobeAnimation(0, 0, 255, 0, 4, ledCount);
+                clearAnimation();
+                candle.setLEDs(0, 0, 0);
+                candle.setLEDs(0, 0, 255, 0, ledOffset, ledCount);
+//                toAnimate = new StrobeAnimation(0, 0, 255, 0, 4, ledCount);
                 break;
             case ELEVATORMOVING:
                 event = Events.ELEVATORMOVING;
-                toAnimate = new StrobeAnimation(255, 0, 255, 0, 4, ledCount);
+                clearAnimation();
+                candle.setLEDs(0, 0, 0);
+                candle.setLEDs(255, 0, 255, 0, ledOffset, ledCount);
+//                toAnimate = new StrobeAnimation(255, 0, 255, 0, 4, ledCount);
                 break;
             default:
                 if (toAnimate == null) {
@@ -168,7 +188,7 @@ public class LEDSubsystem extends SubsystemBase {
                                             ledOffset));
                 }
         }
-        candle.animate(toAnimate);
+//        candle.animate(toAnimate);
     }
 
     public Command selectAnimationCommand(Supplier<CoralManipulatorState> getCMS) {
@@ -221,7 +241,6 @@ public class LEDSubsystem extends SubsystemBase {
         if (DriverStation.isDisabled() && event == Events.PROGRESSBAR) {
             progressBar.setProgress(progressBar.progressBarState);
         }
-        setAnimation(event);
         SmartDashboard.putString("LED State", event.toString());
     }
 
