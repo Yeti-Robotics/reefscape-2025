@@ -6,6 +6,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,9 +34,9 @@ public class ReefAlignCommand extends Command {
     private boolean isRightCam = false;
 
     private static final Transform2d leftBranchTransform =
-            new Transform2d(0.3, -0.2, Rotation2d.kZero);
+            new Transform2d(Units.inchesToMeters(12), Units.inchesToMeters(-8), Rotation2d.kZero);
     private static final Transform2d rightBranchTransform =
-            new Transform2d(0.3, 0.2, Rotation2d.kZero);
+            new Transform2d(Units.inchesToMeters(12), Units.inchesToMeters(8), Rotation2d.kZero);
     private static final Transform2d rightTurnTransform =
             new Transform2d(0, 0, Rotation2d.kCW_90deg);
     private static final Transform2d leftTurnTransform =
@@ -53,7 +54,7 @@ public class ReefAlignCommand extends Command {
     //    ProfiledPIDController movementYPIDController =
     //            new ProfiledPIDController(1.5, 0, 0, profiledConstraints);
 
-    private static final double feedforward = 1.0;
+    private static final double feedforward = 0.0;
     private Pose2d reefFaceTargetPose;
 
     public ReefAlignCommand(
@@ -139,6 +140,9 @@ public class ReefAlignCommand extends Command {
             return Optional.empty();
         }
 
+        movementXPIDController.reset();
+        movementYPIDController.reset();
+
         Pose2d reefTargetPose = reefTargetFaces[branchPoseIndex];
 
         return Optional.of(reefTargetPose);
@@ -205,6 +209,8 @@ public class ReefAlignCommand extends Command {
         DogLog.log("ReefAlignCmd/YVelocity", veloY);
         DogLog.log("ReefAlignCmd/XVelocityFeed", veloXFeed);
         DogLog.log("ReefAlignCmd/YVelocityFeed", veloYFeed);
+        DogLog.log("ReefAlignCmd/XError", movementXPIDController.getError());
+        DogLog.log("ReefAlignCmd/YError", movementYPIDController.getError());
 
         commandSwerveDrivetrain.setControl(
                 swerveReq
@@ -217,7 +223,6 @@ public class ReefAlignCommand extends Command {
     public void end(boolean interrupted) {
         commandSwerveDrivetrain.setControl(stopReq);
         reefFaceTargetPose = null;
-        reefTargetPublisher.set(Pose2d.kZero);
         isFinished = false;
     }
 
