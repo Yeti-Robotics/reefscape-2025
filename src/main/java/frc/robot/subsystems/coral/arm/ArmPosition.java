@@ -8,7 +8,6 @@ public enum ArmPosition implements SetpointEnum {
     DOWN(-0.254),
     UP(0.254),
     POS_L1(-0.1),
-    SCORE_L1(-0.1),
     POS_L2(.16),
     SCORE_L2(.07),
     POS_L3(.13),

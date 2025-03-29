@@ -26,7 +26,7 @@ public class AutoNamedCommands {
         NamedCommands.registerCommand(
                 "LollipopIntake", coralManipulator.transitionTo(CoralManipulatorState.LOLLIPOP));
 
-        NamedCommands.registerCommand("Reef align", reefAlignCommand);
+        NamedCommands.registerCommand("ReefAlign", reefAlignCommand);
 
         NamedCommands.registerCommand(
                 "L1", coralManipulator.transitionTo(CoralManipulatorState.L1));

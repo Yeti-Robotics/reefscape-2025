@@ -9,7 +9,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.AngleUnit;
@@ -64,7 +63,6 @@ public class ElevatorSubsystem
         primaryElevatorMotor.setControl(neutralOut);
         BaseStatusSignal.setUpdateFrequencyForAll(
                 50, elevatorPosition, elevatorTargetPosition, elevatorVelocity);
-        ParentDevice.optimizeBusUtilizationForAll(primaryElevatorMotor, secondaryElevatorMotor);
 
         if (Robot.isSimulation()) {
             PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);

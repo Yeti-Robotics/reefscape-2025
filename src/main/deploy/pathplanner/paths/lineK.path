@@ -33,13 +33,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Align",
+      "name": "ReefAlign",
       "waypointRelativePos": 0.7374689826302782,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Align"
+          "name": "ReefAlign"
         }
       }
     }
