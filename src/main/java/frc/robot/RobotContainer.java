@@ -33,6 +33,8 @@ import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.Mechanisms;
+import frc.robot.util.sim.vision.AprilTagCamSim;
+import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
 import java.util.Optional;
 
@@ -104,21 +106,21 @@ public class RobotContainer {
         reefCam1 = new PhotonAprilTagSystem("RadioCam", camTrans1, drivetrain);
         reefCam2 = new PhotonAprilTagSystem("ScoreCam", camTrans2, drivetrain);
 
-        //        AprilTagCamSim simCam1 =
-        //                AprilTagCamSimBuilder.newCamera()
-        //                        .withCameraName("ScoreCam")
-        //                        .withTransform(camTrans1)
-        //                        .build();
-        //        aprilTagCamSim.addCamera(simCam1);
-        //        reefCam1.setCamera(simCam1.getCam());
-        //
-        //        AprilTagCamSim simCam2 =
-        //                AprilTagCamSimBuilder.newCamera()
-        //                        .withCameraName("ClimbCam")
-        //                        .withTransform(camTrans2)
-        //                        .build();
-        //        aprilTagCamSim.addCamera(simCam2);
-        //        reefCam2.setCamera(simCam2.getCam());
+        AprilTagCamSim simCam1 =
+                AprilTagCamSimBuilder.newCamera()
+                        .withCameraName("ScoreCam")
+                        .withTransform(camTrans1)
+                        .build();
+        aprilTagCamSim.addCamera(simCam1);
+        reefCam1.setCamera(simCam1.getCam());
+
+        AprilTagCamSim simCam2 =
+                AprilTagCamSimBuilder.newCamera()
+                        .withCameraName("ClimbCam")
+                        .withTransform(camTrans2)
+                        .build();
+        aprilTagCamSim.addCamera(simCam2);
+        reefCam2.setCamera(simCam2.getCam());
 
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         climber = new ClimberSubsystem();
@@ -159,8 +161,9 @@ public class RobotContainer {
                 AprilTagPose pose = aprilTagPoseOpt.get();
 
                 if (pose.getNumTags() > 0) {
-                    drivetrain.addVisionMeasurement(
-                            pose.getEstimatedRobotPose(), pose.getTimestamp());
+                    //                    drivetrain.addVisionMeasurement(
+                    //                            pose.getEstimatedRobotPose(),
+                    // pose.getTimestamp());
                 }
             }
         }
@@ -222,8 +225,8 @@ public class RobotContainer {
                 .leftTrigger()
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
 
-        primaryXboxController.y().whileTrue(alignToReefCmd);
-        primaryXboxController.a().onTrue(alignToReefCmd.toggleBranchSelection());
+        primaryXboxController.button(1).whileTrue(alignToReefCmd);
+        primaryXboxController.button(2).onTrue(alignToReefCmd.toggleBranchSelection());
 
         secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));

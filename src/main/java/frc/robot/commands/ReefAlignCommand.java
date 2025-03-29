@@ -16,6 +16,7 @@ import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
+import frc.robot.subsystems.vision.util.AprilTagDetectionHelpers;
 import java.util.Optional;
 
 public class ReefAlignCommand extends Command {
@@ -90,20 +91,39 @@ public class ReefAlignCommand extends Command {
         return id > 16 && id < 23;
     }
 
+    public boolean isOnReef(int id) {
+        return isRedReef(id) || isBlueReef(id);
+    }
+
     public Optional<AprilTagDetection> getReefCamDetection() {
         isRightCam = false;
         Optional<AprilTagDetection> detection1 = reefCam1.getBestDetection();
         Optional<AprilTagDetection> detection2 = reefCam2.getBestDetection();
 
         if (detection1.isPresent() && detection2.isPresent()) {
-            int fiducial1 = detection1.get().getFiducialID();
+            AprilTagDetection fiducial1 = detection1.get();
+            AprilTagDetection fiducial2 = detection2.get();
 
-            if (isRedReef(fiducial1) || isBlueReef(fiducial1)) {
-                return detection1;
-            } else {
-                isRightCam = true;
-                return detection2;
+            boolean fiducial1IsOnReef = isOnReef(fiducial1.getFiducialID());
+            boolean fiducial2IsOnReef = isOnReef(fiducial2.getFiducialID());
+
+            if (fiducial1IsOnReef && fiducial2IsOnReef) {
+                boolean fiducial1Closer =
+                        AprilTagDetectionHelpers.getDetectionDistance(fiducial1)
+                                < AprilTagDetectionHelpers.getDetectionDistance(fiducial2);
+
+                if (!fiducial1Closer) {
+                    isRightCam = true;
+                }
+
+                return fiducial1Closer ? detection1 : detection2;
             }
+
+            if (fiducial2IsOnReef) {
+                isRightCam = true;
+            }
+
+            return fiducial1IsOnReef ? detection1 : detection2;
         }
 
         return detection1.or(
