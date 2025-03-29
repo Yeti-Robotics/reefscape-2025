@@ -68,7 +68,8 @@ public class RobotContainer {
                             Units.inchesToMeters(-8),
                             Units.inchesToMeters(-7),
                             Units.inchesToMeters(22.5)),
-                    new Rotation3d(0, Math.toRadians(35), Math.toRadians(90)));
+                    new Rotation3d(0, Math.toRadians(30), Math.toRadians(90)));
+
     Transform3d camTrans2 =
             new Transform3d(
                     new Translation3d(
@@ -77,8 +78,10 @@ public class RobotContainer {
                             Units.inchesToMeters(22.5 - 7)),
                     new Rotation3d(0, Math.toRadians(15), Math.toRadians(-90)));
 
+    @Logged(name = "Vision/ScoreCam")
     public final PhotonAprilTagSystem reefCam1;
 
+    @Logged(name = "Vision/ClimbCam")
     public final PhotonAprilTagSystem reefCam2;
 
     public LEDSubsystem leds;
@@ -250,6 +253,9 @@ public class RobotContainer {
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(
+                coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+
+        coralManipulator.grabber.doesNotHaveCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
 
         simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
