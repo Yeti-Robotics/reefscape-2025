@@ -5,6 +5,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -267,6 +269,8 @@ public class RobotContainer {
         simJoy.button(9).onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
         simJoy.button(10).onTrue(leds.runPattern(Constants.LEDs.NICK_MODE));
         simJoy.button(11).onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
+        simJoy.button(12).onTrue(runOnce(() -> leds.addProgress()));
+        simJoy.button(13).onTrue(runOnce(() -> leds.subtractProgress()));
     }
 
     public void updateMechanisms() {
