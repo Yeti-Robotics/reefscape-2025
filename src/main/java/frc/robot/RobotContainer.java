@@ -33,8 +33,6 @@ import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.Mechanisms;
-import frc.robot.util.sim.vision.AprilTagCamSim;
-import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
 import java.util.Optional;
 
@@ -59,18 +57,18 @@ public class RobotContainer {
     Transform3d camTrans1 =
             new Transform3d(
                     new Translation3d(
+                            Units.inchesToMeters(-9.5),
                             Units.inchesToMeters(-8),
-                            Units.inchesToMeters(-7),
-                            Units.inchesToMeters(22.5)),
-                    new Rotation3d(0, Math.toRadians(30), Math.toRadians(90)));
+                            Units.inchesToMeters(11)),
+                    new Rotation3d(0, Math.toRadians(-15), Math.toRadians(-90)));
 
     Transform3d camTrans2 =
             new Transform3d(
                     new Translation3d(
-                            Units.inchesToMeters(-8),
-                            Units.inchesToMeters(7),
-                            Units.inchesToMeters(22.5 - 7)),
-                    new Rotation3d(0, Math.toRadians(15), Math.toRadians(-90)));
+                            Units.inchesToMeters(-9.5),
+                            Units.inchesToMeters(10),
+                            Units.inchesToMeters(11)),
+                    new Rotation3d(0, Math.toRadians(-15), Math.toRadians(90)));
 
     @Logged(name = "Vision/ScoreCam")
     public final PhotonAprilTagSystem reefCam1;
@@ -103,24 +101,24 @@ public class RobotContainer {
         secondaryXboxController = new CommandXboxController(1);
         drivetrain = TunerConstants.createDrivetrain();
 
-        reefCam1 = new PhotonAprilTagSystem("ScoreCam", camTrans1, drivetrain);
-        reefCam2 = new PhotonAprilTagSystem("ClimbCam", camTrans2, drivetrain);
+        reefCam1 = new PhotonAprilTagSystem("RadioCam", camTrans1, drivetrain);
+        reefCam2 = new PhotonAprilTagSystem("ScoreCam", camTrans2, drivetrain);
 
-        AprilTagCamSim simCam1 =
-                AprilTagCamSimBuilder.newCamera()
-                        .withCameraName("ScoreCam")
-                        .withTransform(camTrans1)
-                        .build();
-        aprilTagCamSim.addCamera(simCam1);
-        reefCam1.setCamera(simCam1.getCam());
-
-        AprilTagCamSim simCam2 =
-                AprilTagCamSimBuilder.newCamera()
-                        .withCameraName("ClimbCam")
-                        .withTransform(camTrans2)
-                        .build();
-        aprilTagCamSim.addCamera(simCam2);
-        reefCam2.setCamera(simCam2.getCam());
+        //        AprilTagCamSim simCam1 =
+        //                AprilTagCamSimBuilder.newCamera()
+        //                        .withCameraName("ScoreCam")
+        //                        .withTransform(camTrans1)
+        //                        .build();
+        //        aprilTagCamSim.addCamera(simCam1);
+        //        reefCam1.setCamera(simCam1.getCam());
+        //
+        //        AprilTagCamSim simCam2 =
+        //                AprilTagCamSimBuilder.newCamera()
+        //                        .withCameraName("ClimbCam")
+        //                        .withTransform(camTrans2)
+        //                        .build();
+        //        aprilTagCamSim.addCamera(simCam2);
+        //        reefCam2.setCamera(simCam2.getCam());
 
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         climber = new ClimberSubsystem();
@@ -135,7 +133,7 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooser("driveForward");
         SmartDashboard.putData("Auto Chooser", autoChooser);
-        aprilTagSubsystems = new AprilTagSubsystem[] {limelight /*, reefCam1, reefCam2*/};
+        aprilTagSubsystems = new AprilTagSubsystem[] {limelight, reefCam1, reefCam2};
 
         // Set standard deviations to prevent jitter
         // odo data is more trustworthy, lower stddev

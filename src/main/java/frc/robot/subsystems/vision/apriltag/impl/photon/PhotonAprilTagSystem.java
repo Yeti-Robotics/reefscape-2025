@@ -21,6 +21,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 @Logged
 public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsystem {
+    private static final double MAX_LIVE_SECONDS = 5;
     private PhotonCamera camera;
     private final Transform3d cameraTransform;
     private final PhotonPoseEstimator photonPoseEstimator;
@@ -28,6 +29,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private AprilTagResults aprilTagResults = new AprilTagResults(0, 0, Collections.emptyList());
     private double maxAmbiguity = 1;
     private PhotonTrackedTarget currentBestDetection;
+    private double currentBestDetectionTimestamp;
 
     @Logged(name = "TagPoses")
     public List<Pose2d> getTagPoses() {
@@ -67,6 +69,10 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
                 PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
     }
 
+    private double getDetectionDistance(PhotonTrackedTarget target) {
+        return target.bestCameraToTarget.getTranslation().getNorm();
+    }
+
     @Override
     public void periodic() {
         //
@@ -79,7 +85,6 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         //
         // photonPoseEstimator.setLastPose(drivetrain.getState().Pose);
 
-        double currentBestDetectionDistance = Double.POSITIVE_INFINITY;
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
         if (results.isEmpty()) {
@@ -101,14 +106,18 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
             if (result.hasTargets()) {
                 for (PhotonTrackedTarget target : result.getTargets()) {
+                    double currentBestDetectionDist =
+                            currentBestDetection == null
+                                    ? Double.POSITIVE_INFINITY
+                                    : getDetectionDistance(currentBestDetection);
+
+                    if (result.getTimestampSeconds() >= currentBestDetectionTimestamp
+                            && getDetectionDistance(target) <= currentBestDetectionDist) {
+                        currentBestDetection = target;
+                        currentBestDetectionTimestamp = result.getTimestampSeconds();
+                    }
+
                     if (target.fiducialId != -1) {
-                        double targetNorm = target.bestCameraToTarget.getTranslation().getNorm();
-
-                        if (targetNorm < currentBestDetectionDistance) {
-                            currentBestDetection = target;
-                            currentBestDetectionDistance = targetNorm;
-                        }
-
                         mapToDetection(target).ifPresent(aprilTagDetections::add);
                     }
                 }

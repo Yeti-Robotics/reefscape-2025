@@ -1,9 +1,11 @@
 package frc.robot.subsystems.coral.wrist;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.AngleUnit;
@@ -39,6 +41,8 @@ public class WristSubsystem
             PhysicsSim.getInstance().addTalonFX(wristMotor, wristEncoder);
         }
         wristMotor.setPosition(WristPositions.SAFE.getAngle());
+        BaseStatusSignal.setUpdateFrequencyForAll(50, wristPosition, targetWristPosition);
+        ParentDevice.optimizeBusUtilizationForAll(wristMotor, wristEncoder);
     }
 
     public Command moveWristHorizontal() {

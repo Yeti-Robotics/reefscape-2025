@@ -42,8 +42,8 @@ public class ReefAlignCommand extends Command {
     private static final Transform2d leftTurnTransform =
             new Transform2d(0, 0, Rotation2d.kCCW_90deg);
 
-    PIDController movementXPIDController = new PIDController(1.5, 0, 0);
-    PIDController movementYPIDController = new PIDController(1.5, 0, 0);
+    PIDController movementXPIDController = new PIDController(1, 0, 0);
+    PIDController movementYPIDController = new PIDController(1, 0, 0);
 
     // apparently profiled PID outputs a positive velo which isn't ideal for alignment
     // DO NOT USE
@@ -73,6 +73,7 @@ public class ReefAlignCommand extends Command {
 
         movementXPIDController.setTolerance(0.07);
         movementYPIDController.setTolerance(0.07);
+        getBranchPoseFromTagID(18);
     }
 
     public static StructPublisher<Pose2d> pose2dStructPublisher(String key) {

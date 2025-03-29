@@ -3,11 +3,13 @@ package frc.robot.subsystems.coral.elevator;
 import static frc.robot.constants.Constants.RIO_BUS;
 import static frc.robot.subsystems.coral.elevator.ElevatorConfig.*;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.AngleUnit;
@@ -60,6 +62,9 @@ public class ElevatorSubsystem
         secondaryElevatorMotor.setPosition(0);
 
         primaryElevatorMotor.setControl(neutralOut);
+        BaseStatusSignal.setUpdateFrequencyForAll(
+                50, elevatorPosition, elevatorTargetPosition, elevatorVelocity);
+        ParentDevice.optimizeBusUtilizationForAll(primaryElevatorMotor, secondaryElevatorMotor);
 
         if (Robot.isSimulation()) {
             PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
