@@ -2,11 +2,10 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.FieldConstants.Reef;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
-import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import java.util.Optional;
@@ -22,34 +20,41 @@ import java.util.Optional;
 public class ReefAlignCommand extends Command {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
 
-    private static int commandCount = 0;
+    private static int commandCount = 0; // for logging purposes
     private final AprilTagSubsystem reefCam1;
     private final AprilTagSubsystem reefCam2;
     private final CoralManipulatorSystem coralManipulatorSystem;
 
     private final SwerveRequest.FieldCentricFacingAngle swerveReq =
-            new SwerveRequest.FieldCentricFacingAngle()
-                    .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
-                    .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1);
+            new SwerveRequest.FieldCentricFacingAngle();
     private final SwerveRequest.Idle stopReq = new SwerveRequest.Idle();
-    boolean isLeftBranch = false;
-    boolean isFinished = false;
-
-    boolean isRightCam = false;
+    private boolean isLeftBranch = false;
+    private boolean isFinished = false;
+    private boolean isRightCam = false;
 
     private static final Transform2d leftBranchTransform =
-            new Transform2d(0.8, -0.2, Rotation2d.kZero);
+            new Transform2d(0.3, -0.2, Rotation2d.kZero);
     private static final Transform2d rightBranchTransform =
-            new Transform2d(0.8, 0.2, Rotation2d.kZero);
+            new Transform2d(0.3, 0.2, Rotation2d.kZero);
+    private static final Transform2d rightTurnTransform =
+            new Transform2d(0, 0, Rotation2d.kCW_90deg);
+    private static final Transform2d leftTurnTransform =
+            new Transform2d(0, 0, Rotation2d.kCCW_90deg);
 
-    private static final TrapezoidProfile.Constraints profiledConstraints =
-            new TrapezoidProfile.Constraints(3, 1);
-    ProfiledPIDController movementXPIDController =
-            new ProfiledPIDController(1.75, 0, 0, profiledConstraints);
-    ProfiledPIDController movementYPIDController =
-            new ProfiledPIDController(1.75, 0, 0, profiledConstraints);
+    PIDController movementXPIDController = new PIDController(1.5, 0, 0);
+    PIDController movementYPIDController = new PIDController(1.5, 0, 0);
 
-    private Pose2d reefTargetPose;
+    // apparently profiled PID outputs a positive velo which isn't ideal for alignment
+    // DO NOT USE
+    //   private static final TrapezoidProfile.Constraints profiledConstraints =
+    //            new TrapezoidProfile.Constraints(3, 1);
+    //    ProfiledPIDController movementXPIDController =
+    //            new ProfiledPIDController(1.5, 0, 0, profiledConstraints);
+    //    ProfiledPIDController movementYPIDController =
+    //            new ProfiledPIDController(1.5, 0, 0, profiledConstraints);
+
+    private static final double feedforward = 1.0;
+    private Pose2d reefFaceTargetPose;
 
     public ReefAlignCommand(
             CommandSwerveDrivetrain commandSwerveDrivetrain,
@@ -61,7 +66,7 @@ public class ReefAlignCommand extends Command {
         this.reefCam1 = reefCam1;
         this.reefCam2 = reefCam2;
 
-        swerveReq.HeadingController.setPID(4, 0, 0);
+        swerveReq.HeadingController.setPID(10, 0, 1);
         swerveReq.HeadingController.setTolerance(0.07);
         swerveReq.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -122,12 +127,11 @@ public class ReefAlignCommand extends Command {
 
         if (branchPoseIndex > 5) {
             isFinished = true;
-            cancel();
             return Optional.empty();
         }
 
         if (branchPoseIndex == -1) {
-            branchPoseIndex = Reef.blueCenterFaces.length - 1;
+            branchPoseIndex = reefTargetFaces.length - 1;
         }
 
         if (branchPoseIndex < 0) {
@@ -157,7 +161,7 @@ public class ReefAlignCommand extends Command {
         }
 
         int fiducialId = detectionOpt.get().getFiducialID();
-
+        System.out.println("Detection id: " + fiducialId);
         Optional<Pose2d> reefTargetPoseOpt = getBranchPoseFromTagID(fiducialId);
 
         if (reefTargetPoseOpt.isEmpty()) {
@@ -165,27 +169,28 @@ public class ReefAlignCommand extends Command {
             return;
         }
 
-        reefTargetPose = reefTargetPoseOpt.get();
+        reefFaceTargetPose = reefTargetPoseOpt.get();
     }
 
     @Override
     public void execute() {
-        DogLog.log("ReefAlignCmd/TargetPoseNull", reefTargetPose == null);
+        DogLog.log("ReefAlignCmd/TargetPoseNull", reefFaceTargetPose == null);
 
         if (isFinished) {
             return;
         }
 
         Pose2d reefBranchPose =
-                reefTargetPose
+                reefFaceTargetPose
                         .transformBy(isLeftBranch ? leftBranchTransform : rightBranchTransform)
-                        .transformBy(
-                                new Transform2d(
-                                        0,
-                                        0,
-                                        isRightCam ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg));
+                        .transformBy(isRightCam ? rightTurnTransform : leftTurnTransform);
+
         Pose2d drivetrainPose = commandSwerveDrivetrain.getState().Pose;
+
         reefTargetPublisher.set(reefBranchPose);
+
+        Transform2d targetTransform = new Transform2d(drivetrainPose, reefBranchPose);
+        DogLog.log("ReefAlignCmd/TargetTransform", targetTransform);
 
         double veloX =
                 movementXPIDController.calculate(drivetrainPose.getX(), reefBranchPose.getX());
@@ -193,29 +198,38 @@ public class ReefAlignCommand extends Command {
         double veloY =
                 movementYPIDController.calculate(drivetrainPose.getY(), reefBranchPose.getY());
 
+        double veloXFeed = feedforward * Math.signum(veloX);
+        double veloYFeed = feedforward * Math.signum(veloY);
+
         DogLog.log("ReefAlignCmd/XVelocity", veloX);
         DogLog.log("ReefAlignCmd/YVelocity", veloY);
-
-        //        veloX = MathUtil.clamp(veloX, -3, 3);
-        //        veloY = MathUtil.clamp(veloY, -3, 3);
+        DogLog.log("ReefAlignCmd/XVelocityFeed", veloXFeed);
+        DogLog.log("ReefAlignCmd/YVelocityFeed", veloYFeed);
 
         commandSwerveDrivetrain.setControl(
                 swerveReq
-                        .withVelocityX(-veloX)
-                        .withVelocityY(-veloY)
+                        .withVelocityX(-(veloXFeed + veloX))
+                        .withVelocityY(-(veloYFeed + veloY))
                         .withTargetDirection(reefBranchPose.getRotation()));
     }
 
     @Override
     public void end(boolean interrupted) {
         commandSwerveDrivetrain.setControl(stopReq);
-        reefTargetPose = null;
+        reefFaceTargetPose = null;
+        reefTargetPublisher.set(Pose2d.kZero);
         isFinished = false;
+    }
+
+    private boolean alignmentReached() {
+        return movementYPIDController.atSetpoint()
+                && movementXPIDController.atSetpoint()
+                && swerveReq.HeadingController.atSetpoint();
     }
 
     @Override
     public boolean isFinished() {
-        return isFinished;
+        return isFinished || alignmentReached();
     }
 
     public Command toggleBranchSelection() {

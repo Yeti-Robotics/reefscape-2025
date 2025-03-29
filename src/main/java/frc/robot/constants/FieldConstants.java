@@ -16,9 +16,9 @@ public class FieldConstants {
     // license that can be found in the LICENSE file at
     // the root directory of this project.
 
-    public static final AprilTagFieldLayout fieldLayout =
+    public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT =
             AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-    public static final double fieldWidth = fieldLayout.getFieldWidth();
+    public static final double fieldWidth = APRIL_TAG_FIELD_LAYOUT.getFieldWidth();
 
     public enum ReefLevel {
         L1(Units.inchesToMeters(25.0), 0),
@@ -60,19 +60,19 @@ public class FieldConstants {
 
         static {
             // Initialize faces
-            blueCenterFaces[0] = fieldLayout.getTagPose(18).get().toPose2d();
-            blueCenterFaces[1] = fieldLayout.getTagPose(19).get().toPose2d();
-            blueCenterFaces[2] = fieldLayout.getTagPose(20).get().toPose2d();
-            blueCenterFaces[3] = fieldLayout.getTagPose(21).get().toPose2d();
-            blueCenterFaces[4] = fieldLayout.getTagPose(22).get().toPose2d();
-            blueCenterFaces[5] = fieldLayout.getTagPose(17).get().toPose2d();
+            blueCenterFaces[0] = APRIL_TAG_FIELD_LAYOUT.getTagPose(18).get().toPose2d();
+            blueCenterFaces[1] = APRIL_TAG_FIELD_LAYOUT.getTagPose(19).get().toPose2d();
+            blueCenterFaces[2] = APRIL_TAG_FIELD_LAYOUT.getTagPose(20).get().toPose2d();
+            blueCenterFaces[3] = APRIL_TAG_FIELD_LAYOUT.getTagPose(21).get().toPose2d();
+            blueCenterFaces[4] = APRIL_TAG_FIELD_LAYOUT.getTagPose(22).get().toPose2d();
+            blueCenterFaces[5] = APRIL_TAG_FIELD_LAYOUT.getTagPose(17).get().toPose2d();
 
-            redCenterFaces[0] = fieldLayout.getTagPose(7).get().toPose2d();
-            redCenterFaces[1] = fieldLayout.getTagPose(8).get().toPose2d();
-            redCenterFaces[2] = fieldLayout.getTagPose(9).get().toPose2d();
-            redCenterFaces[3] = fieldLayout.getTagPose(10).get().toPose2d();
-            redCenterFaces[4] = fieldLayout.getTagPose(11).get().toPose2d();
-            redCenterFaces[5] = fieldLayout.getTagPose(6).get().toPose2d();
+            redCenterFaces[0] = APRIL_TAG_FIELD_LAYOUT.getTagPose(7).get().toPose2d();
+            redCenterFaces[1] = APRIL_TAG_FIELD_LAYOUT.getTagPose(8).get().toPose2d();
+            redCenterFaces[2] = APRIL_TAG_FIELD_LAYOUT.getTagPose(9).get().toPose2d();
+            redCenterFaces[3] = APRIL_TAG_FIELD_LAYOUT.getTagPose(10).get().toPose2d();
+            redCenterFaces[4] = APRIL_TAG_FIELD_LAYOUT.getTagPose(11).get().toPose2d();
+            redCenterFaces[5] = APRIL_TAG_FIELD_LAYOUT.getTagPose(6).get().toPose2d();
 
             // Initialize branch positions
             for (int face = 0; face < 6; face++) {
