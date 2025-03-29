@@ -14,12 +14,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.FieldConstants.Reef;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
-import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.util.AprilTagDetectionHelpers;
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
 
 public class ReefAlignCommand extends Command {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
@@ -45,8 +43,8 @@ public class ReefAlignCommand extends Command {
     private static final Transform2d leftTurnTransform =
             new Transform2d(0, 0, Rotation2d.kCCW_90deg);
 
-    PIDController movementXPIDController = new PIDController(9, 0, 0.2);
-    PIDController movementYPIDController = new PIDController(9, 0, 0.2);
+    PIDController movementXPIDController = new PIDController(5, 0, 0.2);
+    PIDController movementYPIDController = new PIDController(5, 0, 0.2);
 
     // apparently profiled PID outputs a positive velo which isn't ideal for alignment
     // DO NOT USE

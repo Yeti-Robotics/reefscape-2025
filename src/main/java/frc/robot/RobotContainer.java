@@ -30,7 +30,6 @@ import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
-import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
@@ -50,8 +49,8 @@ public class RobotContainer {
     public final CommandXboxController secondaryXboxController;
     private final CommandJoystick simJoy = new CommandJoystick(2);
 
-    @Logged(name = "Vision/Limelight")
-    public final LimelightAprilTagSystem limelight;
+    //    @Logged(name = "Vision/Limelight")
+    //    public final LimelightAprilTagSystem limelight;
 
     @Logged(name = "Drivetrain")
     public CommandSwerveDrivetrain drivetrain;
@@ -123,7 +122,7 @@ public class RobotContainer {
             reefCam2.setCamera(simCam2.getCam());
         }
 
-        limelight = new LimelightAprilTagSystem("limelight", drivetrain);
+        //        limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         climber = new ClimberSubsystem();
         coralManipulator = new CoralManipulatorSystem();
         mechanisms = new Mechanisms();
@@ -136,7 +135,7 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooser("driveForward");
         SmartDashboard.putData("Auto Chooser", autoChooser);
-        aprilTagSubsystems = new AprilTagSubsystem[] {limelight /*, reefCam1, reefCam2*/};
+        aprilTagSubsystems = new AprilTagSubsystem[] {reefCam1, reefCam2};
 
         // Set standard deviations to prevent jitter
         // odo data is more trustworthy, lower stddev
