@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -22,6 +23,8 @@ public class AutoNamedCommands {
                 "GroundIntake", coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
         NamedCommands.registerCommand(
                 "HPIntake", coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
+        NamedCommands.registerCommand(
+                "LollipopIntake", coralManipulator.transitionTo(CoralManipulatorState.LOLLIPOP));
 
         NamedCommands.registerCommand("Reef align", reefAlignCommand);
 
@@ -38,25 +41,13 @@ public class AutoNamedCommands {
                 "Rollout", coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
 
         NamedCommands.registerCommand(
-                "Score1",
-                new ParallelCommandGroup(
-                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L1),
-                        new WaitCommand(1)));
+                "Score1",coralManipulator.transitionTo(CoralManipulatorState.SCORE_L1));
         NamedCommands.registerCommand(
-                "Score2",
-                new ParallelCommandGroup(
-                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2),
-                        new WaitCommand(1)));
+                "Score2",coralManipulator.transitionTo(CoralManipulatorState.SCORE_L2));
         NamedCommands.registerCommand(
-                "Score3",
-                new ParallelCommandGroup(
-                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3),
-                        new WaitCommand(1)));
+                "Score3",coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3));
         NamedCommands.registerCommand(
-                "Score4",
-                new ParallelCommandGroup(
-                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
-                        new WaitCommand(1)));
+                "Score4",coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
 
         NamedCommands.registerCommand(
                 "Stow", coralManipulator.transitionTo(CoralManipulatorState.STOWED));
