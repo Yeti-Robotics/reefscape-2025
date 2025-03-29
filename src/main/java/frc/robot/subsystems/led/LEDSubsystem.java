@@ -23,6 +23,8 @@ public class LEDSubsystem extends SubsystemBase {
     private Events event;
 
     public LEDSubsystem() {
+        event = Events.IDLETELEOP;
+        setAnimation(event);
         configAll = new CANdleConfiguration();
         configAll.statusLedOffWhenActive = false;
         configAll.disableWhenLOS = false;
@@ -50,51 +52,63 @@ public class LEDSubsystem extends SubsystemBase {
             case NICK:
                 event = Events.NICK;
                 candle.setLEDs(255, 0, 25, 0, ledOffset, ledCount);
-//                toAnimate = new StrobeAnimation(255, 0, 25, 0, 4, ledCount);
+                //                toAnimate = new StrobeAnimation(255, 0, 25, 0, 4, ledCount);
                 break;
             case ALGAEINTAKE:
                 event = Events.ALGAEINTAKE;
                 candle.setLEDs(79, 165, 181, 0, ledOffset, ledCount);
-//                toAnimate =
-//                        new LarsonAnimation(
-//                                79, 165, 181, 0, 0.3, ledCount, BounceMode.Front, 3, ledOffset);
+                //                toAnimate =
+                //                        new LarsonAnimation(
+                //                                79, 165, 181, 0, 0.3, ledCount, BounceMode.Front,
+                // 3, ledOffset);
                 break;
             case CORALINTAKE:
                 event = Events.CORALINTAKE;
                 candle.setLEDs(255, 255, 255, 255, ledOffset, ledCount);
-//                toAnimate =
-//                        new LarsonAnimation(
-//                                255, 255, 255, 255, 0.3, ledCount, BounceMode.Front, 7, ledOffset);
+                //                toAnimate =
+                //                        new LarsonAnimation(
+                //                                255, 255, 255, 255, 0.3, ledCount,
+                // BounceMode.Front, 7, ledOffset);
                 break;
             case CORALSTOWED:
                 event = Events.CORALSTOWED;
                 candle.setLEDs(255, 255, 255, 255, ledOffset, ledCount);
-//                toAnimate = new StrobeAnimation(255, 255, 255, 255, 3, ledCount);
+                //                toAnimate = new StrobeAnimation(255, 255, 255, 255, 3, ledCount);
                 break;
             case IDLETELEOP:
                 event = Events.IDLETELEOP;
                 candle.clearAnimation(0);
                 candle.setLEDs(0, 0, 0, 0, ledOffset, ledCount);
                 if (isRedAlliance()) {
-                    candle.animate(new LarsonAnimation(
-                            255, 0, 0, 0, 0.4, ledCount, BounceMode.Front, 3, ledOffset));
+                    candle.animate(
+                            new LarsonAnimation(
+                                    255, 0, 0, 0, 0.4, ledCount, BounceMode.Front, 3, ledOffset));
                 } else {
-                    candle.animate(new LarsonAnimation(
-                            84, 229, 182, 0, 0.3, ledCount, BounceMode.Front, 3, ledOffset));
+                    candle.animate(
+                            new LarsonAnimation(
+                                    84,
+                                    229,
+                                    182,
+                                    0,
+                                    0.3,
+                                    ledCount,
+                                    BounceMode.Front,
+                                    3,
+                                    ledOffset));
                 }
-//                toAnimate =
-//                        isRedAlliance()
-//                                ?
-//                                : new LarsonAnimation(
-//                                        84,
-//                                        229,
-//                                        182,
-//                                        0,
-//                                        0.3,
-//                                        ledCount,
-//                                        BounceMode.Front,
-//                                        3,
-//                                        ledOffset);
+                //                toAnimate =
+                //                        isRedAlliance()
+                //                                ?
+                //                                : new LarsonAnimation(
+                //                                        84,
+                //                                        229,
+                //                                        182,
+                //                                        0,
+                //                                        0.3,
+                //                                        ledCount,
+                //                                        BounceMode.Front,
+                //                                        3,
+                //                                        ledOffset);
                 break;
             case OFF:
                 event = Events.OFF;
@@ -129,14 +143,14 @@ public class LEDSubsystem extends SubsystemBase {
                 clearAnimation();
                 candle.setLEDs(0, 0, 0);
                 candle.setLEDs(0, 0, 255, 0, ledOffset, ledCount);
-//                toAnimate = new StrobeAnimation(0, 0, 255, 0, 4, ledCount);
+                //                toAnimate = new StrobeAnimation(0, 0, 255, 0, 4, ledCount);
                 break;
             case ELEVATORMOVING:
                 event = Events.ELEVATORMOVING;
                 clearAnimation();
                 candle.setLEDs(0, 0, 0);
                 candle.setLEDs(255, 0, 255, 0, ledOffset, ledCount);
-//                toAnimate = new StrobeAnimation(255, 0, 255, 0, 4, ledCount);
+                //                toAnimate = new StrobeAnimation(255, 0, 255, 0, 4, ledCount);
                 break;
             default:
                 if (toAnimate == null) {
@@ -188,7 +202,7 @@ public class LEDSubsystem extends SubsystemBase {
                                             ledOffset));
                 }
         }
-//        candle.animate(toAnimate);
+        //        candle.animate(toAnimate);
     }
 
     public Command selectAnimationCommand(Supplier<CoralManipulatorState> getCMS) {
