@@ -39,7 +39,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         return queuedState.toString();
     }
 
-    private CoralManipulatorState getQueuedState() {
+    public CoralManipulatorState getQueuedState() {
         return queuedState;
     }
 

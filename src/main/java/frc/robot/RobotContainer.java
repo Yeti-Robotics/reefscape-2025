@@ -59,18 +59,18 @@ public class RobotContainer {
     Transform3d camTrans1 =
             new Transform3d(
                     new Translation3d(
+                            Units.inchesToMeters(-9.5),
                             Units.inchesToMeters(-8),
-                            Units.inchesToMeters(-7),
-                            Units.inchesToMeters(22.5)),
-                    new Rotation3d(0, Math.toRadians(30), Math.toRadians(90)));
+                            Units.inchesToMeters(11)),
+                    new Rotation3d(0, Math.toRadians(-15), Math.toRadians(-90)));
 
     Transform3d camTrans2 =
             new Transform3d(
                     new Translation3d(
-                            Units.inchesToMeters(-8),
-                            Units.inchesToMeters(7),
-                            Units.inchesToMeters(22.5 - 7)),
-                    new Rotation3d(0, Math.toRadians(15), Math.toRadians(-90)));
+                            Units.inchesToMeters(-9.5),
+                            Units.inchesToMeters(10),
+                            Units.inchesToMeters(11)),
+                    new Rotation3d(0, Math.toRadians(-15), Math.toRadians(90)));
 
     @Logged(name = "Vision/ScoreCam")
     public final PhotonAprilTagSystem reefCam1;
@@ -103,8 +103,8 @@ public class RobotContainer {
         secondaryXboxController = new CommandXboxController(1);
         drivetrain = TunerConstants.createDrivetrain();
 
-        reefCam1 = new PhotonAprilTagSystem("ScoreCam", camTrans1, drivetrain);
-        reefCam2 = new PhotonAprilTagSystem("ClimbCam", camTrans2, drivetrain);
+        reefCam1 = new PhotonAprilTagSystem("RadioCam", camTrans1, drivetrain);
+        reefCam2 = new PhotonAprilTagSystem("ScoreCam", camTrans2, drivetrain);
 
         AprilTagCamSim simCam1 =
                 AprilTagCamSimBuilder.newCamera()
@@ -126,14 +126,7 @@ public class RobotContainer {
         climber = new ClimberSubsystem();
         coralManipulator = new CoralManipulatorSystem();
         mechanisms = new Mechanisms();
-        alignToReefCmd =
-                new ReefAlignCommand(
-                        drivetrain,
-                        reefCam1,
-                        reefCam2,
-                        primaryXboxController::getLeftX,
-                        primaryXboxController::getLeftY,
-                        primaryXboxController::getRightX);
+        alignToReefCmd = new ReefAlignCommand(drivetrain, null, reefCam1, reefCam2);
 
         configureBindings();
 
@@ -148,7 +141,7 @@ public class RobotContainer {
         // odo data is more trustworthy, lower stddev
         drivetrain.setStateStdDevs(VecBuilder.fill(0.03, 0.03, 1));
         // vision data can vary, so higher stddev
-        drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, Math.toRadians(50)));
+        drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(0.3, 0.3, Math.toRadians(30)));
     }
 
     /**
@@ -168,8 +161,9 @@ public class RobotContainer {
                 AprilTagPose pose = aprilTagPoseOpt.get();
 
                 if (pose.getNumTags() > 0) {
-                    drivetrain.addVisionMeasurement(
-                            pose.getEstimatedRobotPose(), pose.getTimestamp());
+                    //                    drivetrain.addVisionMeasurement(
+                    //                            pose.getEstimatedRobotPose(),
+                    // pose.getTimestamp());
                 }
             }
         }
@@ -231,8 +225,8 @@ public class RobotContainer {
                 .leftTrigger()
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
 
-        primaryXboxController.y().whileTrue(alignToReefCmd);
-        secondaryXboxController.start().onTrue(alignToReefCmd.toggleBranchSelection());
+        primaryXboxController.button(1).whileTrue(alignToReefCmd);
+        primaryXboxController.button(2).onTrue(alignToReefCmd.toggleBranchSelection());
 
         secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));

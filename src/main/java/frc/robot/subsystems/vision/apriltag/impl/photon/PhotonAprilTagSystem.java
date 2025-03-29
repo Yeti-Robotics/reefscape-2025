@@ -3,9 +3,12 @@ package frc.robot.subsystems.vision.apriltag.impl.photon;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.apriltag.*;
-import java.util.ArrayList;
+import frc.robot.subsystems.vision.util.AprilTagDetectionHelpers;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -16,14 +19,15 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsystem {
+    private static final double MAX_LIVE_SECONDS = 5;
     private PhotonCamera camera;
     private final Transform3d cameraTransform;
     private final PhotonPoseEstimator photonPoseEstimator;
     private final CommandSwerveDrivetrain drivetrain;
-    private AprilTagResults aprilTagResults;
-    private double maxAmbiguity = 0.3;
-    private PhotonTrackedTarget currentBestDetection;
-    private double currentBestDetectionTimestamp;
+    private AprilTagResults aprilTagResults = new AprilTagResults(0, 0, Collections.emptyList());
+    private double maxAmbiguity = 1;
+    private AprilTagDetection bestDetection;
+    private double bestDetectionTimestamp;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<EstimatedRobotPose> estimatedRobotPose = Optional.empty();
@@ -36,18 +40,26 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         this.cameraTransform = cameraTransform;
         this.photonPoseEstimator =
                 new PhotonPoseEstimator(
-                        AprilTagConstants.APRIL_TAG_FIELD_LAYOUT,
+                        FieldConstants.APRIL_TAG_FIELD_LAYOUT,
                         PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                         cameraTransform);
         this.drivetrain = commandSwerveDrivetrain;
 
         photonPoseEstimator.setMultiTagFallbackStrategy(
-                PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_LAST_POSE);
+                PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
     }
 
     @Override
     public void periodic() {
-        photonPoseEstimator.setLastPose(drivetrain.getState().Pose);
+        //
+        //        double timestamp =
+        //                drivetrain.getState().Timestamp
+        //                        - Utils.getCurrentTimeSeconds()
+        //                        + Timer.getFPGATimestamp();
+        //        photonPoseEstimator.addHeadingData(timestamp,
+        // drivetrain.getRotation3d().toRotation2d());
+        //
+        // photonPoseEstimator.setLastPose(drivetrain.getState().Pose);
 
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
@@ -55,37 +67,44 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
             return;
         }
 
-        List<AprilTagDetection> aprilTagDetections = new ArrayList<>();
+        double latestTimestamp = -1;
 
-        double earliestTimestamp = Double.POSITIVE_INFINITY;
-        double highestLatency = 0;
+        PhotonPipelineResult latestResult = null;
 
         for (PhotonPipelineResult result : results) {
             estimatedRobotPose =
                     photonPoseEstimator.update(
                             result, camera.getCameraMatrix(), camera.getDistCoeffs());
 
-            earliestTimestamp = Math.min(earliestTimestamp, result.getTimestampSeconds());
-            highestLatency = Math.max(highestLatency, result.metadata.getLatencyMillis());
-
-            if (result.hasTargets()) {
-                PhotonTrackedTarget bestDetection = result.getBestTarget();
-
-                if (result.getTimestampSeconds() > currentBestDetectionTimestamp) {
-                    currentBestDetection = bestDetection;
-                    currentBestDetectionTimestamp = result.getTimestampSeconds();
-                }
-
-                for (PhotonTrackedTarget target : result.getTargets()) {
-                    if (target.getFiducialId() != -1) {
-                        mapToDetection(target).ifPresent(aprilTagDetections::add);
-                    }
-                }
+            if (result.getTimestampSeconds() > latestTimestamp) {
+                latestResult = result;
             }
         }
 
+        if (latestResult == null || !latestResult.hasTargets()) return;
+
+        List<AprilTagDetection> detections =
+                latestResult.getTargets().stream()
+                        .map(this::mapToDetection)
+                        .flatMap(Optional::stream)
+                        .toList();
+
+        Optional<AprilTagDetection> bestDetectionOpt =
+                detections.stream()
+                        .min(Comparator.comparing(AprilTagDetectionHelpers::getDetectionDistance));
+
+        if (bestDetectionOpt.isPresent()) {
+            bestDetection = bestDetectionOpt.get();
+            bestDetectionTimestamp = latestResult.getTimestampSeconds();
+        } else if (latestResult.getTimestampSeconds() - bestDetectionTimestamp > MAX_LIVE_SECONDS) {
+            bestDetection = null;
+        }
+
         aprilTagResults =
-                new AprilTagResults(earliestTimestamp, highestLatency, aprilTagDetections);
+                new AprilTagResults(
+                        latestResult.getTimestampSeconds(),
+                        latestResult.metadata.getLatencyMillis(),
+                        detections);
     }
 
     public void setCamera(PhotonCamera camera) {
@@ -98,7 +117,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         }
 
         Optional<Pose3d> optAprilTagPose =
-                AprilTagConstants.APRIL_TAG_FIELD_LAYOUT.getTagPose(target.fiducialId);
+                FieldConstants.APRIL_TAG_FIELD_LAYOUT.getTagPose(target.fiducialId);
 
         if (optAprilTagPose.isEmpty()) {
             return Optional.empty();
@@ -138,7 +157,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
     @Override
     public Optional<AprilTagDetection> getBestDetection() {
-        return Optional.ofNullable(currentBestDetection).flatMap(this::mapToDetection);
+        return Optional.ofNullable(bestDetection);
     }
 
     public PhotonAprilTagSystem withAmbiguityLessThan(double ambiguity) {

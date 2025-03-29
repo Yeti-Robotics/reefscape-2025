@@ -1,9 +1,11 @@
 package frc.robot.subsystems.coral.arm;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.AngleUnit;
@@ -41,6 +43,9 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
         if (Robot.isSimulation()) {
             PhysicsSim.getInstance().addTalonFX(armKraken, armEncoder);
         }
+
+        BaseStatusSignal.setUpdateFrequencyForAll(50, armPosition, armTargetPos);
+        ParentDevice.optimizeBusUtilizationForAll(armKraken, armEncoder);
     }
 
     @Override
