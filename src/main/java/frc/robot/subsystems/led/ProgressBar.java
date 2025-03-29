@@ -1,7 +1,9 @@
 package frc.robot.subsystems.led;
 
+import frc.robot.constants.Constants;
+
 public class ProgressBar {
-    private final LEDSubsystem ledSubsystem;
+    private final NewLEDSubsystem ledSubsystem;
     public ProgressBarPercents progressBarState;
 
     public enum ProgressBarPercents {
@@ -46,37 +48,33 @@ public class ProgressBar {
     public void setProgress(ProgressBarPercents type) {
         switch (type) {
             case ZERO:
-                ledSubsystem.candle.setLEDs(255, 0, 0);
+                ledSubsystem.runPattern(Constants.LEDs.PROGRESS_BAR_ZERO);
                 progressBarState = ProgressBarPercents.ZERO;
                 break;
             case TWENTY:
-                ledSubsystem.candle.setLEDs(0, 0, 255, 0, 0, 11);
-                ledSubsystem.candle.setLEDs(255, 0, 0, 0, 11, 24);
+                ledSubsystem.runPattern(Constants.LEDs.PROGRESS_BAR_TWENTY);
                 progressBarState = ProgressBarPercents.TWENTY;
                 break;
             case FORTY:
-                ledSubsystem.candle.setLEDs(0, 0, 255, 0, 0, 13);
-                ledSubsystem.candle.setLEDs(255, 0, 0, 0, 13, 24);
+                ledSubsystem.runPattern(Constants.LEDs.PROGRESS_BAR_FORTY);
                 progressBarState = ProgressBarPercents.FORTY;
                 break;
             case SIXTY:
-                ledSubsystem.candle.setLEDs(0, 0, 255, 0, 0, 16);
-                ledSubsystem.candle.setLEDs(255, 0, 0, 0, 16, 24);
+                ledSubsystem.runPattern(Constants.LEDs.PROGRESS_BAR_SIXTY);
                 progressBarState = ProgressBarPercents.SIXTY;
                 break;
             case EIGHTY:
-                ledSubsystem.candle.setLEDs(0, 0, 255, 0, 0, 19);
-                ledSubsystem.candle.setLEDs(255, 0, 0, 0, 19, 24);
+                ledSubsystem.runPattern(Constants.LEDs.PROGRESS_BAR_EIGHTY);
                 progressBarState = ProgressBarPercents.EIGHTY;
                 break;
             case FULL:
-                ledSubsystem.candle.setLEDs(0, 0, 255);
+                ledSubsystem.runPattern(Constants.LEDs.PROGRESS_BAR_FULL);
                 progressBarState = ProgressBarPercents.FULL;
                 break;
         }
     }
 
-    public ProgressBar(LEDSubsystem ledSubsystem) {
+    public ProgressBar(NewLEDSubsystem ledSubsystem) {
         this.ledSubsystem = ledSubsystem;
         progressBarState = ProgressBarPercents.ZERO;
     }

@@ -41,10 +41,24 @@ public final class Constants {
         public static final LEDPattern YETI_BLUE_SCROLLING =
                 LEDPattern.gradient(LEDPattern.GradientType.kContinuous, Color.kWhite, YETI_BLUE)
                         .scrollAtAbsoluteSpeed(Centimeters.per(Second).of(-30), LED_SPACING);
-        public static final LEDPattern WHITE_BLINK = WHITE.blink(Seconds.of(1.5));
+        public static final LEDPattern WHITE_BLINK = WHITE.blink(Seconds.of(0.3));
         public static final LEDPattern RAINBOW = LEDPattern.rainbow(255, 128);
         public static final Color ALGAE_COLOR = new Color(79, 181, 165);
+        public static final LEDPattern ALGAE_COLOR_PATTERN = LEDPattern.solid(ALGAE_COLOR);
+        public static final LEDPattern AUTO_PATTERN =
+                LEDPattern.solid(Color.kSilver).breathe(Seconds.of(3));
+        public static final Color NICK_ORANGE = new Color(240, 119, 99);
+        public static final LEDPattern NICK_MODE =
+                LEDPattern.solid(NICK_ORANGE).blink(Seconds.of(1));
         public static final LEDPattern SCROLLING_RAINBOW =
                 RAINBOW.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), LED_SPACING);
+        public static final LEDPattern PROGRESS_BAR_ZERO = LEDPattern.progressMaskLayer(() -> 0.0);
+        public static final LEDPattern PROGRESS_BAR_TWENTY =
+                LEDPattern.progressMaskLayer(() -> 0.2);
+        public static final LEDPattern PROGRESS_BAR_FORTY = LEDPattern.progressMaskLayer(() -> 0.4);
+        public static final LEDPattern PROGRESS_BAR_SIXTY = LEDPattern.progressMaskLayer(() -> 0.6);
+        public static final LEDPattern PROGRESS_BAR_EIGHTY =
+                LEDPattern.progressMaskLayer(() -> 0.8);
+        public static final LEDPattern PROGRESS_BAR_FULL = LEDPattern.progressMaskLayer(() -> 1.0);
     }
 }

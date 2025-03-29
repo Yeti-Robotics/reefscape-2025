@@ -32,7 +32,7 @@ public class LEDSubsystem extends SubsystemBase {
         configAll.brightnessScalar = 0.5;
         configAll.vBatOutputMode = CANdle.VBatOutputMode.On;
         candle.configAllSettings(configAll, 100);
-        progressBar = new ProgressBar(this);
+        progressBar = new ProgressBar(new NewLEDSubsystem());
         new Trigger(DriverStation::isDisabled)
                 .onTrue(
                         runOnce(this::clearAnimation)

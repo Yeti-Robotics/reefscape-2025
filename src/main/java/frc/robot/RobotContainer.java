@@ -132,7 +132,7 @@ public class RobotContainer {
         climber = new ClimberSubsystem();
         leds = new NewLEDSubsystem();
         new Trigger(coralManipulator::isTransitioning)
-                .onFalse(leds.selectAnimationCommand(coralManipulator::getCurrentState));
+                .whileFalse(leds.selectAnimationCommand(coralManipulator::getCurrentState));
         mechanisms = new Mechanisms();
         alignToReefCmd =
                 new ReefAlignCommand(
@@ -265,6 +265,8 @@ public class RobotContainer {
         simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         simJoy.button(8).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
         simJoy.button(9).onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
+        simJoy.button(10).onTrue(leds.runPattern(Constants.LEDs.NICK_MODE));
+        simJoy.button(11).onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
     }
 
     public void updateMechanisms() {
