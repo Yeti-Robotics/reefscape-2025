@@ -9,7 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 class GrabberConfig {
     static final int CLAW_ID = 12;
-    static final double OUTSPIT = -0.8;
+    static final double OUTSPIT = -0.1;
     static final double INTAKE = 1;
     static final TalonFXConfiguration coralMotorConfig =
             new TalonFXConfiguration()
