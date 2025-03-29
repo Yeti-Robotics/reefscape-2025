@@ -243,6 +243,9 @@ public class RobotContainer {
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+
+        coralManipulator.grabber.doesNotHaveCoralTrigger.onTrue(
+                coralManipulator.transitionTo(CoralManipulatorState.STOWED));
     }
 
     public void updateMechanisms() {
