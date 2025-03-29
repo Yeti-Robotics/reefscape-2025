@@ -4,6 +4,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.coral.*;
+import frc.robot.subsystems.coral.grabber.GrabberState;
 
 public class AutoNamedCommands {
     private final CoralManipulatorSystem coralManipulator;
@@ -32,6 +33,9 @@ public class AutoNamedCommands {
                 "L3", coralManipulator.transitionTo(CoralManipulatorState.L3));
         NamedCommands.registerCommand(
                 "L4", coralManipulator.transitionTo(CoralManipulatorState.L4));
+
+        NamedCommands.registerCommand(
+                "Rollout", coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
 
         NamedCommands.registerCommand(
                 "Score1",
