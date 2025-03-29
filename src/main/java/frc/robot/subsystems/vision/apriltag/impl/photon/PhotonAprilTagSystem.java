@@ -1,7 +1,5 @@
 package frc.robot.subsystems.vision.apriltag.impl.photon;
 
-import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,7 +18,6 @@ import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-@Logged
 public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsystem {
     private static final double MAX_LIVE_SECONDS = 5;
     private PhotonCamera camera;
@@ -31,24 +28,6 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private double maxAmbiguity = 1;
     private AprilTagDetection bestDetection;
     private double bestDetectionTimestamp;
-
-    @Logged(name = "TagPoses")
-    public List<Pose2d> getTagPoses() {
-        return aprilTagResults.getResults().stream()
-                .map(AprilTagDetection::getRobotToTargetPose)
-                .toList();
-    }
-
-    @Logged(name = "Best Detection")
-    public Pose2d getBestDetectionPose() {
-        var bestDet = getBestDetection();
-        return bestDet.map(AprilTagDetection::getRobotToTargetPose).orElse(null);
-    }
-
-    @Logged(name = "Best Estimated Pose")
-    public Pose2d logBestEstimatedPose() {
-        return getEstimatedPose().map(AprilTagPose::getEstimatedRobotPose).orElse(null);
-    }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<EstimatedRobotPose> estimatedRobotPose = Optional.empty();

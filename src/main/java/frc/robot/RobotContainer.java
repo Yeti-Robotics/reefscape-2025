@@ -135,7 +135,7 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooser("driveForward");
         SmartDashboard.putData("Auto Chooser", autoChooser);
-        aprilTagSubsystems = new AprilTagSubsystem[] {limelight, reefCam1, reefCam2};
+        aprilTagSubsystems = new AprilTagSubsystem[] {limelight /*, reefCam1, reefCam2*/};
 
         // Set standard deviations to prevent jitter
         // odo data is more trustworthy, lower stddev
@@ -236,6 +236,9 @@ public class RobotContainer {
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(
+                coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+
+        coralManipulator.grabber.doesNotHaveCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
     }
 
