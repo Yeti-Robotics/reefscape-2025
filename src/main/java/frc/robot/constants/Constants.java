@@ -5,6 +5,13 @@
 
 package frc.robot.constants;
 
+import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.util.Color;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -19,4 +26,25 @@ public final class Constants {
     public static final String RIO_BUS = "rio";
     public static final double ZERO_TOLERANCE = 0.005;
     public static final int SECONDARY_XBOX_CONTROLLER_PORT = 1;
+
+    public static final class LEDs {
+        public static final int LED_STRIP_PORT = 0;
+        public static final int LED_COUNT = 36;
+        public static final Distance LED_SPACING =
+                Meters.of(
+                        1 / 120.0); // TODO: update 120 to reflect actual number of leds in 1 meter
+        public static final Color YETI_BLUE = new Color(84, 182, 229);
+        public static final LEDPattern YETI_BLUE_PATTERN = LEDPattern.solid(YETI_BLUE);
+        public static final LEDPattern YETI_BLUE_RSL_BLINK =
+                YETI_BLUE_PATTERN.synchronizedBlink(RobotController::getRSLState);
+        public static final LEDPattern WHITE = LEDPattern.solid(Color.kWhite);
+        public static final LEDPattern YETI_BLUE_SCROLLING =
+                LEDPattern.gradient(LEDPattern.GradientType.kContinuous, Color.kWhite, YETI_BLUE)
+                        .scrollAtAbsoluteSpeed(Centimeters.per(Second).of(-30), LED_SPACING);
+        public static final LEDPattern WHITE_BLINK = WHITE.blink(Seconds.of(1.5));
+        public static final LEDPattern RAINBOW = LEDPattern.rainbow(255, 128);
+        public static final Color ALGAE_COLOR = new Color(79, 181, 165);
+        public static final LEDPattern SCROLLING_RAINBOW =
+                RAINBOW.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), LED_SPACING);
+    }
 }

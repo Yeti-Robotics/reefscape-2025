@@ -5,8 +5,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
-
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -16,7 +14,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,8 +29,7 @@ import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
-import frc.robot.subsystems.led.Events;
-import frc.robot.subsystems.led.LEDSubsystem;
+import frc.robot.subsystems.led.NewLEDSubsystem;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
@@ -84,7 +80,7 @@ public class RobotContainer {
     @Logged(name = "Vision/ClimbCam")
     public final PhotonAprilTagSystem reefCam2;
 
-    public LEDSubsystem leds;
+    public NewLEDSubsystem leds;
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
@@ -134,7 +130,9 @@ public class RobotContainer {
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         coralManipulator = new CoralManipulatorSystem();
         climber = new ClimberSubsystem();
-        leds = new LEDSubsystem();
+        leds = new NewLEDSubsystem();
+        new Trigger(coralManipulator::isTransitioning)
+                .onFalse(leds.selectAnimationCommand(coralManipulator::getCurrentState));
         mechanisms = new Mechanisms();
         alignToReefCmd =
                 new ReefAlignCommand(
@@ -146,7 +144,7 @@ public class RobotContainer {
                         primaryXboxController::getRightX);
 
         configureBindings();
-        configureTriggers();
+        //        configureTriggers();
 
         var namedCommands = new AutoNamedCommands(coralManipulator, alignToReefCmd);
         namedCommands.registerCommands();
@@ -286,33 +284,31 @@ public class RobotContainer {
                 coralManipulator.arm.getCurrentPosition());
     }
 
-    private void configureTriggers() {
-        new Trigger(coralManipulator.grabber::hasCoral)
-                .and(DriverStation::isDisabled)
-                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
-                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
-        new Trigger(coralManipulator.elevator::getMagSwitch)
-                .and(DriverStation::isDisabled)
-                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
-                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
-        drivetrain
-                .zeroedWheels
-                .and(DriverStation::isDisabled)
-                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
-                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
-        new Trigger(climber::isEncoderZeroed)
-                .and(DriverStation::isDisabled)
-                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
-                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
-        new Trigger(DriverStation::isEnabled)
-                .onTrue(runOnce(() -> leds.setAnimation(Events.CLEARPROGRESS)))
-                .onTrue(runOnce(() -> leds.setAnimation(Events.IDLETELEOP)));
-        new Trigger(coralManipulator.grabber::hasCoral)
-                .and(DriverStation::isEnabled)
-                .onTrue(runOnce(() -> leds.setAnimation(Events.CORALINTAKE)));
-        new Trigger(coralManipulator::isTransitioning)
-                .onFalse(leds.selectAnimationCommand(coralManipulator::getCurrentState));
-    }
+    //    private void configureTriggers() {
+    //        new Trigger(coralManipulator.grabber::hasCoral)
+    //                .and(DriverStation::isDisabled)
+    //                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
+    //                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
+    //        new Trigger(coralManipulator.elevator::getMagSwitch)
+    //                .and(DriverStation::isDisabled)
+    //                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
+    //                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
+    //        drivetrain
+    //                .zeroedWheels
+    //                .and(DriverStation::isDisabled)
+    //                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
+    //                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
+    //        new Trigger(climber::isEncoderZeroed)
+    //                .and(DriverStation::isDisabled)
+    //                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
+    //                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
+    //        new Trigger(DriverStation::isEnabled)
+    //                .onTrue(runOnce(() -> leds.setAnimation(Events.CLEARPROGRESS)))
+    //                .onTrue(runOnce(() -> leds.setAnimation(Events.IDLETELEOP)));
+    //        new Trigger(coralManipulator.grabber::hasCoral)
+    //                .and(DriverStation::isEnabled)
+    //                .onTrue(runOnce(() -> leds.setAnimation(Events.CORALINTAKE)));
+    //    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
