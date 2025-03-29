@@ -49,7 +49,9 @@ public class FieldConstants {
         public static final double faceToZoneLine =
                 Units.inchesToMeters(12); // Side of the reef to the inside of the reef zone line
 
-        public static final Pose2d[] centerFaces =
+        public static final Pose2d[] blueCenterFaces =
+                new Pose2d[6]; // Starting facing the driver station in clockwise order
+        public static final Pose2d[] redCenterFaces =
                 new Pose2d[6]; // Starting facing the driver station in clockwise order
         public static final List<Map<ReefLevel, Pose3d>> branchPositions =
                 new ArrayList<>(); // Starting at the right branch facing the driver station in
@@ -58,12 +60,19 @@ public class FieldConstants {
 
         static {
             // Initialize faces
-            centerFaces[0] = fieldLayout.getTagPose(18).get().toPose2d();
-            centerFaces[1] = fieldLayout.getTagPose(19).get().toPose2d();
-            centerFaces[2] = fieldLayout.getTagPose(20).get().toPose2d();
-            centerFaces[3] = fieldLayout.getTagPose(21).get().toPose2d();
-            centerFaces[4] = fieldLayout.getTagPose(22).get().toPose2d();
-            centerFaces[5] = fieldLayout.getTagPose(17).get().toPose2d();
+            blueCenterFaces[0] = fieldLayout.getTagPose(18).get().toPose2d();
+            blueCenterFaces[1] = fieldLayout.getTagPose(19).get().toPose2d();
+            blueCenterFaces[2] = fieldLayout.getTagPose(20).get().toPose2d();
+            blueCenterFaces[3] = fieldLayout.getTagPose(21).get().toPose2d();
+            blueCenterFaces[4] = fieldLayout.getTagPose(22).get().toPose2d();
+            blueCenterFaces[5] = fieldLayout.getTagPose(17).get().toPose2d();
+
+            redCenterFaces[0] = fieldLayout.getTagPose(7).get().toPose2d();
+            redCenterFaces[1] = fieldLayout.getTagPose(8).get().toPose2d();
+            redCenterFaces[2] = fieldLayout.getTagPose(9).get().toPose2d();
+            redCenterFaces[3] = fieldLayout.getTagPose(10).get().toPose2d();
+            redCenterFaces[4] = fieldLayout.getTagPose(11).get().toPose2d();
+            redCenterFaces[5] = fieldLayout.getTagPose(6).get().toPose2d();
 
             // Initialize branch positions
             for (int face = 0; face < 6; face++) {

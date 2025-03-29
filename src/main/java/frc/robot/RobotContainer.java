@@ -136,7 +136,7 @@ public class RobotContainer {
         // odo data is more trustworthy, lower stddev
         drivetrain.setStateStdDevs(VecBuilder.fill(0.03, 0.03, 1));
         // vision data can vary, so higher stddev
-        drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, Math.toRadians(50)));
+        drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, Math.toRadians(30)));
 
         DogLog.setOptions(new DogLogOptions().withCaptureDs(true));
     }
@@ -226,7 +226,7 @@ public class RobotContainer {
         //                .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
 
         primaryXboxController.y().whileTrue(alignToReefCmd);
-        secondaryXboxController.start().onTrue(alignToReefCmd.toggleBranchSelection());
+        primaryXboxController.a().onTrue(alignToReefCmd.toggleBranchSelection());
 
         //
         // secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
