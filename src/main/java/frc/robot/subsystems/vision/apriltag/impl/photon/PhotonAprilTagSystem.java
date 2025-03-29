@@ -5,9 +5,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.apriltag.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -23,10 +25,9 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private final Transform3d cameraTransform;
     private final PhotonPoseEstimator photonPoseEstimator;
     private final CommandSwerveDrivetrain drivetrain;
-    private AprilTagResults aprilTagResults;
-    private double maxAmbiguity = 0.3;
+    private AprilTagResults aprilTagResults = new AprilTagResults(0, 0, Collections.emptyList());
+    private double maxAmbiguity = 1;
     private PhotonTrackedTarget currentBestDetection;
-    private double currentBestDetectionTimestamp;
 
     @Logged(name = "TagPoses")
     public List<Pose2d> getTagPoses() {
@@ -57,19 +58,28 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         this.cameraTransform = cameraTransform;
         this.photonPoseEstimator =
                 new PhotonPoseEstimator(
-                        AprilTagConstants.APRIL_TAG_FIELD_LAYOUT,
+                        FieldConstants.APRIL_TAG_FIELD_LAYOUT,
                         PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                         cameraTransform);
         this.drivetrain = commandSwerveDrivetrain;
 
         photonPoseEstimator.setMultiTagFallbackStrategy(
-                PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_LAST_POSE);
+                PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
     }
 
     @Override
     public void periodic() {
-        photonPoseEstimator.setLastPose(drivetrain.getState().Pose);
+        //
+        //        double timestamp =
+        //                drivetrain.getState().Timestamp
+        //                        - Utils.getCurrentTimeSeconds()
+        //                        + Timer.getFPGATimestamp();
+        //        photonPoseEstimator.addHeadingData(timestamp,
+        // drivetrain.getRotation3d().toRotation2d());
+        //
+        // photonPoseEstimator.setLastPose(drivetrain.getState().Pose);
 
+        double currentBestDetectionDistance = Double.POSITIVE_INFINITY;
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
         if (results.isEmpty()) {
@@ -90,15 +100,15 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
             highestLatency = Math.max(highestLatency, result.metadata.getLatencyMillis());
 
             if (result.hasTargets()) {
-                PhotonTrackedTarget bestDetection = result.getBestTarget();
-
-                if (result.getTimestampSeconds() > currentBestDetectionTimestamp) {
-                    currentBestDetection = bestDetection;
-                    currentBestDetectionTimestamp = result.getTimestampSeconds();
-                }
-
                 for (PhotonTrackedTarget target : result.getTargets()) {
-                    if (target.getFiducialId() != -1) {
+                    if (target.fiducialId != -1) {
+                        double targetNorm = target.bestCameraToTarget.getTranslation().getNorm();
+
+                        if (targetNorm < currentBestDetectionDistance) {
+                            currentBestDetection = target;
+                            currentBestDetectionDistance = targetNorm;
+                        }
+
                         mapToDetection(target).ifPresent(aprilTagDetections::add);
                     }
                 }
@@ -119,7 +129,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         }
 
         Optional<Pose3d> optAprilTagPose =
-                AprilTagConstants.APRIL_TAG_FIELD_LAYOUT.getTagPose(target.fiducialId);
+                FieldConstants.APRIL_TAG_FIELD_LAYOUT.getTagPose(target.fiducialId);
 
         if (optAprilTagPose.isEmpty()) {
             return Optional.empty();

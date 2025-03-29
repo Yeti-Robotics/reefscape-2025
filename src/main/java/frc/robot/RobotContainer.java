@@ -126,14 +126,7 @@ public class RobotContainer {
         climber = new ClimberSubsystem();
         coralManipulator = new CoralManipulatorSystem();
         mechanisms = new Mechanisms();
-        alignToReefCmd =
-                new ReefAlignCommand(
-                        drivetrain,
-                        reefCam1,
-                        reefCam2,
-                        primaryXboxController::getLeftX,
-                        primaryXboxController::getLeftY,
-                        primaryXboxController::getRightX);
+        alignToReefCmd = new ReefAlignCommand(drivetrain, null, reefCam1, reefCam2);
 
         configureBindings();
 
@@ -148,7 +141,7 @@ public class RobotContainer {
         // odo data is more trustworthy, lower stddev
         drivetrain.setStateStdDevs(VecBuilder.fill(0.03, 0.03, 1));
         // vision data can vary, so higher stddev
-        drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(0.5, 0.5, Math.toRadians(50)));
+        drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(0.3, 0.3, Math.toRadians(30)));
     }
 
     /**
@@ -232,7 +225,7 @@ public class RobotContainer {
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
 
         primaryXboxController.y().whileTrue(alignToReefCmd);
-        secondaryXboxController.start().onTrue(alignToReefCmd.toggleBranchSelection());
+        primaryXboxController.a().onTrue(alignToReefCmd.toggleBranchSelection());
 
         secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));
