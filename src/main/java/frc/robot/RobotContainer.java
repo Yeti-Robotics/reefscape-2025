@@ -105,22 +105,23 @@ public class RobotContainer {
 
         reefCam1 = new PhotonAprilTagSystem("RadioCam", camTrans1, drivetrain);
         reefCam2 = new PhotonAprilTagSystem("ScoreCam", camTrans2, drivetrain);
+        if (Robot.isSimulation()) {
+            AprilTagCamSim simCam1 =
+                    AprilTagCamSimBuilder.newCamera()
+                            .withCameraName("ScoreCam")
+                            .withTransform(camTrans1)
+                            .build();
+            aprilTagCamSim.addCamera(simCam1);
+            reefCam1.setCamera(simCam1.getCam());
 
-        AprilTagCamSim simCam1 =
-                AprilTagCamSimBuilder.newCamera()
-                        .withCameraName("ScoreCam")
-                        .withTransform(camTrans1)
-                        .build();
-        aprilTagCamSim.addCamera(simCam1);
-        reefCam1.setCamera(simCam1.getCam());
-
-        AprilTagCamSim simCam2 =
-                AprilTagCamSimBuilder.newCamera()
-                        .withCameraName("ClimbCam")
-                        .withTransform(camTrans2)
-                        .build();
-        aprilTagCamSim.addCamera(simCam2);
-        reefCam2.setCamera(simCam2.getCam());
+            AprilTagCamSim simCam2 =
+                    AprilTagCamSimBuilder.newCamera()
+                            .withCameraName("ClimbCam")
+                            .withTransform(camTrans2)
+                            .build();
+            aprilTagCamSim.addCamera(simCam2);
+            reefCam2.setCamera(simCam2.getCam());
+        }
 
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         climber = new ClimberSubsystem();
@@ -161,9 +162,8 @@ public class RobotContainer {
                 AprilTagPose pose = aprilTagPoseOpt.get();
 
                 if (pose.getNumTags() > 0) {
-                    //                    drivetrain.addVisionMeasurement(
-                    //                            pose.getEstimatedRobotPose(),
-                    // pose.getTimestamp());
+                    drivetrain.addVisionMeasurement(
+                            pose.getEstimatedRobotPose(), pose.getTimestamp());
                 }
             }
         }
@@ -225,8 +225,8 @@ public class RobotContainer {
                 .leftTrigger()
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
 
-        primaryXboxController.button(1).whileTrue(alignToReefCmd);
-        primaryXboxController.button(2).onTrue(alignToReefCmd.toggleBranchSelection());
+        primaryXboxController.y().whileTrue(alignToReefCmd);
+        primaryXboxController.a().onTrue(alignToReefCmd.toggleBranchSelection());
 
         secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));

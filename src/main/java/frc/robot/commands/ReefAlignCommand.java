@@ -45,8 +45,8 @@ public class ReefAlignCommand extends Command {
     private static final Transform2d leftTurnTransform =
             new Transform2d(0, 0, Rotation2d.kCCW_90deg);
 
-    PIDController movementXPIDController = new PIDController(1, 0, 0);
-    PIDController movementYPIDController = new PIDController(1, 0, 0);
+    PIDController movementXPIDController = new PIDController(9, 0, 0.2);
+    PIDController movementYPIDController = new PIDController(9, 0, 0.2);
 
     // apparently profiled PID outputs a positive velo which isn't ideal for alignment
     // DO NOT USE
@@ -70,7 +70,7 @@ public class ReefAlignCommand extends Command {
         this.reefCam1 = reefCam1;
         this.reefCam2 = reefCam2;
 
-        swerveReq.HeadingController.setPID(10, 0, 1);
+        swerveReq.HeadingController.setPID(7, 0, 0);
         swerveReq.HeadingController.setTolerance(0.07);
         swerveReq.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
