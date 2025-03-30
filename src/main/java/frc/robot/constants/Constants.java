@@ -26,7 +26,7 @@ public final class Constants {
     public static final int SECONDARY_XBOX_CONTROLLER_PORT = 1;
 
     public static final class LEDs {
-        public static final int LED_STRIP_PORT = 0;
+        public static final int LED_STRIP_PORT = 0; // TODO: update with the real values from the electrical kids
         public static final int LED_COUNT = 36;
         public static final Distance LED_SPACING = Meters.of(1 / 65.0);
         public static final Color YETI_BLUE = new Color(84, 182, 229);
