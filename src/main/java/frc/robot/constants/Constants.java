@@ -24,6 +24,7 @@ public final class Constants {
     public static final String RIO_BUS = "rio";
     public static final double ZERO_TOLERANCE = 0.005;
     public static final int SECONDARY_XBOX_CONTROLLER_PORT = 1;
+    public static final int GIGA_PORT = 3;
 
     public static final class LEDs {
         public static final int LED_STRIP_PORT = 0; // TODO: update with the real values from the electrical kids
