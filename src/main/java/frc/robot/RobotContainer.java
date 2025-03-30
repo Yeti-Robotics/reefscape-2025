@@ -17,11 +17,13 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNamedCommands;
 import frc.robot.commands.ReefAlignCommand;
+import frc.robot.commands.ReefAlignPPOTF;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
@@ -36,6 +38,7 @@ import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -94,6 +97,7 @@ public class RobotContainer {
     AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
     private final Mechanisms mechanisms;
     private final ReefAlignCommand alignToReefCmd;
+    private final ReefAlignPPOTF reefAlignPPOTF;
     private final AprilTagSubsystem[] aprilTagSubsystems;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -127,6 +131,7 @@ public class RobotContainer {
         coralManipulator = new CoralManipulatorSystem();
         mechanisms = new Mechanisms();
         alignToReefCmd = new ReefAlignCommand(drivetrain, null, reefCam1, reefCam2);
+        reefAlignPPOTF = new ReefAlignPPOTF(drivetrain, reefCam1, reefCam2);
 
         configureBindings();
 
@@ -224,8 +229,10 @@ public class RobotContainer {
                 .leftTrigger()
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
 
-        primaryXboxController.y().whileTrue(alignToReefCmd);
-        primaryXboxController.a().onTrue(alignToReefCmd.toggleBranchSelection());
+        primaryXboxController
+                .y()
+                .whileTrue(Commands.defer(reefAlignPPOTF::autoAlign, Set.of(drivetrain)));
+        primaryXboxController.a().onTrue(reefAlignPPOTF.toggleBranchSelection());
 
         secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));
