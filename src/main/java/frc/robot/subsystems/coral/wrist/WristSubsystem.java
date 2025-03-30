@@ -41,7 +41,7 @@ public class WristSubsystem
         }
         wristMotor.setPosition(WristPositions.SAFE.getAngle());
         BaseStatusSignal.setUpdateFrequencyForAll(50, wristPosition, targetWristPosition);
-}
+    }
 
     public Command moveWristHorizontal() {
         return runOnce(() -> moveTo(WristPositions.SAFE.getAngle()));

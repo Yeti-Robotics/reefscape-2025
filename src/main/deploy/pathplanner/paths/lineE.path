@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.225,
-        "y": 2.977
+        "x": 5.358504098360656,
+        "y": 2.7842725409836064
       },
       "prevControl": {
-        "x": 6.137953244274808,
-        "y": 2.9606631679389306
+        "x": 6.271457342635465,
+        "y": 2.767935708922537
       },
       "nextControl": null,
       "isLocked": false,
@@ -37,11 +37,11 @@
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
-                         "type": "named",
-                         "data": {
-                           "name": "Stow"
-                         }
-                       }
+        "type": "named",
+        "data": {
+          "name": "Stow"
+        }
+      }
     },
     {
       "name": "L4",

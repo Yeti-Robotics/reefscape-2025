@@ -7,13 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lineE"
+            "pathName": "lineF"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
           "type": "named",
           "data": {
             "name": "ReefAlign"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {

@@ -35,9 +35,9 @@ public class ReefAlignCommand extends Command {
     private boolean isRightCam = false;
 
     private static final Transform2d leftBranchTransform =
-            new Transform2d(Units.inchesToMeters(12), Units.inchesToMeters(-8), Rotation2d.kZero);
+            new Transform2d(Units.inchesToMeters(12), Units.inchesToMeters(-6.5), Rotation2d.kZero);
     private static final Transform2d rightBranchTransform =
-            new Transform2d(Units.inchesToMeters(12), Units.inchesToMeters(8), Rotation2d.kZero);
+            new Transform2d(Units.inchesToMeters(12), Units.inchesToMeters(6.5), Rotation2d.kZero);
     private static final Transform2d rightTurnTransform =
             new Transform2d(0, 0, Rotation2d.kCW_90deg);
     private static final Transform2d leftTurnTransform =
@@ -69,7 +69,7 @@ public class ReefAlignCommand extends Command {
         this.reefCam2 = reefCam2;
 
         swerveReq.HeadingController.setPID(7, 0, 0);
-        swerveReq.HeadingController.setTolerance(0.07);
+        swerveReq.HeadingController.setTolerance(0.04);
         swerveReq.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
         movementXPIDController.setTolerance(0.07);
@@ -223,8 +223,8 @@ public class ReefAlignCommand extends Command {
         double veloY =
                 movementYPIDController.calculate(drivetrainPose.getY(), reefBranchPose.getY());
 
-        double veloXFeed = feedforward * Math.signum(veloX);
-        double veloYFeed = feedforward * Math.signum(veloY);
+        double veloXFeed = feedforward * Math.signum(veloX) * 0.5;
+        double veloYFeed = feedforward * Math.signum(veloY) * 0.5;
 
         DogLog.log("ReefAlignCmd/XVelocity", veloX);
         DogLog.log("ReefAlignCmd/YVelocity", veloY);
