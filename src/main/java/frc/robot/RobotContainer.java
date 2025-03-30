@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,6 +32,7 @@ import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
+import frc.robot.subsystems.led.LEDPatterns;
 import frc.robot.subsystems.led.NewLEDSubsystem;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
@@ -267,10 +269,12 @@ public class RobotContainer {
         simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         simJoy.button(8).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
         simJoy.button(9).onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
-        simJoy.button(10).onTrue(leds.runPattern(Constants.LEDs.NICK_MODE));
+        simJoy.button(10).onTrue(leds.runPattern(LEDPatterns.NICK_MODE));
         simJoy.button(11).onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
         simJoy.button(12).onTrue(runOnce(() -> leds.addProgress()));
         simJoy.button(13).onTrue(runOnce(() -> leds.subtractProgress()));
+        simJoy.button(14)
+                .whileTrue(alignToReefCmd.alongWith(leds.runPattern(LEDPatterns.AUTO_ALIGN)));
     }
 
     public void updateMechanisms() {
@@ -290,31 +294,25 @@ public class RobotContainer {
                 coralManipulator.arm.getCurrentPosition());
     }
 
-    //    private void configureTriggers() {
-    //        new Trigger(coralManipulator.grabber::hasCoral)
-    //                .and(DriverStation::isDisabled)
-    //                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
-    //                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
-    //        new Trigger(coralManipulator.elevator::getMagSwitch)
-    //                .and(DriverStation::isDisabled)
-    //                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
-    //                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
-    //        drivetrain
-    //                .zeroedWheels
-    //                .and(DriverStation::isDisabled)
-    //                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
-    //                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
-    //        new Trigger(climber::isEncoderZeroed)
-    //                .and(DriverStation::isDisabled)
-    //                .onTrue(runOnce(() -> leds.progressBar.addProgress()))
-    //                .onFalse(runOnce(() -> leds.progressBar.subtractProgress()));
-    //        new Trigger(DriverStation::isEnabled)
-    //                .onTrue(runOnce(() -> leds.setAnimation(Events.CLEARPROGRESS)))
-    //                .onTrue(runOnce(() -> leds.setAnimation(Events.IDLETELEOP)));
-    //        new Trigger(coralManipulator.grabber::hasCoral)
-    //                .and(DriverStation::isEnabled)
-    //                .onTrue(runOnce(() -> leds.setAnimation(Events.CORALINTAKE)));
-    //    }
+    private void configureTriggers() {
+        new Trigger(coralManipulator.grabber::hasCoral)
+                .and(DriverStation::isDisabled)
+                .onTrue(runOnce(() -> leds.addProgress()))
+                .onFalse(runOnce(() -> leds.subtractProgress()));
+        new Trigger(coralManipulator.elevator::getMagSwitch)
+                .and(DriverStation::isDisabled)
+                .onTrue(runOnce(() -> leds.addProgress()))
+                .onFalse(runOnce(() -> leds.subtractProgress()));
+        drivetrain
+                .zeroedWheels
+                .and(DriverStation::isDisabled)
+                .onTrue(runOnce(() -> leds.addProgress()))
+                .onFalse(runOnce(() -> leds.subtractProgress()));
+        new Trigger(climber::isEncoderZeroed)
+                .and(DriverStation::isDisabled)
+                .onTrue(runOnce(() -> leds.addProgress()))
+                .onFalse(runOnce(() -> leds.subtractProgress()));
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

@@ -3,7 +3,6 @@ package frc.robot.subsystems.led;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -46,11 +45,14 @@ public class NewLEDSubsystem extends SubsystemBase {
         ledStrip.setLength(ledBuffer.getLength());
         ledStrip.setData(ledBuffer);
         ledStrip.start();
-        setDefaultCommand(runPattern(Constants.LEDs.YETI_BLUE_SCROLLING));
+        setDefaultCommand(run(() -> setProgress(progressBarState)).ignoringDisable(true));
         new Trigger(DriverStation::isAutonomousEnabled)
-                .onTrue(runPattern(Constants.LEDs.AUTO_PATTERN));
+                .onTrue(runPattern(LEDPatterns.AUTO_PATTERN));
+        new Trigger(DriverStation::isTeleopEnabled)
+                .onTrue(runPattern(LEDPatterns.YETI_BLUE_SCROLLING));
+        System.out.println(progressBarState.toString());
         new Trigger(DriverStation::isDisabled)
-                .whileTrue(runPattern(Constants.LEDs.PROGRESS_BAR_ZERO));
+                .whileTrue(run(() -> setProgress(progressBarState)).ignoringDisable(true));
     }
 
     public void addProgress() {
@@ -76,43 +78,45 @@ public class NewLEDSubsystem extends SubsystemBase {
     }
 
     public void setProgress(ProgressBarPercents type) {
-        switch (type) {
-            case ZERO:
-                runPattern(Constants.LEDs.PROGRESS_BAR_ZERO);
-                progressBarState = ProgressBarPercents.ZERO;
-                break;
-            case TWENTY:
-                runPattern(Constants.LEDs.PROGRESS_BAR_TWENTY);
-                progressBarState = ProgressBarPercents.TWENTY;
-                break;
-            case FORTY:
-                runPattern(Constants.LEDs.PROGRESS_BAR_FORTY);
-                progressBarState = ProgressBarPercents.FORTY;
-                break;
-            case SIXTY:
-                runPattern(Constants.LEDs.PROGRESS_BAR_SIXTY);
-                progressBarState = ProgressBarPercents.SIXTY;
-                break;
-            case EIGHTY:
-                runPattern(Constants.LEDs.PROGRESS_BAR_EIGHTY);
-                progressBarState = ProgressBarPercents.EIGHTY;
-                break;
-            case FULL:
-                runPattern(Constants.LEDs.PROGRESS_BAR_FULL);
-                progressBarState = ProgressBarPercents.FULL;
-                break;
+        if (DriverStation.isDisabled()) {
+            switch (type) {
+                case ZERO:
+                    progressBarState = ProgressBarPercents.ZERO;
+                    runPattern(LEDPatterns.PROGRESS_BAR_ZERO).schedule();
+                    break;
+                case TWENTY:
+                    progressBarState = ProgressBarPercents.TWENTY;
+                    runPattern(LEDPatterns.PROGRESS_BAR_TWENTY).schedule();
+                    break;
+                case FORTY:
+                    progressBarState = ProgressBarPercents.FORTY;
+                    runPattern(LEDPatterns.PROGRESS_BAR_FORTY).schedule();
+                    break;
+                case SIXTY:
+                    progressBarState = ProgressBarPercents.SIXTY;
+                    runPattern(LEDPatterns.PROGRESS_BAR_SIXTY).schedule();
+                    break;
+                case EIGHTY:
+                    progressBarState = ProgressBarPercents.EIGHTY;
+                    runPattern(LEDPatterns.PROGRESS_BAR_EIGHTY).schedule();
+                    break;
+                case FULL:
+                    progressBarState = ProgressBarPercents.FULL;
+                    runPattern(LEDPatterns.PROGRESS_BAR_FULL).schedule();
+                    break;
+            }
         }
     }
 
     @Override
     public void periodic() {
         ledStrip.setData(ledBuffer);
-        SmartDashboard.putString("Progress Bar", progressBarState.toString());
+        SmartDashboard.putNumber("Progress Bar", progressBarState.getProgress());
     }
 
-    public Command runPattern(LEDPattern pattern) {
+    public Command runPattern(LEDPatterns pattern) {
         return Commands.print("hi")
-                .andThen(run(() -> pattern.applyTo(ledBuffer)))
+                .andThen(run(() -> pattern.pattern.applyTo(ledBuffer)))
                 .repeatedly()
                 .ignoringDisable(true);
     }
@@ -122,52 +126,58 @@ public class NewLEDSubsystem extends SubsystemBase {
                 Map.ofEntries(
                         Map.entry(
                                 CoralManipulatorState.DISABLED,
-                                runPattern(Constants.LEDs.PROGRESS_BAR_ZERO)),
+                                runPattern(LEDPatterns.PROGRESS_BAR_ZERO)),
                         Map.entry(
                                 CoralManipulatorState.L1,
-                                runPattern(Constants.LEDs.YETI_BLUE_SCROLLING)),
+                                runPattern(LEDPatterns.YETI_BLUE_SCROLLING)),
                         Map.entry(
                                 CoralManipulatorState.L2,
-                                runPattern(Constants.LEDs.YETI_BLUE_SCROLLING)),
+                                runPattern(LEDPatterns.YETI_BLUE_SCROLLING)),
                         Map.entry(
                                 CoralManipulatorState.L3,
-                                runPattern(Constants.LEDs.YETI_BLUE_SCROLLING)),
+                                runPattern(LEDPatterns.YETI_BLUE_SCROLLING)),
                         Map.entry(
                                 CoralManipulatorState.L4,
-                                runPattern(Constants.LEDs.YETI_BLUE_SCROLLING)),
+                                runPattern(LEDPatterns.YETI_BLUE_SCROLLING)),
                         Map.entry(
                                 CoralManipulatorState.SCORE_L1,
-                                runPattern(Constants.LEDs.YETI_BLUE_SCROLLING)),
+                                runPattern(LEDPatterns.YETI_BLUE_SCROLLING)),
                         Map.entry(
                                 CoralManipulatorState.SCORE_L2,
-                                runPattern(Constants.LEDs.YETI_BLUE_SCROLLING)),
+                                runPattern(LEDPatterns.YETI_BLUE_SCROLLING)),
                         Map.entry(
                                 CoralManipulatorState.SCORE_L3,
-                                runPattern(Constants.LEDs.YETI_BLUE_SCROLLING)),
+                                runPattern(LEDPatterns.YETI_BLUE_SCROLLING)),
                         Map.entry(
                                 CoralManipulatorState.SCORE_L4,
-                                runPattern(Constants.LEDs.YETI_BLUE_SCROLLING)),
+                                runPattern(LEDPatterns.YETI_BLUE_SCROLLING)),
                         Map.entry(
                                 CoralManipulatorState.HP_INTAKE,
-                                runPattern(Constants.LEDs.WHITE_BLINK)),
+                                runPattern(LEDPatterns.WHITE_BLINK)),
                         Map.entry(
                                 CoralManipulatorState.GROUND_INTAKE,
-                                runPattern(Constants.LEDs.WHITE_BLINK)),
+                                runPattern(LEDPatterns.WHITE_BLINK)),
                         Map.entry(
                                 CoralManipulatorState.STOWED,
-                                runPattern(Constants.LEDs.WHITE)
+                                runPattern(LEDPatterns.WHITE)
                                         .withTimeout(2)
-                                        .andThen(runPattern(Constants.LEDs.YETI_BLUE_SCROLLING))),
+                                        .andThen(runPattern(LEDPatterns.YETI_BLUE_SCROLLING))),
                         Map.entry(
                                 CoralManipulatorState.ALGAEHIGH,
-                                runPattern(Constants.LEDs.ALGAE_COLOR_PATTERN)),
+                                runPattern(LEDPatterns.ALGAE_COLOR_PATTERN)),
                         Map.entry(
                                 CoralManipulatorState.CLIMB,
-                                runPattern(Constants.LEDs.SCROLLING_RAINBOW))),
+                                runPattern(LEDPatterns.SCROLLING_RAINBOW))),
                 () -> {
                     CoralManipulatorState state = getCMS.get();
                     System.out.println("Current CoralManipulatorState: " + state);
                     return state;
                 });
+    }
+
+    private static boolean isRedAlliance() {
+        return DriverStation.getAlliance()
+                .filter(value -> value == DriverStation.Alliance.Red)
+                .isPresent();
     }
 }
