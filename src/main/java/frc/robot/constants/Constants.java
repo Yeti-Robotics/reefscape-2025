@@ -18,4 +18,5 @@ public final class Constants {
     public static final String CANIVORE_BUS = "canivoreBus";
     public static final String RIO_BUS = "rio";
     public static final int SECONDARY_XBOX_CONTROLLER_PORT = 1;
+    public static final int GIGA_PORT = 3;
 }
