@@ -1,12 +1,9 @@
 package frc.robot.util.sim;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 
@@ -15,7 +12,8 @@ public class CoralManipulatorMechanismVisualizer {
             new LoggedMechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
     private final LoggedMechanismLigament2d armLigament;
     private final LoggedMechanismLigament2d liftLigament;
-    private static final CoralManipulatorMechanismVisualizer visualizerInstance = new CoralManipulatorMechanismVisualizer();
+    private static final CoralManipulatorMechanismVisualizer visualizerInstance =
+            new CoralManipulatorMechanismVisualizer();
 
     private CoralManipulatorMechanismVisualizer() {
         liftLigament =

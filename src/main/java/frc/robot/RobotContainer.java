@@ -7,18 +7,11 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
@@ -80,24 +73,24 @@ public class RobotContainer {
                                         .withRotationalRate(
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
-        secondaryXboxController
-                .povUp()
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
-        secondaryXboxController
-                .povRight()
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
-        secondaryXboxController
-                .povDown()
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
-        secondaryXboxController
-                .povLeft()
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
-        primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
-        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
+        //        secondaryXboxController
+        //                .povUp()
+        //                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
+        //        secondaryXboxController
+        //                .povRight()
+        //                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
+        //        secondaryXboxController
+        //                .povDown()
+        //                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
+        //        secondaryXboxController
+        //                .povLeft()
+        //                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        //
+        // primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
+        //        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
     }
 
-    public void updateMechanisms() {
-    }
+    public void updateMechanisms() {}
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

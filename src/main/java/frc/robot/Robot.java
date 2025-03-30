@@ -8,7 +8,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.util.sim.PhysicsSim;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -110,13 +109,7 @@ public class Robot extends LoggedRobot {
     public void teleopPeriodic() {}
 
     @Override
-    public void teleopExit() {
-        robotContainer
-                .coralManipulator
-                .transitionTo(CoralManipulatorState.IDLE)
-                .ignoringDisable(true)
-                .schedule();
-    }
+    public void teleopExit() {}
 
     @Override
     public void testInit() {

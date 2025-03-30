@@ -41,10 +41,6 @@ public class CommandSwerveDrivetrainLogging {
         }
     }
 
-    public void start() {
-        PhoenixOdometryThread.getInstance().start();
-    }
-
     public void log() {
         odometryReadLock.lock();
         LoggingUtils.logInputs("Drive/Gyro", gyro, gyroInputs);

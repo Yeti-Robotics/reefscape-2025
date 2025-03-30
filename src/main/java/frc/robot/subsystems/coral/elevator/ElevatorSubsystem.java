@@ -1,109 +1,18 @@
 package frc.robot.subsystems.coral.elevator;
 
-import static edu.wpi.first.math.util.Units.inchesToMeters;
-import static frc.robot.constants.Constants.RIO_BUS;
-import static frc.robot.subsystems.coral.elevator.ElevatorConfig.*;
-
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.MutAngle;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Robot;
-import frc.robot.util.sim.PhysicsSim;
-import frc.robot.util.sim.SimulatableMechanism;
-import frc.robot.util.state.StateUtils;
+import frc.robot.subsystems.coral.elevator.io.ElevatorIO;
+import frc.robot.subsystems.coral.elevator.io.ElevatorInputs;
+import frc.robot.util.akit.io.InputLoggingIO;
 import frc.robot.util.state.StatefulSetpointSubsystem;
 
-public class ElevatorSubsystem
-        extends StatefulSetpointSubsystem<ElevatorPosition, AngleUnit, Angle, MutAngle>
-        implements SimulatableMechanism {
-    private final TalonFX primaryElevatorMotor =
-            new TalonFX(ElevatorConfig.primaryElevatorMotorID, RIO_BUS);
-    private final TalonFX secondaryElevatorMotor =
-            new TalonFX(ElevatorConfig.secondaryElevatorMotorID, RIO_BUS);
-    private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
-
-    private final MotionMagicTorqueCurrentFOC magicRequest =
-            new MotionMagicTorqueCurrentFOC(0).withSlot(Robot.isReal() ? 0 : 1);
-    private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
-    private final StatusSignal<AngularVelocity> elevatorVelocity =
-            primaryElevatorMotor.getVelocity();
-
-    public ElevatorSubsystem() {
-        super(
-                ElevatorPosition.HOLD,
-                StateUtils.mutableRotationSetpoint(),
-                Units.Rotations.of(ElevatorConfig.HEIGHT_TOLERANCE));
-        primaryElevatorMotor.getConfigurator().apply(primaryTalonFXConfigs);
-        secondaryElevatorMotor.getConfigurator().apply(secondaryTalonFXConfigs);
-        secondaryElevatorMotor.setControl(
-                new Follower(ElevatorConfig.primaryElevatorMotorID, true));
-
-        new Trigger(this::getMagSwitch)
-                .debounce(2)
-                .onTrue(zeroPosition().andThen(transitionTo(ElevatorPosition.BOTTOM)));
-
-        primaryElevatorMotor.setPosition(0);
-        secondaryElevatorMotor.setPosition(0);
-
-        if (Robot.isSimulation()) {
-            PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
-            PhysicsSim.getInstance().addTalonFX(secondaryElevatorMotor);
-        }
+public class ElevatorSubsystem extends StatefulSetpointSubsystem<Angle, ElevatorPosition, ElevatorIO> implements InputLoggingIO<ElevatorInputs> {
+    public ElevatorSubsystem(ElevatorIO io) {
+        super(io);
     }
 
     @Override
-    public void runPeriodic() {
-        super.runPeriodic();
-        elevatorVelocity.refresh();
-    }
-
-    private Command zeroPosition() {
-        return runOnce(() -> primaryElevatorMotor.setPosition(0));
-    }
-
-    public boolean getMagSwitch() {
-        return !magSwitch.get();
-    }
-
-    @Override
-    public StatusSignal<Angle> currentStateSignal() {
-        return elevatorPosition;
-    }
-
-    @Override
-    public Angle determineSetpoint(ElevatorPosition targetState) {
-        return targetState == ElevatorPosition.HOLD
-                ? elevatorPosition.getValue()
-                : targetState.getHeight();
-    }
-
-    @Override
-    public StatusCode moveTo(Angle setpoint) {
-        return primaryElevatorMotor.setControl(magicRequest.withPosition(setpoint));
-    }
-
-    @Override
-    public double updateMechPos() {
-        return inchesToMeters(elevatorPosition.getValueAsDouble() * 6) + inchesToMeters(1);
-    }
-
-    @Override
-    protected boolean isTransitionFinished() {
-        if (super.isTransitionFinished()
-                && elevatorPosition == ElevatorPosition.BOTTOM.getHeight()) {
-            primaryElevatorMotor.setControl(new NeutralOut());
-        }
-        return super.isTransitionFinished();
+    public void updateInputs(ElevatorInputs inputs) {
+        inputs.targetSetpoint = getTargetState();
     }
 }

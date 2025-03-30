@@ -242,7 +242,6 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
     }
 
     private void startSimThread() {
-        logging.start();
         m_lastSimTime = Utils.getCurrentTimeSeconds();
 
         /* Run simulation at a faster rate so PID gains behave more reasonably */

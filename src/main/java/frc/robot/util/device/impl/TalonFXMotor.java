@@ -38,9 +38,19 @@ public class TalonFXMotor extends DeviceBuilder<TalonFX, TalonFXConfiguration, T
         return usingCANcoder(cancoder, FeedbackSensorSourceValue.FusedCANcoder);
     }
 
+    public TalonFXMotor usingFusedCANcoder(int cancoderID) {
+        return usingCANcoder(cancoderID, FeedbackSensorSourceValue.FusedCANcoder);
+    }
+
     public TalonFXMotor usingCANcoder(CANcoder cancoder, FeedbackSensorSourceValue source) {
         getConfig().Feedback.FeedbackSensorSource = source;
         getConfig().Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
+        return this;
+    }
+
+    public TalonFXMotor usingCANcoder(int cancoderID, FeedbackSensorSourceValue source) {
+        getConfig().Feedback.FeedbackSensorSource = source;
+        getConfig().Feedback.FeedbackRemoteSensorID = cancoderID;
         return this;
     }
 

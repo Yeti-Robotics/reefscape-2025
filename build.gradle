@@ -60,6 +60,10 @@ dependencies {
     def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
     annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
     annotationProcessor wpi.java.deps.wpilibAnnotations()
+    // Add Dagger dependencies
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.56.1'
+    implementation 'com.google.dagger:dagger:2.56.1'
+
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 

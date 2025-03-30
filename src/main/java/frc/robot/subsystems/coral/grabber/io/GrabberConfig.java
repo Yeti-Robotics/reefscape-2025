@@ -1,4 +1,4 @@
-package frc.robot.subsystems.coral.grabber;
+package frc.robot.subsystems.coral.grabber.io;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;

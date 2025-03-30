@@ -1,10 +1,12 @@
-package frc.robot.subsystems.coral.elevator;
+package frc.robot.subsystems.coral.elevator.io;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 
 class ElevatorConfig {
     static final int primaryElevatorMotorID = 9;
@@ -60,6 +62,6 @@ class ElevatorConfig {
                                     .withRotorToSensorRatio(1.0)
                                     .withSensorToMechanismRatio(gearRatio));
 
-    static final double HEIGHT_TOLERANCE = 0.08;
+    static final Angle HEIGHT_TOLERANCE = Units.Rotations.of(0.08);
     static final double ELEVATOR_VELOCITY_TOLERANCE = 0.01;
 }

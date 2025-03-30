@@ -1,46 +1,33 @@
 package frc.robot.util.state;
 
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.StatusSignal;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Unit;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.akit.io.SetpointMotorIO;
 
 public abstract class StatefulSetpointSubsystem<
-                T extends Enum<T>,
-                S extends Unit,
-                M extends Measure<S>,
-                U extends MutableMeasure<S, M, ?>>
-        extends StatefulSubsystem<T> {
-    private final U setpointTarget;
-    private final M errorTolerance;
+                T, E extends SetpointEnum<T>, H extends SetpointMotorIO<E, T>>
+        extends SubsystemBase implements TransitionableSubsystem<E> {
+    private E targetState;
+    protected final H io;
 
-    public StatefulSetpointSubsystem(T defaultState, U setPointTarget, M errorTolerance) {
-        super(defaultState);
-        this.setpointTarget = setPointTarget;
-        this.errorTolerance = errorTolerance;
+    public StatefulSetpointSubsystem(H io) {
+        this.io = io;
     }
 
-    public abstract StatusSignal<M> currentStateSignal();
-
-    public abstract M determineSetpoint(T targetState);
-
-    public abstract StatusCode moveTo(M setpoint);
-
-    @Override
-    protected StatusCode initializeTransition(T targetState) {
-        M setPointMeasure = determineSetpoint(targetState);
-        setpointTarget.mut_replace(setPointMeasure);
-        return moveTo(setPointMeasure);
+    public Command transitionTo(E setpoint) {
+        targetState = setpoint;
+        return runOnce(() -> io.toSetpoint(setpoint));
     }
 
-    @Override
-    public void runPeriodic() {
-        currentStateSignal().refresh();
+    public boolean isAt(E setpoint) {
+        return io.isAtSetpoint(setpoint);
     }
 
-    @Override
-    protected boolean isTransitionFinished() {
-        return currentStateSignal().getValue().isNear(setpointTarget, errorTolerance);
+    public E getTargetState() {
+        if (isAt(targetState)) {
+            targetState = null;
+        }
+
+        return targetState;
     }
 }

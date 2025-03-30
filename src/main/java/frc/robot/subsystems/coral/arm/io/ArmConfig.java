@@ -2,10 +2,11 @@ package frc.robot.subsystems.coral.arm.io;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.*;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 import frc.robot.Robot;
 
 class ArmConfig {
-
     static final int ARM_KRAKEN_ID = 10;
     static final int ARM_CANCODER_ID = 0;
 
@@ -79,5 +80,5 @@ class ArmConfig {
                                     .withMagnetOffset(MAGNET_OFFSET)
                                     .withAbsoluteSensorDiscontinuityPoint(0.625));
 
-    static final double ANGLE_TOLERANCE = 0.05;
+    static final Angle ANGLE_TOLERANCE = Units.Rotations.of(0.05);
 }
