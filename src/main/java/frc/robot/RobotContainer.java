@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNamedCommands;
-import frc.robot.commands.ReefAlignCommand;
 import frc.robot.commands.ReefAlignPPOTF;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
@@ -75,10 +74,10 @@ public class RobotContainer {
                     new Rotation3d(0, Math.toRadians(-15), Math.toRadians(90)));
 
     @Logged(name = "Vision/ScoreCam")
-    public final PhotonAprilTagSystem reefCam1;
+    public final PhotonAprilTagSystem radioCam;
 
     @Logged(name = "Vision/ClimbCam")
-    public final PhotonAprilTagSystem reefCam2;
+    public final PhotonAprilTagSystem scoreCam;
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
@@ -96,7 +95,6 @@ public class RobotContainer {
 
     AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
     private final Mechanisms mechanisms;
-    private final ReefAlignCommand alignToReefCmd;
     private final ReefAlignPPOTF reefAlignPPOTF;
     private final AprilTagSubsystem[] aprilTagSubsystems;
 
@@ -106,8 +104,8 @@ public class RobotContainer {
         secondaryXboxController = new CommandXboxController(1);
         drivetrain = TunerConstants.createDrivetrain();
 
-        reefCam1 = new PhotonAprilTagSystem("RadioCam", camTrans1, drivetrain);
-        reefCam2 = new PhotonAprilTagSystem("ScoreCam", camTrans2, drivetrain);
+        radioCam = new PhotonAprilTagSystem("RadioCam", camTrans1, drivetrain);
+        scoreCam = new PhotonAprilTagSystem("ScoreCam", camTrans2, drivetrain);
         if (Robot.isSimulation()) {
             AprilTagCamSim simCam1 =
                     AprilTagCamSimBuilder.newCamera()
@@ -115,7 +113,7 @@ public class RobotContainer {
                             .withTransform(camTrans1)
                             .build();
             aprilTagCamSim.addCamera(simCam1);
-            reefCam1.setCamera(simCam1.getCam());
+            radioCam.setCamera(simCam1.getCam());
 
             AprilTagCamSim simCam2 =
                     AprilTagCamSimBuilder.newCamera()
@@ -123,30 +121,29 @@ public class RobotContainer {
                             .withTransform(camTrans2)
                             .build();
             aprilTagCamSim.addCamera(simCam2);
-            reefCam2.setCamera(simCam2.getCam());
+            scoreCam.setCamera(simCam2.getCam());
         }
 
         //        limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         climber = new ClimberSubsystem();
         coralManipulator = new CoralManipulatorSystem();
         mechanisms = new Mechanisms();
-        alignToReefCmd = new ReefAlignCommand(drivetrain, null, reefCam1, reefCam2);
-        reefAlignPPOTF = new ReefAlignPPOTF(drivetrain, reefCam1, reefCam2);
+        reefAlignPPOTF = new ReefAlignPPOTF(drivetrain, radioCam, scoreCam);
 
         configureBindings();
 
-        var namedCommands = new AutoNamedCommands(coralManipulator, alignToReefCmd);
+        var namedCommands = new AutoNamedCommands(coralManipulator, reefAlignPPOTF);
         namedCommands.registerCommands();
 
         autoChooser = AutoBuilder.buildAutoChooser("driveForward");
         SmartDashboard.putData("Auto Chooser", autoChooser);
-        aprilTagSubsystems = new AprilTagSubsystem[] {reefCam1, reefCam2};
+        aprilTagSubsystems = new AprilTagSubsystem[] {radioCam, scoreCam};
 
         // Set standard deviations to prevent jitter
         // odo data is more trustworthy, lower stddev
         drivetrain.setStateStdDevs(VecBuilder.fill(0.03, 0.03, 1));
         // vision data can vary, so higher stddev
-        drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(0.3, 0.3, Math.toRadians(30)));
+        drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(1, 1, Math.toRadians(30)));
     }
 
     /**
@@ -232,7 +229,6 @@ public class RobotContainer {
         primaryXboxController
                 .y()
                 .whileTrue(Commands.defer(reefAlignPPOTF::autoAlign, Set.of(drivetrain)));
-        primaryXboxController.a().onTrue(reefAlignPPOTF.toggleBranchSelection());
 
         secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));

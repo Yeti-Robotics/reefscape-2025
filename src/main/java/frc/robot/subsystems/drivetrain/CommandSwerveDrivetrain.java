@@ -173,7 +173,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
                     this::getChassisSpeeds,
                     (ChassisSpeeds speeds) -> this.setControl(AutoReq.withSpeeds(speeds)),
                     new PPHolonomicDriveController(
-                            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+                            new PIDConstants(10.0, 0.0, 0.0), new PIDConstants(7.0, 0.0, 0.0)),
                     config,
                     () ->
                             DriverStation.getAlliance()

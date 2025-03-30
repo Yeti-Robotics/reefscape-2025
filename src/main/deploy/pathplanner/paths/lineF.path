@@ -3,38 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.33452868852459,
+        "x": 7.2,
         "y": 2.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.494242428982606,
-        "y": 1.8268406488572948
+        "x": 6.413422131147541,
+        "y": 1.789293032786885
       },
       "isLocked": false,
-      "linkedName": "eReef"
+      "linkedName": "lineRight"
     },
     {
       "anchor": {
-        "x": 1.758,
-        "y": 0.752
+        "x": 5.33452868852459,
+        "y": 2.5
       },
       "prevControl": {
-        "x": 3.2373207600216194,
-        "y": 1.671862153579153
+        "x": 5.754098360655737,
+        "y": 1.5375512295081968
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "rightHP"
+      "linkedName": "eReef"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 32.714043463431636
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "Stow",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -54,13 +59,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 145.0
+    "rotation": 29.32047587758076
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 29.32047587758076
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

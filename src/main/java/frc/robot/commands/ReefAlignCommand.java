@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -43,8 +44,8 @@ public class ReefAlignCommand extends Command {
     private static final Transform2d leftTurnTransform =
             new Transform2d(0, 0, Rotation2d.kCCW_90deg);
 
-    PIDController movementXPIDController = new PIDController(5, 0, 0.2);
-    PIDController movementYPIDController = new PIDController(5, 0, 0.2);
+    PIDController movementXPIDController = new PIDController(9, 0, 0.2);
+    PIDController movementYPIDController = new PIDController(9, 0, 0.2);
 
     // apparently profiled PID outputs a positive velo which isn't ideal for alignment
     // DO NOT USE
@@ -71,7 +72,6 @@ public class ReefAlignCommand extends Command {
         swerveReq.HeadingController.setPID(7, 0, 0);
         swerveReq.HeadingController.setTolerance(0.04);
         swerveReq.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
-
         movementXPIDController.setTolerance(0.07);
         movementYPIDController.setTolerance(0.07);
         getBranchPoseFromTagID(18);
@@ -233,10 +233,13 @@ public class ReefAlignCommand extends Command {
         DogLog.log("ReefAlignCmd/XError", movementXPIDController.getError());
         DogLog.log("ReefAlignCmd/YError", movementYPIDController.getError());
 
+        veloX = MathUtil.clamp(veloX, -3, 3);
+        veloY = MathUtil.clamp(veloY, -3, 3);
+
         commandSwerveDrivetrain.setControl(
                 swerveReq
-                        .withVelocityX(-(veloXFeed + veloX))
-                        .withVelocityY(-(veloYFeed + veloY))
+                        .withVelocityX(-(veloX))
+                        .withVelocityY(-(veloY))
                         .withTargetDirection(reefBranchPose.getRotation()));
     }
 

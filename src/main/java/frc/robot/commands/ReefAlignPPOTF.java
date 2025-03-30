@@ -34,13 +34,12 @@ public class ReefAlignPPOTF {
     private final SwerveRequest.FieldCentricFacingAngle swerveReq =
             new SwerveRequest.FieldCentricFacingAngle();
     private final SwerveRequest.Idle stopReq = new SwerveRequest.Idle();
-    private boolean isLeftBranch = false;
     private boolean isRightCam = false;
 
     private static final Transform2d leftBranchTransform =
-            new Transform2d(Units.inchesToMeters(12), Units.inchesToMeters(-8), Rotation2d.kZero);
+            new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(-8), Rotation2d.kZero);
     private static final Transform2d rightBranchTransform =
-            new Transform2d(Units.inchesToMeters(12), Units.inchesToMeters(8), Rotation2d.kZero);
+            new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(8), Rotation2d.kZero);
     private static final Transform2d rightTurnTransform =
             new Transform2d(0, 0, Rotation2d.kCCW_90deg);
     private static final Transform2d leftTurnTransform =
@@ -152,6 +151,10 @@ public class ReefAlignPPOTF {
     StructPublisher<Pose2d> reefTargetPublisher = pose2dStructPublisher("ReefTarget");
 
     public Command autoAlign() {
+        return autoAlign(false);
+    }
+
+    public Command autoAlign(boolean isLeftBranch) {
         Optional<AprilTagDetection> detectionOpt = getReefCamDetection();
 
         if (detectionOpt.isEmpty()) {
@@ -176,16 +179,23 @@ public class ReefAlignPPOTF {
         reefTargetPublisher.set(reefBranchPose);
         Pose2d drivetrainPose = commandSwerveDrivetrain.getState().Pose;
 
+        Transform2d midPtTransform = new Transform2d(drivetrainPose, reefBranchPose);
+        midPtTransform.div(2);
+
+        /*
+        new Pose2d(
+                                reefBranchPose.getTranslation().getX() + 0.2,
+                                reefBranchPose.getTranslation().getY(),
+                                reefBranchPose.getRotation())
+         */
+
         List<Waypoint> waypoints =
                 PathPlannerPath.waypointsFromPoses(
                         new Pose2d(
                                 drivetrainPose.getX(),
                                 drivetrainPose.getY(),
                                 drivetrainPose.getRotation()),
-                        new Pose2d(
-                                reefBranchPose.getTranslation().getX() + 0.2,
-                                reefBranchPose.getTranslation().getY(),
-                                reefBranchPose.getRotation()),
+                        drivetrainPose.transformBy(midPtTransform),
                         new Pose2d(
                                 reefBranchPose.getTranslation().getX(),
                                 reefBranchPose.getTranslation().getY(),
@@ -194,8 +204,8 @@ public class ReefAlignPPOTF {
                 new PathPlannerPath(
                         waypoints,
                         new PathConstraints(
-                                MetersPerSecond.of(2),
-                                MetersPerSecondPerSecond.of(4),
+                                MetersPerSecond.of(1),
+                                MetersPerSecondPerSecond.of(2),
                                 RadiansPerSecond.of(2 * Math.PI),
                                 RadiansPerSecondPerSecond.of(4 * Math.PI)),
                         null,
@@ -207,9 +217,5 @@ public class ReefAlignPPOTF {
                         Commands.runOnce(
                                 () -> commandSwerveDrivetrain.setControl(stopReq),
                                 commandSwerveDrivetrain));
-    }
-
-    public Command toggleBranchSelection() {
-        return Commands.runOnce(() -> isLeftBranch = !isLeftBranch);
     }
 }

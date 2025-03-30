@@ -46,20 +46,19 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         this.drivetrain = commandSwerveDrivetrain;
 
         photonPoseEstimator.setMultiTagFallbackStrategy(
-                PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+                PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_LAST_POSE);
     }
 
     @Override
     public void periodic() {
-        //
+        //        SwerveDrivetrain.SwerveDriveState state = drivetrain.getState();
         //        double timestamp =
-        //                drivetrain.getState().Timestamp
-        //                        - Utils.getCurrentTimeSeconds()
-        //                        + Timer.getFPGATimestamp();
+        //                state.Timestamp - Utils.getCurrentTimeSeconds() +
+        // Timer.getFPGATimestamp();
         //        photonPoseEstimator.addHeadingData(timestamp,
         // drivetrain.getRotation3d().toRotation2d());
-        //
-        // photonPoseEstimator.setLastPose(drivetrain.getState().Pose);
+        //        //
+        photonPoseEstimator.setLastPose(drivetrain.getState().Pose);
 
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
