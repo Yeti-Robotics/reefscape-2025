@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 4.75,
-        "y": 5.3
+        "x": 5.266674618320611,
+        "y": 5.507037213740457
       },
       "prevControl": {
-        "x": 5.47949427480916,
-        "y": 5.3154103053435104
+        "x": 5.996168893129771,
+        "y": 5.5224475190839675
       },
       "nextControl": null,
       "isLocked": false,
@@ -37,11 +37,11 @@
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
-                         "type": "named",
-                         "data": {
-                           "name": "Stow"
-                         }
-                       }
+        "type": "named",
+        "data": {
+          "name": "Stow"
+        }
+      }
     },
     {
       "name": "L4",
@@ -56,8 +56,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -65,13 +65,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 150.0
+    "rotation": -29.999999999999996
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

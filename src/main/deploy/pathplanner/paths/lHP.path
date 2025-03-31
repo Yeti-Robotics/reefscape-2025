@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.475,
-        "y": 4.93
+        "x": 3.876741412213741,
+        "y": 5.188859732824427
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.361552465462907,
-        "y": 5.491015304094351
+        "x": 2.5119274809160306,
+        "y": 6.352719465648854
       },
       "isLocked": false,
       "linkedName": "lReef"
@@ -20,8 +20,8 @@
         "y": 7.215
       },
       "prevControl": {
-        "x": 2.442806463705318,
-        "y": 6.20145648686311
+        "x": 2.5286736641221377,
+        "y": 6.361092557251908
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,8 +45,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -60,7 +60,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -150.0
+    "rotation": 29.999999999999996
   },
   "useDefaultConstraints": true
 }

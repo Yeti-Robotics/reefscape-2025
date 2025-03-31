@@ -2,6 +2,8 @@ package frc.robot.commands;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.coral.*;
 import frc.robot.subsystems.coral.grabber.GrabberState;
 import java.util.Set;
@@ -49,6 +51,16 @@ public class AutoNamedCommands {
         NamedCommands.registerCommand(
                 "Score4", coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
 
+        NamedCommands.registerCommand(
+                "AlignAndScoreL4",
+                new SequentialCommandGroup(
+                    Commands.defer(reefAlignCommand::autoAlign, Set.of()),
+                        coralManipulator.transitionTo(CoralManipulatorState.L4),
+                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
+                        new WaitCommand(1),
+                        coralManipulator.transitionTo(CoralManipulatorState.STOWED)
+                )
+        );
         NamedCommands.registerCommand(
                 "Stow", coralManipulator.transitionTo(CoralManipulatorState.STOWED));
     }

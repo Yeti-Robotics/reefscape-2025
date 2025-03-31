@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.128,
-        "y": 2.718
+        "x": 3.675787213740459,
+        "y": 2.526216603053434
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7592499999999998,
-        "y": 2.6261564885496176
+        "x": 2.6626431297709923,
+        "y": 2.032204198473281
       },
       "isLocked": false,
       "linkedName": "dReef"
@@ -45,8 +45,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -60,7 +60,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -29.999999999999996
+    "rotation": 150.0
   },
   "useDefaultConstraints": true
 }

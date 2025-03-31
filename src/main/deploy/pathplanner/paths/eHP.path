@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.494242428982606,
-        "y": 1.8268406488572948
+        "x": 3.4580868320610687,
+        "y": 2.090815839694656
       },
       "isLocked": false,
       "linkedName": "eReef"
@@ -20,8 +20,8 @@
         "y": 0.752
       },
       "prevControl": {
-        "x": 3.2373207600216194,
-        "y": 1.671862153579153
+        "x": 2.637523854961832,
+        "y": 1.8061307251908374
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,8 +45,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -60,7 +60,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 29.32047587758076
+    "rotation": -150.0
   },
   "useDefaultConstraints": true
 }
