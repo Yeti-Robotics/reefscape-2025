@@ -8,6 +8,7 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -37,7 +38,12 @@ import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
+
+import java.nio.file.Path;
 import java.util.Optional;
+
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+import static edu.wpi.first.wpilibj2.command.Commands.select;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -87,6 +93,8 @@ public class RobotContainer {
     public ClimberSubsystem climber;
 
     private final SendableChooser<Command> autoChooser;
+
+    private PathPlannerAuto selectedAuto;
 
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
@@ -233,6 +241,17 @@ public class RobotContainer {
                 .button(11)
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
 
+
+        if (gigaStation.getHID().getRawButton(19)) {
+            selectedAuto = new PathPlannerAuto("driveForward");
+        } else if (gigaStation.getHID().getRawButton(20)) {
+            selectedAuto = new PathPlannerAuto("left1Coral");
+        } else if (gigaStation.getHID().getRawButton(21)) {
+            selectedAuto = new PathPlannerAuto("right1Coral");
+        } else if (gigaStation.getHID().getRawButton(22)) {
+            selectedAuto = new PathPlannerAuto("left2Coral");
+        }
+
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
 
@@ -262,6 +281,10 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
+        if (selectedAuto == null) {
+            return autoChooser.getSelected();
+        } else {
+            return selectedAuto;
+        }
     }
 }
