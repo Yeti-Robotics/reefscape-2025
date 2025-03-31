@@ -5,11 +5,6 @@
 
 package frc.robot.constants;
 
-import static edu.wpi.first.units.Units.*;
-
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.util.Color;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -25,13 +20,4 @@ public final class Constants {
     public static final double ZERO_TOLERANCE = 0.005;
     public static final int SECONDARY_XBOX_CONTROLLER_PORT = 1;
     public static final int GIGA_PORT = 3;
-
-    public static final class LEDs {
-        public static final int LED_STRIP_PORT = 0; // TODO: update with the real values from the electrical kids
-        public static final int LED_COUNT = 36;
-        public static final Distance LED_SPACING = Meters.of(1 / 65.0);
-        public static final Color YETI_BLUE = new Color(84, 182, 229);
-        public static final Color ALGAE_COLOR = new Color(79, 181, 165);
-        public static final Color NICK_ORANGE = new Color(240, 119, 99);
-    }
 }

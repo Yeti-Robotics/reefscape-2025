@@ -150,7 +150,7 @@ public class RobotContainer {
                         primaryXboxController::getRightX);
 
         configureBindings();
-        //        configureTriggers();
+        configureTriggers();
 
         var namedCommands = new AutoNamedCommands(coralManipulator, alignToReefCmd);
         namedCommands.registerCommands();
@@ -264,7 +264,8 @@ public class RobotContainer {
         simJoy.button(12).onTrue(runOnce(() -> leds.addProgress()));
         simJoy.button(13).onTrue(runOnce(() -> leds.subtractProgress()));
         simJoy.button(14)
-                .whileTrue(alignToReefCmd.alongWith(leds.runPattern(LEDPatterns.AUTO_ALIGN)));
+                .whileTrue(alignToReefCmd.alongWith(leds.runPattern(LEDPatterns.AUTO_ALIGN)))
+                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_SCROLLING));
     }
 
     public void updateMechanisms() {
@@ -286,21 +287,21 @@ public class RobotContainer {
     private void configureTriggers() {
         new Trigger(coralManipulator.grabber::hasCoral)
                 .and(DriverStation::isDisabled)
-                .onTrue(runOnce(() -> leds.addProgress()))
-                .onFalse(runOnce(() -> leds.subtractProgress()));
+                .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+                .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
         new Trigger(coralManipulator.elevator::getMagSwitch)
                 .and(DriverStation::isDisabled)
-                .onTrue(runOnce(() -> leds.addProgress()))
-                .onFalse(runOnce(() -> leds.subtractProgress()));
+                .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+                .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
         drivetrain
                 .zeroedWheels
                 .and(DriverStation::isDisabled)
-                .onTrue(runOnce(() -> leds.addProgress()))
-                .onFalse(runOnce(() -> leds.subtractProgress()));
+                .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+                .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
         new Trigger(climber::isEncoderZeroed)
                 .and(DriverStation::isDisabled)
-                .onTrue(runOnce(() -> leds.addProgress()))
-                .onFalse(runOnce(() -> leds.subtractProgress()));
+                .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+                .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
     }
 
     /**

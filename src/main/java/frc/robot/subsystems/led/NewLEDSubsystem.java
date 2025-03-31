@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.constants.Constants;
+import frc.robot.constants.LEDConstants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -39,8 +39,8 @@ public class NewLEDSubsystem extends SubsystemBase {
     }
 
     public NewLEDSubsystem() {
-        ledStrip = new AddressableLED(Constants.LEDs.LED_STRIP_PORT);
-        ledBuffer = new AddressableLEDBuffer(Constants.LEDs.LED_COUNT);
+        ledStrip = new AddressableLED(LEDConstants.LED_STRIP_PORT);
+        ledBuffer = new AddressableLEDBuffer(LEDConstants.LED_COUNT);
         progressBarState = ProgressBarPercents.ZERO;
         ledStrip.setLength(ledBuffer.getLength());
         ledStrip.setData(ledBuffer);
