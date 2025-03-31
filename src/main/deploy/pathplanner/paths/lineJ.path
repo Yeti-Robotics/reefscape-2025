@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.710589821595651,
-        "y": 5.70095513993649
+        "x": 6.351903409090909,
+        "y": 6.193821022727272
       },
       "isLocked": false,
       "linkedName": "lineLeft"
@@ -20,15 +20,20 @@
         "y": 5.507037213740457
       },
       "prevControl": {
-        "x": 5.996168893129771,
-        "y": 5.5224475190839675
+        "x": 5.5940625,
+        "y": 5.914616477272727
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "jReef"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -30.87750000263976
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [

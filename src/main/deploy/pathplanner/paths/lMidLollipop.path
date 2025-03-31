@@ -3,28 +3,28 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.876741412213741,
-        "y": 5.188859732824427
+        "x": 3.55856393129771,
+        "y": 5.465171755725191
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.08113072519084,
-        "y": 5.58168893129771
+        "x": 2.6375238549618323,
+        "y": 5.5656488549618315
       },
       "isLocked": false,
       "linkedName": "lReef"
     },
     {
       "anchor": {
-        "x": 2.4281965648854964,
+        "x": 2.537046755725191,
         "y": 4.008
       },
       "prevControl": {
-        "x": 2.6719797788333612,
+        "x": 2.7808299696730563,
         "y": 4.063405275897241
       },
       "nextControl": {
-        "x": 2.1844133509376307,
+        "x": 2.2932635417773253,
         "y": 3.9525947241027586
       },
       "isLocked": false,
@@ -44,7 +44,12 @@
       "linkedName": "midLollipop"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.031518624641842,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [

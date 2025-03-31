@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.578912213740458,
-        "y": 3.891030534351145
+        "x": 2.687762404580153,
+        "y": 3.899403625954198
       },
       "prevControl": {
-        "x": 2.7323973671191886,
-        "y": 3.693692480007063
+        "x": 2.8412475579588836,
+        "y": 3.7020655716101163
       },
       "nextControl": {
-        "x": 2.425427060361728,
-        "y": 4.088368588695226
+        "x": 2.5342772512014227,
+        "y": 4.09674168029828
       },
       "isLocked": false,
       "linkedName": null
@@ -36,15 +36,20 @@
         "y": 4.008253816793893
       },
       "prevControl": {
-        "x": 2.19375,
-        "y": 3.974761450381679
+        "x": 2.235894483583118,
+        "y": 4.008253816793893
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "midLollipop"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0057306590258037,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [

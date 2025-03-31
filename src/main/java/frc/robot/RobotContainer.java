@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNamedCommands;
 import frc.robot.commands.ReefAlignPPOTF;
+import frc.robot.commands.ReefAlignCommand;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
@@ -31,6 +33,7 @@ import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
+import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
@@ -50,9 +53,10 @@ public class RobotContainer {
     public final CommandXboxController primaryXboxController;
     public final CommandXboxController secondaryXboxController;
     private final CommandJoystick simJoy = new CommandJoystick(2);
+    public final CommandJoystick gigaStation;
 
-    //    @Logged(name = "Vision/Limelight")
-    //    public final LimelightAprilTagSystem limelight;
+    @Logged(name = "Vision/Limelight")
+    public final LimelightAprilTagSystem limelight;
 
     @Logged(name = "Drivetrain")
     public CommandSwerveDrivetrain drivetrain;
@@ -100,8 +104,10 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        primaryXboxController = new CommandXboxController(0);
-        secondaryXboxController = new CommandXboxController(1);
+        primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
+        secondaryXboxController =
+                new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
+        gigaStation = new CommandJoystick(Constants.GIGA_PORT);
         drivetrain = TunerConstants.createDrivetrain();
 
         radioCam = new PhotonAprilTagSystem("RadioCam", camTrans1, drivetrain);
@@ -124,7 +130,7 @@ public class RobotContainer {
             scoreCam.setCamera(simCam2.getCam());
         }
 
-        //        limelight = new LimelightAprilTagSystem("limelight", drivetrain);
+        limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         climber = new ClimberSubsystem();
         coralManipulator = new CoralManipulatorSystem();
         mechanisms = new Mechanisms();
@@ -230,11 +236,27 @@ public class RobotContainer {
                 .y()
                 .whileTrue(Commands.defer(reefAlignPPOTF::autoAlign, Set.of(drivetrain)));
 
-        secondaryXboxController.x().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
-        secondaryXboxController.leftBumper().whileTrue(climber.spinClimber(climber.climbSpeed));
-        secondaryXboxController.rightBumper().whileTrue(climber.spinClimber(climber.unClimbSpeed));
-        secondaryXboxController
-                .y()
+        gigaStation.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
+        gigaStation.button(18).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        gigaStation.button(16).onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+        gigaStation.button(17).onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
+        gigaStation.button(7).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
+        gigaStation.button(8).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
+        gigaStation.button(9).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
+        gigaStation.button(10).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        gigaStation
+                .button(15)
+                .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
+
+        gigaStation
+                .button(4)
+                .onTrue(reefAlignPPOTF.toggleBranchSelection())
+                .onFalse(reefAlignPPOTF.toggleBranchSelection());
+
+        gigaStation.button(13).whileTrue(climber.spinClimber(climber.climbSpeed));
+        gigaStation.button(14).whileTrue(climber.spinClimber(climber.unClimbSpeed));
+        gigaStation
+                .button(11)
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(

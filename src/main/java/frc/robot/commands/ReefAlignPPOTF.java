@@ -35,6 +35,7 @@ public class ReefAlignPPOTF {
             new SwerveRequest.FieldCentricFacingAngle();
     private final SwerveRequest.Idle stopReq = new SwerveRequest.Idle();
     private boolean isRightCam = false;
+    private boolean isLeftBranch = false;
 
     private static final Transform2d leftBranchTransform =
             new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(-8), Rotation2d.kZero);
@@ -218,4 +219,9 @@ public class ReefAlignPPOTF {
                                 () -> commandSwerveDrivetrain.setControl(stopReq),
                                 commandSwerveDrivetrain));
     }
+
+    public Command toggleBranchSelection() {
+        return Commands.runOnce(() -> isLeftBranch = !isLeftBranch);
+    }
+
 }

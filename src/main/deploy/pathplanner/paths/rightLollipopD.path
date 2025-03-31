@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3001690789034956,
-        "y": 2.145381342012217
+        "x": 2.203721590909091,
+        "y": 2.045639204545454
       },
       "isLocked": false,
       "linkedName": "rightLollipop"
@@ -28,7 +28,12 @@
       "linkedName": "dReef"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 134.92215442142086
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
