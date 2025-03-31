@@ -16,12 +16,28 @@
     },
     {
       "anchor": {
+        "x": 2.746374045801527,
+        "y": 5.8838263358778615
+      },
+      "prevControl": {
+        "x": 2.9685899406260092,
+        "y": 5.769283347932922
+      },
+      "nextControl": {
+        "x": 2.5241581509770445,
+        "y": 5.998369323822801
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
         "x": 1.733,
         "y": 5.8838263358778615
       },
       "prevControl": {
-        "x": 2.3528387404580156,
-        "y": 5.892199427480916
+        "x": 2.1538636363636363,
+        "y": 5.864758522727272
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +50,7 @@
   "eventMarkers": [
     {
       "name": "Stow",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.2,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -42,6 +58,12 @@
           "name": "Stow"
         }
       }
+    },
+    {
+      "name": "LollipopIntake",
+      "waypointRelativePos": 0.9,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {

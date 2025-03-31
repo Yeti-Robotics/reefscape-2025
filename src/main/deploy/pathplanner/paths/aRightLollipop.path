@@ -58,6 +58,12 @@
           "name": "Stow"
         }
       }
+    },
+    {
+      "name": "LollipopIntake",
+      "waypointRelativePos": 0.9,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {

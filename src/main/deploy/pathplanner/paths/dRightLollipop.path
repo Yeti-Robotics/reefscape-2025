@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7798664122137406,
-        "y": 2.1996660305343516
+        "x": 3.3903409090909093,
+        "y": 1.99578125
       },
       "isLocked": false,
       "linkedName": "dReef"
@@ -28,7 +28,12 @@
       "linkedName": "rightLollipop"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
@@ -44,8 +49,8 @@
       }
     },
     {
-      "name": "L4",
-      "waypointRelativePos": 0.8,
+      "name": "LollipopIntake",
+      "waypointRelativePos": 0.6,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

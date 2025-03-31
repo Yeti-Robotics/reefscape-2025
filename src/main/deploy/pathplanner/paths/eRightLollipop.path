@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.278649809160306,
-        "y": 2.141054389312976
+        "x": 4.327670454545454,
+        "y": 2.0655823863636362
       },
       "isLocked": false,
       "linkedName": "eReef"
@@ -28,7 +28,12 @@
       "linkedName": "rightLollipop"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
@@ -42,6 +47,12 @@
           "name": "Stow"
         }
       }
+    },
+    {
+      "name": "LollipopIntake",
+      "waypointRelativePos": 0.8,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {
