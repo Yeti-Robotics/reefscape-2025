@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "rightLollipopC"
+            "pathName": "rightLollipopD"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "cMidLollipop"
+            "pathName": "dMidLollipop"
           }
         },
         {
@@ -55,7 +55,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "midLollipopA"
+            "pathName": "midLollipopB"
           }
         },
         {

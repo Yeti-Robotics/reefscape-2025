@@ -3,54 +3,64 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.7332299618320612,
-        "y": 2.1661736641221365
+        "x": 3.675787213740459,
+        "y": 2.526216603053434
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.858826335877863,
-        "y": 4.619489503816794
+        "x": 2.9054627862595432,
+        "y": 3.00348282442748
       },
       "isLocked": false,
-      "linkedName": "rightLollipop"
+      "linkedName": "dReef"
     },
     {
       "anchor": {
-        "x": 2.7882395038167944,
+        "x": 2.687762404580153,
+        "y": 3.899403625954198
+      },
+      "prevControl": {
+        "x": 2.8412475579588836,
+        "y": 3.7020655716101163
+      },
+      "nextControl": {
+        "x": 2.5342772512014227,
+        "y": 4.09674168029828
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.7332299618320612,
         "y": 4.008253816793893
       },
       "prevControl": {
-        "x": 2.177003816793893,
-        "y": 3.991507633587786
+        "x": 2.235894483583118,
+        "y": 4.008253816793893
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "bReef"
+      "linkedName": "midLollipop"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0057306590258037,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "Stow",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.4,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "Stow"
-        }
-      }
-    },
-    {
-      "name": "L4",
-      "waypointRelativePos": 0.8,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "L4"
         }
       }
     }
@@ -71,7 +81,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 150.0
   },
   "useDefaultConstraints": true
 }

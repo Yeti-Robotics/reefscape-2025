@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 1.7332299618320612,
-        "y": 2.1661736641221365
+        "y": 4.008253816793893
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.858826335877863,
-        "y": 4.619489503816794
+        "x": 2.010048979696594,
+        "y": 4.008253816793893
       },
       "isLocked": false,
-      "linkedName": "rightLollipop"
+      "linkedName": "midLollipop"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 4.008253816793893
       },
       "prevControl": {
-        "x": 2.177003816793893,
-        "y": 3.991507633587786
+        "x": 2.4183042254739764,
+        "y": 4.008253816793893
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,19 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Stow",
-      "waypointRelativePos": 0.1,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Stow"
-        }
-      }
-    },
-    {
       "name": "L4",
-      "waypointRelativePos": 0.8,
+      "waypointRelativePos": 0.7,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
