@@ -241,17 +241,6 @@ public class RobotContainer {
                 .button(11)
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
 
-
-        if (gigaStation.getHID().getRawButton(19)) {
-            selectedAuto = new PathPlannerAuto("driveForward");
-        } else if (gigaStation.getHID().getRawButton(20)) {
-            selectedAuto = new PathPlannerAuto("left1Coral");
-        } else if (gigaStation.getHID().getRawButton(21)) {
-            selectedAuto = new PathPlannerAuto("right1Coral");
-        } else if (gigaStation.getHID().getRawButton(22)) {
-            selectedAuto = new PathPlannerAuto("left2Coral");
-        }
-
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));
 
@@ -281,6 +270,15 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+        if (gigaStation.getHID().getRawButton(19)) {
+            selectedAuto = new PathPlannerAuto("driveForward");
+        } else if (gigaStation.getHID().getRawButton(20)) {
+            selectedAuto = new PathPlannerAuto("left1Coral");
+        } else if (gigaStation.getHID().getRawButton(21)) {
+            selectedAuto = new PathPlannerAuto("right1Coral");
+        } else if (gigaStation.getHID().getRawButton(22)) {
+            selectedAuto = new PathPlannerAuto("left2Coral");
+        }
         if (selectedAuto == null) {
             return autoChooser.getSelected();
         } else {
