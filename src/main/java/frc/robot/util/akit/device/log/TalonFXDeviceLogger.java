@@ -4,6 +4,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.*;
 import frc.robot.util.akit.device.inputs.TalonFXDeviceInputs;
 
@@ -20,6 +21,7 @@ class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
     private final StatusSignal<Double> feedForward;
     private final StatusSignal<Double> error;
     private final StatusSignal<Double> pidOutput;
+    private final Debouncer connectedDebouncer = new Debouncer(CONNECTED_DEBOUNCE_TIME);
 
     TalonFXDeviceLogger(TalonFX talon) {
         motorVoltage = talon.getMotorVoltage();
@@ -52,7 +54,7 @@ class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
                         error,
                         pidOutput);
 
-        inputs.isConnected = refreshCode.isOK();
+        inputs.isConnected = connectedDebouncer.calculate(refreshCode.isOK());
         inputs.motorVoltage = motorVoltage.getValue();
         inputs.motorAmps = motorAmps.getValue();
         inputs.positionRotations = positionRotations.getValue();

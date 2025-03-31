@@ -1,6 +1,7 @@
 package frc.robot.subsystems.coral;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
@@ -14,8 +15,9 @@ import frc.robot.subsystems.coral.wrist.WristSubsystem;
 import frc.robot.subsystems.coral.wrist.io.WristIOTalonFX;
 import frc.robot.util.state.TransitionableSubsystem;
 
-public class CoralManipulatorSystem extends SubsystemBase implements TransitionableSubsystem<CoralManipulatorState> {
+import java.util.Map;
 
+public class CoralManipulatorSystem extends SubsystemBase implements TransitionableSubsystem<CoralManipulatorState> {
     public final ArmSubsystem arm = new ArmSubsystem(new ArmIOTalonFX());
 
     public final ElevatorSubsystem elevator = new ElevatorSubsystem(new ElevatorIOTalonFX());
@@ -24,11 +26,13 @@ public class CoralManipulatorSystem extends SubsystemBase implements Transitiona
 
     public final WristSubsystem wrist = new WristSubsystem(new WristIOTalonFX());
 
+    private CoralManipulatorState queuedState;
+
     public boolean isElevMovingUp(CoralManipulatorState targetState) {
         return targetState
                 .getElevatorPosition()
                 .getSetpoint()
-                .gt();
+                .gt(elevator.position());
     }
 
     public boolean isMovingL2(CoralManipulatorState targetState) {
@@ -41,21 +45,30 @@ public class CoralManipulatorSystem extends SubsystemBase implements Transitiona
     }
 
     public boolean isArmInDanger(CoralManipulatorState targetState) {
-        return arm.currentStateSignal().getValue().lt(ArmPosition.AWAY.getAngle())
-                || targetState.getArmPosition().getAngle().lt(ArmPosition.AWAY.getAngle());
+        return arm.position().lt(ArmPosition.AWAY.getSetpoint())
+                || targetState.getArmPosition().getSetpoint().lt(ArmPosition.AWAY.getSetpoint());
     }
 
     public boolean isIntaking(CoralManipulatorState targetState) {
         return (targetState == CoralManipulatorState.HP_INTAKE
                 || targetState == CoralManipulatorState.GROUND_INTAKE
-                && getCurrentState() == CoralManipulatorState.STOWED)
+                && isAt(CoralManipulatorState.STOWED))
                 || (targetState == CoralManipulatorState.STOWED
-                && getCurrentState() == CoralManipulatorState.HP_INTAKE
-                || getCurrentState() == CoralManipulatorState.GROUND_INTAKE);
+                && isAt(CoralManipulatorState.HP_INTAKE)
+                || isAt(CoralManipulatorState.GROUND_INTAKE));
+    }
+
+    public boolean isAt(CoralManipulatorState state) {
+        return arm.isAt(state.getArmPosition()) && elevator.isAt(state.getElevatorPosition())
+                && grabber.isAt(state.getGrabberState()) && wrist.isAt(state.getWristPosition());
     }
 
     public void queueState(CoralManipulatorState state) {
         queuedState = state;
+    }
+
+    public CoralManipulatorState getQueuedState() {
+        return queuedState;
     }
 
     public Command selectQueuedStateCommand() {
@@ -88,7 +101,7 @@ public class CoralManipulatorSystem extends SubsystemBase implements Transitiona
 
         if (isIntaking(targetState) || !isElevMovingUp(targetState)) {
             if (targetState == CoralManipulatorState.STOWED) {
-                if (getCurrentState() == CoralManipulatorState.SCORE_L3) {
+                if (isAt(CoralManipulatorState.SCORE_L3)) {
                     coralManipulatorCommand =
                             arm.transitionTo(targetState.getArmPosition())
                                     .andThen(
@@ -117,7 +130,7 @@ public class CoralManipulatorSystem extends SubsystemBase implements Transitiona
         }
 
         if (isWristFirst(targetState)) {
-            if (getCurrentState() == CoralManipulatorState.GROUND_INTAKE) {
+            if (isAt(CoralManipulatorState.GROUND_INTAKE)) {
                 coralManipulatorCommand =
                         arm.transitionTo(ArmPosition.AWAY_BUMPER)
                                 .andThen(wrist.transitionTo(targetState.getWristPosition()))
@@ -134,7 +147,7 @@ public class CoralManipulatorSystem extends SubsystemBase implements Transitiona
         }
 
         coralManipulatorCommand =
-                wrist.transitionTo(getCurrentState().getWristPosition())
+                wrist.holdPosition()
                         .andThen(coralManipulatorCommand);
 
         coralManipulatorCommand.schedule();

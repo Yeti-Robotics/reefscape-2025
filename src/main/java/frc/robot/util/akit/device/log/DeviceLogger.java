@@ -8,6 +8,8 @@ import frc.robot.util.akit.device.inputs.TalonFXDeviceInputs;
 import frc.robot.util.akit.io.InputLoggingIO;
 
 public interface DeviceLogger<T extends DeviceInputs> extends InputLoggingIO<T> {
+    double CONNECTED_DEBOUNCE_TIME = 0.5;
+
     static DeviceLogger<TalonFXDeviceInputs> forDevice(TalonFX talon) {
         return new TalonFXDeviceLogger(talon);
     }

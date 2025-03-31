@@ -15,4 +15,8 @@ public class ElevatorSubsystem extends StatefulSetpointSubsystem<Angle, Elevator
     public void updateInputs(ElevatorInputs inputs) {
         inputs.targetSetpoint = getTargetState();
     }
+
+    public Angle position() {
+        return io.getPosition();
+    }
 }

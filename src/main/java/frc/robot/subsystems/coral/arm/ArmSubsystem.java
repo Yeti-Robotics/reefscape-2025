@@ -15,4 +15,8 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<Angle, ArmPosition, 
     public void updateInputs(ArmInputs inputs) {
         inputs.targetSetpoint = getTargetState();
     }
+
+    public Angle position() {
+        return io.getPosition();
+    }
 }
