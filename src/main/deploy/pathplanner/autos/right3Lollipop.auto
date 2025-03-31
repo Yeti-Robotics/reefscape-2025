@@ -23,9 +23,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "LollipopIntake"
+            "waitTime": 1.0
           }
         },
         {
@@ -47,9 +47,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "LollipopIntake"
+            "waitTime": 1.0
           }
         },
         {
