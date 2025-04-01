@@ -76,7 +76,6 @@ public class NewLEDSubsystem extends SubsystemBase {
         EnumMap<CoralManipulatorState, Command> animationCommands =
                 new EnumMap<>(CoralManipulatorState.class);
         animationCommands.put(CoralManipulatorState.DISABLED, runOnce(this::updateProgress));
-        Command yetiBlueScrolling = runPattern(LEDPatterns.YETI_BLUE_SCROLLING);
         for (CoralManipulatorState state :
                 new CoralManipulatorState[] {
                     CoralManipulatorState.L1, CoralManipulatorState.L2, CoralManipulatorState.L3,
@@ -84,11 +83,11 @@ public class NewLEDSubsystem extends SubsystemBase {
                     CoralManipulatorState.SCORE_L1, CoralManipulatorState.SCORE_L2,
                             CoralManipulatorState.SCORE_L3, CoralManipulatorState.SCORE_L4
                 }) {
-            animationCommands.put(state, yetiBlueScrolling);
+            animationCommands.put(state, runPattern(LEDPatterns.YETI_BLUE_SCROLLING));
         }
-        Command whiteBlink = runPattern(LEDPatterns.WHITE_BLINK);
-        animationCommands.put(CoralManipulatorState.HP_INTAKE, whiteBlink);
-        animationCommands.put(CoralManipulatorState.GROUND_INTAKE, whiteBlink);
+        animationCommands.put(CoralManipulatorState.HP_INTAKE, runPattern(LEDPatterns.WHITE_BLINK));
+        animationCommands.put(
+                CoralManipulatorState.GROUND_INTAKE, runPattern(LEDPatterns.WHITE_BLINK));
 
         animationCommands.put(
                 CoralManipulatorState.STOWED,
