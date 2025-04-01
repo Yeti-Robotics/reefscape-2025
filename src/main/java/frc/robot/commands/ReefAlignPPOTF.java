@@ -191,7 +191,7 @@ public class ReefAlignPPOTF {
         SwerveDrivetrain.SwerveDriveState state = commandSwerveDrivetrain.getState();
         Pose2d drivetrainPose = state.Pose;
 
-        Transform2d midPtTransform = new Transform2d(drivetrainPose, reefBranchPose).div(2);
+        Transform2d midPtTransform = new Transform2d(drivetrainPose, reefBranchPose);
 
         /*
         new Pose2d(
@@ -242,6 +242,15 @@ public class ReefAlignPPOTF {
                                                                                 .Pose,
                                                                         endState))),
                                 commandSwerveDrivetrain))
+                .until(
+                        () -> {
+                            return new Transform2d(
+                                                    commandSwerveDrivetrain.getState().Pose,
+                                                    reefBranchPose)
+                                            .getTranslation()
+                                            .getNorm()
+                                    < 0.01;
+                        })
                 .andThen(
                         Commands.runOnce(
                                 () -> commandSwerveDrivetrain.setControl(stopReq),

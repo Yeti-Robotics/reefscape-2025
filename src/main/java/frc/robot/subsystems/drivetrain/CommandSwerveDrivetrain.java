@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -135,6 +134,9 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
 
     /* The SysId routine to test */
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineRotation;
+    public final PPHolonomicDriveController driveController =
+            new PPHolonomicDriveController(
+                    new PIDConstants(10.0, 0.0, 0.0), new PIDConstants(7.0, 0.0, 0.0));
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -172,8 +174,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
                     this::resetPose,
                     this::getChassisSpeeds,
                     (ChassisSpeeds speeds) -> this.setControl(AutoReq.withSpeeds(speeds)),
-                    new PPHolonomicDriveController(
-                            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+                    driveController,
                     config,
                     () ->
                             DriverStation.getAlliance()

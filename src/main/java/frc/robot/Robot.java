@@ -120,6 +120,7 @@ public class Robot extends TimedRobot {
     /** This method is called periodically whilst in simulation. */
     @Override
     public void simulationPeriodic() {
+        robotContainer.updateVisionSim();
         PhysicsSim.getInstance().run();
     }
 }

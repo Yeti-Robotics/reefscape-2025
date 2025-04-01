@@ -1,17 +1,18 @@
 package frc.robot.commands;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.coral.*;
+import frc.robot.subsystems.coral.CoralManipulatorState;
+import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.coral.grabber.GrabberState;
 
 public class AutoNamedCommands {
     private final CoralManipulatorSystem coralManipulator;
-    private final ReefAlignCommand reefAlignCommand;
+    private final Command reefAlignCommand;
 
-    public AutoNamedCommands(
-            CoralManipulatorSystem coralManipulator, ReefAlignCommand reefAlignCommand) {
+    public AutoNamedCommands(CoralManipulatorSystem coralManipulator, Command reefAlignCommand) {
         this.coralManipulator = coralManipulator;
         this.reefAlignCommand = reefAlignCommand;
         registerCommands();
