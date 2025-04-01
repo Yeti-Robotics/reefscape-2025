@@ -8,6 +8,7 @@ package frc.robot;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -17,9 +18,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.commands.AutoNamedCommands;
 import frc.robot.commands.ReefAlignCommand;
 import frc.robot.constants.Constants;
@@ -37,7 +36,13 @@ import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
+
+import java.nio.file.Path;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
+
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+import static edu.wpi.first.wpilibj2.command.Commands.select;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -87,7 +92,7 @@ public class RobotContainer {
     public ClimberSubsystem climber;
 
     private final SendableChooser<Command> autoChooser;
-
+    
     private final SwerveRequest.FieldCentric drive =
             new SwerveRequest.FieldCentric()
                     .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
@@ -157,11 +162,11 @@ public class RobotContainer {
 
     /**
      * Use this method to define your trigger->command mappings. Triggers can be created via the
-     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+     * {@link Trigger#Trigger(BooleanSupplier)} constructor with an arbitrary
      * predicate, or via the named factories in {@link
-     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-     * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-     * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+     * CommandGenericHID}'s subclasses for {@link
+     * CommandXboxController Xbox}/{@link CommandPS4Controller
+     * PS4} controllers or {@link CommandJoystick Flight
      * joysticks}.
      */
     public void updateVision() {
@@ -262,6 +267,20 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
+        PathPlannerAuto selectedAuto = null;
+        if (gigaStation.getHID().getRawButton(19)) {
+            selectedAuto = new PathPlannerAuto("driveForward");
+        } else if (gigaStation.getHID().getRawButton(20)) {
+            selectedAuto = new PathPlannerAuto("left1Coral");
+        } else if (gigaStation.getHID().getRawButton(21)) {
+            selectedAuto = new PathPlannerAuto("right1Coral");
+        } else if (gigaStation.getHID().getRawButton(22)) {
+            selectedAuto = new PathPlannerAuto("left2Coral");
+        }
+        if (selectedAuto == null) {
+            return autoChooser.getSelected();
+        } else {
+            return selectedAuto;
+        }
     }
 }
