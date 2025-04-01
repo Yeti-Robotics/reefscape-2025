@@ -33,7 +33,7 @@ import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.led.LEDPatterns;
-import frc.robot.subsystems.led.NewLEDSubsystem;
+import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.limelight.LimelightAprilTagSystem;
@@ -86,7 +86,7 @@ public class RobotContainer {
     @Logged(name = "Vision/ClimbCam")
     public final PhotonAprilTagSystem reefCam2;
 
-    public NewLEDSubsystem leds;
+    public LEDSubsystem leds;
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
@@ -137,7 +137,7 @@ public class RobotContainer {
         limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         coralManipulator = new CoralManipulatorSystem();
         climber = new ClimberSubsystem();
-        leds = new NewLEDSubsystem();
+        leds = new LEDSubsystem();
         new Trigger(coralManipulator::isTransitioning)
                 .whileFalse(leds.selectAnimationCommand(coralManipulator::getCurrentState));
         mechanisms = new Mechanisms();
@@ -297,16 +297,11 @@ public class RobotContainer {
                 .and(DriverStation::isDisabled)
                 .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
                 .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
-        new Trigger(this::isBatteryGood)
+        new Trigger(() -> RobotController.getBatteryVoltage() > 12.5)
                 .and(DriverStation::isDisabled)
                 .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
                 .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
     }
-
-    private boolean isBatteryGood() {
-        return RobotController.getBatteryVoltage() > 12.5;
-    }
-
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *

@@ -12,6 +12,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.MutAngle;
 import frc.robot.Robot;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.led.LEDConstants;
 import frc.robot.util.sim.PhysicsSim;
 import frc.robot.util.sim.SimulatableMechanism;
 import frc.robot.util.state.StateUtils;
@@ -82,6 +83,6 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
 
     public boolean isEncoderZeroed() {
         double position = armEncoder.getPosition().refresh().getValueAsDouble();
-        return position >= 0 && position <= Constants.ZERO_TOLERANCE;
+        return position >= 0 && position <= LEDConstants.ZERO_TOLERANCE;
     }
 }

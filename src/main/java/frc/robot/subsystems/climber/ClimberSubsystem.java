@@ -9,6 +9,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.led.LEDConstants;
 
 @Logged
 public class ClimberSubsystem extends SubsystemBase {
@@ -30,7 +31,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public boolean isEncoderZeroed() {
         double position = cancoder.getPosition().refresh().getValueAsDouble();
-        return position >= 0 && position <= Constants.ZERO_TOLERANCE;
+        return position >= 0 && position <= LEDConstants.ZERO_TOLERANCE;
     }
 
     private void setClimberSpeed(double speed) {

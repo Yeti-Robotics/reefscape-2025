@@ -6,7 +6,6 @@ import static edu.wpi.first.units.Units.Second;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.constants.LEDConstants;
 
 public enum LEDPatterns {
     YETI_BLUE_PATTERN(LEDPattern.solid(LEDConstants.YETI_BLUE)),

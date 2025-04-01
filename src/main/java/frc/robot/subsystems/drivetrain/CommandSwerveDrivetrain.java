@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -32,9 +31,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.constants.Constants;
+
 import java.io.IOException;
 import java.util.function.Supplier;
+
+import frc.robot.subsystems.led.LEDConstants;
 import org.json.simple.parser.ParseException;
 
 /**
@@ -247,7 +248,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
 
     private boolean isWheelZeroed(CANcoder wheel) {
         double position = wheel.getPosition().refresh().getValueAsDouble();
-        return position >= 0 || position <= Constants.ZERO_TOLERANCE;
+        return position >= 0 || position <= LEDConstants.ZERO_TOLERANCE;
     }
 
     /**

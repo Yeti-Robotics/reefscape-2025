@@ -8,17 +8,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.constants.LEDConstants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import java.util.EnumMap;
 import java.util.function.Supplier;
 
-public class NewLEDSubsystem extends SubsystemBase {
+public class LEDSubsystem extends SubsystemBase {
     public AddressableLED ledStrip;
     private final AddressableLEDBuffer ledBuffer;
     private double currentProgress = 0.0;
 
-    public NewLEDSubsystem() {
+    public LEDSubsystem() {
         ledStrip = new AddressableLED(LEDConstants.LED_STRIP_PORT);
         ledBuffer = new AddressableLEDBuffer(LEDConstants.LED_COUNT);
         ledStrip.setLength(ledBuffer.getLength());
