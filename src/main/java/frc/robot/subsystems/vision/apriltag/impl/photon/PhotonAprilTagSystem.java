@@ -42,7 +42,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         this.drivetrain = commandSwerveDrivetrain;
 
         photonPoseEstimator.setMultiTagFallbackStrategy(
-                PhotonPoseEstimator.PoseStrategy.CLOSEST_TO_LAST_POSE);
+                PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
     }
 
     @Override
