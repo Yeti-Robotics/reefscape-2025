@@ -8,7 +8,6 @@ public class GrabberSubsystem extends StatefulSetpointSubsystem<Double, GrabberS
     public GrabberSubsystem(GrabberIO io) {
         super(io);
 
-        new Trigger(io::hasCoral).onTrue(runOnce(() -> {
-        }));
+        new Trigger(io::hasCoral).onTrue(runOnce(() -> {}));
     }
 }

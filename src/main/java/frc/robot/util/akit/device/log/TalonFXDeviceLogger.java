@@ -8,7 +8,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.*;
 import frc.robot.util.akit.device.inputs.TalonFXDeviceInputs;
 
-class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
+public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
     private final StatusSignal<Voltage> motorVoltage;
     private final StatusSignal<Current> motorAmps;
     private final StatusSignal<Angle> positionRotations;
@@ -23,7 +23,7 @@ class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
     private final StatusSignal<Double> pidOutput;
     private final Debouncer connectedDebouncer = new Debouncer(CONNECTED_DEBOUNCE_TIME);
 
-    TalonFXDeviceLogger(TalonFX talon) {
+    public TalonFXDeviceLogger(TalonFX talon) {
         motorVoltage = talon.getMotorVoltage();
         motorAmps = talon.getTorqueCurrent();
         positionRotations = talon.getPosition();

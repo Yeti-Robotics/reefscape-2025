@@ -1,6 +1,5 @@
 package frc.robot.subsystems.coral.wrist.io;
 
-
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;

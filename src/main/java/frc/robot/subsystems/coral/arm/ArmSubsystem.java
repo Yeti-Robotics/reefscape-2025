@@ -6,7 +6,8 @@ import frc.robot.subsystems.coral.arm.io.ArmInputs;
 import frc.robot.util.akit.io.InputLoggingIO;
 import frc.robot.util.state.StatefulSetpointSubsystem;
 
-public class ArmSubsystem extends StatefulSetpointSubsystem<Angle, ArmPosition, ArmIO> implements InputLoggingIO<ArmInputs> {
+public class ArmSubsystem extends StatefulSetpointSubsystem<Angle, ArmPosition, ArmIO>
+        implements InputLoggingIO<ArmInputs> {
     public ArmSubsystem(ArmIO io) {
         super(io);
     }

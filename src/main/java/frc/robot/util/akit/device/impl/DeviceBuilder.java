@@ -1,8 +1,12 @@
-package frc.robot.util.device;
+package frc.robot.util.akit.device.impl;
+
+import frc.robot.util.akit.device.inputs.DeviceInputs;
+import frc.robot.util.akit.device.log.DeviceLogger;
+import frc.robot.util.akit.device.log.DeviceLoggingRegistry;
 
 import java.util.function.Consumer;
 
-public abstract class DeviceBuilder<D, C, U extends DeviceBuilder<D, C, U>> {
+abstract class DeviceBuilder<D, C, I extends DeviceInputs, U extends DeviceBuilder<D, C, I, U>> {
     private final D device;
     private C config;
 
@@ -13,6 +17,15 @@ public abstract class DeviceBuilder<D, C, U extends DeviceBuilder<D, C, U>> {
     protected abstract U getDeviceBuilderClass();
 
     public abstract U syncConfigs();
+
+    public U log(String key) {
+        DeviceLoggingRegistry.get().addLoggerWithInputs(key, createLogger(), createDeviceInputs());
+        return getDeviceBuilderClass();
+    }
+
+    protected abstract I createDeviceInputs();
+
+    protected abstract DeviceLogger<I> createLogger();
 
     protected abstract C getDefaultConfig();
 

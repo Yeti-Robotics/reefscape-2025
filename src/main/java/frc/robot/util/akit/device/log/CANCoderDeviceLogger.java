@@ -8,7 +8,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.util.akit.device.inputs.CANCoderDeviceInputs;
 
-class CANCoderDeviceLogger implements DeviceLogger<CANCoderDeviceInputs> {
+public class CANCoderDeviceLogger implements DeviceLogger<CANCoderDeviceInputs> {
     private final StatusSignal<Angle> position;
     private final StatusSignal<Angle> absolutePosition;
     private final Debouncer connectedDebouncer = new Debouncer(CONNECTED_DEBOUNCE_TIME);

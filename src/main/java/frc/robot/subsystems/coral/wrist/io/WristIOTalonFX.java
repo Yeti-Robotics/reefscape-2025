@@ -6,18 +6,20 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.constants.Constants;
-import frc.robot.util.device.impl.CANCoderDevice;
-import frc.robot.util.device.impl.TalonFXMotor;
+import frc.robot.util.akit.device.impl.CANCoderDevice;
+import frc.robot.util.akit.device.impl.TalonFXMotor;
 
 public class WristIOTalonFX implements WristIO {
     final CANcoder wristCancoder =
             CANCoderDevice.configure(WristConfigs.WRIST_CANCODER_ID, Constants.CANIVORE_BUS)
+                    .log("WristIO/WristCancoder")
                     .using(WristConfigs.wristEncoderConfigs)
                     .syncConfigs()
                     .getDevice();
 
     final TalonFX wristMotor =
             TalonFXMotor.configure(WristConfigs.WRIST_KRAKEN_ID, Constants.CANIVORE_BUS)
+                    .log("WristIO/WristMotor")
                     .using(WristConfigs.wristMotorConfigs)
                     .usingFusedCANcoder(wristCancoder)
                     .syncConfigs()

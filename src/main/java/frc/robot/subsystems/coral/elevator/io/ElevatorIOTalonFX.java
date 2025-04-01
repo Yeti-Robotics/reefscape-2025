@@ -7,21 +7,23 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.constants.Constants;
-import frc.robot.util.device.impl.TalonFXMotor;
+import frc.robot.util.akit.device.impl.TalonFXMotor;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
-    private final TalonFX primaryElevatorMotor = TalonFXMotor
-            .configure(ElevatorConfig.primaryElevatorMotorID, Constants.CANIVORE_BUS)
-            .using(ElevatorConfig.primaryTalonFXConfigs)
-            .syncConfigs()
-            .getDevice();
+    private final TalonFX primaryElevatorMotor =
+            TalonFXMotor.configure(ElevatorConfig.primaryElevatorMotorID, Constants.CANIVORE_BUS)
+                    .log("ElevatorIO/PrimaryMotor")
+                    .using(ElevatorConfig.primaryTalonFXConfigs)
+                    .syncConfigs()
+                    .getDevice();
 
-    private final TalonFX secondaryElevatorMotor = TalonFXMotor
-            .configure(ElevatorConfig.secondaryElevatorMotorID, Constants.CANIVORE_BUS)
-            .using(ElevatorConfig.secondaryTalonFXConfigs)
-            .syncConfigs()
-            .oppose(primaryElevatorMotor)
-            .getDevice();
+    private final TalonFX secondaryElevatorMotor =
+            TalonFXMotor.configure(ElevatorConfig.secondaryElevatorMotorID, Constants.CANIVORE_BUS)
+                    .log("ElevatorIO/SecondaryMotor")
+                    .using(ElevatorConfig.secondaryTalonFXConfigs)
+                    .syncConfigs()
+                    .oppose(primaryElevatorMotor)
+                    .getDevice();
 
     private final MotionMagicTorqueCurrentFOC motionMagicReq = new MotionMagicTorqueCurrentFOC(0);
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();

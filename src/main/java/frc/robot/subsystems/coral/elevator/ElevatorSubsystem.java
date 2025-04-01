@@ -6,7 +6,9 @@ import frc.robot.subsystems.coral.elevator.io.ElevatorInputs;
 import frc.robot.util.akit.io.InputLoggingIO;
 import frc.robot.util.state.StatefulSetpointSubsystem;
 
-public class ElevatorSubsystem extends StatefulSetpointSubsystem<Angle, ElevatorPosition, ElevatorIO> implements InputLoggingIO<ElevatorInputs> {
+public class ElevatorSubsystem
+        extends StatefulSetpointSubsystem<Angle, ElevatorPosition, ElevatorIO>
+        implements InputLoggingIO<ElevatorInputs> {
     public ElevatorSubsystem(ElevatorIO io) {
         super(io);
     }

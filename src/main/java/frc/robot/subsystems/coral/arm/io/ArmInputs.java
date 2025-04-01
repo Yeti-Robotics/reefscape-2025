@@ -5,6 +5,4 @@ import frc.robot.util.akit.io.inputs.SetpointInputs;
 import org.littletonrobotics.junction.AutoLog;
 
 @AutoLog
-public class ArmInputs extends SetpointInputs<ArmPosition> {
-
-}
+public class ArmInputs extends SetpointInputs<ArmPosition> {}

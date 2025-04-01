@@ -14,10 +14,10 @@ import frc.robot.subsystems.coral.wrist.WristPosition;
 import frc.robot.subsystems.coral.wrist.WristSubsystem;
 import frc.robot.subsystems.coral.wrist.io.WristIOTalonFX;
 import frc.robot.util.state.TransitionableSubsystem;
-
 import java.util.Map;
 
-public class CoralManipulatorSystem extends SubsystemBase implements TransitionableSubsystem<CoralManipulatorState> {
+public class CoralManipulatorSystem extends SubsystemBase
+        implements TransitionableSubsystem<CoralManipulatorState> {
     public final ArmSubsystem arm = new ArmSubsystem(new ArmIOTalonFX());
 
     public final ElevatorSubsystem elevator = new ElevatorSubsystem(new ElevatorIOTalonFX());
@@ -29,10 +29,7 @@ public class CoralManipulatorSystem extends SubsystemBase implements Transitiona
     private CoralManipulatorState queuedState;
 
     public boolean isElevMovingUp(CoralManipulatorState targetState) {
-        return targetState
-                .getElevatorPosition()
-                .getSetpoint()
-                .gt(elevator.position());
+        return targetState.getElevatorPosition().getSetpoint().gt(elevator.position());
     }
 
     public boolean isMovingL2(CoralManipulatorState targetState) {
@@ -51,16 +48,18 @@ public class CoralManipulatorSystem extends SubsystemBase implements Transitiona
 
     public boolean isIntaking(CoralManipulatorState targetState) {
         return (targetState == CoralManipulatorState.HP_INTAKE
-                || targetState == CoralManipulatorState.GROUND_INTAKE
-                && isAt(CoralManipulatorState.STOWED))
+                        || targetState == CoralManipulatorState.GROUND_INTAKE
+                                && isAt(CoralManipulatorState.STOWED))
                 || (targetState == CoralManipulatorState.STOWED
-                && isAt(CoralManipulatorState.HP_INTAKE)
-                || isAt(CoralManipulatorState.GROUND_INTAKE));
+                                && isAt(CoralManipulatorState.HP_INTAKE)
+                        || isAt(CoralManipulatorState.GROUND_INTAKE));
     }
 
     public boolean isAt(CoralManipulatorState state) {
-        return arm.isAt(state.getArmPosition()) && elevator.isAt(state.getElevatorPosition())
-                && grabber.isAt(state.getGrabberState()) && wrist.isAt(state.getWristPosition());
+        return arm.isAt(state.getArmPosition())
+                && elevator.isAt(state.getElevatorPosition())
+                && grabber.isAt(state.getGrabberState())
+                && wrist.isAt(state.getWristPosition());
     }
 
     public void queueState(CoralManipulatorState state) {
@@ -146,9 +145,7 @@ public class CoralManipulatorSystem extends SubsystemBase implements Transitiona
                             wrist.transitionTo(targetState.getWristPosition()));
         }
 
-        coralManipulatorCommand =
-                wrist.holdPosition()
-                        .andThen(coralManipulatorCommand);
+        coralManipulatorCommand = wrist.holdPosition().andThen(coralManipulatorCommand);
 
         coralManipulatorCommand.schedule();
 
