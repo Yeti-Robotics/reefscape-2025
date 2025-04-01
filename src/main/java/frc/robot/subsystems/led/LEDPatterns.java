@@ -27,31 +27,8 @@ public enum LEDPatterns {
     NICK_MODE(LEDPattern.solid(LEDConstants.NICK_ORANGE).blink(Seconds.of(1))),
     SCROLLING_RAINBOW(
             RAINBOW.pattern.scrollAtAbsoluteSpeed(
-                    MetersPerSecond.of(-1), LEDConstants.LED_SPACING)),
-    PROGRESS_BAR_ZERO(
-            LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kRed, Color.kBlue)
-                    .mask(LEDPattern.progressMaskLayer(() -> 0.0))
-                    .reversed()),
-    PROGRESS_BAR_TWENTY(
-            LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kRed, Color.kBlue)
-                    .mask(LEDPattern.progressMaskLayer(() -> 0.2))
-                    .reversed()),
-    PROGRESS_BAR_FORTY(
-            LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kRed, Color.kBlue)
-                    .mask(LEDPattern.progressMaskLayer(() -> 0.4))
-                    .reversed()),
-    PROGRESS_BAR_SIXTY(
-            LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kRed, Color.kBlue)
-                    .mask(LEDPattern.progressMaskLayer(() -> 0.6))
-                    .reversed()),
-    PROGRESS_BAR_EIGHTY(
-            LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kRed, Color.kBlue)
-                    .mask(LEDPattern.progressMaskLayer(() -> 0.8))
-                    .reversed()),
-    PROGRESS_BAR_FULL(
-            LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kRed, Color.kBlue)
-                    .mask(LEDPattern.progressMaskLayer(() -> 1.0))
-                    .reversed());
+                    MetersPerSecond.of(-1), LEDConstants.LED_SPACING));
+
     public final LEDPattern pattern;
 
     LEDPatterns(LEDPattern pattern) {
