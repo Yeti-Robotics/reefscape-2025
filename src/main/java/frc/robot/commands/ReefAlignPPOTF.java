@@ -24,6 +24,7 @@ import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.util.AprilTagDetectionHelpers;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class ReefAlignPPOTF {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
@@ -179,8 +180,7 @@ public class ReefAlignPPOTF {
         reefTargetPublisher.set(reefBranchPose);
         Pose2d drivetrainPose = commandSwerveDrivetrain.getState().Pose;
 
-        Transform2d midPtTransform = new Transform2d(drivetrainPose, reefBranchPose);
-        midPtTransform.div(2);
+        Transform2d midPtTransform = new Transform2d(drivetrainPose, reefBranchPose).div(2);
 
         /*
         new Pose2d(
@@ -217,5 +217,9 @@ public class ReefAlignPPOTF {
                         Commands.runOnce(
                                 () -> commandSwerveDrivetrain.setControl(stopReq),
                                 commandSwerveDrivetrain));
+    }
+
+    public Command reefAlign() {
+        return Commands.defer(this::autoAlign, Set.of(commandSwerveDrivetrain));
     }
 }
