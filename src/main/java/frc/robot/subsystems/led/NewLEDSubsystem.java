@@ -1,10 +1,7 @@
 package frc.robot.subsystems.led;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,8 +16,6 @@ import java.util.function.Supplier;
 public class NewLEDSubsystem extends SubsystemBase {
     public AddressableLED ledStrip;
     private final AddressableLEDBuffer ledBuffer;
-    private static final int PROGRESS_PARTS = 5;
-    private static final double PROGRESS_INCREMENT = 1.0 / PROGRESS_PARTS;
     private double currentProgress = 0.0;
 
     public NewLEDSubsystem() {
@@ -39,7 +34,8 @@ public class NewLEDSubsystem extends SubsystemBase {
     }
 
     public void progressIncrement(boolean positive) {
-        currentProgress += positive ? PROGRESS_INCREMENT : -PROGRESS_INCREMENT;
+        currentProgress +=
+                positive ? LEDConstants.PROGRESS_INCREMENT : -LEDConstants.PROGRESS_INCREMENT;
         currentProgress = MathUtil.clamp(currentProgress, 0.0, 1.0);
     }
 
@@ -66,6 +62,8 @@ public class NewLEDSubsystem extends SubsystemBase {
     public void periodic() {
         ledStrip.setData(ledBuffer);
         SmartDashboard.putNumber("Progress Bar", currentProgress);
+        SmartDashboard.putBoolean("Is Battery Good?", RobotController.getBatteryVoltage() > 12.5);
+        SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
     }
 
     public Command runPattern(LEDPatterns pattern) {

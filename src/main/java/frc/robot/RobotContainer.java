@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -150,7 +151,7 @@ public class RobotContainer {
                         primaryXboxController::getRightX);
 
         configureBindings();
-        configureTriggers();
+        configureLEDTriggers();
 
         var namedCommands = new AutoNamedCommands(coralManipulator, alignToReefCmd);
         namedCommands.registerCommands();
@@ -282,7 +283,7 @@ public class RobotContainer {
                 coralManipulator.arm.getCurrentPosition());
     }
 
-    private void configureTriggers() {
+    private void configureLEDTriggers() {
         new Trigger(coralManipulator.grabber::hasCoral)
                 .and(DriverStation::isDisabled)
                 .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
@@ -296,10 +297,14 @@ public class RobotContainer {
                 .and(DriverStation::isDisabled)
                 .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
                 .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
-        new Trigger(climber::isEncoderZeroed)
+        new Trigger(this::isBatteryGood)
                 .and(DriverStation::isDisabled)
                 .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
                 .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
+    }
+
+    private boolean isBatteryGood() {
+        return RobotController.getBatteryVoltage() > 12.5;
     }
 
     /**
