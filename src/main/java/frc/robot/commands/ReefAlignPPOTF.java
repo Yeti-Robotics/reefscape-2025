@@ -46,6 +46,13 @@ public class ReefAlignPPOTF {
     private static final Transform2d leftTurnTransform =
             new Transform2d(0, 0, Rotation2d.kCW_90deg);
 
+    public enum Branch {
+        LEFT,
+        RIGHT
+    }
+
+    Branch branch = Branch.LEFT;
+
     private Pose2d reefFaceTargetPose;
 
     public ReefAlignPPOTF(
@@ -79,6 +86,10 @@ public class ReefAlignPPOTF {
 
     public boolean isOnReef(int id) {
         return isRedReef(id) || isBlueReef(id);
+    }
+
+    public Command setBranch(Branch branch) {
+        return Commands.runOnce(() -> this.branch = branch);
     }
 
     public Optional<AprilTagDetection> getReefCamDetection() {
@@ -151,11 +162,7 @@ public class ReefAlignPPOTF {
 
     StructPublisher<Pose2d> reefTargetPublisher = pose2dStructPublisher("ReefTarget");
 
-    public Command autoAlign() {
-        return autoAlign(false);
-    }
-
-    public Command autoAlign(boolean isLeftBranch) {
+    private Command autoAlign() {
         Optional<AprilTagDetection> detectionOpt = getReefCamDetection();
 
         if (detectionOpt.isEmpty()) {
@@ -175,7 +182,8 @@ public class ReefAlignPPOTF {
         reefFaceTargetPose = reefTargetPoseOpt.get();
         Pose2d reefBranchPose =
                 reefFaceTargetPose
-                        .transformBy(isLeftBranch ? leftBranchTransform : rightBranchTransform)
+                        .transformBy(
+                                branch == Branch.LEFT ? leftBranchTransform : rightBranchTransform)
                         .transformBy(isRightCam ? rightTurnTransform : leftTurnTransform);
         reefTargetPublisher.set(reefBranchPose);
         Pose2d drivetrainPose = commandSwerveDrivetrain.getState().Pose;

@@ -1,10 +1,8 @@
 package frc.robot.commands;
 
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.coral.*;
 import frc.robot.subsystems.coral.grabber.GrabberState;
-import java.util.Set;
 
 public class AutoNamedCommands {
     private final CoralManipulatorSystem coralManipulator;
@@ -25,8 +23,7 @@ public class AutoNamedCommands {
         NamedCommands.registerCommand(
                 "LollipopIntake", coralManipulator.transitionTo(CoralManipulatorState.LOLLIPOP));
 
-        NamedCommands.registerCommand(
-                "ReefAlign", Commands.defer(reefAlignCommand::autoAlign, Set.of()));
+        NamedCommands.registerCommand("ReefAlign", reefAlignCommand.reefAlign().asProxy());
 
         NamedCommands.registerCommand(
                 "L1", coralManipulator.transitionTo(CoralManipulatorState.L1));

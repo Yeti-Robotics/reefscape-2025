@@ -24,9 +24,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AutoNamedCommands;
-import frc.robot.commands.ReefAlignCommand;
-import frc.robot.constants.Constants;
 import frc.robot.commands.ReefAlignPPOTF;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
@@ -41,14 +40,7 @@ import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
-
-import java.nio.file.Path;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.BooleanSupplier;
-
-import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
-import static edu.wpi.first.wpilibj2.command.Commands.select;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -213,7 +205,7 @@ public class RobotContainer {
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-        primaryXboxController.y().whileTrue(Commands.defer(reefAlignPPOTF::autoAlign, Set.of(drivetrain)));
+        primaryXboxController.y().whileTrue(reefAlignPPOTF.reefAlign());
 
         gigaStation.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
         gigaStation.button(18).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
@@ -227,10 +219,10 @@ public class RobotContainer {
                 .button(15)
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
 
-//        gigaStation
-//                .button(4)
-//                .onTrue(reefAlignPPOTF.)
-//                .onFalse(alignToReefCmd.toggleBranchSelection());
+        gigaStation
+                .button(4)
+                .onTrue(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT))
+                .onFalse(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT));
         gigaStation.button(13).whileTrue(climber.spinClimber(climber.climbSpeed));
         gigaStation.button(14).whileTrue(climber.spinClimber(climber.unClimbSpeed));
         gigaStation
@@ -283,13 +275,13 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        PathPlannerAuto selectedAuto = null;
+        Command selectedAuto = null;
         if (gigaStation.getHID().getRawButton(19)) {
             selectedAuto = new PathPlannerAuto("driveForward");
         } else if (gigaStation.getHID().getRawButton(20)) {
-            selectedAuto = new PathPlannerAuto("left1Coral");
-        } else if (gigaStation.getHID().getRawButton(21)) {
             selectedAuto = new PathPlannerAuto("right1Coral");
+        } else if (gigaStation.getHID().getRawButton(21)) {
+            selectedAuto = right2PcLolli();
         } else if (gigaStation.getHID().getRawButton(22)) {
             selectedAuto = new PathPlannerAuto("left2Coral");
         }
