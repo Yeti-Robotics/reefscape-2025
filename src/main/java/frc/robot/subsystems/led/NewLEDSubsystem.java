@@ -13,10 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.LEDConstants;
 import frc.robot.subsystems.coral.CoralManipulatorState;
-
 import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class NewLEDSubsystem extends SubsystemBase {
@@ -75,33 +72,42 @@ public class NewLEDSubsystem extends SubsystemBase {
         return run(() -> pattern.pattern.applyTo(ledBuffer)).repeatedly().ignoringDisable(true);
     }
 
-
     public Command selectAnimationCommand(Supplier<CoralManipulatorState> getCMS) {
-        EnumMap<CoralManipulatorState, Command> animationCommands = new EnumMap<>(CoralManipulatorState.class);
+        EnumMap<CoralManipulatorState, Command> animationCommands =
+                new EnumMap<>(CoralManipulatorState.class);
         animationCommands.put(CoralManipulatorState.DISABLED, runOnce(this::updateProgress));
         Command yetiBlueScrolling = runPattern(LEDPatterns.YETI_BLUE_SCROLLING);
-        for (CoralManipulatorState state : new CoralManipulatorState[] {
-                CoralManipulatorState.L1, CoralManipulatorState.L2, CoralManipulatorState.L3, CoralManipulatorState.L4,
-                CoralManipulatorState.SCORE_L1, CoralManipulatorState.SCORE_L2, CoralManipulatorState.SCORE_L3, CoralManipulatorState.SCORE_L4}) {
+        for (CoralManipulatorState state :
+                new CoralManipulatorState[] {
+                    CoralManipulatorState.L1, CoralManipulatorState.L2, CoralManipulatorState.L3,
+                            CoralManipulatorState.L4,
+                    CoralManipulatorState.SCORE_L1, CoralManipulatorState.SCORE_L2,
+                            CoralManipulatorState.SCORE_L3, CoralManipulatorState.SCORE_L4
+                }) {
             animationCommands.put(state, yetiBlueScrolling);
         }
         Command whiteBlink = runPattern(LEDPatterns.WHITE_BLINK);
         animationCommands.put(CoralManipulatorState.HP_INTAKE, whiteBlink);
         animationCommands.put(CoralManipulatorState.GROUND_INTAKE, whiteBlink);
 
-        animationCommands.put(CoralManipulatorState.STOWED,
+        animationCommands.put(
+                CoralManipulatorState.STOWED,
                 runPattern(LEDPatterns.WHITE)
                         .withTimeout(2)
                         .andThen(runPattern(LEDPatterns.YETI_BLUE_SCROLLING)));
 
-        animationCommands.put(CoralManipulatorState.ALGAEHIGH, runPattern(LEDPatterns.ALGAE_COLOR_PATTERN));
-        animationCommands.put(CoralManipulatorState.CLIMB, runPattern(LEDPatterns.SCROLLING_RAINBOW));
+        animationCommands.put(
+                CoralManipulatorState.ALGAEHIGH, runPattern(LEDPatterns.ALGAE_COLOR_PATTERN));
+        animationCommands.put(
+                CoralManipulatorState.CLIMB, runPattern(LEDPatterns.SCROLLING_RAINBOW));
 
-        return new SelectCommand<>(animationCommands, () -> {
-            CoralManipulatorState state = getCMS.get();
-            System.out.println("Current CoralManipulatorState: " + state);
-            return state;
-        });
+        return new SelectCommand<>(
+                animationCommands,
+                () -> {
+                    CoralManipulatorState state = getCMS.get();
+                    System.out.println("Current CoralManipulatorState: " + state);
+                    return state;
+                });
     }
 
     private static boolean isRedAlliance() {
