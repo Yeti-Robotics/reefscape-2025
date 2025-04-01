@@ -49,6 +49,13 @@ public class ReefAlignPPOTF {
     private static final Transform2d leftTurnTransform =
             new Transform2d(0, 0, Rotation2d.kCW_90deg);
 
+    public enum Branch {
+        LEFT,
+        RIGHT
+    }
+
+    Branch branch = Branch.LEFT;
+
     private Pose2d reefFaceTargetPose;
 
     public ReefAlignPPOTF(
@@ -82,6 +89,10 @@ public class ReefAlignPPOTF {
 
     public boolean isOnReef(int id) {
         return isRedReef(id) || isBlueReef(id);
+    }
+
+    public Command setBranch(Branch branch) {
+        return Commands.runOnce(() -> this.branch = branch);
     }
 
     public Optional<AprilTagDetection> getReefCamDetection() {
@@ -154,17 +165,13 @@ public class ReefAlignPPOTF {
 
     StructPublisher<Pose2d> reefTargetPublisher = pose2dStructPublisher("ReefTarget");
 
-    public Command autoAlign() {
-        return autoAlign(false);
-    }
-
     private LinearVelocity getChassisVelocity(ChassisSpeeds chassisSpeeds) {
         return MetersPerSecond.of(
                 new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
                         .getNorm());
     }
 
-    public Command autoAlign(boolean isLeftBranch) {
+    private Command autoAlign() {
         Optional<AprilTagDetection> detectionOpt = getReefCamDetection();
 
         if (detectionOpt.isEmpty()) {
@@ -184,7 +191,8 @@ public class ReefAlignPPOTF {
         reefFaceTargetPose = reefTargetPoseOpt.get();
         Pose2d reefBranchPose =
                 reefFaceTargetPose
-                        .transformBy(isLeftBranch ? leftBranchTransform : rightBranchTransform)
+                        .transformBy(
+                                branch == Branch.LEFT ? leftBranchTransform : rightBranchTransform)
                         .transformBy(isRightCam ? rightTurnTransform : leftTurnTransform);
         reefTargetPublisher.set(reefBranchPose);
 
@@ -192,6 +200,7 @@ public class ReefAlignPPOTF {
         Pose2d drivetrainPose = state.Pose;
 
         Transform2d midPtTransform = new Transform2d(drivetrainPose, reefBranchPose);
+        midPtTransform.div(2);
 
         /*
         new Pose2d(
@@ -243,14 +252,12 @@ public class ReefAlignPPOTF {
                                                                         endState))),
                                 commandSwerveDrivetrain))
                 .until(
-                        () -> {
-                            return new Transform2d(
-                                                    commandSwerveDrivetrain.getState().Pose,
-                                                    reefBranchPose)
-                                            .getTranslation()
-                                            .getNorm()
-                                    < 0.01;
-                        })
+                        () -> new Transform2d(
+                                                commandSwerveDrivetrain.getState().Pose,
+                                                reefBranchPose)
+                                        .getTranslation()
+                                        .getNorm()
+                                < 0.01)
                 .andThen(
                         Commands.runOnce(
                                 () -> commandSwerveDrivetrain.setControl(stopReq),

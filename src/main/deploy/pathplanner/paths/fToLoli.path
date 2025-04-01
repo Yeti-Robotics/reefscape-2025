@@ -1,0 +1,66 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.214651639344262,
+        "y": 2.616444672131148
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.039856557377049,
+        "y": 2.005071721311474
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.5224385245901637,
+        "y": 2.1609118852459015
+      },
+      "prevControl": {
+        "x": 3.8480532786885258,
+        "y": 2.1129610655737703
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "lolliR"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "LollipopIntake",
+      "waypointRelativePos": 0.8399729912221395,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.97102193107918
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 29.32047587758076
+  },
+  "useDefaultConstraints": true
+}
