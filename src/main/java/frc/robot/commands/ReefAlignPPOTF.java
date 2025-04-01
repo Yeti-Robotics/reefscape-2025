@@ -2,19 +2,21 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.Waypoint;
+import com.pathplanner.lib.path.*;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.FieldConstants.Reef;
@@ -31,8 +33,10 @@ public class ReefAlignPPOTF {
     private final AprilTagSubsystem reefCam1;
     private final AprilTagSubsystem reefCam2;
 
-    private final SwerveRequest.FieldCentricFacingAngle swerveReq =
+    private static final SwerveRequest.FieldCentricFacingAngle swerveReq =
             new SwerveRequest.FieldCentricFacingAngle();
+    private static final SwerveRequest.ApplyRobotSpeeds robotSpeeds =
+            new SwerveRequest.ApplyRobotSpeeds();
     private final SwerveRequest.Idle stopReq = new SwerveRequest.Idle();
     private boolean isRightCam = false;
 
@@ -154,6 +158,12 @@ public class ReefAlignPPOTF {
         return autoAlign(false);
     }
 
+    private LinearVelocity getChassisVelocity(ChassisSpeeds chassisSpeeds) {
+        return MetersPerSecond.of(
+                new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
+                        .getNorm());
+    }
+
     public Command autoAlign(boolean isLeftBranch) {
         Optional<AprilTagDetection> detectionOpt = getReefCamDetection();
 
@@ -177,10 +187,11 @@ public class ReefAlignPPOTF {
                         .transformBy(isLeftBranch ? leftBranchTransform : rightBranchTransform)
                         .transformBy(isRightCam ? rightTurnTransform : leftTurnTransform);
         reefTargetPublisher.set(reefBranchPose);
-        Pose2d drivetrainPose = commandSwerveDrivetrain.getState().Pose;
 
-        Transform2d midPtTransform = new Transform2d(drivetrainPose, reefBranchPose);
-        midPtTransform.div(2);
+        SwerveDrivetrain.SwerveDriveState state = commandSwerveDrivetrain.getState();
+        Pose2d drivetrainPose = state.Pose;
+
+        Transform2d midPtTransform = new Transform2d(drivetrainPose, reefBranchPose).div(2);
 
         /*
         new Pose2d(
@@ -200,6 +211,7 @@ public class ReefAlignPPOTF {
                                 reefBranchPose.getTranslation().getX(),
                                 reefBranchPose.getTranslation().getY(),
                                 reefBranchPose.getRotation()));
+
         PathPlannerPath path =
                 new PathPlannerPath(
                         waypoints,
@@ -208,11 +220,28 @@ public class ReefAlignPPOTF {
                                 MetersPerSecondPerSecond.of(2),
                                 RadiansPerSecond.of(2 * Math.PI),
                                 RadiansPerSecondPerSecond.of(4 * Math.PI)),
-                        null,
+                        new IdealStartingState(
+                                getChassisVelocity(state.Speeds),
+                                commandSwerveDrivetrain.getRotation3d().toRotation2d()),
                         new GoalEndState(0.0, reefBranchPose.getRotation()));
         path.preventFlipping = true;
 
+        PathPlannerTrajectoryState endState = new PathPlannerTrajectoryState();
+        endState.pose = reefBranchPose;
+
         return AutoBuilder.followPath(path)
+                .andThen(
+                        Commands.run(
+                                () ->
+                                        commandSwerveDrivetrain.setControl(
+                                                robotSpeeds.withSpeeds(
+                                                        commandSwerveDrivetrain.driveController
+                                                                .calculateRobotRelativeSpeeds(
+                                                                        commandSwerveDrivetrain
+                                                                                .getState()
+                                                                                .Pose,
+                                                                        endState))),
+                                commandSwerveDrivetrain))
                 .andThen(
                         Commands.runOnce(
                                 () -> commandSwerveDrivetrain.setControl(stopReq),
