@@ -1,18 +1,17 @@
-package frc.robot.util.akit.device.impl;
+package frc.robot.util.akit.device.impl.talon;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import frc.robot.util.akit.device.inputs.TalonFXDeviceInputs;
+import frc.robot.util.akit.device.impl.DeviceBuilder;
 import frc.robot.util.akit.device.inputs.TalonFXDeviceInputsAutoLogged;
-import frc.robot.util.akit.device.log.DeviceLogger;
-import frc.robot.util.akit.device.log.DeviceLoggingRegistry;
-import frc.robot.util.akit.device.log.TalonFXDeviceLogger;
+import frc.robot.util.akit.device.impl.DeviceLogger;
 
-public class TalonFXMotor extends DeviceBuilder<TalonFX, TalonFXConfiguration, TalonFXDeviceInputs, TalonFXMotor> {
-    private TalonFXMotor(TalonFX motor) {
+public class TalonFXDevice
+        extends DeviceBuilder<TalonFX, TalonFXConfiguration, TalonFXDeviceInputs, TalonFXDevice> {
+    private TalonFXDevice(TalonFX motor) {
         super(motor);
     }
 
@@ -20,12 +19,12 @@ public class TalonFXMotor extends DeviceBuilder<TalonFX, TalonFXConfiguration, T
         return new TalonFXConfiguration();
     }
 
-    public static TalonFXMotor configure(int deviceID, String canBus) {
-        return new TalonFXMotor(new TalonFX(deviceID, canBus));
+    public static TalonFXDevice configure(int deviceID, String canBus) {
+        return new TalonFXDevice(new TalonFX(deviceID, canBus));
     }
 
     @Override
-    public TalonFXMotor syncConfigs() {
+    public TalonFXDevice syncConfigs() {
         getDevice().getConfigurator().apply(getConfig());
         return this;
     }
@@ -40,39 +39,40 @@ public class TalonFXMotor extends DeviceBuilder<TalonFX, TalonFXConfiguration, T
         return new TalonFXDeviceLogger(getDevice());
     }
 
-    public TalonFXMotor follow(TalonFX master) {
+    public TalonFXDevice follow(TalonFX master) {
         return followWithRequest(master.getDeviceID(), false);
     }
 
-    public TalonFXMotor oppose(TalonFX master) {
+    public TalonFXDevice oppose(TalonFX master) {
         return followWithRequest(master.getDeviceID(), true);
     }
 
-    public TalonFXMotor usingFusedCANcoder(CANcoder cancoder) {
+    public TalonFXDevice usingFusedCANcoder(CANcoder cancoder) {
         return usingCANcoder(cancoder, FeedbackSensorSourceValue.FusedCANcoder);
     }
 
-    public TalonFXMotor usingFusedCANcoder(int cancoderID) {
+    public TalonFXDevice usingFusedCANcoder(int cancoderID) {
         return usingCANcoder(cancoderID, FeedbackSensorSourceValue.FusedCANcoder);
     }
 
-    public TalonFXMotor usingCANcoder(CANcoder cancoder, FeedbackSensorSourceValue source) {
+    public TalonFXDevice usingCANcoder(CANcoder cancoder, FeedbackSensorSourceValue source) {
         return usingCANcoder(cancoder.getDeviceID(), source);
     }
 
-    public TalonFXMotor usingCANcoder(int cancoderID, FeedbackSensorSourceValue source) {
-        getConfig().Feedback.FeedbackSensorSource = source;
-        getConfig().Feedback.FeedbackRemoteSensorID = cancoderID;
+    public TalonFXDevice usingCANcoder(int cancoderID, FeedbackSensorSourceValue source) {
+        TalonFXConfiguration config = getConfig();
+        config.Feedback.FeedbackSensorSource = source;
+        config.Feedback.FeedbackRemoteSensorID = cancoderID;
         return this;
     }
 
-    private TalonFXMotor followWithRequest(int primaryDeviceID, boolean oppose) {
+    private TalonFXDevice followWithRequest(int primaryDeviceID, boolean oppose) {
         getDevice().setControl(new Follower(primaryDeviceID, oppose));
         return this;
     }
 
     @Override
-    protected TalonFXMotor getDeviceBuilderClass() {
+    protected TalonFXDevice getDeviceBuilderClass() {
         return this;
     }
 }

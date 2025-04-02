@@ -5,12 +5,12 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.coral.grabber.GrabberState;
-import frc.robot.util.akit.device.impl.TalonFXMotor;
+import frc.robot.util.akit.device.impl.talon.TalonFXDevice;
 
 public class GrabberIOTalonFX implements GrabberIO {
     private final Canandcolor clawSwitch = new Canandcolor(GrabberConfig.GRABBER_CANANDCOLOR);
     private final TalonFX grabberMotor =
-            TalonFXMotor.configure(GrabberConfig.CLAW_ID, Constants.RIO_BUS)
+            TalonFXDevice.configure(GrabberConfig.CLAW_ID, Constants.RIO_BUS)
                     .log("GrabberIO/GrabberMotor")
                     .using(GrabberConfig.coralMotorConfig)
                     .syncConfigs()

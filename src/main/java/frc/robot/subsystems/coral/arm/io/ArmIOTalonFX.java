@@ -6,14 +6,8 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.constants.Constants;
-import frc.robot.util.akit.LoggingUtils;
-import frc.robot.util.akit.device.impl.CANCoderDevice;
-import frc.robot.util.akit.device.impl.TalonFXMotor;
-import frc.robot.util.akit.device.inputs.CANCoderDeviceInputs;
-import frc.robot.util.akit.device.inputs.CANCoderDeviceInputsAutoLogged;
-import frc.robot.util.akit.device.inputs.TalonFXDeviceInputs;
-import frc.robot.util.akit.device.inputs.TalonFXDeviceInputsAutoLogged;
-import frc.robot.util.akit.device.log.DeviceLogger;
+import frc.robot.util.akit.device.impl.cancoder.CANCoderDevice;
+import frc.robot.util.akit.device.impl.talon.TalonFXDevice;
 import jakarta.inject.Singleton;
 
 @Singleton
@@ -28,19 +22,17 @@ public class ArmIOTalonFX implements ArmIO {
                     .getDevice();
 
     final TalonFX armMotor =
-            TalonFXMotor.configure(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS)
+            TalonFXDevice.configure(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS)
                     .log("ArmIO/Motor")
                     .using(ArmConfig.talonFXConfiguration)
                     .usingFusedCANcoder(armCancoder)
                     .syncConfigs()
                     .getDevice();
 
-
     private final StatusSignal<Angle> positionSignal = armMotor.getPosition();
 
     @Override
-    public void updateInputs(ArmInputs inputs) {
-    }
+    public void updateInputs(ArmInputs inputs) {}
 
     @Override
     public Angle getPosition() {

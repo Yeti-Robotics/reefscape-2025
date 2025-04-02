@@ -1,4 +1,4 @@
-package frc.robot.util.akit.device.log;
+package frc.robot.util.akit.device.impl.talon;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
@@ -6,7 +6,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.*;
-import frc.robot.util.akit.device.inputs.TalonFXDeviceInputs;
+import frc.robot.util.akit.device.impl.DeviceLogger;
 
 public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
     private final StatusSignal<Voltage> motorVoltage;

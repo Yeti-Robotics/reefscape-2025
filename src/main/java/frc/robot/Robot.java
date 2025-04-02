@@ -8,7 +8,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.util.akit.device.log.DeviceLoggingRegistry;
+import frc.robot.util.akit.device.impl.DeviceLoggingRegistry;
 import frc.robot.util.sim.PhysicsSim;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -71,24 +71,18 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void robotPeriodic() {
-        DeviceLoggingRegistry
-                .get()
-                .updateDeviceLogging();
+        DeviceLoggingRegistry.get().updateDeviceLogging();
 
         CommandScheduler.getInstance().run();
         robotContainer.updateMechanisms();
     }
 
-    /**
-     * This method is called once each time the robot enters Disabled mode.
-     */
+    /** This method is called once each time the robot enters Disabled mode. */
     @Override
-    public void disabledInit() {
-    }
+    public void disabledInit() {}
 
     @Override
-    public void disabledPeriodic() {
-    }
+    public void disabledPeriodic() {}
 
     /**
      * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
@@ -102,12 +96,9 @@ public class Robot extends LoggedRobot {
         }
     }
 
-    /**
-     * This method is called periodically during autonomous.
-     */
+    /** This method is called periodically during autonomous. */
     @Override
-    public void autonomousPeriodic() {
-    }
+    public void autonomousPeriodic() {}
 
     @Override
     public void teleopInit() {
@@ -116,39 +107,27 @@ public class Robot extends LoggedRobot {
         }
     }
 
-    /**
-     * This method is called periodically during operator control.
-     */
+    /** This method is called periodically during operator control. */
     @Override
-    public void teleopPeriodic() {
-    }
+    public void teleopPeriodic() {}
 
     @Override
-    public void teleopExit() {
-    }
+    public void teleopExit() {}
 
     @Override
     public void testInit() {
         CommandScheduler.getInstance().cancelAll();
     }
 
-    /**
-     * This method is called periodically during test mode.
-     */
+    /** This method is called periodically during test mode. */
     @Override
-    public void testPeriodic() {
-    }
+    public void testPeriodic() {}
 
-    /**
-     * This method is called once when the robot is first started up.
-     */
+    /** This method is called once when the robot is first started up. */
     @Override
-    public void simulationInit() {
-    }
+    public void simulationInit() {}
 
-    /**
-     * This method is called periodically whilst in simulation.
-     */
+    /** This method is called periodically whilst in simulation. */
     @Override
     public void simulationPeriodic() {
         PhysicsSim.getInstance().run();

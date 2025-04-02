@@ -1,10 +1,9 @@
-package frc.robot.util.akit.device.log;
-
-import frc.robot.util.akit.device.inputs.DeviceInputs;
-import org.littletonrobotics.junction.Logger;
+package frc.robot.util.akit.device.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.littletonrobotics.junction.Logger;
 
 public class DeviceLoggingRegistry {
     private static final DeviceLoggingRegistry INSTANCE = new DeviceLoggingRegistry();
@@ -17,7 +16,8 @@ public class DeviceLoggingRegistry {
         }
     }
 
-    public <T extends DeviceInputs> void addLoggerWithInputs(String key, DeviceLogger<T> logger, T inputs) {
+    public <T extends DeviceInputs> void addLoggerWithInputs(
+            String key, DeviceLogger<T> logger, T inputs) {
         loggers.put(key, new LoggingEntry<>(logger, inputs));
     }
 
