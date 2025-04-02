@@ -229,6 +229,7 @@ public class RobotContainer {
         gigaStation.button(8).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
         gigaStation.button(9).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
         gigaStation.button(10).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        gigaStation.button(3).onTrue(leds.runPattern(LEDPatterns.NICK_MODE));
         gigaStation
                 .button(15)
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
@@ -284,24 +285,35 @@ public class RobotContainer {
     }
 
     private void configureLEDTriggers() {
-        new Trigger(coralManipulator.grabber::hasCoral)
-                .and(DriverStation::isDisabled)
-                .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
-                .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
-        new Trigger(coralManipulator.elevator::getMagSwitch)
-                .and(DriverStation::isDisabled)
-                .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
-                .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
-        drivetrain
-                .zeroedWheels
-                .and(DriverStation::isDisabled)
-                .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
-                .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
-        new Trigger(() -> RobotController.getBatteryVoltage() > 12.5)
-                .and(DriverStation::isDisabled)
-                .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
-                .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
+        Trigger coralTrigger =
+                new Trigger(coralManipulator.grabber::hasCoral)
+                        .and(DriverStation::isDisabled)
+                        .whileTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
+        Trigger elevatorTrigger =
+                new Trigger(coralManipulator.elevator::getMagSwitch)
+                        .and(DriverStation::isDisabled)
+                        .whileTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
+        Trigger drivetrainTrigger =
+                drivetrain
+                        .zeroedWheels
+                        .and(DriverStation::isDisabled)
+                        .whileTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
+        Trigger batteryTrigger =
+                new Trigger(() -> RobotController.getBatteryVoltage() > 12.5)
+                        .and(DriverStation::isDisabled)
+                        .whileTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
+        if (coralTrigger.getAsBoolean()) {
+            leds.addProgress();
+        }
+        if (elevatorTrigger.getAsBoolean()) {
+            leds.addProgress();
+        }
     }
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
