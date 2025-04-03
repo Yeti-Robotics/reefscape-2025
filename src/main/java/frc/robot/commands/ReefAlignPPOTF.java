@@ -110,8 +110,10 @@ public class ReefAlignPPOTF {
 
             if (fiducial1IsOnReef && fiducial2IsOnReef) {
                 boolean fiducial1Closer =
-                        AprilTagDetectionHelpers.getDetectionDistance(fiducial1)
-                                < AprilTagDetectionHelpers.getDetectionDistance(fiducial2);
+                        AprilTagDetectionHelpers.getDetectionDistance(
+                                        fiducial1.getRobotToTargetPose())
+                                < AprilTagDetectionHelpers.getDetectionDistance(
+                                        fiducial2.getRobotToTargetPose());
 
                 if (!fiducial1Closer) {
                     isRightCam = true;

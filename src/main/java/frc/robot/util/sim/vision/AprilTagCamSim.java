@@ -56,9 +56,9 @@ public class AprilTagCamSim {
     public static List<Pose3d> publishSeenTags(AprilTagResults results) {
         List<Pose3d> seenTags = new ArrayList<>();
         var tags = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField).getTags();
-        for (int i = 0; i < results.getResults().size(); i++) {
+        for (int i = 0; i < results.results().size(); i++) {
             var seenTagIdsArr =
-                    results.getResults().stream()
+                    results.results().stream()
                             .map(AprilTagDetection::getFiducialID)
                             .toArray(Integer[]::new);
             seenTags.add(tags.get(seenTagIdsArr[i] - 1).pose);
