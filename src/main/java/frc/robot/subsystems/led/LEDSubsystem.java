@@ -15,11 +15,15 @@ import java.util.function.Supplier;
 public class LEDSubsystem extends SubsystemBase {
     public AddressableLED ledStrip;
     private final AddressableLEDBuffer ledBuffer;
+    private final AddressableLEDBufferView leftBufferView;
+    private final AddressableLEDBufferView rightBufferView;
     private double currentProgress = 0.0;
 
     public LEDSubsystem() {
         ledStrip = new AddressableLED(LEDConstants.LED_STRIP_PORT);
         ledBuffer = new AddressableLEDBuffer(LEDConstants.LED_COUNT);
+        leftBufferView = ledBuffer.createView(0, 35);
+        rightBufferView = ledBuffer.createView(36, 71);
         ledStrip.setLength(ledBuffer.getLength());
         ledStrip.setData(ledBuffer);
         ledStrip.start();
@@ -27,7 +31,7 @@ public class LEDSubsystem extends SubsystemBase {
         new Trigger(DriverStation::isAutonomousEnabled)
                 .onTrue(runPattern(LEDPatterns.AUTO_PATTERN));
         new Trigger(DriverStation::isTeleopEnabled)
-                .onTrue(runPattern(LEDPatterns.YETI_BLUE_SCROLLING));
+                .onTrue(runPattern(LEDPatterns.YETI_BLUE_RSL_BLINK));
         new Trigger(DriverStation::isDisabled)
                 .whileTrue(run(this::updateProgress).ignoringDisable(true));
     }
@@ -51,9 +55,12 @@ public class LEDSubsystem extends SubsystemBase {
     public void updateProgress() {
         if (DriverStation.isDisabled()) {
             LEDPattern updatedPattern =
-                    LEDPattern.solid(Color.kLimeGreen)
-                            .mask(LEDPattern.progressMaskLayer(() -> currentProgress).reversed());
-            run(() -> updatedPattern.applyTo(ledBuffer)).ignoringDisable(true).schedule();
+                    LEDPattern.solid(new Color(0, 0, 255))
+                            .mask(LEDPattern.progressMaskLayer(() -> currentProgress));
+            run(() -> updatedPattern.applyTo(leftBufferView))
+                    .andThen(() -> updatedPattern.applyTo(rightBufferView))
+                    .ignoringDisable(true)
+                    .schedule();
         }
     }
 
@@ -66,7 +73,10 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public Command runPattern(LEDPatterns pattern) {
-        return run(() -> pattern.pattern.applyTo(ledBuffer)).repeatedly().ignoringDisable(true);
+        return run(() -> pattern.pattern.applyTo(leftBufferView))
+                .andThen(() -> pattern.pattern.applyTo(rightBufferView))
+                .repeatedly()
+                .ignoringDisable(true);
     }
 
     public Command selectAnimationCommand(Supplier<CoralManipulatorState> getCMS) {
@@ -90,7 +100,7 @@ public class LEDSubsystem extends SubsystemBase {
                 CoralManipulatorState.STOWED,
                 runPattern(LEDPatterns.WHITE)
                         .withTimeout(2)
-                        .andThen(runPattern(LEDPatterns.YETI_BLUE_SCROLLING)));
+                        .andThen(runPattern(LEDPatterns.YETI_BLUE_RSL_BLINK)));
 
         animationCommands.put(
                 CoralManipulatorState.ALGAEHIGH, runPattern(LEDPatterns.ALGAE_COLOR_PATTERN));
