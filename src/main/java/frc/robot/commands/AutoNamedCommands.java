@@ -35,6 +35,11 @@ public class AutoNamedCommands {
                 "L4", coralManipulator.transitionTo(CoralManipulatorState.L4));
 
         NamedCommands.registerCommand(
+                "ClimbL4", coralManipulator.transitionTo(CoralManipulatorState.CLIMB_L4));
+        NamedCommands.registerCommand(
+                "ScoreClimb4", coralManipulator.transitionTo(CoralManipulatorState.SCORE_CLIMB_L4));
+
+        NamedCommands.registerCommand(
                 "Rollout", coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
 
         NamedCommands.registerCommand(

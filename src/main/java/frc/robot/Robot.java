@@ -5,6 +5,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -42,6 +43,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Build Date", BuildConstants.BUILD_DATE);
         SmartDashboard.putString("GIT SHA", BuildConstants.GIT_SHA);
         SmartDashboard.putString("Git Branch", BuildConstants.GIT_BRANCH);
+        PathfindingCommand.warmupCommand().schedule();
     }
 
     /**

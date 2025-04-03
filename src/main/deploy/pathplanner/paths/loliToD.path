@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.201,
-        "y": 5.5
+        "x": 1.678,
+        "y": 2.209
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.710589821595651,
-        "y": 5.70095513993649
+        "x": 2.8020170454545457,
+        "y": 1.935951704545455
       },
       "isLocked": false,
-      "linkedName": "lineLeft"
+      "linkedName": "lolliR"
     },
     {
       "anchor": {
-        "x": 5.16528409090909,
-        "y": 5.685269886363637
+        "x": 3.609715909090909,
+        "y": 2.5342471590909086
       },
       "prevControl": {
-        "x": 5.89477836571825,
-        "y": 5.700680191707147
+        "x": 3.121107954545455,
+        "y": 1.9160085227272725
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "jReef"
+      "linkedName": "dReef"
     }
   ],
   "rotationTargets": [],
@@ -34,23 +34,12 @@
   "eventMarkers": [
     {
       "name": "Stow",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.15748031496062978,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "Stow"
-        }
-      }
-    },
-    {
-      "name": "L4",
-      "waypointRelativePos": 0.7,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "L4"
         }
       }
     }
@@ -71,7 +60,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }
