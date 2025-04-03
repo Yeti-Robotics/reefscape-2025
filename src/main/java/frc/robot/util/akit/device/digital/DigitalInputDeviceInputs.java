@@ -1,6 +1,6 @@
-package frc.robot.util.akit.device.impl.digital;
+package frc.robot.util.akit.device.digital;
 
-import frc.robot.util.akit.device.impl.DeviceInputs;
+import frc.robot.util.akit.device.DeviceInputs;
 import org.littletonrobotics.junction.AutoLog;
 
 @AutoLog

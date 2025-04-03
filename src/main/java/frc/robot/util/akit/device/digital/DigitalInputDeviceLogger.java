@@ -1,7 +1,7 @@
-package frc.robot.util.akit.device.impl.digital;
+package frc.robot.util.akit.device.digital;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc.robot.util.akit.device.impl.DeviceLogger;
+import frc.robot.util.akit.device.DeviceLogger;
 
 public class DigitalInputDeviceLogger implements DeviceLogger<DigitalInputDeviceInputs> {
     private final DigitalInput input;

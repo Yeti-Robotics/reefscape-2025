@@ -1,7 +1,7 @@
-package frc.robot.util.akit.device.impl.talon;
+package frc.robot.util.akit.device.talon;
 
 import edu.wpi.first.units.measure.*;
-import frc.robot.util.akit.device.inputs.PhysicalDeviceInputs;
+import frc.robot.util.akit.device.PhysicalDeviceInputs;
 import org.littletonrobotics.junction.AutoLog;
 
 @AutoLog

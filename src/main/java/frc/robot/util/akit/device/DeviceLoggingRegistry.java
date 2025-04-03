@@ -1,4 +1,4 @@
-package frc.robot.util.akit.device.impl;
+package frc.robot.util.akit.device;
 
 import java.util.HashMap;
 import java.util.Map;

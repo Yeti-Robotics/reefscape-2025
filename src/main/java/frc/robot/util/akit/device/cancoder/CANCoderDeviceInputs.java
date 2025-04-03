@@ -1,7 +1,7 @@
-package frc.robot.util.akit.device.impl.cancoder;
+package frc.robot.util.akit.device.cancoder;
 
 import edu.wpi.first.units.measure.Angle;
-import frc.robot.util.akit.device.inputs.PhysicalDeviceInputs;
+import frc.robot.util.akit.device.PhysicalDeviceInputs;
 import org.littletonrobotics.junction.AutoLog;
 
 @AutoLog

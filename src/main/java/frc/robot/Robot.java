@@ -8,7 +8,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.util.akit.device.impl.DeviceLoggingRegistry;
+import frc.robot.util.akit.device.DeviceLoggingRegistry;
 import frc.robot.util.sim.PhysicsSim;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;

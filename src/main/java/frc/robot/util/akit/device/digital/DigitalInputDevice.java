@@ -1,11 +1,11 @@
-package frc.robot.util.akit.device.impl.digital;
+package frc.robot.util.akit.device.digital;
 
 import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc.robot.util.akit.device.impl.DeviceBuilder;
+import frc.robot.util.akit.device.DeviceBuilder;
 import frc.robot.util.akit.device.inputs.DigitalInputDeviceInputsAutoLogged;
-import frc.robot.util.akit.device.impl.DeviceLogger;
+import frc.robot.util.akit.device.DeviceLogger;
 
 public class DigitalInputDevice
         extends DeviceBuilder<

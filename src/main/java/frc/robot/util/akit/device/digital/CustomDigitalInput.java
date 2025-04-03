@@ -1,4 +1,4 @@
-package frc.robot.util.akit.device.impl.digital;
+package frc.robot.util.akit.device.digital;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
