@@ -14,8 +14,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -72,12 +70,6 @@ public class ReefAlignPPOTF {
         swerveReq.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
         getBranchPoseFromTagID(18);
-    }
-
-    public static StructPublisher<Pose2d> pose2dStructPublisher(String key) {
-        return NetworkTableInstance.getDefault()
-                .getStructTopic("ReefAlignCmd/" + key, Pose2d.struct)
-                .publish();
     }
 
     public boolean isRedReef(int id) {
@@ -166,8 +158,6 @@ public class ReefAlignPPOTF {
         return Optional.of(reefTargetPose);
     }
 
-    StructPublisher<Pose2d> reefTargetPublisher = pose2dStructPublisher("ReefTarget");
-
     private LinearVelocity getChassisVelocity(ChassisSpeeds chassisSpeeds) {
         return MetersPerSecond.of(
                 new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
@@ -197,15 +187,14 @@ public class ReefAlignPPOTF {
                         .transformBy(
                                 branch == Branch.LEFT ? leftBranchTransform : rightBranchTransform)
                         .transformBy(isRightCam ? rightTurnTransform : leftTurnTransform);
-        reefTargetPublisher.set(reefBranchPose);
+
+        DogLog.log("ReefAlignCmd/ReefTarget", reefBranchPose);
 
         SwerveDrivetrain.SwerveDriveState state = commandSwerveDrivetrain.getState();
         Pose2d drivetrainPose = state.Pose;
 
-        Transform2d midPtTransform = new Transform2d(drivetrainPose, reefBranchPose);
-        midPtTransform.div(2);
-
         /*
+        old midpt pose
         new Pose2d(
                                 reefBranchPose.getTranslation().getX() + 0.2,
                                 reefBranchPose.getTranslation().getY(),
@@ -213,16 +202,7 @@ public class ReefAlignPPOTF {
          */
 
         List<Waypoint> waypoints =
-                PathPlannerPath.waypointsFromPoses(
-                        new Pose2d(
-                                drivetrainPose.getX(),
-                                drivetrainPose.getY(),
-                                drivetrainPose.getRotation()),
-                        drivetrainPose.transformBy(midPtTransform),
-                        new Pose2d(
-                                reefBranchPose.getTranslation().getX(),
-                                reefBranchPose.getTranslation().getY(),
-                                reefBranchPose.getRotation()));
+                PathPlannerPath.waypointsFromPoses(drivetrainPose, reefBranchPose);
 
         PathPlannerPath path =
                 new PathPlannerPath(
