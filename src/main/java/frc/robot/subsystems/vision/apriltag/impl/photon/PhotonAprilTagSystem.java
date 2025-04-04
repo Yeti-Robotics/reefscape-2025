@@ -178,7 +178,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
                         target.bestCameraToTarget, aprilTagPose, cameraTransform.inverse());
 
         Pose3d targetPose =
-                new Pose3d().transformBy(cameraTransform).transformBy(target.bestCameraToTarget);
+                Pose3d.kZero.transformBy(cameraTransform).transformBy(target.bestCameraToTarget);
 
         return Optional.of(
                 new AprilTagDetection(
