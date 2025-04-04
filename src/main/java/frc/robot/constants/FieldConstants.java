@@ -60,19 +60,19 @@ public class FieldConstants {
 
         static {
             // Initialize faces
-            blueCenterFaces[0] = TagConstants.Welded.TAG_18_POSE.toPose2d();
-            blueCenterFaces[1] = TagConstants.Welded.TAG_19_POSE.toPose2d();
-            blueCenterFaces[2] = TagConstants.Welded.TAG_20_POSE.toPose2d();
-            blueCenterFaces[3] = TagConstants.Welded.TAG_21_POSE.toPose2d();
-            blueCenterFaces[4] = TagConstants.Welded.TAG_22_POSE.toPose2d();
-            blueCenterFaces[5] = TagConstants.Welded.TAG_17_POSE.toPose2d();
+            blueCenterFaces[0] = TagConstants.getTagPose(18).get().toPose2d();
+            blueCenterFaces[1] = TagConstants.getTagPose(19).get().toPose2d();
+            blueCenterFaces[2] = TagConstants.getTagPose(20).get().toPose2d();
+            blueCenterFaces[3] = TagConstants.getTagPose(21).get().toPose2d();
+            blueCenterFaces[4] = TagConstants.getTagPose(22).get().toPose2d();
+            blueCenterFaces[5] = TagConstants.getTagPose(17).get().toPose2d();
 
-            redCenterFaces[0] = TagConstants.Welded.TAG_7_POSE.toPose2d();
-            redCenterFaces[1] = TagConstants.Welded.TAG_8_POSE.toPose2d();
-            redCenterFaces[2] = TagConstants.Welded.TAG_9_POSE.toPose2d();
-            redCenterFaces[3] = TagConstants.Welded.TAG_10_POSE.toPose2d();
-            redCenterFaces[4] = TagConstants.Welded.TAG_11_POSE.toPose2d();
-            redCenterFaces[5] = TagConstants.Welded.TAG_6_POSE.toPose2d();
+            redCenterFaces[0] = TagConstants.getTagPose(7).get().toPose2d();
+            redCenterFaces[1] = TagConstants.getTagPose(8).get().toPose2d();
+            redCenterFaces[2] = TagConstants.getTagPose(9).get().toPose2d();
+            redCenterFaces[3] = TagConstants.getTagPose(10).get().toPose2d();
+            redCenterFaces[4] = TagConstants.getTagPose(11).get().toPose2d();
+            redCenterFaces[5] = TagConstants.getTagPose(6).get().toPose2d();
         }
     }
 }

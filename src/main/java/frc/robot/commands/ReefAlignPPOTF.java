@@ -72,7 +72,6 @@ public class ReefAlignPPOTF {
         getBranchPoseFromTagID(18);
     }
 
-
     public boolean isRedReef(int id) {
         return id > 5 && id < 12;
     }
@@ -145,8 +144,6 @@ public class ReefAlignPPOTF {
         if (branchPoseIndex > 5) {
             return Optional.empty();
         }
-
-
 
         if (branchPoseIndex == -1) {
             branchPoseIndex = reefTargetFaces.length - 1;

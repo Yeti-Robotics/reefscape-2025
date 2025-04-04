@@ -8,6 +8,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.FieldConstants;
+import frc.robot.constants.TagConstants;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.apriltag.*;
 import frc.robot.subsystems.vision.util.AprilTagDetectionHelpers;
@@ -167,7 +168,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         if (target == null || target.getPoseAmbiguity() > maxAmbiguity) return Optional.empty();
 
         Optional<Pose3d> optAprilTagPose =
-                FieldConstants.APRIL_TAG_FIELD_LAYOUT.getTagPose(target.fiducialId);
+                TagConstants.getTagPose(target.fiducialId);
 
         if (optAprilTagPose.isEmpty()) {
             return Optional.empty();
