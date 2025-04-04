@@ -1,6 +1,5 @@
 package frc.robot.subsystems.coral.wrist;
 
-import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -40,7 +39,6 @@ public class WristSubsystem
             PhysicsSim.getInstance().addTalonFX(wristMotor, wristEncoder);
         }
         wristMotor.setPosition(WristPositions.SAFE.getAngle());
-        BaseStatusSignal.setUpdateFrequencyForAll(50, wristPosition, targetWristPosition);
     }
 
     public Command moveWristHorizontal() {

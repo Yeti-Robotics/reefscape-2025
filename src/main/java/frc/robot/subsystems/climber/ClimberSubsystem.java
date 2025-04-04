@@ -3,7 +3,6 @@ package frc.robot.subsystems.climber;
 import static frc.robot.subsystems.climber.ClimberConfig.*;
 
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,7 +12,6 @@ import frc.robot.constants.Constants;
 @Logged
 public class ClimberSubsystem extends SubsystemBase {
     private final TalonFX climber;
-    private final CANcoder cancoder;
     final MotionMagicTorqueCurrentFOC magicRequest;
 
     public final double climbSpeed = 0.75;
@@ -21,11 +19,9 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public ClimberSubsystem() {
         climber = new TalonFX(climberId, Constants.RIO_BUS);
-        cancoder = new CANcoder(canCoderId, Constants.RIO_BUS);
         magicRequest = new MotionMagicTorqueCurrentFOC(0);
 
         climber.getConfigurator().apply(climberTalonFXConfigs);
-        cancoder.getConfigurator().apply(cancoderConfiguration);
     }
 
     private void setClimberSpeed(double speed) {
