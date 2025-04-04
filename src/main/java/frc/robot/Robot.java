@@ -5,6 +5,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -16,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.util.Elastic;
 import frc.robot.util.sim.PhysicsSim;
-import org.littletonrobotics.frc2025.BuildConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -43,6 +43,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putString("Build Date", BuildConstants.BUILD_DATE);
         SmartDashboard.putString("GIT SHA", BuildConstants.GIT_SHA);
         SmartDashboard.putString("Git Branch", BuildConstants.GIT_BRANCH);
+        PathfindingCommand.warmupCommand().schedule();
     }
 
     /**
@@ -59,7 +60,6 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
         robotContainer.updateMechanisms();
         robotContainer.updateVision();
-        //  robotContainer.updateVisionSim();
     }
 
     /** This method is called once each time the robot enters Disabled mode. */
@@ -125,6 +125,7 @@ public class Robot extends TimedRobot {
     /** This method is called periodically whilst in simulation. */
     @Override
     public void simulationPeriodic() {
+        robotContainer.updateVisionSim();
         PhysicsSim.getInstance().run();
     }
 }

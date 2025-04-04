@@ -11,6 +11,7 @@ import frc.robot.subsystems.vision.apriltag.AprilTagResults;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.util.LimelightHelpers;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,9 +73,14 @@ public class LimelightAprilTagSystem extends SubsystemBase implements AprilTagSu
     }
 
     @Override
-    public Optional<AprilTagPose> getEstimatedPose() {
-        return Optional.ofNullable(poseEstimate)
-                .map(e -> new AprilTagPose(e.pose, e.tagCount, e.timestampSeconds));
+    public List<AprilTagPose> getEstimatedPose() {
+        return poseEstimate == null
+                ? Collections.emptyList()
+                : Collections.singletonList(
+                        new AprilTagPose(
+                                poseEstimate.pose,
+                                poseEstimate.tagCount,
+                                poseEstimate.timestampSeconds));
     }
 
     @Override

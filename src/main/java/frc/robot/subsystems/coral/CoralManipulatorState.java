@@ -23,11 +23,19 @@ public enum CoralManipulatorState {
     SCORE_L3(
             ArmPosition.SCORE_L3, ElevatorPosition.SCORE_L3, GrabberState.OFF, WristPositions.SAFE),
     L4(ArmPosition.POS_L4, ElevatorPosition.POS_L4, GrabberState.OFF, WristPositions.SAFE),
+    CLIMB_L4(ArmPosition.CLIMB_L4, ElevatorPosition.POS_L4, GrabberState.OFF, WristPositions.SAFE),
     SCORE_L4(
             ArmPosition.SCORE_L4, ElevatorPosition.SCORE_L4, GrabberState.OFF, WristPositions.SAFE),
+    SCORE_CLIMB_L4(
+            ArmPosition.SCORE_CLIMB_L4,
+            ElevatorPosition.POS_L4,
+            GrabberState.OFF,
+            WristPositions.SAFE),
     HP_INTAKE(ArmPosition.HP, ElevatorPosition.BOTTOM, GrabberState.ROLL_IN, WristPositions.UNSAFE),
     STOWED(ArmPosition.UP, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.SAFE),
     CLIMB(ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.SAFE),
+    LOLLIPOP(
+            ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.ROLL_IN, WristPositions.SAFE),
     ALGAEHIGH(
             ArmPosition.POS_L3,
             ElevatorPosition.POS_L3,

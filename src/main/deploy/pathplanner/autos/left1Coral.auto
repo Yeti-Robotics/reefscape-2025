@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Stow"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "lineJ"
@@ -19,13 +13,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Score4"
+            "name": "ReefAlign"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Stow"
+            "name": "Score4"
           }
         }
       ]

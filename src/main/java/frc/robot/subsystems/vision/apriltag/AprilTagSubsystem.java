@@ -5,7 +5,7 @@ import java.util.*;
 public interface AprilTagSubsystem {
     Optional<AprilTagResults> getResults();
 
-    Optional<AprilTagPose> getEstimatedPose();
+    List<AprilTagPose> getEstimatedPose();
 
     Optional<AprilTagDetection> getBestDetection();
 
@@ -13,7 +13,7 @@ public interface AprilTagSubsystem {
         Optional<AprilTagResults> results = getResults();
 
         if (results.isPresent()) {
-            List<AprilTagDetection> detections = results.get().getResults();
+            List<AprilTagDetection> detections = results.get().results();
 
             for (AprilTagDetection detection : detections) {
                 if (detection.getFiducialID() == fiducialId) {
@@ -31,9 +31,9 @@ public interface AprilTagSubsystem {
         if (optResults.isEmpty()) return Collections.emptyList();
 
         AprilTagResults results = optResults.get();
-        List<AprilTagDetection> detections = new ArrayList<>(results.getResults().size());
+        List<AprilTagDetection> detections = new ArrayList<>(results.results().size());
 
-        for (AprilTagDetection tag : results.getResults()) {
+        for (AprilTagDetection tag : results.results()) {
             for (int id : ids) {
                 if (id == tag.getFiducialID()) {
                     detections.add(tag);

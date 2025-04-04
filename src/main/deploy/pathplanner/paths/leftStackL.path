@@ -12,16 +12,16 @@
         "y": 5.297879555704838
       },
       "isLocked": false,
-      "linkedName": "leftStackFront"
+      "linkedName": "lolliL"
     },
     {
       "anchor": {
-        "x": 3.475,
-        "y": 4.93
+        "x": 3.6496022727272726,
+        "y": 5.565610795454545
       },
       "prevControl": {
-        "x": 2.287924373377661,
-        "y": 4.946257757244506
+        "x": 2.4625266461049335,
+        "y": 5.581868552699052
       },
       "nextControl": null,
       "isLocked": false,
@@ -65,7 +65,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -150.0
+    "rotation": 29.999999999999996
   },
   "reversed": false,
   "folder": null,
