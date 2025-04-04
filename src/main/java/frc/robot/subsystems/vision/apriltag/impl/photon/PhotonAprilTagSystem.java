@@ -71,6 +71,20 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         double closestDistance = Double.POSITIVE_INFINITY;
         // replace this with a counter-controlled loop if needed
         for (PhotonPipelineResult pipelineResult : results) {
+            boolean skipResult = false;
+            if (pipelineResult.hasTargets()) {
+                for (var target : pipelineResult.targets) {
+                    if (AprilTagDetectionHelpers.getDetectionDistance(
+                                    target.getBestCameraToTarget())
+                            > 5) {
+                        skipResult = true;
+                        break;
+                    }
+                }
+            }
+            if (skipResult) {
+                continue;
+            }
             Optional<EstimatedRobotPose> estimatedRobotPoseOpt =
                     photonPoseEstimator.update(pipelineResult);
             double timestamp = pipelineResult.getTimestampSeconds();

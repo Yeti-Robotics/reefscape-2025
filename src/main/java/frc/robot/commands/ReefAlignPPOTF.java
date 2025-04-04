@@ -7,7 +7,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.*;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
-import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -40,9 +39,9 @@ public class ReefAlignPPOTF {
     private boolean isRightCam = false;
 
     private static final Transform2d leftBranchTransform =
-            new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(-8), Rotation2d.kZero);
+            new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(-7.5), Rotation2d.kZero);
     private static final Transform2d rightBranchTransform =
-            new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(8), Rotation2d.kZero);
+            new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(5.5), Rotation2d.kZero);
     private static final Transform2d rightTurnTransform =
             new Transform2d(0, 0, Rotation2d.kCCW_90deg);
     private static final Transform2d leftTurnTransform =
@@ -129,9 +128,9 @@ public class ReefAlignPPOTF {
     }
 
     public Optional<Pose2d> getBranchPoseFromTagID(int id) {
-        DogLog.log("ReefAlignCmd/TagID", id);
-        DogLog.log("ReefAlignCmd/isRedReef", isRedReef(id));
-        DogLog.log("ReefAlignCmd/isBlueReef", isBlueReef(id));
+        //        DogLog.log("ReefAlignCmd/TagID", id);
+        //        DogLog.log("ReefAlignCmd/isRedReef", isRedReef(id));
+        //        DogLog.log("ReefAlignCmd/isBlueReef", isBlueReef(id));
         boolean isRedAllianceReef = isRedReef(id);
 
         if (!isRedAllianceReef && !isBlueReef(id)) {
@@ -188,7 +187,7 @@ public class ReefAlignPPOTF {
                                 branch == Branch.LEFT ? leftBranchTransform : rightBranchTransform)
                         .transformBy(isRightCam ? rightTurnTransform : leftTurnTransform);
 
-        DogLog.log("ReefAlignCmd/ReefTarget", reefBranchPose);
+        //   DogLog.log("ReefAlignCmd/ReefTarget", reefBranchPose);
 
         SwerveDrivetrain.SwerveDriveState state = commandSwerveDrivetrain.getState();
         Pose2d drivetrainPose = state.Pose;
@@ -249,6 +248,6 @@ public class ReefAlignPPOTF {
     }
 
     public Command reefAlign() {
-        return Commands.defer(this::autoAlign, Set.of(commandSwerveDrivetrain));
+        return Commands.defer(this::autoAlign, Set.of(commandSwerveDrivetrain)).withTimeout(2);
     }
 }

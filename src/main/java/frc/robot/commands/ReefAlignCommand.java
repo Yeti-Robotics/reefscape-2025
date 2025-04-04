@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -136,9 +135,9 @@ public class ReefAlignCommand extends Command {
     }
 
     public Optional<Pose2d> getBranchPoseFromTagID(int id) {
-        DogLog.log("ReefAlignCmd/TagID", id);
-        DogLog.log("ReefAlignCmd/isRedReef", isRedReef(id));
-        DogLog.log("ReefAlignCmd/isBlueReef", isBlueReef(id));
+        //        DogLog.log("ReefAlignCmd/TagID", id);
+        //        DogLog.log("ReefAlignCmd/isRedReef", isRedReef(id));
+        //        DogLog.log("ReefAlignCmd/isBlueReef", isBlueReef(id));
         boolean isRedAllianceReef = isRedReef(id);
 
         if (!isRedAllianceReef && !isBlueReef(id)) {
@@ -178,7 +177,7 @@ public class ReefAlignCommand extends Command {
         isFinished = false;
         commandCount++;
 
-        DogLog.log("ReefAlignCmd/CommandCount", commandCount);
+        //  DogLog.log("ReefAlignCmd/CommandCount", commandCount);
 
         Optional<AprilTagDetection> detectionOpt = getReefCamDetection();
 
@@ -201,7 +200,7 @@ public class ReefAlignCommand extends Command {
 
     @Override
     public void execute() {
-        DogLog.log("ReefAlignCmd/TargetPoseNull", reefFaceTargetPose == null);
+        //   DogLog.log("ReefAlignCmd/TargetPoseNull", reefFaceTargetPose == null);
 
         if (isFinished) {
             return;
@@ -217,7 +216,7 @@ public class ReefAlignCommand extends Command {
         reefTargetPublisher.set(reefBranchPose);
 
         Transform2d targetTransform = new Transform2d(drivetrainPose, reefBranchPose);
-        DogLog.log("ReefAlignCmd/TargetTransform", targetTransform);
+        //   DogLog.log("ReefAlignCmd/TargetTransform", targetTransform);
 
         double veloX =
                 movementXPIDController.calculate(drivetrainPose.getX(), reefBranchPose.getX());
@@ -227,13 +226,13 @@ public class ReefAlignCommand extends Command {
 
         double veloXFeed = feedforward * Math.signum(veloX) * 0.5;
         double veloYFeed = feedforward * Math.signum(veloY) * 0.5;
-
-        DogLog.log("ReefAlignCmd/XVelocity", veloX);
-        DogLog.log("ReefAlignCmd/YVelocity", veloY);
-        DogLog.log("ReefAlignCmd/XVelocityFeed", veloXFeed);
-        DogLog.log("ReefAlignCmd/YVelocityFeed", veloYFeed);
-        DogLog.log("ReefAlignCmd/XError", movementXPIDController.getError());
-        DogLog.log("ReefAlignCmd/YError", movementYPIDController.getError());
+        //
+        //        DogLog.log("ReefAlignCmd/XVelocity", veloX);
+        //        DogLog.log("ReefAlignCmd/YVelocity", veloY);
+        //        DogLog.log("ReefAlignCmd/XVelocityFeed", veloXFeed);
+        //        DogLog.log("ReefAlignCmd/YVelocityFeed", veloYFeed);
+        //        DogLog.log("ReefAlignCmd/XError", movementXPIDController.getError());
+        //        DogLog.log("ReefAlignCmd/YError", movementYPIDController.getError());
 
         veloX = MathUtil.clamp(veloX, -3, 3);
         veloY = MathUtil.clamp(veloY, -3, 3);

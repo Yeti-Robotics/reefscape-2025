@@ -317,7 +317,7 @@ public class RobotContainer {
         PathPlannerAuto auto;
 
         var cmd =
-                lineF.isEmpty() || fToLollipop.isEmpty()
+                lineF.isEmpty() || fToLollipop.isEmpty() || lollipopToD.isEmpty()
                         ? Commands.none()
                         : Commands.sequence(
                                 AutoBuilder.followPath(lineF.get()),
@@ -326,19 +326,33 @@ public class RobotContainer {
                                 coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
                                 coralManipulator
                                         .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5),
-                                AutoBuilder.followPath(fToLollipop.get())
-                                        .until(coralManipulator.grabber::hasCoral),
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5),
-                                AutoBuilder.followPath(lollipopToD.get()),
-                                reefAlignPPOTF.reefAlign(),
-                                coralManipulator.transitionTo(CoralManipulatorState.CLIMB_L4),
-                                coralManipulator.transitionTo(CoralManipulatorState.SCORE_CLIMB_L4),
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5));
+                                        .withTimeout(0.5)
+                                        .andThen(
+                                                Commands.sequence(
+                                                                AutoBuilder.followPath(
+                                                                        fToLollipop.get()),
+                                                                coralManipulator
+                                                                        .transitionTo(
+                                                                                CoralManipulatorState
+                                                                                        .STOWED)
+                                                                        .withTimeout(0.5),
+                                                                AutoBuilder.followPath(
+                                                                        lollipopToD.get()),
+                                                                reefAlignPPOTF.reefAlign(),
+                                                                coralManipulator.transitionTo(
+                                                                        CoralManipulatorState
+                                                                                .CLIMB_L4),
+                                                                coralManipulator.transitionTo(
+                                                                        CoralManipulatorState
+                                                                                .SCORE_CLIMB_L4),
+                                                                coralManipulator
+                                                                        .transitionTo(
+                                                                                CoralManipulatorState
+                                                                                        .STOWED)
+                                                                        .withTimeout(0.5))
+                                                        .onlyIf(
+                                                                coralManipulator.grabber
+                                                                        ::doesNotHaveCoral)));
         auto = new PathPlannerAuto(cmd);
         return auto;
     }
@@ -362,23 +376,38 @@ public class RobotContainer {
                 () -> new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(1, 0, 0)));
     }
 
+    public Command mid1Pc() {
+        Optional<PathPlannerPath> lineG = PathPlannerUtils.loadPathByName("lineG");
+        return lineG.isEmpty()
+                ? Commands.none()
+                : AutoBuilder.followPath(lineG.get())
+                        .andThen(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT))
+                        .andThen(reefAlignPPOTF.reefAlign())
+                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.L4))
+                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
+                        .andThen(
+                                coralManipulator
+                                        .transitionTo(CoralManipulatorState.STOWED)
+                                        .withTimeout(0.5));
+    }
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        Command selectedAuto = null;
-        if (gigaStation.getHID().getRawButton(19)) {
-            selectedAuto = driveForward();
-            SmartDashboard.putString("Selected auto", "driveForward");
-        } else if (gigaStation.getHID().getRawButton(20)) {
-            selectedAuto = right2PcLolli();
-            SmartDashboard.putString("Selected auto", "right2PcLolli");
-        } else if (gigaStation.getHID().getRawButton(21)) {
-            selectedAuto = left1Pc();
-            SmartDashboard.putString("Selected auto", "left1Pc");
-        }
+        Command selectedAuto = right2PcLolli();
+        //        if (gigaStation.getHID().getRawButton(19)) {
+        //            selectedAuto = driveForward();
+        //            SmartDashboard.putString("Selected auto", "driveForward");
+        //        } else if (gigaStation.getHID().getRawButton(20)) {
+        //            selectedAuto = right2PcLolli();
+        //            SmartDashboard.putString("Selected auto", "right2PcLolli");
+        //        } else if (gigaStation.getHID().getRawButton(21)) {
+        //            selectedAuto = left1Pc();
+        //            SmartDashboard.putString("Selected auto", "left1Pc");
+        //        }
         if (selectedAuto == null) {
             return autoChooser.getSelected();
         } else {
