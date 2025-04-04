@@ -63,10 +63,9 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
             return;
         }
 
-        double latestTimestamp = -1;
-
         poseEstimates.clear();
 
+        double latestTimestamp = -1;
         PhotonPipelineResult latestResult = null;
         PhotonTrackedTarget closestTarget = null;
         double closestDistance = Double.POSITIVE_INFINITY;

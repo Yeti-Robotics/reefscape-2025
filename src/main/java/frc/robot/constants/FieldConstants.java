@@ -60,87 +60,19 @@ public class FieldConstants {
 
         static {
             // Initialize faces
-            blueCenterFaces[0] = APRIL_TAG_FIELD_LAYOUT.getTagPose(18).get().toPose2d();
-            blueCenterFaces[1] = APRIL_TAG_FIELD_LAYOUT.getTagPose(19).get().toPose2d();
-            blueCenterFaces[2] = APRIL_TAG_FIELD_LAYOUT.getTagPose(20).get().toPose2d();
-            blueCenterFaces[3] = APRIL_TAG_FIELD_LAYOUT.getTagPose(21).get().toPose2d();
-            blueCenterFaces[4] = APRIL_TAG_FIELD_LAYOUT.getTagPose(22).get().toPose2d();
-            blueCenterFaces[5] = APRIL_TAG_FIELD_LAYOUT.getTagPose(17).get().toPose2d();
+            blueCenterFaces[0] = TagConstants.Welded.TAG_18_POSE.toPose2d();
+            blueCenterFaces[1] = TagConstants.Welded.TAG_19_POSE.toPose2d();
+            blueCenterFaces[2] = TagConstants.Welded.TAG_20_POSE.toPose2d();
+            blueCenterFaces[3] = TagConstants.Welded.TAG_21_POSE.toPose2d();
+            blueCenterFaces[4] = TagConstants.Welded.TAG_22_POSE.toPose2d();
+            blueCenterFaces[5] = TagConstants.Welded.TAG_17_POSE.toPose2d();
 
-            redCenterFaces[0] = APRIL_TAG_FIELD_LAYOUT.getTagPose(7).get().toPose2d();
-            redCenterFaces[1] = APRIL_TAG_FIELD_LAYOUT.getTagPose(8).get().toPose2d();
-            redCenterFaces[2] = APRIL_TAG_FIELD_LAYOUT.getTagPose(9).get().toPose2d();
-            redCenterFaces[3] = APRIL_TAG_FIELD_LAYOUT.getTagPose(10).get().toPose2d();
-            redCenterFaces[4] = APRIL_TAG_FIELD_LAYOUT.getTagPose(11).get().toPose2d();
-            redCenterFaces[5] = APRIL_TAG_FIELD_LAYOUT.getTagPose(6).get().toPose2d();
-
-            // Initialize branch positions
-            for (int face = 0; face < 6; face++) {
-                Map<ReefLevel, Pose3d> fillRight = new HashMap<>();
-                Map<ReefLevel, Pose3d> fillLeft = new HashMap<>();
-                Map<ReefLevel, Pose2d> fillRight2d = new HashMap<>();
-                Map<ReefLevel, Pose2d> fillLeft2d = new HashMap<>();
-                for (var level : ReefLevel.values()) {
-                    Pose2d poseDirection =
-                            new Pose2d(center, Rotation2d.fromDegrees(180 - (60 * face)));
-                    double adjustX = Units.inchesToMeters(30.738);
-                    double adjustY = Units.inchesToMeters(6.469);
-
-                    var rightBranchPose =
-                            new Pose3d(
-                                    new Translation3d(
-                                            poseDirection
-                                                    .transformBy(
-                                                            new Transform2d(
-                                                                    adjustX,
-                                                                    adjustY,
-                                                                    Rotation2d.kZero))
-                                                    .getX(),
-                                            poseDirection
-                                                    .transformBy(
-                                                            new Transform2d(
-                                                                    adjustX,
-                                                                    adjustY,
-                                                                    Rotation2d.kZero))
-                                                    .getY(),
-                                            level.height),
-                                    new Rotation3d(
-                                            0,
-                                            Units.degreesToRadians(level.pitch),
-                                            poseDirection.getRotation().getRadians()));
-                    var leftBranchPose =
-                            new Pose3d(
-                                    new Translation3d(
-                                            poseDirection
-                                                    .transformBy(
-                                                            new Transform2d(
-                                                                    adjustX,
-                                                                    -adjustY,
-                                                                    Rotation2d.kZero))
-                                                    .getX(),
-                                            poseDirection
-                                                    .transformBy(
-                                                            new Transform2d(
-                                                                    adjustX,
-                                                                    -adjustY,
-                                                                    Rotation2d.kZero))
-                                                    .getY(),
-                                            level.height),
-                                    new Rotation3d(
-                                            0,
-                                            Units.degreesToRadians(level.pitch),
-                                            poseDirection.getRotation().getRadians()));
-
-                    fillRight.put(level, rightBranchPose);
-                    fillLeft.put(level, leftBranchPose);
-                    fillRight2d.put(level, rightBranchPose.toPose2d());
-                    fillLeft2d.put(level, leftBranchPose.toPose2d());
-                }
-                branchPositions.add(fillRight);
-                branchPositions.add(fillLeft);
-                branchPositions2d.add(fillRight2d);
-                branchPositions2d.add(fillLeft2d);
-            }
+            redCenterFaces[0] = TagConstants.Welded.TAG_7_POSE.toPose2d();
+            redCenterFaces[1] = TagConstants.Welded.TAG_8_POSE.toPose2d();
+            redCenterFaces[2] = TagConstants.Welded.TAG_9_POSE.toPose2d();
+            redCenterFaces[3] = TagConstants.Welded.TAG_10_POSE.toPose2d();
+            redCenterFaces[4] = TagConstants.Welded.TAG_11_POSE.toPose2d();
+            redCenterFaces[5] = TagConstants.Welded.TAG_6_POSE.toPose2d();
         }
     }
 }
