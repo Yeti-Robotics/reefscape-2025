@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.coral.CoralManipulatorState;
+
+import java.sql.Driver;
 import java.util.EnumMap;
 import java.util.function.Supplier;
 
@@ -31,6 +33,10 @@ public class LEDSubsystem extends SubsystemBase {
         new Trigger(DriverStation::isAutonomousEnabled)
                 .onTrue(runPattern(LEDPatterns.AUTO_PATTERN));
         new Trigger(DriverStation::isTeleopEnabled)
+                .and(LEDSubsystem::isRedAlliance)
+                .onTrue(runPattern(LEDPatterns.RED_ALLIANCE_RSL_BLINK));
+        new Trigger(DriverStation::isTeleopEnabled)
+                .and(() -> !isRedAlliance())
                 .onTrue(runPattern(LEDPatterns.YETI_BLUE_RSL_BLINK));
         new Trigger(DriverStation::isDisabled)
                 .whileTrue(run(this::updateProgress).ignoringDisable(true));
@@ -85,22 +91,30 @@ public class LEDSubsystem extends SubsystemBase {
         animationCommands.put(CoralManipulatorState.DISABLED, runOnce(this::updateProgress));
         for (CoralManipulatorState state :
                 new CoralManipulatorState[] {
-                    CoralManipulatorState.L1, CoralManipulatorState.L2, CoralManipulatorState.L3,
-                            CoralManipulatorState.L4,
-                    CoralManipulatorState.SCORE_L1, CoralManipulatorState.SCORE_L2,
-                            CoralManipulatorState.SCORE_L3, CoralManipulatorState.SCORE_L4
+                        CoralManipulatorState.L1, CoralManipulatorState.L2, CoralManipulatorState.L3,
+                        CoralManipulatorState.L4,
+                        CoralManipulatorState.SCORE_L1, CoralManipulatorState.SCORE_L2,
+                        CoralManipulatorState.SCORE_L3, CoralManipulatorState.SCORE_L4
                 }) {
-            animationCommands.put(state, runPattern(LEDPatterns.YETI_BLUE_SCROLLING));
+            if (isRedAlliance()) {
+                animationCommands.put(state, runPattern(LEDPatterns.RED_ALLIANCE_RSL_BLINK));
+            } else {
+                animationCommands.put(state, runPattern(LEDPatterns.YETI_BLUE_RSL_BLINK));
+            }
         }
         animationCommands.put(CoralManipulatorState.HP_INTAKE, runPattern(LEDPatterns.WHITE_BLINK));
         animationCommands.put(
                 CoralManipulatorState.GROUND_INTAKE, runPattern(LEDPatterns.WHITE_BLINK));
 
-        animationCommands.put(
-                CoralManipulatorState.STOWED,
-                runPattern(LEDPatterns.WHITE)
-                        .withTimeout(2)
-                        .andThen(runPattern(LEDPatterns.YETI_BLUE_RSL_BLINK)));
+        if (isRedAlliance()) {
+            animationCommands.put(CoralManipulatorState.STOWED, runPattern(LEDPatterns.WHITE).withTimeout(2).andThen(runPattern(LEDPatterns.RED_ALLIANCE_RSL_BLINK)));
+        } else {
+            animationCommands.put(
+                    CoralManipulatorState.STOWED,
+                    runPattern(LEDPatterns.WHITE)
+                            .withTimeout(2)
+                            .andThen(runPattern(LEDPatterns.YETI_BLUE_RSL_BLINK)));
+        }
 
         animationCommands.put(
                 CoralManipulatorState.ALGAEHIGH, runPattern(LEDPatterns.ALGAE_COLOR_PATTERN));
