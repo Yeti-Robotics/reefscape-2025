@@ -5,9 +5,17 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathfindingCommand;
+import edu.wpi.first.epilogue.Epilogue;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.coral.CoralManipulatorState;
+import frc.robot.util.sim.PhysicsSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -15,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
+@Logged
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
 
@@ -26,9 +35,14 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-        // autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
+        DataLogManager.start();
+        DriverStation.startDataLog(DataLogManager.getLog());
+        Epilogue.bind(this);
+        SmartDashboard.putString("Build Date", BuildConstants.BUILD_DATE);
+        SmartDashboard.putString("GIT SHA", BuildConstants.GIT_SHA);
+        SmartDashboard.putString("Git Branch", BuildConstants.GIT_BRANCH);
+        PathfindingCommand.warmupCommand().schedule();
     }
 
     /**
@@ -38,13 +52,13 @@ public class Robot extends TimedRobot {
      * <p>This runs after the mode specific periodic methods, but before LiveWindow and
      * SmartDashboard integrated updating.
      */
+    String llName = "limelight";
+
     @Override
     public void robotPeriodic() {
-        // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-        // commands, running already-scheduled commands, removing finished or interrupted commands,
-        // and running subsystem periodic() methods.  This must be called from the robot's periodic
-        // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
+        robotContainer.updateMechanisms();
+        robotContainer.updateVision();
     }
 
     /** This method is called once each time the robot enters Disabled mode. */
@@ -61,7 +75,6 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         autonomousCommand = robotContainer.getAutonomousCommand();
 
-        // schedule the autonomous command (example)
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
         }
@@ -73,10 +86,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        // This makes sure that the autonomous stops running when
-        // teleop starts running. If you want the autonomous to
-        // continue until interrupted by another command, remove
-        // this line or comment it out.
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }
@@ -87,8 +96,16 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {}
 
     @Override
+    public void teleopExit() {
+        robotContainer
+                .coralManipulator
+                .transitionTo(CoralManipulatorState.IDLE)
+                .ignoringDisable(true)
+                .schedule();
+    }
+
+    @Override
     public void testInit() {
-        // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
     }
 
@@ -102,5 +119,8 @@ public class Robot extends TimedRobot {
 
     /** This method is called periodically whilst in simulation. */
     @Override
-    public void simulationPeriodic() {}
+    public void simulationPeriodic() {
+        robotContainer.updateVisionSim();
+        PhysicsSim.getInstance().run();
+    }
 }

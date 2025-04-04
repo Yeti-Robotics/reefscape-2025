@@ -1,0 +1,82 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.206,
+        "y": 3.958015267175572
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.4586713732482046,
+        "y": 3.422088390679399
+      },
+      "isLocked": false,
+      "linkedName": "aReef"
+    },
+    {
+      "anchor": {
+        "x": 2.5286736641221377,
+        "y": 2.358754770992365
+      },
+      "prevControl": {
+        "x": 2.627153488766931,
+        "y": 2.588541028496879
+      },
+      "nextControl": {
+        "x": 2.430193839477344,
+        "y": 2.128968513487851
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.7332299618320612,
+        "y": 2.1661736641221365
+      },
+      "prevControl": {
+        "x": 2.110019083969466,
+        "y": 2.1326812977099223
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "rightStack"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Stow",
+      "waypointRelativePos": 0.2,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Stow"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "useDefaultConstraints": true
+}
