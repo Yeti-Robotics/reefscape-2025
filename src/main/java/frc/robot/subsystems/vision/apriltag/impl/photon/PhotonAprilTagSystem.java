@@ -167,8 +167,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private Optional<AprilTagDetection> mapToDetection(PhotonTrackedTarget target) {
         if (target == null || target.getPoseAmbiguity() > maxAmbiguity) return Optional.empty();
 
-        Optional<Pose3d> optAprilTagPose =
-                TagConstants.getTagPose(target.fiducialId);
+        Optional<Pose3d> optAprilTagPose = TagConstants.getTagPose(target.fiducialId);
 
         if (optAprilTagPose.isEmpty()) {
             return Optional.empty();

@@ -190,7 +190,6 @@ public class ReefAlignPPOTF {
 
         DogLog.log("ReefAlignCmd/ReefTarget", reefBranchPose);
 
-
         SwerveDrivetrain.SwerveDriveState state = commandSwerveDrivetrain.getState();
         Pose2d drivetrainPose = state.Pose;
 
@@ -203,9 +202,7 @@ public class ReefAlignPPOTF {
          */
 
         List<Waypoint> waypoints =
-                PathPlannerPath.waypointsFromPoses(
-                        drivetrainPose,
-                        reefBranchPose);
+                PathPlannerPath.waypointsFromPoses(drivetrainPose, reefBranchPose);
 
         PathPlannerPath path =
                 new PathPlannerPath(
