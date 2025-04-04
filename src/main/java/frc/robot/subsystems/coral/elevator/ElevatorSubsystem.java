@@ -3,7 +3,6 @@ package frc.robot.subsystems.coral.elevator;
 import static frc.robot.constants.Constants.RIO_BUS;
 import static frc.robot.subsystems.coral.elevator.ElevatorConfig.*;
 
-import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.Follower;
@@ -14,7 +13,6 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,8 +38,6 @@ public class ElevatorSubsystem
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
     private final StatusSignal<Double> elevatorTargetPosition =
             primaryElevatorMotor.getClosedLoopReference();
-    private final StatusSignal<AngularVelocity> elevatorVelocity =
-            primaryElevatorMotor.getVelocity();
 
     public ElevatorSubsystem() {
         super(
@@ -61,8 +57,6 @@ public class ElevatorSubsystem
         secondaryElevatorMotor.setPosition(0);
 
         primaryElevatorMotor.setControl(neutralOut);
-        BaseStatusSignal.setUpdateFrequencyForAll(
-                50, elevatorPosition, elevatorTargetPosition, elevatorVelocity);
 
         if (Robot.isSimulation()) {
             PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
@@ -73,7 +67,6 @@ public class ElevatorSubsystem
     @Override
     public void runPeriodic() {
         super.runPeriodic();
-        elevatorVelocity.refresh();
     }
 
     private Command zeroPosition() {

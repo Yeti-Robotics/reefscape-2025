@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,6 +42,7 @@ import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -77,10 +79,10 @@ public class RobotContainer {
                             Units.inchesToMeters(11)),
                     new Rotation3d(0, Math.toRadians(-15), Math.toRadians(90)));
 
-    @Logged(name = "Vision/ScoreCam")
+    @Logged(name = "Vision/RadioCam")
     public final PhotonAprilTagSystem radioCam;
 
-    @Logged(name = "Vision/ClimbCam")
+    @Logged(name = "Vision/ScoreCam")
     public final PhotonAprilTagSystem scoreCam;
 
     @Logged(name = "CoralManipulator")
@@ -149,7 +151,6 @@ public class RobotContainer {
         // odo data is more trustworthy, lower stddev
         drivetrain.setStateStdDevs(VecBuilder.fill(0.03, 0.03, 1));
         // vision data can vary, so higher stddev
-        drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(1, 1, Math.toRadians(30)));
     }
 
     /**
@@ -163,14 +164,16 @@ public class RobotContainer {
      */
     public void updateVision() {
         for (AprilTagSubsystem aprilTagSubsystem : aprilTagSubsystems) {
-            Optional<AprilTagPose> aprilTagPoseOpt = aprilTagSubsystem.getEstimatedPose();
+            List<AprilTagPose> aprilTagPoseOpt = aprilTagSubsystem.getEstimatedPose();
 
-            if (aprilTagPoseOpt.isPresent() && !drivetrain.isMotionBlur()) {
-                AprilTagPose pose = aprilTagPoseOpt.get();
-
-                if (pose.getNumTags() > 0) {
-                    drivetrain.addVisionMeasurement(
-                            pose.getEstimatedRobotPose(), pose.getTimestamp());
+            if (!aprilTagPoseOpt.isEmpty() && !drivetrain.isMotionBlur()) {
+                for (AprilTagPose pose : aprilTagPoseOpt) {
+                    if (pose.numTags() > 0) {
+                        drivetrain.addVisionMeasurement(
+                                pose.estimatedRobotPose(),
+                                pose.timestamp(),
+                                pose.standardDeviations());
+                    }
                 }
             }
         }
@@ -181,7 +184,7 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-
+        DriverStation.silenceJoystickConnectionWarning(true);
         drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(
                         () ->
@@ -207,7 +210,7 @@ public class RobotContainer {
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
         primaryXboxController.y().whileTrue(reefAlignPPOTF.reefAlign());
-
+        primaryXboxController.button(1).whileTrue(reefAlignPPOTF.reefAlign());
         gigaStation.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
         gigaStation.button(18).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         gigaStation.button(16).onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
@@ -283,25 +286,25 @@ public class RobotContainer {
                 lineJ.isEmpty() || jToLollipop.isEmpty()
                         ? Commands.none()
                         : Commands.sequence(
-                        AutoBuilder.followPath(lineJ.get()),
-                        reefAlignPPOTF.reefAlign(),
-                        coralManipulator.transitionTo(CoralManipulatorState.L4),
-                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
-                        coralManipulator
-                                .transitionTo(CoralManipulatorState.STOWED)
-                                .withTimeout(0.5),
-                        AutoBuilder.followPath(jToLollipop.get())
-                                .until(coralManipulator.grabber::hasCoral),
-                        coralManipulator
-                                .transitionTo(CoralManipulatorState.STOWED)
-                                .withTimeout(1),
-                        AutoBuilder.followPath(lollipopToL.get()),
-                        reefAlignPPOTF.reefAlign(),
-                        coralManipulator.transitionTo(CoralManipulatorState.CLIMB_L4),
-                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_CLIMB_L4),
-                        coralManipulator
-                                .transitionTo(CoralManipulatorState.STOWED)
-                                .withTimeout(0.5));
+                                AutoBuilder.followPath(lineJ.get()),
+                                reefAlignPPOTF.reefAlign(),
+                                coralManipulator.transitionTo(CoralManipulatorState.L4),
+                                coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
+                                coralManipulator
+                                        .transitionTo(CoralManipulatorState.STOWED)
+                                        .withTimeout(0.5),
+                                AutoBuilder.followPath(jToLollipop.get())
+                                        .until(coralManipulator.grabber::hasCoral),
+                                coralManipulator
+                                        .transitionTo(CoralManipulatorState.STOWED)
+                                        .withTimeout(1),
+                                AutoBuilder.followPath(lollipopToL.get()),
+                                reefAlignPPOTF.reefAlign(),
+                                coralManipulator.transitionTo(CoralManipulatorState.CLIMB_L4),
+                                coralManipulator.transitionTo(CoralManipulatorState.SCORE_CLIMB_L4),
+                                coralManipulator
+                                        .transitionTo(CoralManipulatorState.STOWED)
+                                        .withTimeout(0.5));
         auto = new PathPlannerAuto(cmd);
         return auto;
     }
