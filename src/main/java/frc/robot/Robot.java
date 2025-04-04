@@ -6,7 +6,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.commands.PathfindingCommand;
-import dev.doglog.DogLog;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -17,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.util.sim.PhysicsSim;
-import org.littletonrobotics.frc2025.BuildConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
