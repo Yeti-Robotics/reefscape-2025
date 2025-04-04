@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lineE"
+            "pathName": "lineF"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ReefAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
           }
         },
         {
@@ -17,57 +29,21 @@
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "eHP"
+            "waitTime": 1.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "HPIntake"
+            "name": "Stow"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "hpD"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "dHP"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "HPIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "hpC"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "cHP"
+            "pathName": "fToLoli"
           }
         }
       ]

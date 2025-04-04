@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lineBack"
+            "pathName": "lineE"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "bargeLine"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "lineJ"
+            "name": "ReefAlign"
           }
         },
         {
@@ -31,7 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "jHP"
+            "pathName": "eHP"
           }
         },
         {
@@ -43,7 +37,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "hpK"
+            "pathName": "hpD"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ReefAlign"
           }
         },
         {
@@ -55,25 +55,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "kHP"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "HPIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "hpL"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score4"
+            "pathName": "dHP"
           }
         }
       ]
