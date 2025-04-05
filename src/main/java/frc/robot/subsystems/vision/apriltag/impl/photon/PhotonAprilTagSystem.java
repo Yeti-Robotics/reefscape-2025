@@ -141,7 +141,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
                     }
 
                     double scaleFactor =
-                            (1 / (1 + Math.pow(distance, 1.5))) * (1 + Math.pow(ambiguity, 1.2));
+                            1; //(1 / (1 + Math.pow(distance, 1.5))) * (1 + Math.pow(ambiguity, 1.2));;
                     double linearStdDevs = translationBaseStdev * scaleFactor;
                     double angularStdDevs = rotationBaseStdev * scaleFactor;
 

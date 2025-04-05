@@ -7,21 +7,16 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -37,13 +32,11 @@ import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
-import frc.robot.util.PathPlannerUtils;
 import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -143,7 +136,9 @@ public class RobotContainer {
         var namedCommands = new AutoNamedCommands(coralManipulator, reefAlignPPOTF);
         namedCommands.registerCommands();
 
-        autoChooser = AutoBuilder.buildAutoChooser("driveForward");
+        var autoCommands = new AutoCommands(coralManipulator, reefAlignPPOTF, drivetrain);
+
+        autoChooser = autoCommands.buildAutoCommandChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
         aprilTagSubsystems = new AprilTagSubsystem[] {radioCam, scoreCam};
 
@@ -256,162 +251,28 @@ public class RobotContainer {
                 coralManipulator.arm.getCurrentPosition());
     }
 
-    public Command right1Pc() {
-        Optional<PathPlannerPath> lineF = PathPlannerUtils.loadPathByName("lineF");
-
-        return lineF.isEmpty()
-                ? Commands.none()
-                : AutoBuilder.followPath(lineF.get())
-                        .andThen(reefAlignPPOTF.reefAlign())
-                        .andThen(
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.L4)
-                                        .withTimeout(0.5))
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-    }
-
-    public Command left2PcLolli() {
-        Optional<PathPlannerPath> lineJ = PathPlannerUtils.loadPathByName("lineJ");
-        Optional<PathPlannerPath> jToLollipop = PathPlannerUtils.loadPathByName("jToLoli");
-        Optional<PathPlannerPath> lollipopToL = PathPlannerUtils.loadPathByName("loliToL");
-
-        PathPlannerAuto auto;
-        PathPlannerAuto lollipathJ =
-                new PathPlannerAuto((AutoBuilder.followPath(jToLollipop.get())));
-        PathPlannerAuto lollipathL =
-                new PathPlannerAuto((AutoBuilder.followPath(lollipopToL.get())));
-
-        var cmd =
-                lineJ.isEmpty() || jToLollipop.isEmpty()
-                        ? Commands.none()
-                        : Commands.sequence(
-                                AutoBuilder.followPath(lineJ.get()),
-                                reefAlignPPOTF.reefAlign(),
-                                coralManipulator.transitionTo(CoralManipulatorState.L4),
-                                coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5),
-                                AutoBuilder.followPath(jToLollipop.get())
-                                        .until(coralManipulator.grabber::hasCoral),
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(1),
-                                AutoBuilder.followPath(lollipopToL.get()),
-                                reefAlignPPOTF.reefAlign(),
-                                coralManipulator.transitionTo(CoralManipulatorState.CLIMB_L4),
-                                coralManipulator.transitionTo(CoralManipulatorState.SCORE_CLIMB_L4),
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5));
-        auto = new PathPlannerAuto(cmd);
-        return auto;
-    }
-
-    public Command right2PcLolli() {
-        Optional<PathPlannerPath> lineF = PathPlannerUtils.loadPathByName("lineF");
-        Optional<PathPlannerPath> fToLollipop = PathPlannerUtils.loadPathByName("fToLoli");
-        Optional<PathPlannerPath> lollipopToD = PathPlannerUtils.loadPathByName("loliToD");
-
-        PathPlannerAuto auto;
-
-        var cmd =
-                lineF.isEmpty() || fToLollipop.isEmpty() || lollipopToD.isEmpty()
-                        ? Commands.none()
-                        : Commands.sequence(
-                                AutoBuilder.followPath(lineF.get()),
-                                reefAlignPPOTF.reefAlign(),
-                                coralManipulator.transitionTo(CoralManipulatorState.L4),
-                                coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5)
-                                        .andThen(
-                                                Commands.sequence(
-                                                                AutoBuilder.followPath(
-                                                                        fToLollipop.get()),
-                                                                coralManipulator
-                                                                        .transitionTo(
-                                                                                CoralManipulatorState
-                                                                                        .STOWED)
-                                                                        .withTimeout(0.5),
-                                                                AutoBuilder.followPath(
-                                                                        lollipopToD.get()),
-                                                                reefAlignPPOTF.reefAlign(),
-                                                                coralManipulator.transitionTo(
-                                                                        CoralManipulatorState
-                                                                                .CLIMB_L4),
-                                                                coralManipulator.transitionTo(
-                                                                        CoralManipulatorState
-                                                                                .SCORE_CLIMB_L4),
-                                                                coralManipulator
-                                                                        .transitionTo(
-                                                                                CoralManipulatorState
-                                                                                        .STOWED)
-                                                                        .withTimeout(0.5))
-                                                        .onlyIf(
-                                                                coralManipulator.grabber
-                                                                        ::doesNotHaveCoral)));
-        auto = new PathPlannerAuto(cmd);
-        return auto;
-    }
-
-    public Command left1Pc() {
-        Optional<PathPlannerPath> lineJ = PathPlannerUtils.loadPathByName("lineJ");
-        return lineJ.isEmpty()
-                ? Commands.none()
-                : AutoBuilder.followPath(lineJ.get())
-                        .andThen(reefAlignPPOTF.reefAlign())
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.L4))
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
-                        .andThen(
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5));
-    }
-
-    public Command driveForward() {
-        return drivetrain.applyRequest(
-                () -> new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(1, 0, 0)));
-    }
-
-    public Command mid1Pc() {
-        Optional<PathPlannerPath> lineG = PathPlannerUtils.loadPathByName("lineG");
-        return lineG.isEmpty()
-                ? Commands.none()
-                : AutoBuilder.followPath(lineG.get())
-                        .andThen(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT))
-                        .andThen(reefAlignPPOTF.reefAlign())
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.L4))
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
-                        .andThen(
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5));
-    }
-
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        Command selectedAuto = null;
-        //        if (gigaStation.getHID().getRawButton(19)) {
-        //            selectedAuto = driveForward();
-        //            SmartDashboard.putString("Selected auto", "driveForward");
-        //        } else if (gigaStation.getHID().getRawButton(20)) {
-        //            selectedAuto = right2PcLolli();
-        //            SmartDashboard.putString("Selected auto", "right2PcLolli");
-        //        } else if (gigaStation.getHID().getRawButton(21)) {
-        //            selectedAuto = left1Pc();
-        //            SmartDashboard.putString("Selected auto", "left1Pc");
+        //        Command selectedAuto = null;
+        //        //        if (gigaStation.getHID().getRawButton(19)) {
+        //        //            selectedAuto = driveForward();
+        //        //            SmartDashboard.putString("Selected auto", "driveForward");
+        //        //        } else if (gigaStation.getHID().getRawButton(20)) {
+        //        //            selectedAuto = right2PcLolli();
+        //        //            SmartDashboard.putString("Selected auto", "right2PcLolli");
+        //        //        } else if (gigaStation.getHID().getRawButton(21)) {
+        //        //            selectedAuto = left1Pc();
+        //        //            SmartDashboard.putString("Selected auto", "left1Pc");
+        //        //        }
+        //        if (selectedAuto == null) {
+        //            return autoChooser.getSelected();
+        //        } else {
+        //            return selectedAuto;
         //        }
-        if (selectedAuto == null) {
-            return autoChooser.getSelected();
-        } else {
-            return selectedAuto;
-        }
+        return autoChooser.getSelected();
     }
 }
