@@ -229,7 +229,9 @@ public class RobotContainer {
                 .button(11)
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
 
-        secondaryXboxController.leftTrigger().onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
+        secondaryXboxController
+                .leftTrigger()
+                .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator.transitionTo(CoralManipulatorState.STOWED));

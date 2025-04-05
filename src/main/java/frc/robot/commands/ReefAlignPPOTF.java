@@ -41,7 +41,7 @@ public class ReefAlignPPOTF {
     private static final Transform2d leftBranchTransform =
             new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(-7.5), Rotation2d.kZero);
     private static final Transform2d rightBranchTransform =
-            new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(7.5), Rotation2d.kZero);
+            new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(5.5), Rotation2d.kZero);
     private static final Transform2d rightTurnTransform =
             new Transform2d(0, 0, Rotation2d.kCCW_90deg);
     private static final Transform2d leftTurnTransform =
