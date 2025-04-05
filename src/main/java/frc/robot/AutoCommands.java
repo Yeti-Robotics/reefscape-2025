@@ -173,7 +173,7 @@ public class AutoCommands {
         auto.addOption("Mid 1 Piece", mid1Pc());
         auto.addOption("Drive forward", driveForward());
 
-        auto.setDefaultOption("Right 1 Piece", right1Pc());
+        auto.setDefaultOption("Drive forward", driveForward());
         return auto;
     }
 }
