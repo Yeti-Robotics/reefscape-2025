@@ -242,7 +242,7 @@ public class RobotContainer {
                         .unless(
                                 () ->
                                         coralManipulator.getCurrentState()
-                                                == CoralManipulatorState.SCORE_L2));
+                                                == CoralManipulatorState.SCORE_L2 || coralManipulator.getCurrentState() == CoralManipulatorState.SCORE_L3));
     }
 
     public void updateMechanisms() {
