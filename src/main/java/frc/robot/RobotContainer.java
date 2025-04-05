@@ -397,7 +397,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        Command selectedAuto = right2PcLolli();
+        Command selectedAuto = null;
         //        if (gigaStation.getHID().getRawButton(19)) {
         //            selectedAuto = driveForward();
         //            SmartDashboard.putString("Selected auto", "driveForward");
