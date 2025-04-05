@@ -215,9 +215,7 @@ public class RobotContainer {
         gigaStation.button(8).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
         gigaStation.button(9).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
         gigaStation.button(10).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
-        gigaStation
-                .button(15)
-                .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.HOLD));
+        gigaStation.button(15).whileTrue(coralManipulator.grabber.transitionTo(GrabberState.HOLD));
 
         gigaStation
                 .button(4)

@@ -13,6 +13,7 @@ import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.util.PathPlannerUtils;
+
 import java.util.Optional;
 
 public class AutoCommands {
@@ -35,13 +36,14 @@ public class AutoCommands {
         return lineF.isEmpty()
                 ? Commands.none()
                 : AutoBuilder.followPath(lineF.get())
-                        .andThen(reefAlignPPOTF.reefAlign())
-                        .andThen(
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.L4)
-                                        .withTimeout(0.5))
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+                .andThen(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT))
+                .andThen(reefAlignPPOTF.reefAlign())
+                .andThen(
+                        coralManipulator
+                                .transitionTo(CoralManipulatorState.L4)
+                                .withTimeout(0.5))
+                .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
+                .andThen(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
     }
 
     public Command left2PcLolli() {
@@ -59,25 +61,26 @@ public class AutoCommands {
                 lineJ.isEmpty() || jToLollipop.isEmpty()
                         ? Commands.none()
                         : Commands.sequence(
-                                AutoBuilder.followPath(lineJ.get()),
-                                reefAlignPPOTF.reefAlign(),
-                                coralManipulator.transitionTo(CoralManipulatorState.L4),
-                                coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5),
-                                AutoBuilder.followPath(jToLollipop.get())
-                                        .until(coralManipulator.grabber::hasCoral),
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(1),
-                                AutoBuilder.followPath(lollipopToL.get()),
-                                reefAlignPPOTF.reefAlign(),
-                                coralManipulator.transitionTo(CoralManipulatorState.CLIMB_L4),
-                                coralManipulator.transitionTo(CoralManipulatorState.SCORE_CLIMB_L4),
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5));
+                        AutoBuilder.followPath(lineJ.get()),
+                        reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT),
+                        reefAlignPPOTF.reefAlign(),
+                        coralManipulator.transitionTo(CoralManipulatorState.L4),
+                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
+                        coralManipulator
+                                .transitionTo(CoralManipulatorState.STOWED)
+                                .withTimeout(0.5),
+                        AutoBuilder.followPath(jToLollipop.get())
+                                .until(coralManipulator.grabber::hasCoral),
+                        coralManipulator
+                                .transitionTo(CoralManipulatorState.STOWED)
+                                .withTimeout(1),
+                        AutoBuilder.followPath(lollipopToL.get()),
+                        reefAlignPPOTF.reefAlign(),
+                        coralManipulator.transitionTo(CoralManipulatorState.CLIMB_L4),
+                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_CLIMB_L4),
+                        coralManipulator
+                                .transitionTo(CoralManipulatorState.STOWED)
+                                .withTimeout(0.5));
         auto = new PathPlannerAuto(cmd);
         return auto;
     }
@@ -93,39 +96,40 @@ public class AutoCommands {
                 lineF.isEmpty() || fToLollipop.isEmpty() || lollipopToD.isEmpty()
                         ? Commands.none()
                         : Commands.sequence(
-                                AutoBuilder.followPath(lineF.get()),
-                                reefAlignPPOTF.reefAlign(),
-                                coralManipulator.transitionTo(CoralManipulatorState.L4),
-                                coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5)
-                                        .andThen(
-                                                Commands.sequence(
-                                                                AutoBuilder.followPath(
-                                                                        fToLollipop.get()),
-                                                                coralManipulator
-                                                                        .transitionTo(
-                                                                                CoralManipulatorState
-                                                                                        .STOWED)
-                                                                        .withTimeout(0.5),
-                                                                AutoBuilder.followPath(
-                                                                        lollipopToD.get()),
-                                                                reefAlignPPOTF.reefAlign(),
-                                                                coralManipulator.transitionTo(
+                        AutoBuilder.followPath(lineF.get()),
+                        reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT),
+                        reefAlignPPOTF.reefAlign(),
+                        coralManipulator.transitionTo(CoralManipulatorState.L4),
+                        coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
+                        coralManipulator
+                                .transitionTo(CoralManipulatorState.STOWED)
+                                .withTimeout(0.5)
+                                .andThen(
+                                        Commands.sequence(
+                                                        AutoBuilder.followPath(
+                                                                fToLollipop.get()),
+                                                        coralManipulator
+                                                                .transitionTo(
                                                                         CoralManipulatorState
-                                                                                .CLIMB_L4),
-                                                                coralManipulator.transitionTo(
+                                                                                .STOWED)
+                                                                .withTimeout(0.5),
+                                                        AutoBuilder.followPath(
+                                                                lollipopToD.get()),
+                                                        reefAlignPPOTF.reefAlign(),
+                                                        coralManipulator.transitionTo(
+                                                                CoralManipulatorState
+                                                                        .CLIMB_L4),
+                                                        coralManipulator.transitionTo(
+                                                                CoralManipulatorState
+                                                                        .SCORE_CLIMB_L4),
+                                                        coralManipulator
+                                                                .transitionTo(
                                                                         CoralManipulatorState
-                                                                                .SCORE_CLIMB_L4),
-                                                                coralManipulator
-                                                                        .transitionTo(
-                                                                                CoralManipulatorState
-                                                                                        .STOWED)
-                                                                        .withTimeout(0.5))
-                                                        .onlyIf(
-                                                                coralManipulator.grabber
-                                                                        ::doesNotHaveCoral)));
+                                                                                .STOWED)
+                                                                .withTimeout(0.5))
+                                                .onlyIf(
+                                                        coralManipulator.grabber
+                                                                ::doesNotHaveCoral)));
         auto = new PathPlannerAuto(cmd);
         return auto;
     }
@@ -135,13 +139,14 @@ public class AutoCommands {
         return lineJ.isEmpty()
                 ? Commands.none()
                 : AutoBuilder.followPath(lineJ.get())
-                        .andThen(reefAlignPPOTF.reefAlign())
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.L4))
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
-                        .andThen(
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5));
+                .andThen(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT))
+                .andThen(reefAlignPPOTF.reefAlign())
+                .andThen(coralManipulator.transitionTo(CoralManipulatorState.L4))
+                .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
+                .andThen(
+                        coralManipulator
+                                .transitionTo(CoralManipulatorState.STOWED)
+                                .withTimeout(0.5));
     }
 
     public Command driveForward() {
@@ -154,14 +159,14 @@ public class AutoCommands {
         return lineG.isEmpty()
                 ? Commands.none()
                 : AutoBuilder.followPath(lineG.get())
-                        .andThen(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT))
-                        .andThen(reefAlignPPOTF.reefAlign())
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.L4))
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
-                        .andThen(
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5));
+                .andThen(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT))
+                .andThen(reefAlignPPOTF.reefAlign())
+                .andThen(coralManipulator.transitionTo(CoralManipulatorState.L4))
+                .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
+                .andThen(
+                        coralManipulator
+                                .transitionTo(CoralManipulatorState.STOWED)
+                                .withTimeout(0.5));
     }
 
     public SendableChooser<Command> buildAutoCommandChooser() {
