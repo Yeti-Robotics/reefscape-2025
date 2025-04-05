@@ -28,6 +28,8 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     @Logged(name = "Wrist")
     public final WristSubsystem wrist = new WristSubsystem();
 
+    private boolean isClimberSide;
+
     public CoralManipulatorSystem() {
         super(CoralManipulatorState.IDLE);
     }
@@ -219,5 +221,9 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
                 && !elevator.isTransitioning()
                 && !grabber.isTransitioning()
                 && !wrist.isTransitioning();
+    }
+
+    public Command setClimberSide(boolean climberSide) {
+        runOnce(() -> isClimberSide = climberSide);
     }
 }

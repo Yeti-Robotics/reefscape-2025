@@ -36,6 +36,7 @@ import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
+
 import java.util.List;
 
 /**
@@ -97,7 +98,9 @@ public class RobotContainer {
     private final ReefAlignPPOTF reefAlignPPOTF;
     private final AprilTagSubsystem[] aprilTagSubsystems;
 
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
     public RobotContainer() {
         primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
         secondaryXboxController =
@@ -140,7 +143,7 @@ public class RobotContainer {
 
         autoChooser = autoCommands.buildAutoCommandChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
-        aprilTagSubsystems = new AprilTagSubsystem[] {radioCam, scoreCam};
+        aprilTagSubsystems = new AprilTagSubsystem[]{radioCam, scoreCam};
 
         // Set standard deviations to prevent jitter
         // odo data is more trustworthy, lower stddev
@@ -186,11 +189,11 @@ public class RobotContainer {
                                 drive.withVelocityX(
                                                 -primaryXboxController.getLeftY()
                                                         * TunerConstants.kSpeedAt12Volts
-                                                                .magnitude())
+                                                        .magnitude())
                                         .withVelocityY(
                                                 -primaryXboxController.getLeftX()
                                                         * TunerConstants.kSpeedAt12Volts
-                                                                .magnitude())
+                                                        .magnitude())
                                         .withRotationalRate(
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
@@ -221,6 +224,10 @@ public class RobotContainer {
                 .button(4)
                 .onTrue(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT))
                 .onFalse(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT));
+        gigaStation
+                .button(6)
+                .onTrue(coralManipulator.setClimberSide(true))
+                .onFalse(coralManipulator.setClimberSide(false));
         gigaStation.button(13).whileTrue(climber.spinClimber(climber.climbSpeed));
         gigaStation.button(14).whileTrue(climber.spinClimber(climber.unClimbSpeed));
         gigaStation
@@ -240,9 +247,9 @@ public class RobotContainer {
                         .unless(
                                 () ->
                                         coralManipulator.getCurrentState()
-                                                        == CoralManipulatorState.SCORE_L2
+                                                == CoralManipulatorState.SCORE_L2
                                                 || coralManipulator.getCurrentState()
-                                                        == CoralManipulatorState.SCORE_L3));
+                                                == CoralManipulatorState.SCORE_L3));
     }
 
     public void updateMechanisms() {
