@@ -224,6 +224,6 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     }
 
     public Command setClimberSide(boolean climberSide) {
-        runOnce(() -> isClimberSide = climberSide);
+       return runOnce(() -> isClimberSide = climberSide);
     }
 }
