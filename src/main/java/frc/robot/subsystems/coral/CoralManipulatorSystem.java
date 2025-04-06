@@ -186,7 +186,8 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
 
         if (isIntaking(targetState) || !isElevMovingUp(targetState)) {
             if (targetState == CoralManipulatorState.STOWED) {
-                if (getCurrentState() == CoralManipulatorState.SCORE_L3) {
+                if (getCurrentState() == CoralManipulatorState.SCORE_L3
+                        || getCurrentState() == CoralManipulatorState.SCORE_CLIMB_L3) {
                     coralManipulatorCommand =
                             arm.transitionTo(targetState.getArmPosition())
                                     .andThen(
@@ -252,7 +253,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         return runOnce(() -> this.side = side);
     }
 
-//    public Command toggleClimberSide() {
-//        return runOnce(() -> this.side = this.side == Side.SCORE ? Side.CLIMB : Side.SCORE);
-//    }
+    //    public Command toggleClimberSide() {
+    //        return runOnce(() -> this.side = this.side == Side.SCORE ? Side.CLIMB : Side.SCORE);
+    //    }
 }
