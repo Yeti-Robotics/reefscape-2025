@@ -3,6 +3,7 @@ package frc.robot.subsystems.coral;
 import com.ctre.phoenix6.StatusCode;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
@@ -28,7 +29,12 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     @Logged(name = "Wrist")
     public final WristSubsystem wrist = new WristSubsystem();
 
-    private boolean isClimberSide;
+    public enum Side {
+        SCORE,
+        CLIMB
+    }
+
+    CoralManipulatorSystem.Side side = Side.SCORE;
 
     public CoralManipulatorSystem() {
         super(CoralManipulatorState.IDLE);
@@ -132,10 +138,18 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     public Command selectQueuedStateCommand() {
         return new SelectCommand(
                 Map.of(
-                        CoralManipulatorState.L1, transitionTo(CoralManipulatorState.L1),
-                        CoralManipulatorState.L2, transitionTo(CoralManipulatorState.L2),
-                        CoralManipulatorState.L3, transitionTo(CoralManipulatorState.L3),
-                        CoralManipulatorState.L4, transitionTo(CoralManipulatorState.L4)),
+                        CoralManipulatorState.L1,
+                        transitionTo(CoralManipulatorState.L1),
+                        CoralManipulatorState.L2,
+                        transitionTo(CoralManipulatorState.L2),
+                        CoralManipulatorState.L3,
+                        side == Side.CLIMB
+                                ? transitionTo(CoralManipulatorState.CLIMB_L3)
+                                : transitionTo(CoralManipulatorState.SCORE_CLIMB_L3),
+                        CoralManipulatorState.L4,
+                        side == Side.CLIMB
+                                ? transitionTo(CoralManipulatorState.CLIMB_L4)
+                                : transitionTo(CoralManipulatorState.SCORE_CLIMB_L4)),
                 this::getQueuedState);
     }
 
@@ -145,7 +159,11 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
                         CoralManipulatorState.L1, transitionTo(CoralManipulatorState.SCORE_L1),
                         CoralManipulatorState.L2, transitionTo(CoralManipulatorState.SCORE_L2),
                         CoralManipulatorState.L3, transitionTo(CoralManipulatorState.SCORE_L3),
-                        CoralManipulatorState.L4, transitionTo(CoralManipulatorState.SCORE_L4)),
+                        CoralManipulatorState.CLIMB_L3,
+                                transitionTo(CoralManipulatorState.SCORE_CLIMB_L3),
+                        CoralManipulatorState.L4, transitionTo(CoralManipulatorState.SCORE_L4),
+                        CoralManipulatorState.CLIMB_L4,
+                                transitionTo(CoralManipulatorState.SCORE_CLIMB_L4)),
                 this::getQueuedState);
     }
 
@@ -223,7 +241,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
                 && !wrist.isTransitioning();
     }
 
-    public Command setClimberSide(boolean climberSide) {
-        return runOnce(() -> isClimberSide = climberSide);
+    public Command setClimberSide(CoralManipulatorSystem.Side side) {
+        return Commands.runOnce(() -> this.side = side);
     }
 }

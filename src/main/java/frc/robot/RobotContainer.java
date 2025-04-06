@@ -223,13 +223,26 @@ public class RobotContainer {
                 .onFalse(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT));
         gigaStation
                 .button(6)
-                .onTrue(coralManipulator.setClimberSide(true))
-                .onFalse(coralManipulator.setClimberSide(false));
+                .onTrue(coralManipulator.setClimberSide(CoralManipulatorSystem.Side.CLIMB))
+                .onFalse(coralManipulator.setClimberSide(CoralManipulatorSystem.Side.SCORE));
         gigaStation.button(13).whileTrue(climber.spinClimber(climber.climbSpeed));
         gigaStation.button(14).whileTrue(climber.spinClimber(climber.unClimbSpeed));
         gigaStation
                 .button(11)
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
+
+        simJoy.button(1).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
+        simJoy.button(2).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
+        simJoy.button(3).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
+        simJoy.button(4).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
+        simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+        simJoy.button(8).onTrue(coralManipulator.scoreState());
+        simJoy.button(9).onTrue(coralManipulator.selectQueuedStateCommand());
+        simJoy.button(10)
+                .onTrue(coralManipulator.setClimberSide(CoralManipulatorSystem.Side.CLIMB))
+                .onFalse(coralManipulator.setClimberSide(CoralManipulatorSystem.Side.SCORE));
 
         secondaryXboxController
                 .leftTrigger()
