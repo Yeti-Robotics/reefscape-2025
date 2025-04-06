@@ -11,6 +11,7 @@ class GrabberConfig {
     static final int CLAW_ID = 12;
     static final double OUTSPIT = -0.1;
     static final double INTAKE = 1;
+    static final double HOLD = 0.1;
     static final TalonFXConfiguration coralMotorConfig =
             new TalonFXConfiguration()
                     .withMotorOutput(

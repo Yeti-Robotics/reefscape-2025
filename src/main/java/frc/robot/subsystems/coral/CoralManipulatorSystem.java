@@ -28,6 +28,8 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     @Logged(name = "Wrist")
     public final WristSubsystem wrist = new WristSubsystem();
 
+    private boolean isClimberSide;
+
     public CoralManipulatorSystem() {
         super(CoralManipulatorState.IDLE);
     }
@@ -168,17 +170,17 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
                                     .andThen(grabber.transitionTo(targetState.getGrabberState()));
                 } else {
                     coralManipulatorCommand =
-                            arm.transitionTo(targetState.getArmPosition())
+                            grabber.transitionTo(targetState.getGrabberState())
+                                    .alongWith(arm.transitionTo(targetState.getArmPosition()))
                                     .alongWith(
                                             elevator.transitionTo(
-                                                    targetState.getElevatorPosition()))
-                                    .andThen(grabber.transitionTo(targetState.getGrabberState()));
+                                                    targetState.getElevatorPosition()));
                 }
             } else {
                 coralManipulatorCommand =
-                        arm.transitionTo(targetState.getArmPosition())
-                                .andThen(elevator.transitionTo(targetState.getElevatorPosition()))
-                                .andThen(grabber.transitionTo(targetState.getGrabberState()));
+                        grabber.transitionTo(targetState.getGrabberState())
+                                .alongWith(arm.transitionTo(targetState.getArmPosition()))
+                                .andThen(elevator.transitionTo(targetState.getElevatorPosition()));
             }
         } else {
             coralManipulatorCommand =
@@ -219,5 +221,9 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
                 && !elevator.isTransitioning()
                 && !grabber.isTransitioning()
                 && !wrist.isTransitioning();
+    }
+
+    public Command setClimberSide(boolean climberSide) {
+        return runOnce(() -> isClimberSide = climberSide);
     }
 }

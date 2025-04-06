@@ -7,7 +7,7 @@ import edu.wpi.first.math.util.Units;
 import java.util.*;
 
 public class FieldConstants {
-    public static final double FIELD_LENGTH = 16.5354;
+    public static final double FIELD_LENGTH = 17.548;
 
     // Copyright (c) 2025 FRC 6328
     // http://github.com/Mechanical-Advantage
@@ -17,8 +17,8 @@ public class FieldConstants {
     // the root directory of this project.
 
     public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT =
-            AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-    public static final double fieldWidth = APRIL_TAG_FIELD_LAYOUT.getFieldWidth();
+            AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+    public static final double fieldWidth = 8.042;
 
     public enum ReefLevel {
         L1(Units.inchesToMeters(25.0), 0),
@@ -44,8 +44,8 @@ public class FieldConstants {
 
     public static class Reef {
         public static final double faceLength = Units.inchesToMeters(36.792600);
-        public static final Translation2d center =
-                new Translation2d(Units.inchesToMeters(176.746), fieldWidth / 2.0);
+        //        public static final Translation2d center =
+        //                new Translation2d(Units.inchesToMeters(176.746), fieldWidth / 2.0);
         public static final double faceToZoneLine =
                 Units.inchesToMeters(12); // Side of the reef to the inside of the reef zone line
 
