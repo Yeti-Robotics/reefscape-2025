@@ -17,7 +17,8 @@ public final class Elastic {
     private static final StringTopic notificationTopic =
             NetworkTableInstance.getDefault().getStringTopic("/Elastic/RobotNotifications");
     private static final StringPublisher notificationPublisher =
-            notificationTopic.publish(PubSubOption.sendAll(true), PubSubOption.keepDuplicates(true));
+            notificationTopic.publish(
+                    PubSubOption.sendAll(true), PubSubOption.keepDuplicates(true));
     private static final StringTopic selectedTabTopic =
             NetworkTableInstance.getDefault().getStringTopic("/Elastic/SelectedTab");
     private static final StringPublisher selectedTabPublisher =
@@ -25,8 +26,8 @@ public final class Elastic {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
-     * Sends an notification to the Elastic dashboard. The notification is serialized as a JSON string
-     * before being published.
+     * Sends an notification to the Elastic dashboard. The notification is serialized as a JSON
+     * string before being published.
      *
      * @param notification the {@link Notification} object containing notification details
      */
@@ -52,8 +53,8 @@ public final class Elastic {
     }
 
     /**
-     * Selects the tab of the dashboard at the given index. If this index is greater than or equal to
-     * the number of tabs, this will have no effect.
+     * Selects the tab of the dashboard at the given index. If this index is greater than or equal
+     * to the number of tabs, this will have no effect.
      *
      * @param tabIndex the index of the tab to select.
      */
@@ -86,8 +87,8 @@ public final class Elastic {
         private double height;
 
         /**
-         * Creates a new Notification with all default parameters. This constructor is intended to be
-         * used with the chainable decorator methods
+         * Creates a new Notification with all default parameters. This constructor is intended to
+         * be used with the chainable decorator methods
          *
          * <p>Title and description fields are empty.
          */
@@ -145,8 +146,8 @@ public final class Elastic {
         }
 
         /**
-         * Creates a new Notification with specified dimensions and default display time. If the height
-         * is below zero, it is automatically inferred based on screen size.
+         * Creates a new Notification with specified dimensions and default display time. If the
+         * height is below zero, it is automatically inferred based on screen size.
          *
          * @param level the level of the notification
          * @param title the title text of the notification
@@ -155,7 +156,11 @@ public final class Elastic {
          * @param height the height of the notification display area, inferred if below zero
          */
         public Notification(
-                NotificationLevel level, String title, String description, double width, double height) {
+                NotificationLevel level,
+                String title,
+                String description,
+                double width,
+                double height) {
             this(level, title, description, 3000, width, height);
         }
 
@@ -254,7 +259,8 @@ public final class Elastic {
         /**
          * Updates the height of the notification
          *
-         * <p>If the height is set to -1, the height will be determined automatically by the dashboard
+         * <p>If the height is set to -1, the height will be determined automatically by the
+         * dashboard
          *
          * @param height the height to set the notification to
          */
@@ -375,8 +381,8 @@ public final class Elastic {
         }
 
         /**
-         * Represents the possible levels of notifications for the Elastic dashboard. These levels are
-         * used to indicate the severity or type of notification.
+         * Represents the possible levels of notifications for the Elastic dashboard. These levels
+         * are used to indicate the severity or type of notification.
          */
         public enum NotificationLevel {
             /** Informational Message */
