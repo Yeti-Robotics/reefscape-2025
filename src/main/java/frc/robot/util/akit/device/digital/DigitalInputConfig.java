@@ -8,7 +8,6 @@ public class DigitalInputConfig {
     public double debounce = 0.0;
     public Debouncer.DebounceType debounceType = Debouncer.DebounceType.kRising;
     public boolean isInverted = false;
-    public boolean isCustom = false;
 
     DigitalInputConfig() {}
 }

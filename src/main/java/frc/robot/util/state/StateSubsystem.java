@@ -14,6 +14,7 @@ public abstract class StateSubsystem<
         this.io = io;
     }
 
+    @Override
     public Command transitionTo(E setpoint) {
         targetState = setpoint;
         return runOnce(() -> io.toSetpoint(setpoint));

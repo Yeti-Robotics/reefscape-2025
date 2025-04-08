@@ -8,8 +8,9 @@ import frc.robot.util.akit.device.DeviceLogger;
 
 public class DigitalInputDevice
         extends DeviceBuilder<
-                DigitalInput, DigitalInputConfig, DigitalInputDeviceInputs, DigitalInputDevice> {
+        DigitalInput, DigitalInputConfig, DigitalInputDeviceInputs, DigitalInputDevice> {
     private final int deviceID;
+    private String loggingKey;
 
     private DigitalInputDevice(int id) {
         super(null);
@@ -61,11 +62,27 @@ public class DigitalInputDevice
     }
 
     @Override
-    public DigitalInput getDevice() {
+    public DigitalInputDevice log(String key) {
+        loggingKey = key;
+        return this;
+    }
+
+    public DigitalInput getDigitalInput() {
         if (hasConfig()) {
             return new CustomDigitalInput(deviceID, getConfig());
         }
 
         return new DigitalInput(deviceID);
+    }
+
+    @Override
+    public DigitalInput getDevice() {
+        DigitalInput digitalInput = getDigitalInput();
+
+        if (loggingKey != null) {
+            super.log(loggingKey);
+        }
+
+        return digitalInput;
     }
 }
