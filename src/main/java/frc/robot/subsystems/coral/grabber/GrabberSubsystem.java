@@ -2,9 +2,9 @@ package frc.robot.subsystems.coral.grabber;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.coral.grabber.io.GrabberIO;
-import frc.robot.util.state.StatefulSetpointSubsystem;
+import frc.robot.util.state.StateSubsystem;
 
-public class GrabberSubsystem extends StatefulSetpointSubsystem<Double, GrabberState, GrabberIO> {
+public class GrabberSubsystem extends StateSubsystem<Double, GrabberState, GrabberIO> {
     public GrabberSubsystem(GrabberIO io) {
         super(io);
 

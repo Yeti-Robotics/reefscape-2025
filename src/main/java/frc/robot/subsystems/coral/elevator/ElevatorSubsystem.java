@@ -4,10 +4,10 @@ import edu.wpi.first.units.measure.Angle;
 import frc.robot.subsystems.coral.elevator.io.ElevatorIO;
 import frc.robot.subsystems.coral.elevator.io.ElevatorInputs;
 import frc.robot.util.akit.io.InputLoggingIO;
-import frc.robot.util.state.StatefulSetpointSubsystem;
+import frc.robot.util.state.StateSubsystem;
 
 public class ElevatorSubsystem
-        extends StatefulSetpointSubsystem<Angle, ElevatorPosition, ElevatorIO>
+        extends StateSubsystem<Angle, ElevatorPosition, ElevatorIO>
         implements InputLoggingIO<ElevatorInputs> {
     public ElevatorSubsystem(ElevatorIO io) {
         super(io);

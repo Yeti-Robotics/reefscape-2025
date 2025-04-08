@@ -4,9 +4,9 @@ import edu.wpi.first.units.measure.Angle;
 import frc.robot.subsystems.coral.arm.io.ArmIO;
 import frc.robot.subsystems.coral.arm.io.ArmInputs;
 import frc.robot.util.akit.io.InputLoggingIO;
-import frc.robot.util.state.StatefulSetpointSubsystem;
+import frc.robot.util.state.StateSubsystem;
 
-public class ArmSubsystem extends StatefulSetpointSubsystem<Angle, ArmPosition, ArmIO>
+public class ArmSubsystem extends StateSubsystem<Angle, ArmPosition, ArmIO>
         implements InputLoggingIO<ArmInputs> {
     public ArmSubsystem(ArmIO io) {
         super(io);

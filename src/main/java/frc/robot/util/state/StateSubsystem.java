@@ -4,13 +4,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.akit.io.SetpointMotorIO;
 
-public abstract class StatefulSetpointSubsystem<
+public abstract class StateSubsystem<
                 T, E extends SetpointEnum<T>, H extends SetpointMotorIO<E, T>>
         extends SubsystemBase implements TransitionableSubsystem<E> {
     private E targetState;
     protected final H io;
 
-    public StatefulSetpointSubsystem(H io) {
+    public StateSubsystem(H io) {
         this.io = io;
     }
 

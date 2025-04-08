@@ -24,6 +24,9 @@ public class DeviceLoggingRegistry {
         }
     }
 
+    /**
+     * @apiNote call this method as frequently as you would like to log device data
+     */
     public void updateDeviceLogging() {
         if (disable) return;
 
