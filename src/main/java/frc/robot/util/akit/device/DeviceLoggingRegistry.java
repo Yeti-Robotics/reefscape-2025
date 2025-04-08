@@ -1,30 +1,43 @@
 package frc.robot.util.akit.device;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.littletonrobotics.junction.Logger;
+
+import java.util.ArrayList;
 
 public class DeviceLoggingRegistry {
     private static final DeviceLoggingRegistry INSTANCE = new DeviceLoggingRegistry();
-    private final Map<String, LoggingEntry<?>> loggers = new HashMap<>();
+    private final ArrayList<LoggingEntry<?>> loggers = new ArrayList<>();
+    private boolean disable = false;
 
-    private record LoggingEntry<T extends DeviceInputs>(DeviceLogger<T> logger, T inputs) {
+    private record LoggingEntry<T extends DeviceInputs>(
+            String key, DeviceLogger<T> logger, T inputs) {
         public T getUpdatedInputs() {
             logger.updateInputs(inputs);
             return inputs;
         }
     }
 
-    public <T extends DeviceInputs> void addLoggerWithInputs(
+    protected <T extends DeviceInputs> void addLoggerWithInputs(
             String key, DeviceLogger<T> logger, T inputs) {
-        loggers.put(key, new LoggingEntry<>(logger, inputs));
+        if (!disable) {
+            loggers.add(new LoggingEntry<>(key, logger, inputs));
+        }
     }
 
     public void updateDeviceLogging() {
-        for (Map.Entry<String, LoggingEntry<?>> entry : loggers.entrySet()) {
-            Logger.processInputs(entry.getKey(), entry.getValue().getUpdatedInputs());
+        if (disable) return;
+
+        for (LoggingEntry<?> entry : loggers) {
+            Logger.processInputs(entry.key, entry.getUpdatedInputs());
         }
+    }
+
+    /**
+     * @apiNote disables logging for ALL devices, use only if you don't want to log anything
+     */
+    public void disableDeviceLogging() {
+        disable = true;
+        loggers.clear();
     }
 
     public static DeviceLoggingRegistry get() {

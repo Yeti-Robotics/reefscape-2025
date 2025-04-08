@@ -7,7 +7,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.constants.Constants;
-import frc.robot.util.akit.device.talon.TalonFXDevice;
+import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
     private final TalonFX primaryElevatorMotor =

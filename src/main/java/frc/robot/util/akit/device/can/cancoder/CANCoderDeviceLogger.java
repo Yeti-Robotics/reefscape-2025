@@ -1,4 +1,4 @@
-package frc.robot.util.akit.device.cancoder;
+package frc.robot.util.akit.device.can.cancoder;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;

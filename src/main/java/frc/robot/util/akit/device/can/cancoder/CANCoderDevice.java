@@ -1,16 +1,15 @@
-package frc.robot.util.akit.device.cancoder;
+package frc.robot.util.akit.device.can.cancoder;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import frc.robot.util.akit.device.DeviceBuilder;
-import frc.robot.util.akit.device.inputs.CANCoderDeviceInputsAutoLogged;
 import frc.robot.util.akit.device.DeviceLogger;
+import frc.robot.util.akit.device.can.CANDeviceBuilder;
 
 public class CANCoderDevice
-        extends DeviceBuilder<
-                CANcoder, CANcoderConfiguration, CANCoderDeviceInputs, CANCoderDevice> {
+        extends CANDeviceBuilder<
+                        CANcoder, CANcoderConfiguration, CANCoderDeviceInputs, CANCoderDevice> {
     private CANCoderDevice(CANcoder device) {
         super(device);
     }
@@ -31,7 +30,7 @@ public class CANCoderDevice
     }
 
     @Override
-    protected DeviceLogger<CANCoderDeviceInputs> createLogger() {
+    protected DeviceLogger<CANCoderDeviceInputs> getLogger() {
         return new CANCoderDeviceLogger(getDevice());
     }
 

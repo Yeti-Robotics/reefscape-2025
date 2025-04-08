@@ -6,8 +6,8 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.constants.Constants;
-import frc.robot.util.akit.device.cancoder.CANCoderDevice;
-import frc.robot.util.akit.device.talon.TalonFXDevice;
+import frc.robot.util.akit.device.can.cancoder.CANCoderDevice;
+import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 import jakarta.inject.Singleton;
 
 @Singleton

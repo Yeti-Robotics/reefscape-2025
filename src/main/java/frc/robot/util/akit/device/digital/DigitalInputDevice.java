@@ -4,18 +4,20 @@ import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.util.akit.device.DeviceBuilder;
-import frc.robot.util.akit.device.inputs.DigitalInputDeviceInputsAutoLogged;
 import frc.robot.util.akit.device.DeviceLogger;
 
 public class DigitalInputDevice
         extends DeviceBuilder<
                 DigitalInput, DigitalInputConfig, DigitalInputDeviceInputs, DigitalInputDevice> {
-    private DigitalInputDevice(DigitalInput device) {
-        super(device);
+    private final int deviceID;
+
+    private DigitalInputDevice(int id) {
+        super(null);
+        this.deviceID = id;
     }
 
     public static DigitalInputDevice configure(int deviceID) {
-        return new DigitalInputDevice(new DigitalInput(deviceID));
+        return new DigitalInputDevice(deviceID);
     }
 
     public DigitalInputDevice withSimDevice(SimDevice simDevice) {
@@ -49,7 +51,7 @@ public class DigitalInputDevice
     }
 
     @Override
-    protected DeviceLogger<DigitalInputDeviceInputs> createLogger() {
+    protected DeviceLogger<DigitalInputDeviceInputs> getLogger() {
         return new DigitalInputDeviceLogger(getDevice());
     }
 
@@ -60,10 +62,10 @@ public class DigitalInputDevice
 
     @Override
     public DigitalInput getDevice() {
-        if (config == null) {
-            return super.getDevice();
-        } else {
-            return new CustomDigitalInput(super.getDevice().getChannel(), config);
+        if (hasConfig()) {
+            return new CustomDigitalInput(deviceID, getConfig());
         }
+
+        return new DigitalInput(deviceID);
     }
 }

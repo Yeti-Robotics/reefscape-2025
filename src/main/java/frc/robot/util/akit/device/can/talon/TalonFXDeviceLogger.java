@@ -1,4 +1,4 @@
-package frc.robot.util.akit.device.talon;
+package frc.robot.util.akit.device.can.talon;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;

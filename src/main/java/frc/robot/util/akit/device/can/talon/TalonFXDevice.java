@@ -1,16 +1,15 @@
-package frc.robot.util.akit.device.talon;
+package frc.robot.util.akit.device.can.talon;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import frc.robot.util.akit.device.DeviceBuilder;
-import frc.robot.util.akit.device.inputs.TalonFXDeviceInputsAutoLogged;
 import frc.robot.util.akit.device.DeviceLogger;
+import frc.robot.util.akit.device.can.CANDeviceBuilder;
 
 public class TalonFXDevice
-        extends DeviceBuilder<TalonFX, TalonFXConfiguration, TalonFXDeviceInputs, TalonFXDevice> {
+        extends CANDeviceBuilder<TalonFX, TalonFXConfiguration, TalonFXDeviceInputs, TalonFXDevice> {
     private TalonFXDevice(TalonFX motor) {
         super(motor);
     }
@@ -35,7 +34,7 @@ public class TalonFXDevice
     }
 
     @Override
-    protected DeviceLogger<TalonFXDeviceInputs> createLogger() {
+    protected DeviceLogger<TalonFXDeviceInputs> getLogger() {
         return new TalonFXDeviceLogger(getDevice());
     }
 
