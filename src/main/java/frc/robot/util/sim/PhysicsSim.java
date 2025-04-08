@@ -3,6 +3,7 @@ package frc.robot.util.sim;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+
 import java.util.ArrayList;
 
 /** Manages physics simulation for CTRE products. */

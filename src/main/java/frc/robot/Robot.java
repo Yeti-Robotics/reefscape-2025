@@ -5,7 +5,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.util.akit.device.DeviceLoggingRegistry;

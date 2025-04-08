@@ -14,6 +14,7 @@ import frc.robot.subsystems.coral.wrist.WristPosition;
 import frc.robot.subsystems.coral.wrist.WristSubsystem;
 import frc.robot.subsystems.coral.wrist.io.WristIOTalonFX;
 import frc.robot.util.state.TransitionableSubsystem;
+
 import java.util.Map;
 
 public class CoralManipulatorSystem extends SubsystemBase
