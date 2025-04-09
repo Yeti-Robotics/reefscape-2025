@@ -129,7 +129,7 @@ public class RobotContainer {
         climber = new ClimberSubsystem();
         coralManipulator = new CoralManipulatorSystem();
         mechanisms = new Mechanisms();
-        reefAlignPPOTF = new ReefAlignPPOTF(drivetrain, radioCam, scoreCam);
+        reefAlignPPOTF = new ReefAlignPPOTF(drivetrain, coralManipulator, radioCam, scoreCam);
 
         configureBindings();
 

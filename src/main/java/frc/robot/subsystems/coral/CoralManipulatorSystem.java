@@ -163,14 +163,18 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     public Command scoreState() {
         return new SelectCommand(
                 Map.of(
-                        CoralManipulatorState.L1, transitionTo(CoralManipulatorState.SCORE_L1),
-                        CoralManipulatorState.L2, transitionTo(CoralManipulatorState.SCORE_L2),
-                        CoralManipulatorState.L3, transitionTo(CoralManipulatorState.SCORE_L3),
+                        CoralManipulatorState.L1,
+                        transitionTo(CoralManipulatorState.SCORE_L1),
+                        CoralManipulatorState.L2,
+                        transitionTo(CoralManipulatorState.SCORE_L2),
+                        CoralManipulatorState.L3,
+                        transitionTo(CoralManipulatorState.SCORE_L3),
                         CoralManipulatorState.CLIMB_L3,
-                                transitionTo(CoralManipulatorState.SCORE_CLIMB_L3),
-                        CoralManipulatorState.L4, transitionTo(CoralManipulatorState.SCORE_L4),
+                        transitionTo(CoralManipulatorState.SCORE_CLIMB_L3),
+                        CoralManipulatorState.L4,
+                        transitionTo(CoralManipulatorState.SCORE_L4),
                         CoralManipulatorState.CLIMB_L4,
-                                transitionTo(CoralManipulatorState.SCORE_CLIMB_L4)),
+                        transitionTo(CoralManipulatorState.SCORE_CLIMB_L4)),
                 this::getQueuedState);
     }
 
@@ -187,7 +191,11 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         if (isIntaking(targetState) || !isElevMovingUp(targetState)) {
             if (targetState == CoralManipulatorState.STOWED) {
                 if (getCurrentState() == CoralManipulatorState.SCORE_L3
-                        || getCurrentState() == CoralManipulatorState.SCORE_CLIMB_L3) {
+                        || getCurrentState() == CoralManipulatorState.SCORE_CLIMB_L3
+                        || getCurrentState() == CoralManipulatorState.SCORE_CLIMB_L4
+                        || getCurrentState() == CoralManipulatorState.CLIMB_L4
+                        || getCurrentState() == CoralManipulatorState.CLIMB_L3) {
+                    System.out.println("targetState = " + targetState);
                     coralManipulatorCommand =
                             arm.transitionTo(targetState.getArmPosition())
                                     .andThen(

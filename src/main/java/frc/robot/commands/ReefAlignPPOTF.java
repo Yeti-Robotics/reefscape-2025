@@ -17,6 +17,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.FieldConstants.Reef;
+import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
@@ -27,7 +28,7 @@ import java.util.Set;
 
 public class ReefAlignPPOTF {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
-
+    private final CoralManipulatorSystem coralManipulatorSystem;
     private final AprilTagSubsystem reefCam1;
     private final AprilTagSubsystem reefCam2;
 
@@ -58,9 +59,11 @@ public class ReefAlignPPOTF {
 
     public ReefAlignPPOTF(
             CommandSwerveDrivetrain commandSwerveDrivetrain,
+            CoralManipulatorSystem coralManipulatorSystem,
             AprilTagSubsystem reefCam1,
             AprilTagSubsystem reefCam2) {
         this.commandSwerveDrivetrain = commandSwerveDrivetrain;
+        this.coralManipulatorSystem = coralManipulatorSystem;
         this.reefCam1 = reefCam1;
         this.reefCam2 = reefCam2;
 
@@ -178,6 +181,12 @@ public class ReefAlignPPOTF {
         if (reefTargetPoseOpt.isEmpty()) {
             return Commands.runOnce(
                     () -> commandSwerveDrivetrain.setControl(stopReq), commandSwerveDrivetrain);
+        }
+
+        if (isRightCam) {
+            coralManipulatorSystem.setClimberSide(CoralManipulatorSystem.Side.SCORE);
+        } else {
+            coralManipulatorSystem.setClimberSide(CoralManipulatorSystem.Side.CLIMB);
         }
 
         reefFaceTargetPose = reefTargetPoseOpt.get();

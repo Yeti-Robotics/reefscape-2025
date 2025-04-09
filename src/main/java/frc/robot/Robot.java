@@ -6,7 +6,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.commands.PathfindingCommand;
-import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -39,7 +38,7 @@ public class Robot extends TimedRobot {
         robotContainer = new RobotContainer();
         DataLogManager.start();
         DriverStation.startDataLog(DataLogManager.getLog());
-        Epilogue.bind(this);
+        //     Epilogue.bind(this);
         SmartDashboard.putString("Build Date", BuildConstants.BUILD_DATE);
         SmartDashboard.putString("GIT SHA", BuildConstants.GIT_SHA);
         SmartDashboard.putString("Git Branch", BuildConstants.GIT_BRANCH);
