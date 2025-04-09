@@ -9,7 +9,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import edu.wpi.first.units.measure.Frequency;
 import frc.robot.util.akit.device.DeviceLogger;
 import frc.robot.util.akit.device.can.CANDeviceBuilder;
-
 import java.util.function.Function;
 
 public class TalonFXDevice
@@ -51,11 +50,11 @@ public class TalonFXDevice
         return followWithRequest(master.getDeviceID(), true);
     }
 
-    public TalonFXDevice withStatusSignalFrequency(Frequency frequency, Function<TalonFX, StatusSignal<?>> statusSignalFunction) {
+    public TalonFXDevice withStatusSignalFrequency(
+            Frequency frequency, Function<TalonFX, StatusSignal<?>> statusSignalFunction) {
         statusSignalFunction.apply(getDevice()).setUpdateFrequency(frequency);
         return this;
     }
-
 
     public TalonFXDevice withFusedCANcoder(CANcoder cancoder) {
         return withCANCoder(cancoder, FeedbackSensorSourceValue.FusedCANcoder);

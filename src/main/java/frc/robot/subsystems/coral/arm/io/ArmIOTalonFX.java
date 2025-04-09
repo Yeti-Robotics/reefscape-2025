@@ -27,7 +27,8 @@ public class ArmIOTalonFX implements ArmIO {
                     .log("ArmIO/Motor")
                     .using(ArmConfig.talonFXConfiguration)
                     .withFusedCANcoder(armCancoder)
-                    .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
+                    .withStatusSignalFrequency(
+                            HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
                     .syncConfigs()
                     .getDevice();
 

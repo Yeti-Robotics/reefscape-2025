@@ -23,7 +23,8 @@ public class WristIOTalonFX implements WristIO {
                     .log("WristIO/WristMotor")
                     .using(WristConfigs.wristMotorConfigs)
                     .withFusedCANcoder(wristCancoder)
-                    .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
+                    .withStatusSignalFrequency(
+                            HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
                     .syncConfigs()
                     .getDevice();
 

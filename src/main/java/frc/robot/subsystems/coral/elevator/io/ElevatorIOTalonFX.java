@@ -14,7 +14,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
             TalonFXDevice.configure(ElevatorConfig.primaryElevatorMotorID, Constants.CANIVORE_BUS)
                     .log("ElevatorIO/PrimaryMotor")
                     .using(ElevatorConfig.primaryTalonFXConfigs)
-                    .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
+                    .withStatusSignalFrequency(
+                            HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
                     .syncConfigs()
                     .getDevice();
 
