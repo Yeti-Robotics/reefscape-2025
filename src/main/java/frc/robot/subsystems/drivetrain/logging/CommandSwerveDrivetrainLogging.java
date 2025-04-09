@@ -14,12 +14,9 @@ import frc.robot.subsystems.drivetrain.module.SwerveModuleIO;
 import frc.robot.subsystems.drivetrain.module.SwerveModuleIOInputsAutoLogged;
 import frc.robot.subsystems.drivetrain.module.SwerveModuleIOTalonFX;
 import frc.robot.util.akit.LoggingUtils;
-import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 public class CommandSwerveDrivetrainLogging {
-    public static ReentrantLock odometryReadLock = new ReentrantLock();
-
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
     private final GyroIO gyro;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -42,13 +39,11 @@ public class CommandSwerveDrivetrainLogging {
     }
 
     public void log() {
-        odometryReadLock.lock();
         LoggingUtils.logInputs("Drive/Gyro", gyro, gyroInputs);
 
         for (int i = 0; i < swerveModules.length; i++) {
             LoggingUtils.logInputs("Drive/Module " + i, swerveModules[i], swerveModuleLogs[i]);
         }
-        odometryReadLock.unlock();
     }
 
     @AutoLogOutput(key = "Drive/SwerveChassisSpeeds")

@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
-import frc.robot.subsystems.coral.arm.io.ArmIOTalonFX;
+import frc.robot.subsystems.coral.arm.io.ArmIOSimulatedTalonFX;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.coral.elevator.io.ElevatorIOTalonFX;
+import frc.robot.subsystems.coral.elevator.io.ElevatorIOSimulatedTalonFX;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
 import frc.robot.subsystems.coral.grabber.io.GrabberIOTalonFX;
 import frc.robot.subsystems.coral.wrist.WristPosition;
@@ -19,9 +19,10 @@ import java.util.Map;
 
 public class CoralManipulatorSystem extends SubsystemBase
         implements TransitionableSubsystem<CoralManipulatorState> {
-    public final ArmSubsystem arm = new ArmSubsystem(new ArmIOTalonFX());
+    public final ArmSubsystem arm = new ArmSubsystem(new ArmIOSimulatedTalonFX());
 
-    public final ElevatorSubsystem elevator = new ElevatorSubsystem(new ElevatorIOTalonFX());
+    public final ElevatorSubsystem elevator =
+            new ElevatorSubsystem(new ElevatorIOSimulatedTalonFX());
 
     public final GrabberSubsystem grabber = new GrabberSubsystem(new GrabberIOTalonFX());
 

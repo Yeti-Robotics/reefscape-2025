@@ -6,7 +6,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 
@@ -46,17 +46,20 @@ public class CoralManipulatorMechanismVisualizer {
                                 "arm", Units.inchesToMeters(12), 0, 6, new Color8Bit(Color.kBlue)));
     }
 
+    public double scaleLength(double elevatorPosition) {
+        return Units.inchesToMeters((elevatorPosition * 6) + 1);
+    }
+
     public void update(Angle armPosition, Angle elevatorPosition) {
+        System.out.println(
+                "armPosition = " + armPosition + ", elevatorPosition = " + elevatorPosition);
         armLigament.setAngle(armPosition.in(Degrees) - 90.0);
-        elevatorLigament.setLength(elevatorPosition.magnitude());
+        elevatorLigament.setLength(scaleLength(elevatorPosition.magnitude()));
+
+        Logger.recordOutput("Mechanisms/CoralManipulator", elevatorArmMech);
     }
 
     public static CoralManipulatorMechanismVisualizer getInstance() {
         return visualizerInstance;
-    }
-
-    @AutoLogOutput(key = "Mechanism/CoralManipulatorVisualizer")
-    public LoggedMechanism2d getArmElevatorMechanism() {
-        return elevatorArmMech;
     }
 }
