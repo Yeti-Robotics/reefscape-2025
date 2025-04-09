@@ -7,11 +7,13 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
@@ -26,7 +28,7 @@ public class RobotContainer {
 
     public final CommandXboxController primaryXboxController;
     public final CommandXboxController secondaryXboxController;
-
+    public final CommandJoystick simJoy = new CommandJoystick(2);
     final CommandSwerveDrivetrain drivetrain;
 
     final CoralManipulatorSystem coralManipulator;
@@ -59,6 +61,7 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
+        DriverStation.silenceJoystickConnectionWarning(true);
         drivetrain.setDefaultCommand(
                 drivetrain.applyRequest(
                         () ->
@@ -73,6 +76,8 @@ public class RobotContainer {
                                         .withRotationalRate(
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
+
+        simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
         //        secondaryXboxController
         //                .povUp()
         //                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
