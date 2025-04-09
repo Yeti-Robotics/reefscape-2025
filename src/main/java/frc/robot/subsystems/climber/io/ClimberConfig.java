@@ -4,8 +4,11 @@ import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-class ClimberConfig {
+public class ClimberConfig {
     static final int CLIMBER_MOTOR_ID = 12;
+
+    public static final double CLIMB_SPEED = 0.75;
+    public static final double UNCLIMB_SPEED = -0.7;
 
     static final TalonFXConfiguration climberTalonFXConfigs =
             new TalonFXConfiguration()

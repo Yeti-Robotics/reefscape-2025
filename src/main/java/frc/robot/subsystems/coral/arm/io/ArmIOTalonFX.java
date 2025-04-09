@@ -26,15 +26,12 @@ public class ArmIOTalonFX implements ArmIO {
             TalonFXDevice.configure(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS)
                     .log("ArmIO/Motor")
                     .using(ArmConfig.talonFXConfiguration)
-                    .usingFusedCANcoder(armCancoder)
+                    .withFusedCANcoder(armCancoder)
+                    .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
                     .syncConfigs()
                     .getDevice();
 
     private final StatusSignal<Angle> positionSignal = armMotor.getPosition();
-
-    public ArmIOTalonFX() {
-        positionSignal.setUpdateFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY);
-    }
 
     @Override
     public Angle getPosition() {

@@ -22,16 +22,13 @@ public class WristIOTalonFX implements WristIO {
             TalonFXDevice.configure(WristConfigs.WRIST_KRAKEN_ID, Constants.CANIVORE_BUS)
                     .log("WristIO/WristMotor")
                     .using(WristConfigs.wristMotorConfigs)
-                    .usingFusedCANcoder(wristCancoder)
+                    .withFusedCANcoder(wristCancoder)
+                    .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
                     .syncConfigs()
                     .getDevice();
 
     private final StatusSignal<Angle> positionSignal = wristMotor.getPosition();
     private final PositionVoltage motorReq = new PositionVoltage(0);
-
-    public WristIOTalonFX() {
-        positionSignal.setUpdateFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY);
-    }
 
     @Override
     public Angle getPosition() {

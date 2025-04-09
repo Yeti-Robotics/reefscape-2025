@@ -14,6 +14,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
             TalonFXDevice.configure(ElevatorConfig.primaryElevatorMotorID, Constants.CANIVORE_BUS)
                     .log("ElevatorIO/PrimaryMotor")
                     .using(ElevatorConfig.primaryTalonFXConfigs)
+                    .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
                     .syncConfigs()
                     .getDevice();
 
@@ -29,10 +30,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
 
     private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
-
-    public ElevatorIOTalonFX() {
-        elevatorPosition.setUpdateFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY);
-    }
 
     @Override
     public boolean isAtSetpoint(Angle setpoint) {

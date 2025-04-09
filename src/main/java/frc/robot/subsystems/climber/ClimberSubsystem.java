@@ -2,6 +2,7 @@ package frc.robot.subsystems.climber;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.climber.io.ClimberConfig;
 import frc.robot.subsystems.climber.io.ClimberIO;
 
 public class ClimberSubsystem extends SubsystemBase {
@@ -11,11 +12,15 @@ public class ClimberSubsystem extends SubsystemBase {
         this.climberIO = climberIO;
     }
 
-    private void setClimberSpeed(double speed) {
-        climberIO.spinSpeed(speed);
+    public Command spinClimber(double speed) {
+        return startEnd(() -> climberIO.spinSpeed(speed), climberIO::stop);
     }
 
-    public Command spinClimber(double speed) {
-        return startEnd(() -> setClimberSpeed(speed), climberIO::stop);
+    public Command climbUp() {
+        return spinClimber(ClimberConfig.CLIMB_SPEED);
+    }
+
+    public Command climbDown() {
+        return spinClimber(ClimberConfig.UNCLIMB_SPEED);
     }
 }
