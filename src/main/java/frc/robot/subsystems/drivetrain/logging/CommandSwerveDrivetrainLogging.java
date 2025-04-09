@@ -14,9 +14,8 @@ import frc.robot.subsystems.drivetrain.module.SwerveModuleIO;
 import frc.robot.subsystems.drivetrain.module.SwerveModuleIOInputsAutoLogged;
 import frc.robot.subsystems.drivetrain.module.SwerveModuleIOTalonFX;
 import frc.robot.util.akit.LoggingUtils;
-import org.littletonrobotics.junction.AutoLogOutput;
-
 import java.util.concurrent.locks.ReentrantLock;
+import org.littletonrobotics.junction.AutoLogOutput;
 
 public class CommandSwerveDrivetrainLogging {
     public static ReentrantLock odometryReadLock = new ReentrantLock();

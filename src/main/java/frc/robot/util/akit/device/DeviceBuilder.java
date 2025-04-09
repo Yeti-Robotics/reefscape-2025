@@ -66,8 +66,8 @@ public abstract class DeviceBuilder<
     /**
      * Provide the device with a configuration to use.
      *
-     * <p>Note: if you want to reuse a configuration object for multiple CAN devices, make sure to call
-     * {@link frc.robot.util.akit.device.can.CANDeviceBuilder#syncConfigs()} first.
+     * <p>Note: if you want to reuse a configuration object for multiple CAN devices, make sure to
+     * call {@link frc.robot.util.akit.device.can.CANDeviceBuilder#syncConfigs()} first.
      *
      * @param config Configuration object you want to use
      * @return the device builder

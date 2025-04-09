@@ -6,6 +6,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.constants.Constants;
+import frc.robot.constants.HardwareConstants;
 import frc.robot.util.akit.device.can.cancoder.CANCoderDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
@@ -24,8 +25,13 @@ public class WristIOTalonFX implements WristIO {
                     .usingFusedCANcoder(wristCancoder)
                     .syncConfigs()
                     .getDevice();
+
     private final StatusSignal<Angle> positionSignal = wristMotor.getPosition();
     private final PositionVoltage motorReq = new PositionVoltage(0);
+
+    public WristIOTalonFX() {
+        positionSignal.setUpdateFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY);
+    }
 
     @Override
     public Angle getPosition() {

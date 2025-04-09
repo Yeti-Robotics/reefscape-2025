@@ -20,6 +20,8 @@ public class CANColorDeviceLogger implements DeviceLogger<CANColorInputs> {
 
         ColorData colorData = canColor.getColor();
 
+        inputs.promixity = canColor.getProximity();
+
         inputs.red = colorData.red();
         inputs.blue = colorData.blue();
         inputs.green = colorData.green();

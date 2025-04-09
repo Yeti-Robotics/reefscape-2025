@@ -1,8 +1,7 @@
 package frc.robot.util.akit.device;
 
-import org.littletonrobotics.junction.Logger;
-
 import java.util.ArrayList;
+import org.littletonrobotics.junction.Logger;
 
 public class DeviceLoggingRegistry {
     private static final DeviceLoggingRegistry INSTANCE = new DeviceLoggingRegistry();

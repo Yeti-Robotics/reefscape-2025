@@ -39,7 +39,9 @@ public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
         error = talon.getClosedLoopError();
         pidOutput = talon.getClosedLoopOutput();
 
-        BaseStatusSignal.setUpdateFrequencyForAll(DEFAULT_UPDATE_HZ, motorVoltage,
+        BaseStatusSignal.setUpdateFrequencyForAll(
+                DEFAULT_UPDATE_HZ,
+                motorVoltage,
                 motorAmps,
                 positionRotations,
                 velocityRotationsPerSec,

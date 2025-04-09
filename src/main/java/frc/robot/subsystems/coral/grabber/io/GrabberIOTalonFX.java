@@ -1,14 +1,18 @@
 package frc.robot.subsystems.coral.grabber.io;
 
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
+import edu.wpi.first.math.MathUtil;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.coral.grabber.GrabberState;
+import frc.robot.util.akit.device.can.cancolor.CANColorDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
 public class GrabberIOTalonFX implements GrabberIO {
-    private final Canandcolor clawSwitch = new Canandcolor(GrabberConfig.GRABBER_CANANDCOLOR);
+    private final Canandcolor clawSwitch =
+            CANColorDevice.configure(GrabberConfig.CLAW_ID)
+                    .log("GrabberIO/ColorSensor")
+                    .getDevice();
     private final TalonFX grabberMotor =
             TalonFXDevice.configure(GrabberConfig.CLAW_ID, Constants.RIO_BUS)
                     .log("GrabberIO/GrabberMotor")
@@ -16,21 +20,19 @@ public class GrabberIOTalonFX implements GrabberIO {
                     .syncConfigs()
                     .getDevice();
 
-    private final DutyCycleOut motorReq = new DutyCycleOut(0);
-
     @Override
     public void toSetpoint(GrabberState setpoint) {
-        grabberMotor.setControl(motorReq.withOutput(setpoint.getSetpoint()));
+        grabberMotor.set(setpoint.getSetpoint());
     }
 
     @Override
     public boolean isAtSetpoint(Double setpoint) {
-        return isAtSetpoint(setpoint, 1.0);
+        return isAtSetpoint(setpoint, 0.0);
     }
 
     @Override
     public boolean isAtSetpoint(Double setpoint, Double tolerance) {
-        return grabberMotor.getAppliedControl().getName().equals("DutyCycleOut");
+        return MathUtil.isNear(setpoint, grabberMotor.get(), tolerance);
     }
 
     @Override

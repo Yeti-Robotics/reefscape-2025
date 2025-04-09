@@ -3,6 +3,7 @@ package frc.robot.subsystems.coral;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
 import frc.robot.subsystems.coral.arm.io.ArmIOTalonFX;
@@ -14,7 +15,6 @@ import frc.robot.subsystems.coral.wrist.WristPosition;
 import frc.robot.subsystems.coral.wrist.WristSubsystem;
 import frc.robot.subsystems.coral.wrist.io.WristIOTalonFX;
 import frc.robot.util.state.TransitionableSubsystem;
-
 import java.util.Map;
 
 public class CoralManipulatorSystem extends SubsystemBase
@@ -93,6 +93,14 @@ public class CoralManipulatorSystem extends SubsystemBase
 
     public Command setQueueState(CoralManipulatorState queuedState) {
         return runOnce(() -> queueState(queuedState));
+    }
+
+    @Override
+    public void periodic() {
+        if (Robot.isSimulation()) {
+            CoralManipulatorMechanismVisualizer.getInstance()
+                    .update(arm.position(), elevator.position());
+        }
     }
 
     @Override

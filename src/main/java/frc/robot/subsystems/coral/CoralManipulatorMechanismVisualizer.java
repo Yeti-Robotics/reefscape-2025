@@ -1,6 +1,9 @@
-package frc.robot.util.sim;
+package frc.robot.subsystems.coral;
+
+import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -10,13 +13,15 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 public class CoralManipulatorMechanismVisualizer {
     private final LoggedMechanism2d elevatorArmMech =
             new LoggedMechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
+
     private final LoggedMechanismLigament2d armLigament;
-    private final LoggedMechanismLigament2d liftLigament;
+    private final LoggedMechanismLigament2d elevatorLigament;
+
     private static final CoralManipulatorMechanismVisualizer visualizerInstance =
             new CoralManipulatorMechanismVisualizer();
 
     private CoralManipulatorMechanismVisualizer() {
-        liftLigament =
+        elevatorLigament =
                 elevatorArmMech
                         .getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
                         .append(
@@ -36,25 +41,22 @@ public class CoralManipulatorMechanismVisualizer {
                                 6,
                                 new Color8Bit(Color.kGreen)));
         armLigament =
-                liftLigament.append(
+                elevatorLigament.append(
                         new LoggedMechanismLigament2d(
                                 "arm", Units.inchesToMeters(12), 0, 6, new Color8Bit(Color.kBlue)));
+    }
+
+    public void update(Angle armPosition, Angle elevatorPosition) {
+        armLigament.setAngle(armPosition.in(Degrees) - 90.0);
+        elevatorLigament.setLength(elevatorPosition.magnitude());
     }
 
     public static CoralManipulatorMechanismVisualizer getInstance() {
         return visualizerInstance;
     }
 
-    public LoggedMechanismLigament2d getArmLigament() {
-        return armLigament;
-    }
-
-    public LoggedMechanismLigament2d getLiftLigament() {
-        return liftLigament;
-    }
-
     @AutoLogOutput(key = "Mechanism/CoralManipulatorVisualizer")
-    public LoggedMechanism2d getElevatorArmMech() {
+    public LoggedMechanism2d getArmElevatorMechanism() {
         return elevatorArmMech;
     }
 }

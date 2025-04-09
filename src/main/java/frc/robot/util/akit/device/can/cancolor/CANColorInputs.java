@@ -17,4 +17,6 @@ public class CANColorInputs implements DeviceInputs {
     public double hue;
     public double saturation;
     public double value;
+
+    public double promixity;
 }

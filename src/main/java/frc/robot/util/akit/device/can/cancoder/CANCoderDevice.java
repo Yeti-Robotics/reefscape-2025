@@ -9,7 +9,7 @@ import frc.robot.util.akit.device.can.CANDeviceBuilder;
 
 public class CANCoderDevice
         extends CANDeviceBuilder<
-                        CANcoder, CANcoderConfiguration, CANCoderDeviceInputs, CANCoderDevice> {
+                CANcoder, CANcoderConfiguration, CANCoderDeviceInputs, CANCoderDevice> {
     private CANCoderDevice(CANcoder device) {
         super(device);
     }

@@ -8,36 +8,18 @@ import frc.robot.util.akit.device.DeviceLogger;
 
 public class DigitalInputDevice
         extends DeviceBuilder<
-        DigitalInput, DigitalInputConfig, DigitalInputDeviceInputs, DigitalInputDevice> {
-    private final int deviceID;
-    private String loggingKey;
+                DigitalInput, Object, DigitalInputDeviceInputs, DigitalInputDevice> {
 
-    private DigitalInputDevice(int id) {
-        super(null);
-        this.deviceID = id;
+    private DigitalInputDevice(DigitalInput digitalInput) {
+        super(digitalInput);
     }
 
     public static DigitalInputDevice configure(int deviceID) {
-        return new DigitalInputDevice(deviceID);
+        return new DigitalInputDevice(new DigitalInput(deviceID));
     }
 
     public DigitalInputDevice withSimDevice(SimDevice simDevice) {
-        getConfig().device = simDevice;
-        return this;
-    }
-
-    public DigitalInputDevice debounce(double debounce) {
-        getConfig().debounce = debounce;
-        return this;
-    }
-
-    public DigitalInputDevice debounceType(Debouncer.DebounceType debounceType) {
-        getConfig().debounceType = debounceType;
-        return this;
-    }
-
-    public DigitalInputDevice invert() {
-        getConfig().isInverted = true;
+        getDevice().setSimDevice(simDevice);
         return this;
     }
 
@@ -57,32 +39,7 @@ public class DigitalInputDevice
     }
 
     @Override
-    protected DigitalInputConfig getDefaultConfig() {
-        return new DigitalInputConfig();
-    }
-
-    @Override
-    public DigitalInputDevice log(String key) {
-        loggingKey = key;
-        return this;
-    }
-
-    public DigitalInput getDigitalInput() {
-        if (hasConfig()) {
-            return new CustomDigitalInput(deviceID, getConfig());
-        }
-
-        return new DigitalInput(deviceID);
-    }
-
-    @Override
-    public DigitalInput getDevice() {
-        DigitalInput digitalInput = getDigitalInput();
-
-        if (loggingKey != null) {
-            super.log(loggingKey);
-        }
-
-        return digitalInput;
+    protected Object getDefaultConfig() {
+        return null;
     }
 }

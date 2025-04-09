@@ -1,12 +1,12 @@
 package frc.robot.subsystems.coral.elevator.io;
 
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.constants.Constants;
+import frc.robot.constants.HardwareConstants;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
@@ -29,6 +29,10 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
 
     private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
+
+    public ElevatorIOTalonFX() {
+        elevatorPosition.setUpdateFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY);
+    }
 
     @Override
     public boolean isAtSetpoint(Angle setpoint) {

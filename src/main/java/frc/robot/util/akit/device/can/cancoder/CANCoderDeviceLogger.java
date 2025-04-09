@@ -19,9 +19,7 @@ public class CANCoderDeviceLogger implements DeviceLogger<CANCoderDeviceInputs> 
         position = cancoder.getPosition();
         absolutePosition = cancoder.getAbsolutePosition();
 
-        BaseStatusSignal.setUpdateFrequencyForAll(DEFAULT_UPDATE_HZ,
-                position, absolutePosition
-        );
+        BaseStatusSignal.setUpdateFrequencyForAll(DEFAULT_UPDATE_HZ, position, absolutePosition);
     }
 
     public void updateInputs(CANCoderDeviceInputs inputs) {

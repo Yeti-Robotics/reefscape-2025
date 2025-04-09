@@ -3,7 +3,6 @@ package frc.robot.subsystems.climber.io;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 class ClimberConfig {
     static final int CLIMBER_MOTOR_ID = 12;

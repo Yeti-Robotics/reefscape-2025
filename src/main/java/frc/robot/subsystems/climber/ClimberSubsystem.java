@@ -8,7 +8,7 @@ public class ClimberSubsystem extends SubsystemBase {
     private final ClimberIO climberIO;
 
     public ClimberSubsystem(ClimberIO climberIO) {
-      this.climberIO = climberIO;
+        this.climberIO = climberIO;
     }
 
     private void setClimberSpeed(double speed) {

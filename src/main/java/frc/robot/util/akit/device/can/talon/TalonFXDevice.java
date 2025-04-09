@@ -9,7 +9,8 @@ import frc.robot.util.akit.device.DeviceLogger;
 import frc.robot.util.akit.device.can.CANDeviceBuilder;
 
 public class TalonFXDevice
-        extends CANDeviceBuilder<TalonFX, TalonFXConfiguration, TalonFXDeviceInputs, TalonFXDevice> {
+        extends CANDeviceBuilder<
+                TalonFX, TalonFXConfiguration, TalonFXDeviceInputs, TalonFXDevice> {
     private TalonFXDevice(TalonFX motor) {
         super(motor);
     }

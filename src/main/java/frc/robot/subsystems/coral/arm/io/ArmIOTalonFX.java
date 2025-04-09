@@ -6,6 +6,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.constants.Constants;
+import frc.robot.constants.HardwareConstants;
 import frc.robot.util.akit.device.can.cancoder.CANCoderDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 import jakarta.inject.Singleton;
@@ -31,8 +32,9 @@ public class ArmIOTalonFX implements ArmIO {
 
     private final StatusSignal<Angle> positionSignal = armMotor.getPosition();
 
-    @Override
-    public void updateInputs(ArmInputs inputs) {}
+    public ArmIOTalonFX() {
+        positionSignal.setUpdateFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY);
+    }
 
     @Override
     public Angle getPosition() {
