@@ -23,6 +23,8 @@ public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
     private final StatusSignal<Double> pidOutput;
     private final Debouncer connectedDebouncer = new Debouncer(CONNECTED_DEBOUNCE_TIME);
 
+    private static final double DEFAULT_UPDATE_HZ = 50.0;
+
     public TalonFXDeviceLogger(TalonFX talon) {
         motorVoltage = talon.getMotorVoltage();
         motorAmps = talon.getTorqueCurrent();
@@ -36,6 +38,19 @@ public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
         feedForward = talon.getClosedLoopFeedForward();
         error = talon.getClosedLoopError();
         pidOutput = talon.getClosedLoopOutput();
+
+        BaseStatusSignal.setUpdateFrequencyForAll(DEFAULT_UPDATE_HZ, motorVoltage,
+                motorAmps,
+                positionRotations,
+                velocityRotationsPerSec,
+                accelerationRotationsPerSecSq,
+                motorTemperature,
+                pGain,
+                iGain,
+                dGain,
+                feedForward,
+                error,
+                pidOutput);
     }
 
     public void updateInputs(TalonFXDeviceInputs inputs) {

@@ -13,9 +13,15 @@ public class CANCoderDeviceLogger implements DeviceLogger<CANCoderDeviceInputs> 
     private final StatusSignal<Angle> absolutePosition;
     private final Debouncer connectedDebouncer = new Debouncer(CONNECTED_DEBOUNCE_TIME);
 
+    private static final double DEFAULT_UPDATE_HZ = 250.0;
+
     public CANCoderDeviceLogger(CANcoder cancoder) {
         position = cancoder.getPosition();
         absolutePosition = cancoder.getAbsolutePosition();
+
+        BaseStatusSignal.setUpdateFrequencyForAll(DEFAULT_UPDATE_HZ,
+                position, absolutePosition
+        );
     }
 
     public void updateInputs(CANCoderDeviceInputs inputs) {

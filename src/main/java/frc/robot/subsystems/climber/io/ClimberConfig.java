@@ -1,4 +1,4 @@
-package frc.robot.subsystems.climber;
+package frc.robot.subsystems.climber.io;
 
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -6,10 +6,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 class ClimberConfig {
-    static final int climberId = 12;
-    static final InvertedValue climberInversion = InvertedValue.Clockwise_Positive;
-    static final NeutralModeValue climberNeutralMode = NeutralModeValue.Brake;
-    static final int canCoderId = 3506;
+    static final int CLIMBER_MOTOR_ID = 12;
 
     static final TalonFXConfiguration climberTalonFXConfigs =
             new TalonFXConfiguration()
@@ -28,8 +25,8 @@ class ClimberConfig {
                                     .withMotionMagicJerk(0))
                     .withMotorOutput(
                             new MotorOutputConfigs()
-                                    .withInverted(climberInversion)
-                                    .withNeutralMode(climberNeutralMode))
+                                    .withInverted(InvertedValue.Clockwise_Positive)
+                                    .withNeutralMode(NeutralModeValue.Brake))
                     .withFeedback(
                             new FeedbackConfigs()
                                     .withRotorToSensorRatio(
@@ -37,11 +34,4 @@ class ClimberConfig {
                                     .withSensorToMechanismRatio(
                                             3.47222222222222) // def change that later
                             );
-    static final CANcoderConfiguration cancoderConfiguration =
-            new CANcoderConfiguration()
-                    .withMagnetSensor(
-                            new MagnetSensorConfigs()
-                                    .withMagnetOffset(0)
-                                    .withSensorDirection(
-                                            SensorDirectionValue.CounterClockwise_Positive));
 }
