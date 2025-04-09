@@ -51,12 +51,17 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     }
 
     @Override
-    public void setControl(ControlRequest controlData) {
-        primaryElevatorMotor.setControl(controlData);
+    public boolean bottomSwitchTriggered() {
+        return magSwitch.get();
     }
 
     @Override
-    public boolean bottomSwitchTriggered() {
-        return magSwitch.get();
+    public void setCurrentPositionToZero() {
+        primaryElevatorMotor.setPosition(0);
+    }
+
+    @Override
+    public void stopOutput() {
+        primaryElevatorMotor.stopMotor();
     }
 }
