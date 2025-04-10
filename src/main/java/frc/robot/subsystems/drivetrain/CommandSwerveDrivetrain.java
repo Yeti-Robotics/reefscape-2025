@@ -3,6 +3,8 @@ package frc.robot.subsystems.drivetrain;
 import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.wpilibj2.command.Commands.parallel;
+import static edu.wpi.first.wpilibj2.command.Commands.sequence;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
@@ -24,11 +26,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import java.io.IOException;
@@ -134,6 +139,80 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
                             },
                             null,
                             this));
+
+    public Command wheelCharacterization() {
+        var rotateRequest =
+                new SwerveRequest.FieldCentric()
+                        .withDriveRequestType(SwerveModule.DriveRequestType.Velocity)
+                        .withRotationalRate(0.4);
+        var directions = new double[4];
+        var initialWheelPositions = new Distance[4];
+        var initialYaw = Rotation.mutable(0);
+        return sequence(
+                // Start with a bit of rotation to make sure the wheels are in position:
+                applyRequest(() -> rotateRequest).withTimeout(2),
+                // Record initial data:
+                runOnce(
+                        () -> {
+                            for (int i = 0; i < 4; i++) {
+                                var module = getModule(i);
+                                directions[i] = Math.copySign(1, module.getCurrentState().speedMetersPerSecond);
+                                initialWheelPositions[i] = Meters.of(module.getPosition(false).distanceMeters);
+                            }
+                            initialYaw.mut_replace(getPigeon2().getYaw().getValue());
+                        }),
+                parallel(
+                        applyRequest(() -> rotateRequest),
+                        Commands.run(
+                                () -> {
+                                    // Find the difference in yaw since start
+                                    var currentYaw = getPigeon2().getYaw().getValue();
+                                    var gyroYawDifference = currentYaw.minus(initialYaw);
+                                    SmartDashboard.putNumber(
+                                            "Wheel characterization gyro difference", gyroYawDifference.in(Radians));
+
+                                    // Find how much the wheels have moved
+                                    var avgWheelMovement = Meters.mutable(0);
+                                    for (int i = 0; i < 4; i++) {
+                                        var module = getModule(i);
+                                        var wheelMovement =
+                                                (Meters.of(module.getPosition(false).distanceMeters)
+                                                        .minus(initialWheelPositions[i]))
+                                                        .times(directions[i]);
+                                        avgWheelMovement.mut_plus(wheelMovement);
+                                    }
+                                    avgWheelMovement.mut_divide(4);
+                                    SmartDashboard.putNumber(
+                                            "Wheel characterization wheel movement", avgWheelMovement.in(Meters));
+                                    // Find wheel circumference
+                                    var currentWheelCircumference = TunerConstants.kWheelRadius.times(2 * Math.PI);
+                                    // Based on wheel circumference, convert wheel movement in meters to rotations
+                                    var avgWheelMovementAngle =
+                                            avgWheelMovement.div(currentWheelCircumference).times(Rotation.one());
+                                    SmartDashboard.putNumber(
+                                            "Wheel characterization wheel movement radians",
+                                            avgWheelMovementAngle.in(Radians));
+
+                                    // Find the drive base radius of the wheels
+                                    var drivebaseRadius = Meters.of(getModuleLocations()[0].getNorm());
+                                    // Find the circumference from this radius
+                                    var drivebaseCircumference = drivebaseRadius.times(2 * Math.PI);
+                                    // Find the arc length that was actually traveled by each wheel based on gyro
+                                    var arcLength =
+                                            drivebaseCircumference.times(gyroYawDifference.div(Rotation.one()));
+                                    SmartDashboard.putNumber(
+                                            "Wheel characterization arc traveled", arcLength.in(Meters));
+
+                                    // Find what the wheel circumference should be based on the arc length
+                                    var actualWheelCircumference =
+                                            arcLength.div(avgWheelMovementAngle.div(Rotation.one()));
+                                    // Find what the wheel radius should be
+                                    var calculatedRadius = actualWheelCircumference.div(2 * Math.PI);
+                                    // Put to dashboard
+                                    SmartDashboard.putNumber(
+                                            "Wheel characterization CALCULATED RADIUS", calculatedRadius.in(Inches));
+                                })));
+    }
 
     /* The SysId routine to test */
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
