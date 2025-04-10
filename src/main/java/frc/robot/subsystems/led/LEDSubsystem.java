@@ -57,9 +57,7 @@ public class LEDSubsystem extends SubsystemBase {
             LEDPattern updatedPattern =
                     LEDPattern.solid(new Color(0, 0, 255))
                             .mask(LEDPattern.progressMaskLayer(() -> currentProgress));
-            run(() -> updatedPattern.applyTo(ledBuffer))
-                    .ignoringDisable(true)
-                    .schedule();
+            run(() -> updatedPattern.applyTo(ledBuffer)).ignoringDisable(true).schedule();
         }
     }
 
@@ -72,9 +70,7 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public Command runPattern(LEDPatterns pattern) {
-        return run(() -> pattern.pattern.applyTo(ledBuffer))
-                .repeatedly()
-                .ignoringDisable(true);
+        return run(() -> pattern.pattern.applyTo(ledBuffer)).repeatedly().ignoringDisable(true);
     }
 
     public Command selectAnimationCommand(Supplier<CoralManipulatorState> getCMS) {
