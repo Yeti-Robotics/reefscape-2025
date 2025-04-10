@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.Volts;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -71,7 +72,8 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
         return getSpin().gte(TunerConstants.MAX_BLUR_SPEED);
     }
 
-    private final SwerveRequest.ApplyRobotSpeeds AutoReq = new SwerveRequest.ApplyRobotSpeeds();
+    private final SwerveRequest.ApplyRobotSpeeds AutoReq = new SwerveRequest.ApplyRobotSpeeds()
+            .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation =
@@ -135,6 +137,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
 
     /* The SysId routine to test */
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+
     public final PPHolonomicDriveController driveController =
             new PPHolonomicDriveController(
                     new PIDConstants(10.0, 0.0, 0.0), new PIDConstants(7.0, 0.0, 0.0));
