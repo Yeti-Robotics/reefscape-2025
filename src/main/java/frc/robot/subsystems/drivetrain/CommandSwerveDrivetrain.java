@@ -134,7 +134,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
                             this));
 
     /* The SysId routine to test */
-    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineRotation;
+    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
     public final PPHolonomicDriveController driveController =
             new PPHolonomicDriveController(
                     new PIDConstants(10.0, 0.0, 0.0), new PIDConstants(7.0, 0.0, 0.0));

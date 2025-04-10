@@ -5,6 +5,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -22,9 +23,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.AutoNamedCommands;
 import frc.robot.commands.ReefAlignPPOTF;
 import frc.robot.constants.Constants;
@@ -201,16 +204,26 @@ public class RobotContainer {
                                                         * TunerConstants.MaFxAngularRate)));
         primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-        primaryXboxController
-                .leftBumper()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
-        primaryXboxController
-                .rightBumper()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+        primaryXboxController.leftBumper().onTrue(new InstantCommand(SignalLogger::start));
+        primaryXboxController.rightBumper().onTrue(new InstantCommand(SignalLogger::stop));
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-        primaryXboxController.y().whileTrue(reefAlignPPOTF.reefAlign());
-        primaryXboxController.button(1).whileTrue(reefAlignPPOTF.reefAlign());
+        primaryXboxController
+                .y()
+                .whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        //        primaryXboxController
+        //                .a()
+        //                .whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        primaryXboxController
+                .b()
+                .whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        primaryXboxController
+                .x()
+                .whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        primaryXboxController
+                .a()
+                .onTrue(driveForward().withTimeout(1).andThen(SwerveRequest.Idle::new));
+        //        primaryXboxController.button(1).whileTrue(reefAlignPPOTF.reefAlign());
         gigaStation.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
         gigaStation.button(18).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         gigaStation.button(16).onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
