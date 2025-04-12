@@ -211,10 +211,12 @@ public class RobotContainer {
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
         primaryXboxController.y().whileTrue(reefAlignPPOTF.reefAlign());
         primaryXboxController.button(1).whileTrue(reefAlignPPOTF.reefAlign());
-        gigaStation.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
+        gigaStation.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
         gigaStation.button(18).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         gigaStation.button(16).onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
-        gigaStation.button(17).onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
+        gigaStation
+                .button(17)
+                .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ALGAE_SHOOT));
         gigaStation.button(7).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
         gigaStation.button(8).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
         gigaStation.button(9).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
@@ -227,17 +229,28 @@ public class RobotContainer {
                 .button(4)
                 .onTrue(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT))
                 .onFalse(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT));
+        gigaStation
+                .button(5)
+                .onTrue(coralManipulator.setMode(CoralManipulatorSystem.Mode.ALGAE))
+                .onFalse(coralManipulator.setMode(CoralManipulatorSystem.Mode.CORAL));
         gigaStation.button(13).whileTrue(climber.spinClimber(climber.climbSpeed));
         gigaStation.button(14).whileTrue(climber.spinClimber(climber.unClimbSpeed));
         gigaStation
                 .button(11)
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAE_HIGH));
+        gigaStation
+                .button(12)
+                .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ALL_IN));
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(
-                coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+                coralManipulator
+                        .transitionTo(CoralManipulatorState.STOWED)
+                        .unless(coralManipulator::isAlgaeMode));
 
         coralManipulator.grabber.doesNotHaveCoralTrigger.onTrue(
-                coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+                coralManipulator
+                        .transitionTo(CoralManipulatorState.STOWED)
+                        .unless(coralManipulator::isAlgaeMode));
     }
 
     public void updateMechanisms() {

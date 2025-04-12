@@ -11,6 +11,11 @@ class GrabberConfig {
     static final int CLAW_ID = 12;
     static final double OUTSPIT = -0.1;
     static final double INTAKE = 1;
+    static final double ALGAE_INTAKE = 0.7;
+    static final double ALL_IN = 1;
+    static final double HOLD = 0.1;
+    static final double ALGAE_HOLD = 0.6;
+    static final double ALGAE_SHOOT = -1.0;
     static final TalonFXConfiguration coralMotorConfig =
             new TalonFXConfiguration()
                     .withMotorOutput(
@@ -19,6 +24,7 @@ class GrabberConfig {
                                     .withNeutralMode(NeutralModeValue.Brake))
                     .withSlot0(new Slot0Configs().withKV(1).withKA(1))
                     .withMotionMagic(new MotionMagicConfigs().withMotionMagicAcceleration(1));
+    // .withCurrentLimits();
 
     static final int GRABBER_CANANDCOLOR = 0;
 }

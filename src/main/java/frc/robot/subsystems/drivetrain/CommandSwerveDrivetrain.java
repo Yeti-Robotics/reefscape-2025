@@ -159,7 +159,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        registerTelemetry(TunerConstants.logger::telemeterize);
+        // registerTelemetry(TunerConstants.logger::telemeterize);
 
         {
             try {

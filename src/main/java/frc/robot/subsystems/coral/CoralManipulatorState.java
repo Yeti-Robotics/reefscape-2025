@@ -11,6 +11,16 @@ public enum CoralManipulatorState {
             ElevatorPosition.BOTTOM,
             GrabberState.ROLL_IN,
             WristPositions.UNSAFE),
+    ALGAE_GROUND(
+            ArmPosition.AWAY,
+            ElevatorPosition.BOTTOM,
+            GrabberState.ALGAE_ROLL_IN,
+            WristPositions.UNSAFE),
+    BARGE(
+            ArmPosition.ALGAE_SCORE,
+            ElevatorPosition.POS_L4,
+            GrabberState.ALGAE_HOLD,
+            WristPositions.UNSAFE),
     L1(ArmPosition.POS_L1, ElevatorPosition.POS_L1, GrabberState.OFF, WristPositions.UNSAFE),
     SCORE_L1(
             ArmPosition.POS_L1,
@@ -36,12 +46,17 @@ public enum CoralManipulatorState {
     CLIMB(ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.SAFE),
     LOLLIPOP(
             ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.ROLL_IN, WristPositions.SAFE),
-    ALGAEHIGH(
+    ALGAE_HIGH(
             ArmPosition.POS_L3,
             ElevatorPosition.POS_L3,
             GrabberState.ROLL_IN,
             WristPositions.UNSAFE),
-    IDLE(ArmPosition.HOLD, ElevatorPosition.HOLD, GrabberState.OFF, WristPositions.SAFE);
+    IDLE(ArmPosition.HOLD, ElevatorPosition.HOLD, GrabberState.OFF, WristPositions.SAFE),
+    ALGAE_STOW(
+            ArmPosition.ALGAE_STOW,
+            ElevatorPosition.BOTTOM,
+            GrabberState.ALGAE_HOLD,
+            WristPositions.UNSAFE);
 
     private final ArmPosition armPosition;
     private final ElevatorPosition elevatorPosition;
