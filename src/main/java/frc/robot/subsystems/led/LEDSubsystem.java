@@ -30,6 +30,7 @@ public class LEDSubsystem extends SubsystemBase {
         ledStrip.start();
 
         setDefaultCommand(run(this::updateProgress).ignoringDisable(true));
+
         new Trigger(DriverStation::isAutonomousEnabled)
                 .onTrue(runPattern(LEDPatterns.AUTO_PATTERN));
         new Trigger(DriverStation::isTeleopEnabled)
@@ -60,11 +61,12 @@ public class LEDSubsystem extends SubsystemBase {
 
     public void updateProgress() {
         if (DriverStation.isDisabled()) {
+            //            LEDPattern steps = LEDPattern.steps(Map.of(0, ))
             LEDPattern updatedPattern =
                     LEDPattern.solid(new Color(0, 0, 255))
                             .mask(LEDPattern.progressMaskLayer(() -> currentProgress));
 
-            applyPattern(updatedPattern);
+            run(() -> applyPattern(updatedPattern)).ignoringDisable(true).schedule();
         }
     }
 
@@ -82,9 +84,8 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public Command runPattern(LEDPatterns pattern) {
-        return runOnce(() -> applyPattern(pattern.pattern)).ignoringDisable(true);
+        return runOnce(() -> applyPattern(pattern.pattern)).repeatedly().ignoringDisable(true);
     }
-
 
     public Command selectAnimationCommand(Supplier<CoralManipulatorState> getCMS) {
         EnumMap<CoralManipulatorState, Command> animationCommands =
