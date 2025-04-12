@@ -24,9 +24,11 @@ public class LEDSubsystem extends SubsystemBase {
         ledBuffer = new AddressableLEDBuffer(LEDConstants.LED_COUNT);
         leftStrip = ledBuffer.createView(0, 31);
         rightStrip = ledBuffer.createView(32, 71).reversed();
+
         ledStrip.setLength(ledBuffer.getLength());
         ledStrip.setData(ledBuffer);
         ledStrip.start();
+
         setDefaultCommand(run(this::updateProgress).ignoringDisable(true));
         new Trigger(DriverStation::isAutonomousEnabled)
                 .onTrue(runPattern(LEDPatterns.AUTO_PATTERN));
@@ -58,14 +60,11 @@ public class LEDSubsystem extends SubsystemBase {
 
     public void updateProgress() {
         if (DriverStation.isDisabled()) {
-//            LEDPattern steps = LEDPattern.steps(Map.of(0, ))
             LEDPattern updatedPattern =
                     LEDPattern.solid(new Color(0, 0, 255))
                             .mask(LEDPattern.progressMaskLayer(() -> currentProgress));
-            run(() -> updatedPattern.applyTo(leftStrip))
-                    .andThen(run(() -> updatedPattern.applyTo(rightStrip)))
-                    .ignoringDisable(true)
-                    .schedule();
+
+            applyPattern(updatedPattern);
         }
     }
 
@@ -77,12 +76,15 @@ public class LEDSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
     }
 
-    public Command runPattern(LEDPatterns pattern) {
-        return run(() -> pattern.pattern.applyTo(leftStrip))
-                .andThen(run(() -> pattern.pattern.applyTo(rightStrip)))
-                .repeatedly()
-                .ignoringDisable(true);
+    public void applyPattern(LEDPattern pattern) {
+        pattern.applyTo(leftStrip);
+        pattern.applyTo(rightStrip);
     }
+
+    public Command runPattern(LEDPatterns pattern) {
+        return runOnce(() -> applyPattern(pattern.pattern)).ignoringDisable(true);
+    }
+
 
     public Command selectAnimationCommand(Supplier<CoralManipulatorState> getCMS) {
         EnumMap<CoralManipulatorState, Command> animationCommands =
