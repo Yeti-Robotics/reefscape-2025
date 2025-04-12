@@ -5,6 +5,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.wpilibj2.command.Commands.run;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
@@ -276,6 +277,7 @@ public class RobotContainer {
                                 .reefAlign()
                                 .alongWith(leds.runPattern(LEDPatterns.AUTO_ALIGN)))
                 .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
+        simJoy.button(15).onTrue(runOnce(() -> leds.ledFlame.updateFlame()));
     }
 
     public void updateMechanisms() {

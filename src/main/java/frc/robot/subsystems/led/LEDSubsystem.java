@@ -17,14 +17,16 @@ public class LEDSubsystem extends SubsystemBase {
     private final AddressableLEDBuffer ledBuffer;
     private final AddressableLEDBufferView leftStrip;
     private final AddressableLEDBufferView rightStrip;
+    public final LEDFlame ledFlame;
     private double currentProgress = 0.0;
+    private boolean flameActive = false;
 
     public LEDSubsystem() {
         ledStrip = new AddressableLED(LEDConstants.LED_STRIP_PORT);
         ledBuffer = new AddressableLEDBuffer(LEDConstants.LED_COUNT);
         leftStrip = ledBuffer.createView(0, 31);
         rightStrip = ledBuffer.createView(32, 71).reversed();
-
+        ledFlame = new LEDFlame(ledStrip, ledBuffer);
         ledStrip.setLength(ledBuffer.getLength());
         ledStrip.setData(ledBuffer);
         ledStrip.start();
@@ -72,7 +74,11 @@ public class LEDSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (flameActive) {
+            ledFlame.updateFlame();
+        }
         ledStrip.setData(ledBuffer);
+        SmartDashboard.putBoolean("Flame Active", flameActive);
         SmartDashboard.putNumber("Progress Bar", currentProgress);
         SmartDashboard.putBoolean("Is Battery Good?", RobotController.getBatteryVoltage() > 12.5);
         SmartDashboard.putNumber("Battery Voltage", RobotController.getBatteryVoltage());
@@ -81,6 +87,14 @@ public class LEDSubsystem extends SubsystemBase {
     public void applyPattern(LEDPattern pattern) {
         pattern.applyTo(leftStrip);
         pattern.applyTo(rightStrip);
+    }
+
+    public void enableFlame(){
+        flameActive = true;
+    }
+
+    public void disableFlame(){
+        flameActive = false;
     }
 
     public Command runPattern(LEDPatterns pattern) {
