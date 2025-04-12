@@ -17,7 +17,7 @@ public class FieldConstants {
     // the root directory of this project.
 
     public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT =
-            AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+            AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
     public static final double fieldWidth = APRIL_TAG_FIELD_LAYOUT.getFieldWidth();
 
     public enum ReefLevel {

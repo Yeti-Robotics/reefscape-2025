@@ -9,9 +9,11 @@ public enum ElevatorPosition implements Comparable<ElevatorPosition> {
     POS_L1(2.4),
     POS_L2(0.4),
     POS_L3(2.2),
+    HIGH_ALGAE(2.2),
     SCORE_L3(1.8),
     POS_L4(3.97),
     SCORE_L4(3.55), // 3.4
+    LOW_ALGAE(1.777344),
     HOLD(-1); // special case, for when transitions are interrupted
 
     private final Angle height;

@@ -10,11 +10,9 @@ import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,7 +36,6 @@ public class ElevatorSubsystem
     private final MotionMagicTorqueCurrentFOC magicRequest =
             new MotionMagicTorqueCurrentFOC(0).withSlot(Robot.isReal() ? 0 : 1);
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
-    private final StatusSignal<AngularVelocity> elevatorVelo = primaryElevatorMotor.getVelocity();
     private final StatusSignal<Double> elevatorTargetPosition =
             primaryElevatorMotor.getClosedLoopReference();
 
@@ -69,7 +66,7 @@ public class ElevatorSubsystem
 
     @Override
     public void runPeriodic() {
-        elevatorVelo.refresh();
+        super.runPeriodic();
     }
 
     private Command zeroPosition() {
@@ -116,11 +113,5 @@ public class ElevatorSubsystem
             primaryElevatorMotor.setControl(neutralOut);
         }
         return transitionFinished;
-    }
-
-    @Override
-    public boolean isTransitioning() {
-        return MathUtil.isNear(
-                elevatorVelo.getValueAsDouble(), getCurrentState().getHeight().magnitude(), 0.02);
     }
 }

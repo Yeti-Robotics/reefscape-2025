@@ -57,6 +57,8 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
     @Override
     public void periodic() {
+        //        photonPoseEstimator.addHeadingData(
+        //                Timer.getFPGATimestamp(), drivetrain.getPigeon2().getRotation2d());
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
         if (results.isEmpty()) {
@@ -70,21 +72,18 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         PhotonTrackedTarget closestTarget = null;
         double closestDistance = Double.POSITIVE_INFINITY;
         // replace this with a counter-controlled loop if needed
+        resultLoop:
         for (PhotonPipelineResult pipelineResult : results) {
-            boolean skipResult = false;
             if (pipelineResult.hasTargets()) {
                 for (var target : pipelineResult.targets) {
                     if (AprilTagDetectionHelpers.getDetectionDistance(
                                     target.getBestCameraToTarget())
                             > 5) {
-                        skipResult = true;
-                        break;
+                        break resultLoop;
                     }
                 }
             }
-            if (skipResult) {
-                continue;
-            }
+
             Optional<EstimatedRobotPose> estimatedRobotPoseOpt =
                     photonPoseEstimator.update(pipelineResult);
             double timestamp = pipelineResult.getTimestampSeconds();
