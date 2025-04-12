@@ -15,11 +15,15 @@ import java.util.function.Supplier;
 public class LEDSubsystem extends SubsystemBase {
     public AddressableLED ledStrip;
     private final AddressableLEDBuffer ledBuffer;
+    private final AddressableLEDBufferView leftStrip;
+    private final AddressableLEDBufferView rightStrip;
     private double currentProgress = 0.0;
 
     public LEDSubsystem() {
         ledStrip = new AddressableLED(LEDConstants.LED_STRIP_PORT);
         ledBuffer = new AddressableLEDBuffer(LEDConstants.LED_COUNT);
+        leftStrip = ledBuffer.createView(0, 31);
+        rightStrip = ledBuffer.createView(32, 71);
         ledStrip.setLength(ledBuffer.getLength());
         ledStrip.setData(ledBuffer);
         ledStrip.start();
@@ -57,7 +61,10 @@ public class LEDSubsystem extends SubsystemBase {
             LEDPattern updatedPattern =
                     LEDPattern.solid(new Color(0, 0, 255))
                             .mask(LEDPattern.progressMaskLayer(() -> currentProgress));
-            run(() -> updatedPattern.applyTo(ledBuffer)).ignoringDisable(true).schedule();
+            run(() -> updatedPattern.applyTo(leftStrip))
+                    .alongWith(run(() -> updatedPattern.applyTo(rightStrip)))
+                    .ignoringDisable(true)
+                    .schedule();
         }
     }
 
@@ -70,7 +77,10 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public Command runPattern(LEDPatterns pattern) {
-        return run(() -> pattern.pattern.applyTo(ledBuffer)).repeatedly().ignoringDisable(true);
+        return run(() -> pattern.pattern.applyTo(leftStrip))
+                .alongWith(run(() -> pattern.pattern.applyTo(rightStrip)))
+                .repeatedly()
+                .ignoringDisable(true);
     }
 
     public Command selectAnimationCommand(Supplier<CoralManipulatorState> getCMS) {
