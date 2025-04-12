@@ -50,7 +50,7 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
         return clawSwitch.getProximity() > 0.3;
     }
 
-//    public boolean hasAlgae() { return clawSwitch.getProximity(); }
-//
-//    public boolean doesNotHaveAlgae() { return clawSwitch.getColor(); }
+    //    public boolean hasAlgae() { return clawSwitch.getProximity(); }
+    //
+    //    public boolean doesNotHaveAlgae() { return clawSwitch.getColor(); }
 }

@@ -264,7 +264,9 @@ public class RobotContainer {
         simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         simJoy.button(8).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
         simJoy.button(9).onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
-        simJoy.button(10).onTrue(leds.runPattern(LEDPatterns.NICK_MODE));
+        simJoy.button(10)
+                .onTrue(leds.runPattern(LEDPatterns.NICK_MODE))
+                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
         simJoy.button(11).onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
         simJoy.button(12).onTrue(runOnce(() -> leds.addProgress()));
         simJoy.button(13).onTrue(runOnce(() -> leds.subtractProgress()));
@@ -273,7 +275,7 @@ public class RobotContainer {
                         reefAlignPPOTF
                                 .reefAlign()
                                 .alongWith(leds.runPattern(LEDPatterns.AUTO_ALIGN)))
-                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_SCROLLING));
+                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
     }
 
     public void updateMechanisms() {

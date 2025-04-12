@@ -111,5 +111,6 @@
       "useGamepad": true
     }
   ],
-  "useEnableDisableHotkeys": true
+  "useEnableDisableHotkeys": true,
+  "useEstopHotkey": true
 }

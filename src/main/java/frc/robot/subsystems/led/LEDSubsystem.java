@@ -23,7 +23,7 @@ public class LEDSubsystem extends SubsystemBase {
         ledStrip = new AddressableLED(LEDConstants.LED_STRIP_PORT);
         ledBuffer = new AddressableLEDBuffer(LEDConstants.LED_COUNT);
         leftStrip = ledBuffer.createView(0, 31);
-        rightStrip = ledBuffer.createView(32, 71);
+        rightStrip = ledBuffer.createView(32, 71).reversed();
         ledStrip.setLength(ledBuffer.getLength());
         ledStrip.setData(ledBuffer);
         ledStrip.start();
@@ -32,10 +32,10 @@ public class LEDSubsystem extends SubsystemBase {
                 .onTrue(runPattern(LEDPatterns.AUTO_PATTERN));
         new Trigger(DriverStation::isTeleopEnabled)
                 .and(LEDSubsystem::isRedAlliance)
-                .onTrue(runPattern(LEDPatterns.RED_ALLIANCE_RSL_BLINK));
+                .onTrue(runPattern(LEDPatterns.RED_ALLIANCE_PATTERN));
         new Trigger(DriverStation::isTeleopEnabled)
                 .and(() -> !isRedAlliance())
-                .onTrue(runPattern(LEDPatterns.YETI_BLUE_RSL_BLINK));
+                .onTrue(runPattern(LEDPatterns.YETI_BLUE_PATTERN));
         new Trigger(DriverStation::isDisabled)
                 .whileTrue(run(this::updateProgress).ignoringDisable(true));
     }
@@ -58,11 +58,12 @@ public class LEDSubsystem extends SubsystemBase {
 
     public void updateProgress() {
         if (DriverStation.isDisabled()) {
+//            LEDPattern steps = LEDPattern.steps(Map.of(0, ))
             LEDPattern updatedPattern =
                     LEDPattern.solid(new Color(0, 0, 255))
                             .mask(LEDPattern.progressMaskLayer(() -> currentProgress));
             run(() -> updatedPattern.applyTo(leftStrip))
-                    .alongWith(run(() -> updatedPattern.applyTo(rightStrip)))
+                    .andThen(run(() -> updatedPattern.applyTo(rightStrip)))
                     .ignoringDisable(true)
                     .schedule();
         }
@@ -78,7 +79,7 @@ public class LEDSubsystem extends SubsystemBase {
 
     public Command runPattern(LEDPatterns pattern) {
         return run(() -> pattern.pattern.applyTo(leftStrip))
-                .alongWith(run(() -> pattern.pattern.applyTo(rightStrip)))
+                .andThen(run(() -> pattern.pattern.applyTo(rightStrip)))
                 .repeatedly()
                 .ignoringDisable(true);
     }
@@ -101,7 +102,7 @@ public class LEDSubsystem extends SubsystemBase {
             if (isRedAlliance()) {
                 animationCommands.put(state, runPattern(LEDPatterns.RED_ALLIANCE_RSL_BLINK));
             } else {
-                animationCommands.put(state, runPattern(LEDPatterns.YETI_BLUE_RSL_BLINK));
+                animationCommands.put(state, runPattern(LEDPatterns.YETI_BLUE_PATTERN));
             }
         }
         animationCommands.put(CoralManipulatorState.HP_INTAKE, runPattern(LEDPatterns.WHITE_BLINK));
@@ -119,7 +120,7 @@ public class LEDSubsystem extends SubsystemBase {
                     CoralManipulatorState.STOWED,
                     runPattern(LEDPatterns.WHITE)
                             .withTimeout(2)
-                            .andThen(runPattern(LEDPatterns.YETI_BLUE_RSL_BLINK)));
+                            .andThen(runPattern(LEDPatterns.YETI_BLUE_PATTERN)));
         }
 
         animationCommands.put(

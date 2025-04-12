@@ -23,8 +23,9 @@ public enum LEDPatterns {
     ALGAE_COLOR_PATTERN(LEDPattern.solid(LEDConstants.ALGAE_COLOR)),
     AUTO_ALIGN(LEDPattern.solid(Color.kGold)),
     AUTO_PATTERN(LEDPattern.solid(Color.kSilver).breathe(Seconds.of(3))),
+    RED_ALLIANCE_PATTERN(LEDPattern.solid(Color.kRed)),
     RED_ALLIANCE_RSL_BLINK(
-            LEDPattern.solid(Color.kRed).synchronizedBlink(RobotController::getRSLState)),
+            RED_ALLIANCE_PATTERN.pattern.synchronizedBlink(RobotController::getRSLState)),
     NICK_MODE(
             LEDPattern.solid(LEDConstants.NICK_ORANGE)
                     .synchronizedBlink(RobotController::getRSLState)),
