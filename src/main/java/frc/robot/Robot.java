@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.coral.CoralManipulatorState;
+import frc.robot.util.Elastic;
 import frc.robot.util.sim.PhysicsSim;
 
 /**
@@ -62,7 +63,9 @@ public class Robot extends TimedRobot {
 
     /** This method is called once each time the robot enters Disabled mode. */
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        Elastic.selectTab("Prematch");
+    }
 
     @Override
     public void disabledPeriodic() {}
@@ -73,6 +76,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         autonomousCommand = robotContainer.getAutonomousCommand();
+        Elastic.selectTab("Autonomous");
 
         if (autonomousCommand != null) {
             autonomousCommand.schedule();
@@ -85,6 +89,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        Elastic.selectTab("Teleoperated");
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }

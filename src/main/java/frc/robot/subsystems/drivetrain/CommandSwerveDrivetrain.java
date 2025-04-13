@@ -1,11 +1,11 @@
 package frc.robot.subsystems.drivetrain;
 
-import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -29,7 +29,9 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.led.LEDConstants;
 import java.io.IOException;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
@@ -46,6 +48,12 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
     private double m_lastSimTime;
     RobotConfig config;
     @NotLogged SwerveDriveKinematics m_kinematics;
+
+    public final Trigger zeroedWheels =
+            new Trigger(() -> isWheelZeroed(getCANcoder(0)))
+                    .and(() -> isWheelZeroed(getCANcoder(1)))
+                    .and(() -> isWheelZeroed(getCANcoder(2)))
+                    .and(() -> isWheelZeroed(getCANcoder(3)));
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -238,6 +246,11 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
         }
     }
 
+    private boolean isWheelZeroed(CANcoder wheel) {
+        double position = wheel.getPosition().refresh().getValueAsDouble();
+        return position >= 0 || position <= LEDConstants.ZERO_TOLERANCE;
+    }
+
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *
@@ -344,5 +357,9 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
                 visionRobotPoseMeters,
                 Utils.fpgaToCurrentTime(timestampSeconds),
                 visionMeasurementStdDevs);
+    }
+
+    private CANcoder getCANcoder(int id) {
+        return getModule(id).getEncoder();
     }
 }

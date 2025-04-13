@@ -1,8 +1,10 @@
 package frc.robot.constants;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Robot;
 import java.io.IOException;
 import java.util.*;
 
@@ -20,8 +22,13 @@ public class FieldConstants {
 
     static {
         try {
-            APRIL_TAG_FIELD_LAYOUT =
-                    new AprilTagFieldLayout("/home/lvuser/deploy/practice_field.json");
+            if (Robot.isReal()) {
+                APRIL_TAG_FIELD_LAYOUT =
+                        new AprilTagFieldLayout("/home/lvuser/deploy/practice_field.json");
+            } else {
+                APRIL_TAG_FIELD_LAYOUT =
+                        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
