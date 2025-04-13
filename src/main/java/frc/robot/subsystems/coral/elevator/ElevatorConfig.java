@@ -17,7 +17,7 @@ class ElevatorConfig {
                     .withKP(256)
                     .withKI(0)
                     .withKD(32)
-                    .withKG(50)
+                    .withKG(91.5)
                     .withKV(7)
                     .withKA(2)
                     .withKS(14)
