@@ -235,7 +235,12 @@ public class RobotContainer {
         primaryXboxController.y().whileTrue(reefAlignPPOTF.reefAlign());
         primaryXboxController.a().whileTrue(algaeAlignPPOTF.algaeAlign());
         primaryXboxController.button(1).whileTrue(reefAlignPPOTF.reefAlign());
-        gigaStation.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB).alongWith(leds.runPattern(LEDPatterns.FADING_BLUE_SCROLL)));
+        gigaStation
+                .button(2)
+                .onTrue(
+                        coralManipulator
+                                .transitionTo(CoralManipulatorState.CLIMB)
+                                .alongWith(leds.runPattern(LEDPatterns.FADING_BLUE_SCROLL)));
         gigaStation.button(18).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         gigaStation.button(16).onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         gigaStation
@@ -261,6 +266,7 @@ public class RobotContainer {
                 .button(5)
                 .onTrue(coralManipulator.setMode(CoralManipulatorSystem.Mode.ALGAE))
                 .onFalse(coralManipulator.setMode(CoralManipulatorSystem.Mode.CORAL));
+
         gigaStation.button(13).whileTrue(climber.spinClimber(climber.climbSpeed));
         gigaStation.button(14).whileTrue(climber.spinClimber(climber.unClimbSpeed));
         gigaStation
@@ -311,7 +317,7 @@ public class RobotContainer {
         simJoy.button(10)
                 .onTrue(leds.runPattern(LEDPatterns.NICK_MODE))
                 .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
-        simJoy.button(11).onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
+        simJoy.button(11).onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAE_HIGH));
         simJoy.button(12).onTrue(runOnce(() -> leds.addProgress()));
         simJoy.button(13).onTrue(runOnce(() -> leds.subtractProgress()));
         simJoy.button(14)

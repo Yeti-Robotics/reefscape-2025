@@ -141,7 +141,7 @@ public class LEDSubsystem extends SubsystemBase {
         }
 
         animationCommands.put(
-                CoralManipulatorState.ALGAEHIGH, runPattern(LEDPatterns.ALGAE_COLOR_PATTERN));
+                CoralManipulatorState.ALGAE_HIGH, runPattern(LEDPatterns.ALGAE_COLOR_PATTERN));
         animationCommands.put(
                 CoralManipulatorState.CLIMB, runPattern(LEDPatterns.SCROLLING_RAINBOW));
 
