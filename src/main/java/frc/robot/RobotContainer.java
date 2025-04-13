@@ -223,7 +223,7 @@ public class RobotContainer {
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
         primaryXboxController.y().whileTrue(reefAlignPPOTF.reefAlign());
         primaryXboxController.button(1).whileTrue(reefAlignPPOTF.reefAlign());
-        gigaStation.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
+        gigaStation.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB).alongWith(leds.runPattern(LEDPatterns.FADING_BLUE_SCROLL)));
         gigaStation.button(18).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         gigaStation.button(16).onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         gigaStation.button(17).onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
