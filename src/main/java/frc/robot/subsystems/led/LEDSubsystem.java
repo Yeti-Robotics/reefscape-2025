@@ -89,11 +89,11 @@ public class LEDSubsystem extends SubsystemBase {
         pattern.applyTo(rightStrip);
     }
 
-    public void enableFlame(){
+    public void enableFlame() {
         flameActive = true;
     }
 
-    public void disableFlame(){
+    public void disableFlame() {
         flameActive = false;
     }
 

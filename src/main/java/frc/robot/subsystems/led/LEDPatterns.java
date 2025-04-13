@@ -1,6 +1,8 @@
 package frc.robot.subsystems.led;
 
 import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Centimeters;
+import static edu.wpi.first.units.Units.Percent;
 import static edu.wpi.first.units.Units.Second;
 
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -31,7 +33,21 @@ public enum LEDPatterns {
                     .synchronizedBlink(RobotController::getRSLState)),
     SCROLLING_RAINBOW(
             RAINBOW.pattern.scrollAtAbsoluteSpeed(
-                    MetersPerSecond.of(-1), LEDConstants.LED_SPACING));
+                    MetersPerSecond.of(-1), LEDConstants.LED_SPACING)),
+
+    FADING_BLUE_SCROLL(
+            LEDPattern.gradient(
+                            LEDPattern.GradientType.kContinuous,
+                            LEDConstants.CRISP_WHITE,
+                            LEDConstants.YETI_BLUE)
+                    .scrollAtAbsoluteSpeed(
+                            Centimeters.per(Second).of(-30), LEDConstants.LED_SPACING)
+                    .mask(
+                            LEDPattern.gradient(
+                                    LEDPattern.GradientType.kDiscontinuous,
+                                    LEDConstants.CRISP_WHITE,
+                                    Color.kBlack))
+                    .atBrightness(Percent.of(100)));
 
     public final LEDPattern pattern;
 

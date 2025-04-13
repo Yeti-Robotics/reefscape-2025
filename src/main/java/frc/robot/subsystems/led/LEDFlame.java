@@ -33,5 +33,4 @@ public class LEDFlame {
         }
         led.setData(store);
     }
-
 }
