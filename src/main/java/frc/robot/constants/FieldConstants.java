@@ -1,9 +1,9 @@
 package frc.robot.constants;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
+import java.io.IOException;
 import java.util.*;
 
 public class FieldConstants {
@@ -16,8 +16,17 @@ public class FieldConstants {
     // license that can be found in the LICENSE file at
     // the root directory of this project.
 
-    public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT =
-            AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+    public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT;
+
+    static {
+        try {
+            APRIL_TAG_FIELD_LAYOUT =
+                    new AprilTagFieldLayout("/home/lvuser/deploy/practice_field.json");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static final double fieldWidth = APRIL_TAG_FIELD_LAYOUT.getFieldWidth();
 
     public enum ReefLevel {

@@ -16,6 +16,8 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
     private final DutyCycleOut dutyCycleReq = new DutyCycleOut(0);
     public final Trigger hasCoralTrigger;
     public final Trigger doesNotHaveCoralTrigger;
+    // private final CurrentLimitsConfigs limit = new CurrentLimitsConfigs()
+    // .withStatorCurrentLimit().withSupplyCurrentLimit();
 
     private final Canandcolor clawSwitch = new Canandcolor(GrabberConfig.GRABBER_CANANDCOLOR);
 
@@ -43,11 +45,11 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
     }
 
     public boolean hasCoral() {
-        return clawSwitch.getProximity() <= 0.18;
+        return clawSwitch.getProximity() < 0.2;
     }
 
     public boolean doesNotHaveCoral() {
-        return clawSwitch.getProximity() > 0.3;
+        return clawSwitch.getProximity() > 0.32;
     }
 
     //    public boolean hasAlgae() { return clawSwitch.getProximity(); }

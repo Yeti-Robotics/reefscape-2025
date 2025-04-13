@@ -105,11 +105,15 @@
     {},
     {},
     {
-      "guid": "Keyboard0"
-    },
-    {
       "guid": "78696e70757401000000000000000000",
       "useGamepad": true
+    },
+    {
+      "useGamepad": true
+    },
+    {},
+    {
+      "guid": "03000000412300006602000000000000"
     }
   ],
   "useEnableDisableHotkeys": true,
