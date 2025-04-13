@@ -11,7 +11,7 @@ public enum ArmPosition implements SetpointEnum {
     ALGAE_SCORE(0.2),
     POS_L1(-0.1),
     SCORE_L1(-0.1),
-    POS_L2(.18),
+    POS_L2(.15),
     SCORE_L2(.07),
     POS_L3(.13),
     HIGH_ALGAE(.1),

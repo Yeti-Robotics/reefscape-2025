@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.730122950819672,
-        "y": 5.829149590163934
+        "x": 3.1168032786885242,
+        "y": 4.186834016393442
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.918372950819672,
-        "y": 6.333399590163934
+        "x": 2.349590163934426,
+        "y": 4.09093237704918
       },
       "isLocked": false,
-      "linkedName": "jReef"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.733,
-        "y": 5.8838263358778615
+        "x": 1.7861680327868852,
+        "y": 4.186834016393442
       },
       "prevControl": {
-        "x": 2.7905000000000006,
-        "y": 6.227076335877862
+        "x": 2.3735655737704917,
+        "y": 4.258760245901639
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "lolliL"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.10874200426439806,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Stow",
-      "waypointRelativePos": 0.1,
+      "name": "LollipopIntake",
+      "waypointRelativePos": 0.47805536799459003,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Stow"
-        }
-      }
+      "command": null
     }
   ],
   "globalConstraints": {
@@ -54,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 92.16107948822636
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 150.0
+    "rotation": 87.02626891751991
   },
   "useDefaultConstraints": true
 }

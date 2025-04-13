@@ -39,7 +39,7 @@ public class ReefAlignPPOTF {
     private boolean isRightCam = false;
 
     private static final Transform2d leftBranchTransform =
-            new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(-5.5), Rotation2d.kZero);
+            new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(-2.5), Rotation2d.kZero);
     private static final Transform2d rightBranchTransform =
             new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(8.5), Rotation2d.kZero);
     private static final Transform2d rightTurnTransform =
@@ -64,7 +64,7 @@ public class ReefAlignPPOTF {
         this.reefCam1 = reefCam1;
         this.reefCam2 = reefCam2;
 
-        swerveReq.HeadingController.setPID(15, 0, 1);
+        swerveReq.HeadingController.setPID(20, 0, 1);
         swerveReq.HeadingController.setTolerance(0.07);
         swerveReq.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
     }
