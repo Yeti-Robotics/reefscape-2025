@@ -12,11 +12,14 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AlgaeAlignPPOTF;
 import frc.robot.commands.AutoNamedCommands;
 import frc.robot.commands.ReefAlignPPOTF;
 import frc.robot.constants.Constants;
@@ -102,6 +106,7 @@ public class RobotContainer {
     AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
     private final Mechanisms mechanisms;
     private final ReefAlignPPOTF reefAlignPPOTF;
+    private final AlgaeAlignPPOTF algaeAlignPPOTF;
     private final AprilTagSubsystem[] aprilTagSubsystems;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -137,6 +142,7 @@ public class RobotContainer {
         coralManipulator = new CoralManipulatorSystem();
         mechanisms = new Mechanisms();
         reefAlignPPOTF = new ReefAlignPPOTF(drivetrain, radioCam, scoreCam);
+        algaeAlignPPOTF = new AlgaeAlignPPOTF(drivetrain, radioCam, scoreCam);
 
         configureBindings();
 
@@ -162,6 +168,9 @@ public class RobotContainer {
      * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
      * joysticks}.
      */
+    final StructPublisher<Pose2d> posePublisher =
+            NetworkTableInstance.getDefault().getStructTopic("/Pose", Pose2d.struct).publish();
+
     public void updateVision() {
         for (AprilTagSubsystem aprilTagSubsystem : aprilTagSubsystems) {
             List<AprilTagPose> aprilTagPoseOpt = aprilTagSubsystem.getEstimatedPose();
@@ -177,6 +186,8 @@ public class RobotContainer {
                 }
             }
         }
+
+        posePublisher.set(drivetrain.getState().Pose);
     }
 
     public void updateVisionSim() {
@@ -210,6 +221,7 @@ public class RobotContainer {
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
         primaryXboxController.y().whileTrue(reefAlignPPOTF.reefAlign());
+        primaryXboxController.a().whileTrue(algaeAlignPPOTF.algaeAlign());
         primaryXboxController.button(1).whileTrue(reefAlignPPOTF.reefAlign());
         gigaStation.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
         gigaStation.button(18).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
@@ -245,12 +257,32 @@ public class RobotContainer {
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator
                         .transitionTo(CoralManipulatorState.STOWED)
-                        .unless(coralManipulator::isAlgaeMode));
+                        .unless(coralManipulator::isAlgaeMode)
+                        .unless(
+                                () ->
+                                        coralManipulator.getCurrentState()
+                                                        == CoralManipulatorState.SCORE_L3
+                                                || coralManipulator.getCurrentState()
+                                                        == CoralManipulatorState.SCORE_L2
+                                                || coralManipulator.getCurrentState()
+                                                        == CoralManipulatorState.L3
+                                                || coralManipulator.getCurrentState()
+                                                        == CoralManipulatorState.L2));
 
         coralManipulator.grabber.doesNotHaveCoralTrigger.onTrue(
                 coralManipulator
                         .transitionTo(CoralManipulatorState.STOWED)
-                        .unless(coralManipulator::isAlgaeMode));
+                        .unless(coralManipulator::isAlgaeMode)
+                        .unless(
+                                () ->
+                                        coralManipulator.getCurrentState()
+                                                        == CoralManipulatorState.SCORE_L3
+                                                || coralManipulator.getCurrentState()
+                                                        == CoralManipulatorState.SCORE_L2
+                                                || coralManipulator.getCurrentState()
+                                                        == CoralManipulatorState.L3
+                                                || coralManipulator.getCurrentState()
+                                                        == CoralManipulatorState.L2));
     }
 
     public void updateMechanisms() {

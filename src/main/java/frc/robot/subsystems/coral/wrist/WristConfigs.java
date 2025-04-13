@@ -14,9 +14,9 @@ class WristConfigs {
 
     static final Slot0Configs SLOT_0_CONFIGS =
             new Slot0Configs()
-                    .withKP(25)
+                    .withKP(44)
                     .withKI(0)
-                    .withKD(1)
+                    .withKD(5)
                     .withKS(0)
                     .withKV(0)
                     .withKA(0)

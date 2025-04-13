@@ -53,7 +53,7 @@ public enum CoralManipulatorState {
             GrabberState.ROLL_IN,
             WristPositions.UNSAFE),
     STOWED(ArmPosition.UP, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.SAFE),
-    CLIMB(ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.SAFE),
+    CLIMB(ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.UNSAFE),
     LOLLIPOP(
             ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.ROLL_IN, WristPositions.SAFE),
     ALGAE_HIGH(

@@ -30,7 +30,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private static final double translationBaseStdev = 0.7;
     private static final double rotationBaseStdev = Math.toRadians(30);
 
-    private double maxAmbiguity = 1;
+    private double maxAmbiguity = 0.2;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<AprilTagDetection> bestDetection;
@@ -76,9 +76,14 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         for (PhotonPipelineResult pipelineResult : results) {
             if (pipelineResult.hasTargets()) {
                 for (var target : pipelineResult.targets) {
-                    if (AprilTagDetectionHelpers.getDetectionDistance(
-                                    target.getBestCameraToTarget())
-                            > 5) {
+                    boolean lessThan5M =
+                            AprilTagDetectionHelpers.getDetectionDistance(
+                                            target.getBestCameraToTarget())
+                                    > 5;
+
+                    boolean tagAmb = target.getPoseAmbiguity() > maxAmbiguity;
+
+                    if (lessThan5M || tagAmb) {
                         break resultLoop;
                     }
                 }
