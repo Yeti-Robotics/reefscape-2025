@@ -253,7 +253,7 @@ public class RobotContainer {
         gigaStation
                 .button(3)
                 .onTrue(leds.runPattern(LEDPatterns.NICK_MODE))
-                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_RSL_BLINK));
+                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
         gigaStation
                 .button(15)
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
