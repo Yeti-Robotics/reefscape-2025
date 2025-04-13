@@ -11,6 +11,21 @@ public enum CoralManipulatorState {
             ElevatorPosition.BOTTOM,
             GrabberState.ROLL_IN,
             WristPositions.UNSAFE),
+    ALGAE_GROUND(
+            ArmPosition.AWAY,
+            ElevatorPosition.BOTTOM,
+            GrabberState.ALGAE_ROLL_IN,
+            WristPositions.UNSAFE),
+    BARGE(
+            ArmPosition.ALGAE_SCORE,
+            ElevatorPosition.POS_L4,
+            GrabberState.ALGAE_HOLD,
+            WristPositions.UNSAFE),
+    SHOOT_BARGE(
+            ArmPosition.ALGAE_SCORE,
+            ElevatorPosition.POS_L4,
+            GrabberState.ROLL_OUT,
+            WristPositions.UNSAFE),
     L1(ArmPosition.POS_L1, ElevatorPosition.POS_L1, GrabberState.OFF, WristPositions.UNSAFE),
     SCORE_L1(
             ArmPosition.POS_L1,
@@ -32,16 +47,26 @@ public enum CoralManipulatorState {
             GrabberState.OFF,
             WristPositions.SAFE),
     HP_INTAKE(ArmPosition.HP, ElevatorPosition.BOTTOM, GrabberState.ROLL_IN, WristPositions.UNSAFE),
-    STOWED(ArmPosition.UP, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.SAFE),
-    CLIMB(ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.SAFE),
-    LOLLIPOP(
-            ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.ROLL_IN, WristPositions.SAFE),
-    ALGAEHIGH(
-            ArmPosition.POS_L3,
-            ElevatorPosition.POS_L3,
+    ALGAE_LOW(
+            ArmPosition.AWAY,
+            ElevatorPosition.LOW_ALGAE,
             GrabberState.ROLL_IN,
             WristPositions.UNSAFE),
-    IDLE(ArmPosition.HOLD, ElevatorPosition.HOLD, GrabberState.OFF, WristPositions.SAFE);
+    STOWED(ArmPosition.UP, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.SAFE),
+    CLIMB(ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.OFF, WristPositions.UNSAFE),
+    LOLLIPOP(
+            ArmPosition.GROUND, ElevatorPosition.BOTTOM, GrabberState.ROLL_IN, WristPositions.SAFE),
+    ALGAE_HIGH(
+            ArmPosition.HIGH_ALGAE,
+            ElevatorPosition.HIGH_ALGAE,
+            GrabberState.ROLL_IN,
+            WristPositions.UNSAFE),
+    IDLE(ArmPosition.HOLD, ElevatorPosition.HOLD, GrabberState.OFF, WristPositions.SAFE),
+    ALGAE_STOW(
+            ArmPosition.ALGAE_STOW,
+            ElevatorPosition.BOTTOM,
+            GrabberState.ALGAE_HOLD,
+            WristPositions.UNSAFE);
 
     private final ArmPosition armPosition;
     private final ElevatorPosition elevatorPosition;

@@ -30,7 +30,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private static final double translationBaseStdev = 0.7;
     private static final double rotationBaseStdev = Math.toRadians(30);
 
-    private double maxAmbiguity = 1;
+    private double maxAmbiguity = 0.2;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<AprilTagDetection> bestDetection;
@@ -57,6 +57,8 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
     @Override
     public void periodic() {
+        //        photonPoseEstimator.addHeadingData(
+        //                Timer.getFPGATimestamp(), drivetrain.getPigeon2().getRotation2d());
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
         if (results.isEmpty()) {
@@ -70,21 +72,23 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         PhotonTrackedTarget closestTarget = null;
         double closestDistance = Double.POSITIVE_INFINITY;
         // replace this with a counter-controlled loop if needed
+        resultLoop:
         for (PhotonPipelineResult pipelineResult : results) {
-            boolean skipResult = false;
             if (pipelineResult.hasTargets()) {
                 for (var target : pipelineResult.targets) {
-                    if (AprilTagDetectionHelpers.getDetectionDistance(
-                                    target.getBestCameraToTarget())
-                            > 5) {
-                        skipResult = true;
-                        break;
+                    boolean lessThan5M =
+                            AprilTagDetectionHelpers.getDetectionDistance(
+                                            target.getBestCameraToTarget())
+                                    > 5;
+
+                    boolean tagAmb = target.getPoseAmbiguity() > maxAmbiguity;
+
+                    if (lessThan5M || tagAmb) {
+                        break resultLoop;
                     }
                 }
             }
-            if (skipResult) {
-                continue;
-            }
+
             Optional<EstimatedRobotPose> estimatedRobotPoseOpt =
                     photonPoseEstimator.update(pipelineResult);
             double timestamp = pipelineResult.getTimestampSeconds();

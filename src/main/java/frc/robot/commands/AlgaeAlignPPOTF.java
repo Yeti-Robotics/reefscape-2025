@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class ReefAlignPPOTF {
+public class AlgaeAlignPPOTF {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
 
     private final AprilTagSubsystem reefCam1;
@@ -38,25 +38,16 @@ public class ReefAlignPPOTF {
     private final SwerveRequest.Idle stopReq = new SwerveRequest.Idle();
     private boolean isRightCam = false;
 
-    private static final Transform2d leftBranchTransform =
-            new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(-5.5), Rotation2d.kZero);
-    private static final Transform2d rightBranchTransform =
-            new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(8.5), Rotation2d.kZero);
+    private static final Transform2d algaeTransform =
+            new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(0), Rotation2d.kZero);
     private static final Transform2d rightTurnTransform =
             new Transform2d(0, 0, Rotation2d.kCCW_90deg);
     private static final Transform2d leftTurnTransform =
             new Transform2d(0, 0, Rotation2d.kCW_90deg);
 
-    public enum Branch {
-        LEFT,
-        RIGHT
-    }
-
-    Branch branch = Branch.LEFT;
-
     private Pose2d reefFaceTargetPose;
 
-    public ReefAlignPPOTF(
+    public AlgaeAlignPPOTF(
             CommandSwerveDrivetrain commandSwerveDrivetrain,
             AprilTagSubsystem reefCam1,
             AprilTagSubsystem reefCam2) {
@@ -79,10 +70,6 @@ public class ReefAlignPPOTF {
 
     public boolean isOnReef(int id) {
         return isRedReef(id) || isBlueReef(id);
-    }
-
-    public Command setBranch(Branch branch) {
-        return Commands.runOnce(() -> this.branch = branch);
     }
 
     public Optional<AprilTagDetection> getReefCamDetection() {
@@ -181,8 +168,7 @@ public class ReefAlignPPOTF {
         reefFaceTargetPose = reefTargetPoseOpt.get();
         Pose2d reefBranchPose =
                 reefFaceTargetPose
-                        .transformBy(
-                                branch == Branch.LEFT ? leftBranchTransform : rightBranchTransform)
+                        .transformBy(algaeTransform)
                         .transformBy(isRightCam ? rightTurnTransform : leftTurnTransform);
 
         //   DogLog.log("ReefAlignCmd/ReefTarget", reefBranchPose);
@@ -245,7 +231,7 @@ public class ReefAlignPPOTF {
                                 commandSwerveDrivetrain));
     }
 
-    public Command reefAlign() {
+    public Command algaeAlign() {
         return Commands.defer(this::autoAlign, Set.of(commandSwerveDrivetrain)).withTimeout(2);
     }
 }
