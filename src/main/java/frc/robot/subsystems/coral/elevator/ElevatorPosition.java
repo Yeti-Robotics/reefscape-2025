@@ -7,7 +7,7 @@ public enum ElevatorPosition implements Comparable<ElevatorPosition> {
     BOTTOM(0.0),
     SAFE_POSITION(2.2),
     POS_L1(2.4),
-    POS_L2(0.4),
+    POS_L2(0.322910),
     POS_L3(2.2),
     HIGH_ALGAE(2.2),
     SCORE_L3(1.8),
