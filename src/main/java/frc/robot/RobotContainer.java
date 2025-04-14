@@ -271,6 +271,7 @@ public class RobotContainer {
         coralManipulator.grabber.hasCoralTrigger.onTrue(
                 coralManipulator
                         .transitionTo(CoralManipulatorState.STOWED)
+                        .unless(DriverStation::isAutonomous)
                         .unless(coralManipulator::isAlgaeMode)
                         .unless(
                                 () ->
@@ -281,11 +282,7 @@ public class RobotContainer {
                                                 || coralManipulator.getCurrentState()
                                                         == CoralManipulatorState.L3
                                                 || coralManipulator.getCurrentState()
-                                                        == CoralManipulatorState.L2
-                                                || coralManipulator.getCurrentState()
-                                                        == CoralManipulatorState.L4
-                                                || coralManipulator.getCurrentState()
-                                                        == CoralManipulatorState.SCORE_L4));
+                                                        == CoralManipulatorState.L2));
 
         simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
         simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));

@@ -42,6 +42,12 @@ public class ReefAlignPPOTF {
             new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(-2.5), Rotation2d.kZero);
     private static final Transform2d rightBranchTransform =
             new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(8.5), Rotation2d.kZero);
+
+    private static final Transform2d leftBranchClimbTransform =
+            new Transform2d(Units.inchesToMeters(14), Units.inchesToMeters(-9.5), Rotation2d.kZero);
+    private static final Transform2d rightBranchClimbTransform =
+            new Transform2d(Units.inchesToMeters(14), Units.inchesToMeters(2.0), Rotation2d.kZero);
+
     private static final Transform2d rightTurnTransform =
             new Transform2d(0, 0, Rotation2d.kCCW_90deg);
     private static final Transform2d leftTurnTransform =
@@ -64,7 +70,7 @@ public class ReefAlignPPOTF {
         this.reefCam1 = reefCam1;
         this.reefCam2 = reefCam2;
 
-        swerveReq.HeadingController.setPID(20, 0, 1);
+        swerveReq.HeadingController.setPID(10, 0, 1);
         swerveReq.HeadingController.setTolerance(0.07);
         swerveReq.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
     }
@@ -179,10 +185,19 @@ public class ReefAlignPPOTF {
         }
 
         reefFaceTargetPose = reefTargetPoseOpt.get();
+
+        Transform2d branchTransform;
+
+        if (!isRightCam) {
+            branchTransform =
+                    branch == Branch.LEFT ? leftBranchClimbTransform : rightBranchClimbTransform;
+        } else {
+            branchTransform = branch == Branch.LEFT ? leftBranchTransform : rightBranchTransform;
+        }
+
         Pose2d reefBranchPose =
                 reefFaceTargetPose
-                        .transformBy(
-                                branch == Branch.LEFT ? leftBranchTransform : rightBranchTransform)
+                        .transformBy(branchTransform)
                         .transformBy(isRightCam ? rightTurnTransform : leftTurnTransform);
 
         //   DogLog.log("ReefAlignCmd/ReefTarget", reefBranchPose);
@@ -246,6 +261,6 @@ public class ReefAlignPPOTF {
     }
 
     public Command reefAlign() {
-        return Commands.defer(this::autoAlign, Set.of(commandSwerveDrivetrain)).withTimeout(2);
+        return Commands.defer(this::autoAlign, Set.of(commandSwerveDrivetrain));
     }
 }
