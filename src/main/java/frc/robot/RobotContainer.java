@@ -225,7 +225,11 @@ public class RobotContainer {
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-        primaryXboxController.y().whileTrue(reefAlignPPOTF.reefAlign());
+        primaryXboxController.y().whileTrue(
+                        reefAlignPPOTF
+                                .reefAlign()
+                                .alongWith(leds.runPattern(LEDPatterns.AUTO_ALIGN)))
+                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
         primaryXboxController.a().whileTrue(algaeAlignPPOTF.algaeAlign());
         primaryXboxController.button(1).whileTrue(reefAlignPPOTF.reefAlign());
         gigaStation
