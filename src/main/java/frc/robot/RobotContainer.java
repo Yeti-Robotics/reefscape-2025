@@ -5,26 +5,28 @@
 
 package frc.robot;
 
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AlgaeAlignPPOTF;
 import frc.robot.commands.AutoNamedCommands;
 import frc.robot.commands.ReefAlignPPOTF;
 import frc.robot.constants.Constants;
@@ -34,16 +36,16 @@ import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
+import frc.robot.subsystems.led.LEDPatterns;
+import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
-import frc.robot.util.PathPlannerUtils;
 import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
 import frc.robot.util.sim.vision.AprilTagSimulator;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -85,6 +87,8 @@ public class RobotContainer {
     @Logged(name = "Vision/ScoreCam")
     public final PhotonAprilTagSystem scoreCam;
 
+    public LEDSubsystem leds;
+
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
 
@@ -102,6 +106,7 @@ public class RobotContainer {
     AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
     private final Mechanisms mechanisms;
     private final ReefAlignPPOTF reefAlignPPOTF;
+    private final AlgaeAlignPPOTF algaeAlignPPOTF;
     private final AprilTagSubsystem[] aprilTagSubsystems;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -133,17 +138,23 @@ public class RobotContainer {
         }
 
         //        limelight = new LimelightAprilTagSystem("limelight", drivetrain);
-        climber = new ClimberSubsystem();
         coralManipulator = new CoralManipulatorSystem();
+        climber = new ClimberSubsystem();
+        leds = new LEDSubsystem();
+        new Trigger(coralManipulator::isTransitioning)
+                .whileFalse(leds.selectAnimationCommand(coralManipulator::getCurrentState));
         mechanisms = new Mechanisms();
         reefAlignPPOTF = new ReefAlignPPOTF(drivetrain, radioCam, scoreCam);
+        algaeAlignPPOTF = new AlgaeAlignPPOTF(drivetrain, radioCam, scoreCam);
 
         configureBindings();
+        configureLEDTriggers();
 
         var namedCommands = new AutoNamedCommands(coralManipulator, reefAlignPPOTF);
+        var autoCommands = new AutoCommands(coralManipulator, reefAlignPPOTF, drivetrain);
         namedCommands.registerCommands();
 
-        autoChooser = AutoBuilder.buildAutoChooser("driveForward");
+        autoChooser = autoCommands.buildAutoCommandChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
         aprilTagSubsystems = new AprilTagSubsystem[] {radioCam, scoreCam};
 
@@ -162,6 +173,9 @@ public class RobotContainer {
      * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
      * joysticks}.
      */
+    final StructPublisher<Pose2d> posePublisher =
+            NetworkTableInstance.getDefault().getStructTopic("/Pose", Pose2d.struct).publish();
+
     public void updateVision() {
         for (AprilTagSubsystem aprilTagSubsystem : aprilTagSubsystems) {
             List<AprilTagPose> aprilTagPoseOpt = aprilTagSubsystem.getEstimatedPose();
@@ -177,6 +191,8 @@ public class RobotContainer {
                 }
             }
         }
+
+        posePublisher.set(drivetrain.getState().Pose);
     }
 
     public void updateVisionSim() {
@@ -210,15 +226,27 @@ public class RobotContainer {
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
         primaryXboxController.y().whileTrue(reefAlignPPOTF.reefAlign());
+        primaryXboxController.a().whileTrue(algaeAlignPPOTF.algaeAlign());
         primaryXboxController.button(1).whileTrue(reefAlignPPOTF.reefAlign());
-        gigaStation.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
+        gigaStation
+                .button(2)
+                .onTrue(
+                        coralManipulator
+                                .transitionTo(CoralManipulatorState.CLIMB)
+                                .alongWith(leds.runPattern(LEDPatterns.FADING_BLUE_SCROLL)));
         gigaStation.button(18).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         gigaStation.button(16).onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
-        gigaStation.button(17).onTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_OUT));
+        gigaStation
+                .button(17)
+                .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ALGAE_SHOOT));
         gigaStation.button(7).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
         gigaStation.button(8).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
         gigaStation.button(9).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
         gigaStation.button(10).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        gigaStation
+                .button(3)
+                .onTrue(leds.runPattern(LEDPatterns.NICK_MODE))
+                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
         gigaStation
                 .button(15)
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
@@ -227,17 +255,57 @@ public class RobotContainer {
                 .button(4)
                 .onTrue(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT))
                 .onFalse(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT));
+        gigaStation
+                .button(5)
+                .onTrue(coralManipulator.setMode(CoralManipulatorSystem.Mode.ALGAE))
+                .onFalse(coralManipulator.setMode(CoralManipulatorSystem.Mode.CORAL));
         gigaStation.button(13).whileTrue(climber.spinClimber(climber.climbSpeed));
         gigaStation.button(14).whileTrue(climber.spinClimber(climber.unClimbSpeed));
         gigaStation
                 .button(11)
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAEHIGH));
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAE_HIGH));
+        gigaStation
+                .button(12)
+                .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ALL_IN));
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(
-                coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+                coralManipulator
+                        .transitionTo(CoralManipulatorState.STOWED)
+                        .unless(DriverStation::isAutonomous)
+                        .unless(coralManipulator::isAlgaeMode)
+                        .unless(
+                                () ->
+                                        coralManipulator.getCurrentState()
+                                                        == CoralManipulatorState.SCORE_L3
+                                                || coralManipulator.getCurrentState()
+                                                        == CoralManipulatorState.SCORE_L2
+                                                || coralManipulator.getCurrentState()
+                                                        == CoralManipulatorState.L3
+                                                || coralManipulator.getCurrentState()
+                                                        == CoralManipulatorState.L2));
 
-        coralManipulator.grabber.doesNotHaveCoralTrigger.onTrue(
-                coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
+        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
+        simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        simJoy.button(8).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
+        simJoy.button(9).onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
+        simJoy.button(10)
+                .onTrue(leds.runPattern(LEDPatterns.NICK_MODE))
+                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
+        simJoy.button(11).onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAE_HIGH));
+        simJoy.button(12).onTrue(runOnce(() -> leds.addProgress()));
+        simJoy.button(13).onTrue(runOnce(() -> leds.subtractProgress()));
+        simJoy.button(14)
+                .whileTrue(
+                        reefAlignPPOTF
+                                .reefAlign()
+                                .alongWith(leds.runPattern(LEDPatterns.AUTO_ALIGN)))
+                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
+        simJoy.button(15).onTrue(leds.runPattern(LEDPatterns.FADING_BLUE_SCROLL));
     }
 
     public void updateMechanisms() {
@@ -256,139 +324,34 @@ public class RobotContainer {
                 coralManipulator.arm.getCurrentPosition());
     }
 
-    public Command right1Pc() {
-        Optional<PathPlannerPath> lineF = PathPlannerUtils.loadPathByName("lineF");
-
-        return lineF.isEmpty()
-                ? Commands.none()
-                : AutoBuilder.followPath(lineF.get())
-                        .andThen(reefAlignPPOTF.reefAlign())
-                        .andThen(
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.L4)
-                                        .withTimeout(0.5))
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-    }
-
-    public Command left2PcLolli() {
-        Optional<PathPlannerPath> lineJ = PathPlannerUtils.loadPathByName("lineJ");
-        Optional<PathPlannerPath> jToLollipop = PathPlannerUtils.loadPathByName("jToLoli");
-        Optional<PathPlannerPath> lollipopToL = PathPlannerUtils.loadPathByName("loliToL");
-
-        PathPlannerAuto auto;
-        PathPlannerAuto lollipathJ =
-                new PathPlannerAuto((AutoBuilder.followPath(jToLollipop.get())));
-        PathPlannerAuto lollipathL =
-                new PathPlannerAuto((AutoBuilder.followPath(lollipopToL.get())));
-
-        var cmd =
-                lineJ.isEmpty() || jToLollipop.isEmpty()
-                        ? Commands.none()
-                        : Commands.sequence(
-                                AutoBuilder.followPath(lineJ.get()),
-                                reefAlignPPOTF.reefAlign(),
-                                coralManipulator.transitionTo(CoralManipulatorState.L4),
-                                coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5),
-                                AutoBuilder.followPath(jToLollipop.get())
-                                        .until(coralManipulator.grabber::hasCoral),
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(1),
-                                AutoBuilder.followPath(lollipopToL.get()),
-                                reefAlignPPOTF.reefAlign(),
-                                coralManipulator.transitionTo(CoralManipulatorState.CLIMB_L4),
-                                coralManipulator.transitionTo(CoralManipulatorState.SCORE_CLIMB_L4),
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5));
-        auto = new PathPlannerAuto(cmd);
-        return auto;
-    }
-
-    public Command right2PcLolli() {
-        Optional<PathPlannerPath> lineF = PathPlannerUtils.loadPathByName("lineF");
-        Optional<PathPlannerPath> fToLollipop = PathPlannerUtils.loadPathByName("fToLoli");
-        Optional<PathPlannerPath> lollipopToD = PathPlannerUtils.loadPathByName("loliToD");
-
-        PathPlannerAuto auto;
-
-        var cmd =
-                lineF.isEmpty() || fToLollipop.isEmpty() || lollipopToD.isEmpty()
-                        ? Commands.none()
-                        : Commands.sequence(
-                                AutoBuilder.followPath(lineF.get()),
-                                reefAlignPPOTF.reefAlign(),
-                                coralManipulator.transitionTo(CoralManipulatorState.L4),
-                                coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5)
-                                        .andThen(
-                                                Commands.sequence(
-                                                                AutoBuilder.followPath(
-                                                                        fToLollipop.get()),
-                                                                coralManipulator
-                                                                        .transitionTo(
-                                                                                CoralManipulatorState
-                                                                                        .STOWED)
-                                                                        .withTimeout(0.5),
-                                                                AutoBuilder.followPath(
-                                                                        lollipopToD.get()),
-                                                                reefAlignPPOTF.reefAlign(),
-                                                                coralManipulator.transitionTo(
-                                                                        CoralManipulatorState
-                                                                                .CLIMB_L4),
-                                                                coralManipulator.transitionTo(
-                                                                        CoralManipulatorState
-                                                                                .SCORE_CLIMB_L4),
-                                                                coralManipulator
-                                                                        .transitionTo(
-                                                                                CoralManipulatorState
-                                                                                        .STOWED)
-                                                                        .withTimeout(0.5))
-                                                        .onlyIf(
-                                                                coralManipulator.grabber
-                                                                        ::doesNotHaveCoral)));
-        auto = new PathPlannerAuto(cmd);
-        return auto;
-    }
-
-    public Command left1Pc() {
-        Optional<PathPlannerPath> lineJ = PathPlannerUtils.loadPathByName("lineJ");
-        return lineJ.isEmpty()
-                ? Commands.none()
-                : AutoBuilder.followPath(lineJ.get())
-                        .andThen(reefAlignPPOTF.reefAlign())
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.L4))
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
-                        .andThen(
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5));
-    }
-
-    public Command driveForward() {
-        return drivetrain.applyRequest(
-                () -> new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(1, 0, 0)));
-    }
-
-    public Command mid1Pc() {
-        Optional<PathPlannerPath> lineG = PathPlannerUtils.loadPathByName("lineG");
-        return lineG.isEmpty()
-                ? Commands.none()
-                : AutoBuilder.followPath(lineG.get())
-                        .andThen(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT))
-                        .andThen(reefAlignPPOTF.reefAlign())
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.L4))
-                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
-                        .andThen(
-                                coralManipulator
-                                        .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5));
+    private void configureLEDTriggers() {
+        Trigger coralTrigger =
+                new Trigger(coralManipulator.grabber::hasCoral)
+                        .and(DriverStation::isDisabled)
+                        .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
+        Trigger elevatorTrigger =
+                new Trigger(coralManipulator.elevator::getMagSwitch)
+                        .and(DriverStation::isDisabled)
+                        .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
+        Trigger drivetrainTrigger =
+                drivetrain
+                        .zeroedWheels
+                        .and(DriverStation::isDisabled)
+                        .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
+        Trigger batteryTrigger =
+                new Trigger(() -> RobotController.getBatteryVoltage() > 12.5)
+                        .and(DriverStation::isDisabled)
+                        .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
+        if (coralTrigger.getAsBoolean()) {
+            leds.addProgress();
+        }
+        if (elevatorTrigger.getAsBoolean()) {
+            leds.addProgress();
+        }
     }
 
     /**
@@ -397,21 +360,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        Command selectedAuto = right2PcLolli();
-        //        if (gigaStation.getHID().getRawButton(19)) {
-        //            selectedAuto = driveForward();
-        //            SmartDashboard.putString("Selected auto", "driveForward");
-        //        } else if (gigaStation.getHID().getRawButton(20)) {
-        //            selectedAuto = right2PcLolli();
-        //            SmartDashboard.putString("Selected auto", "right2PcLolli");
-        //        } else if (gigaStation.getHID().getRawButton(21)) {
-        //            selectedAuto = left1Pc();
-        //            SmartDashboard.putString("Selected auto", "left1Pc");
-        //        }
-        if (selectedAuto == null) {
-            return autoChooser.getSelected();
-        } else {
-            return selectedAuto;
-        }
+        return autoChooser.getSelected();
     }
 }

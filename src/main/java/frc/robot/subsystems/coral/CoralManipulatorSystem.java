@@ -3,6 +3,7 @@ package frc.robot.subsystems.coral;
 import com.ctre.phoenix6.StatusCode;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
@@ -28,6 +29,13 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     @Logged(name = "Wrist")
     public final WristSubsystem wrist = new WristSubsystem();
 
+    public enum Mode {
+        CORAL,
+        ALGAE
+    }
+
+    CoralManipulatorSystem.Mode mode = Mode.CORAL;
+
     public CoralManipulatorSystem() {
         super(CoralManipulatorState.IDLE);
     }
@@ -37,6 +45,10 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     @Logged(name = "States/Queued State")
     public String getCQueuedState() {
         return queuedState.toString();
+    }
+
+    public Command setMode(Mode mode) {
+        return Commands.runOnce(() -> this.mode = mode);
     }
 
     public CoralManipulatorState getQueuedState() {
@@ -93,6 +105,15 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         return elevator.transitioningTo().orElse(ElevatorPosition.HOLD).toString();
     }
 
+    @Logged(name = "States/Is CMS Transitioning?")
+    public boolean isCMSTransitioning() {
+        return isTransitioning();
+    }
+
+    public boolean isAlgaeMode() {
+        return mode == Mode.ALGAE;
+    }
+
     public boolean isElevMovingUp(CoralManipulatorState targetState) {
         return targetState
                 .getElevatorPosition()
@@ -128,7 +149,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     }
 
     public Command selectQueuedStateCommand() {
-        return new SelectCommand(
+        return new SelectCommand<>(
                 Map.of(
                         CoralManipulatorState.L1, transitionTo(CoralManipulatorState.L1),
                         CoralManipulatorState.L2, transitionTo(CoralManipulatorState.L2),
@@ -138,7 +159,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     }
 
     public Command scoreState() {
-        return new SelectCommand(
+        return new SelectCommand<>(
                 Map.of(
                         CoralManipulatorState.L1, transitionTo(CoralManipulatorState.SCORE_L1),
                         CoralManipulatorState.L2, transitionTo(CoralManipulatorState.SCORE_L2),
@@ -155,7 +176,23 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
     protected StatusCode initializeTransition(CoralManipulatorState targetState) {
         Command coralManipulatorCommand;
 
-        if (getCurrentState() == targetState) return StatusCode.OK;
+        if (targetState == CoralManipulatorState.STOWED && mode == Mode.ALGAE) {
+            targetState = CoralManipulatorState.ALGAE_STOW;
+        }
+
+        if (targetState == CoralManipulatorState.GROUND_INTAKE && mode == Mode.ALGAE) {
+            targetState = CoralManipulatorState.ALGAE_GROUND;
+        }
+
+        if (mode == Mode.ALGAE
+                && (targetState == CoralManipulatorState.SCORE_L1
+                        || targetState == CoralManipulatorState.SCORE_L2
+                        || targetState == CoralManipulatorState.SCORE_L3
+                        || targetState == CoralManipulatorState.SCORE_L4)) {
+            targetState = CoralManipulatorState.BARGE;
+        }
+
+        //  if (getCurrentState() == targetState) return StatusCode.OK;
 
         if (isIntaking(targetState) || !isElevMovingUp(targetState)) {
             if (targetState == CoralManipulatorState.STOWED) {

@@ -8,27 +8,32 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.710589821595651,
-        "y": 5.70095513993649
+        "x": 6.701127049180327,
+        "y": 5.793186475409836
       },
       "isLocked": false,
       "linkedName": "lineLeft"
     },
     {
       "anchor": {
-        "x": 5.16528409090909,
-        "y": 5.685269886363637
+        "x": 5.730122950819672,
+        "y": 5.829149590163934
       },
       "prevControl": {
-        "x": 5.89477836571825,
-        "y": 5.700680191707147
+        "x": 6.017827868852459,
+        "y": 6.15281762295082
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "jReef"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6247334754797413,
+      "rotationDegrees": 146.0904906077464
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
@@ -40,17 +45,6 @@
         "type": "named",
         "data": {
           "name": "Stow"
-        }
-      }
-    },
-    {
-      "name": "L4",
-      "waypointRelativePos": 0.7,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "L4"
         }
       }
     }
@@ -71,7 +65,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 90.30457129540004
   },
   "useDefaultConstraints": true
 }
