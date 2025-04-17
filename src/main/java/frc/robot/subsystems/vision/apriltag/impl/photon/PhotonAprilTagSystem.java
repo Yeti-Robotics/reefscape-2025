@@ -1,17 +1,17 @@
 package frc.robot.subsystems.vision.apriltag.impl.photon;
 
-import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.TagConstants;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
-import frc.robot.subsystems.vision.apriltag.*;
+import frc.robot.subsystems.vision.apriltag.AprilTagDetection;
+import frc.robot.subsystems.vision.apriltag.AprilTagPose;
+import frc.robot.subsystems.vision.apriltag.AprilTagResults;
+import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.util.AprilTagDetectionHelpers;
-import java.util.*;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -20,6 +20,10 @@ import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsystem {
     private static final double MAX_LIVE_SECONDS = 5;
     private PhotonCamera camera;
@@ -27,10 +31,9 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private final PhotonPoseEstimator photonPoseEstimator;
     private final CommandSwerveDrivetrain drivetrain;
 
-    private static final double translationBaseStdev = 0.7;
-    private static final double rotationBaseStdev = Math.toRadians(30);
-
     private double maxAmbiguity = 0.2;
+    private static final double maxTagDistance = 5;
+    private static final double maxThetaVarianceDegrees = 10;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<AprilTagDetection> bestDetection;
@@ -52,13 +55,16 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         this.drivetrain = commandSwerveDrivetrain;
 
         photonPoseEstimator.setMultiTagFallbackStrategy(
-                PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
+                PhotonPoseEstimator.PoseStrategy.AVERAGE_BEST_TARGETS);
+    }
+
+    public boolean poseIsReasonable(Pose2d pose) {
+        return
+                Math.abs(pose.getRotation().minus(drivetrain.getPigeon2().getRotation2d()).getDegrees()) < maxThetaVarianceDegrees;
     }
 
     @Override
     public void periodic() {
-        //        photonPoseEstimator.addHeadingData(
-        //                Timer.getFPGATimestamp(), drivetrain.getPigeon2().getRotation2d());
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
         if (results.isEmpty()) {
@@ -67,101 +73,55 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
         poseEstimates.clear();
 
-        double latestTimestamp = -1;
-        PhotonPipelineResult latestResult = null;
         PhotonTrackedTarget closestTarget = null;
         double closestDistance = Double.POSITIVE_INFINITY;
-        // replace this with a counter-controlled loop if needed
-        resultLoop:
+        double closestTargetTimestamp = 0;
+
         for (PhotonPipelineResult pipelineResult : results) {
+            Optional<MultiTargetPNPResult> multiTargetPNPResult = pipelineResult.getMultiTagResult();
+
+            boolean noMulti = multiTargetPNPResult.isEmpty();
+
+            if (!noMulti) {
+                MultiTargetPNPResult multiResult = multiTargetPNPResult.get();
+
+                if (multiResult.estimatedPose.ambiguity > maxAmbiguity) {
+                    pipelineResult.multitagResult = Optional.empty();
+                    noMulti = true;
+                }
+            }
+
+            if (noMulti) {
+                pipelineResult.getTargets()
+                        .removeIf(target -> target.getPoseAmbiguity() > maxAmbiguity || AprilTagDetectionHelpers.getDetectionDistance(target.bestCameraToTarget) > maxTagDistance);
+            }
+
             if (pipelineResult.hasTargets()) {
-                for (var target : pipelineResult.targets) {
-                    boolean lessThan5M =
-                            AprilTagDetectionHelpers.getDetectionDistance(
-                                            target.getBestCameraToTarget())
-                                    > 5;
+                for (PhotonTrackedTarget target : pipelineResult.getTargets()) {
+                    double tagDistance = AprilTagDetectionHelpers.getDetectionDistance(target.bestCameraToTarget);
 
-                    boolean tagAmb = target.getPoseAmbiguity() > maxAmbiguity;
-
-                    if (lessThan5M || tagAmb) {
-                        break resultLoop;
+                    if (tagDistance < closestDistance && closestTargetTimestamp < pipelineResult.getTimestampSeconds()) {
+                        closestDistance = tagDistance;
+                        closestTargetTimestamp = pipelineResult.getTimestampSeconds();
+                        closestTarget = target;
                     }
                 }
-            }
 
-            Optional<EstimatedRobotPose> estimatedRobotPoseOpt =
-                    photonPoseEstimator.update(pipelineResult);
-            double timestamp = pipelineResult.getTimestampSeconds();
+                Optional<EstimatedRobotPose> estimatedRobotPoseOptional = photonPoseEstimator.update(pipelineResult);
 
-            if (timestamp > latestTimestamp) {
-                latestResult = pipelineResult;
-                latestTimestamp = timestamp;
-            }
+                if (estimatedRobotPoseOptional.isPresent()) {
+                    EstimatedRobotPose estimatedRobotPose = estimatedRobotPoseOptional.get();
+                    Pose2d robotPose = estimatedRobotPose.estimatedPose.toPose2d();
 
-            if (estimatedRobotPoseOpt.isPresent()) {
-                EstimatedRobotPose estimatedRobotPose = estimatedRobotPoseOpt.get();
-                Optional<MultiTargetPNPResult> multiTargetPNPResultOptional =
-                        pipelineResult.getMultiTagResult();
-
-                double ambiguity = 0, distance = 0;
-                int numTags;
-
-                distance /= pipelineResult.targets.size();
-
-                if (multiTargetPNPResultOptional.isPresent()) {
-                    MultiTargetPNPResult multiPNPResult = multiTargetPNPResultOptional.get();
-
-                    ambiguity = multiPNPResult.estimatedPose.ambiguity;
-                    numTags = multiPNPResult.fiducialIDsUsed.size();
-                } else {
-                    numTags = estimatedRobotPose.targetsUsed.size();
-                }
-
-                if (numTags > 0) {
-                    boolean isMultiTag = multiTargetPNPResultOptional.isPresent();
-
-                    for (PhotonTrackedTarget target : estimatedRobotPose.targetsUsed) {
-                        double targetDist =
-                                AprilTagDetectionHelpers.getDetectionDistance(
-                                        target.bestCameraToTarget);
-
-                        if (pipelineResult == latestResult
-                                && (closestTarget == null || targetDist < closestDistance)) {
-                            closestTarget = target;
-                            closestDistance = targetDist;
-                        }
-
-                        distance += target.bestCameraToTarget.getTranslation().getNorm();
-
-                        if (!isMultiTag) {
-                            ambiguity += target.getPoseAmbiguity();
-                        }
+                    if (poseIsReasonable(robotPose)) {
+                        poseEstimates.add(
+                                new AprilTagPose(
+                                        estimatedRobotPose.estimatedPose.toPose2d(),
+                                        estimatedRobotPose.targetsUsed.size(),
+                                        estimatedRobotPose.timestampSeconds
+                                )
+                        );
                     }
-
-                    distance /= numTags;
-
-                    if (!isMultiTag) {
-                        ambiguity /= numTags;
-                    }
-
-                    double scaleFactor =
-                            (1 / (1 + Math.pow(distance, 1.5))) * (1 + Math.pow(ambiguity, 1.2));
-                    double linearStdDevs = translationBaseStdev * scaleFactor;
-                    double angularStdDevs = rotationBaseStdev * scaleFactor;
-
-                    /**
-                     * If the below allocation worsens performance, use
-                     *
-                     * @see AprilTagPose#DEFAULT_STD_DEVS instead
-                     */
-                    Matrix<N3, N1> stdDevs = AprilTagPose.DEFAULT_STD_DEVS;
-
-                    poseEstimates.add(
-                            new AprilTagPose(
-                                    estimatedRobotPose.estimatedPose.toPose2d(),
-                                    numTags,
-                                    pipelineResult.getTimestampSeconds(),
-                                    stdDevs));
                 }
             }
         }
@@ -170,8 +130,8 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
         if (bestDetectionOpt.isPresent()) {
             bestDetection = bestDetectionOpt;
-            bestDetectionTimestamp = latestTimestamp;
-        } else if (latestTimestamp - bestDetectionTimestamp > MAX_LIVE_SECONDS) {
+            bestDetectionTimestamp = closestTargetTimestamp;
+        } else if (bestDetectionTimestamp > MAX_LIVE_SECONDS) {
             bestDetection = Optional.empty();
         }
     }
