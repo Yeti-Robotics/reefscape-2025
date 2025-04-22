@@ -1,10 +1,12 @@
 package frc.robot.subsystems.coral.elevator;
 
+import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import frc.robot.subsystems.coral.elevator.io.ElevatorConfig;
 import frc.robot.util.state.SetpointEnum;
 
-public enum ElevatorPosition implements SetpointEnum<Angle> {
+public enum ElevatorPosition implements SetpointEnum<Angle, AngleUnit> {
     BOTTOM(0.0),
     SAFE_POSITION(2.2),
     POS_L1(2.4),
@@ -28,5 +30,10 @@ public enum ElevatorPosition implements SetpointEnum<Angle> {
     @Override
     public Angle getSetpoint() {
         return height;
+    }
+
+    @Override
+    public Angle getTolerance() {
+        return ElevatorConfig.HEIGHT_TOLERANCE;
     }
 }

@@ -6,7 +6,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.Robot;
 
-class ArmConfig {
+public class ArmConfig {
     static final int ARM_KRAKEN_ID = 10;
     static final int ARM_CANCODER_ID = 0;
 
@@ -80,5 +80,5 @@ class ArmConfig {
                                     .withMagnetOffset(MAGNET_OFFSET)
                                     .withAbsoluteSensorDiscontinuityPoint(0.625));
 
-    static final Angle ANGLE_TOLERANCE = Units.Rotations.of(0.05);
+    public static final Angle ANGLE_TOLERANCE = Units.Rotations.of(0.05);
 }

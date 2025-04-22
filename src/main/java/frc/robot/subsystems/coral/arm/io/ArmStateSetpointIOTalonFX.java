@@ -4,14 +4,11 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.constants.Constants;
 import frc.robot.constants.HardwareConstants;
-import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.util.akit.device.can.cancoder.CANCoderDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
-import frc.robot.util.akit.io.impl.TalonFXStateSetpointIO;
 import jakarta.inject.Singleton;
 
 @Singleton
@@ -44,10 +41,5 @@ public class ArmStateSetpointIOTalonFX implements ArmStateSetpointIO {
     @Override
     public void setState(Angle value) {
         armMotor.setControl(motionMagicReq.withPosition(value));
-    }
-
-    @Override
-    public Angle getTolerance() {
-        return ArmConfig.ANGLE_TOLERANCE;
     }
 }

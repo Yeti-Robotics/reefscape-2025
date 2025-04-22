@@ -9,7 +9,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 
 public class WristConfigs {
-    static final Angle WRIST_TOLERANCE = Units.Rotations.of(0.1);
+    public static final Angle WRIST_TOLERANCE = Units.Rotations.of(0.1);
     static final int WRIST_KRAKEN_ID = 19;
     static final int WRIST_CANCODER_ID = 42;
     static final double MAGNET_OFFSET = 0.223389;

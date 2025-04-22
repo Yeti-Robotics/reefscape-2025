@@ -7,7 +7,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 
-class ElevatorConfig {
+public class ElevatorConfig {
     static final int primaryElevatorMotorID = 9;
     static final int secondaryElevatorMotorID = 11;
     static final int magSwitchID = 6;
@@ -61,6 +61,5 @@ class ElevatorConfig {
                                     .withRotorToSensorRatio(1.0)
                                     .withSensorToMechanismRatio(gearRatio));
 
-    static final Angle HEIGHT_TOLERANCE = Units.Rotations.of(0.08);
-    static final double ELEVATOR_VELOCITY_TOLERANCE = 0.01;
+    public static final Angle HEIGHT_TOLERANCE = Units.Rotations.of(0.08);
 }

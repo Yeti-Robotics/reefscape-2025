@@ -1,6 +1,6 @@
 package frc.robot.util.akit.io;
 
-public interface MotorStateIO<V> {
+public interface StateIO<V> {
     V getState();
 
     void setState(V value);

@@ -1,10 +1,12 @@
 package frc.robot.util.state;
 
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.akit.io.MotorSetpointIO;
+import frc.robot.util.akit.io.StateSetpointIO;
 
-public abstract class StateSubsystem<T, E extends SetpointEnum<T>, H extends MotorSetpointIO<E, T>>
+public abstract class StateSubsystem<T extends Measure<M>, M extends Unit, E extends SetpointEnum<T, M>, H extends StateSetpointIO<E, T, M>>
         extends SubsystemBase {
     private E targetState;
     protected final H io;
@@ -24,5 +26,9 @@ public abstract class StateSubsystem<T, E extends SetpointEnum<T>, H extends Mot
 
     public boolean reachedTargetState() {
         return isAt(targetState);
+    }
+
+    public T getState() {
+        return io.getState();
     }
 }

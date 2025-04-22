@@ -16,16 +16,6 @@ public class ElevatorStateSetpointIOSimulatedTalonFX implements ElevatorStateSet
     }
 
     @Override
-    public void setCurrentPositionToZero() {
-        elevatorIOTalonFX.setCurrentPositionToZero();
-    }
-
-    @Override
-    public void stopOutput() {
-        elevatorIOTalonFX.stopOutput();
-    }
-
-    @Override
     public Angle getState() {
         return elevatorIOTalonFX.getState();
     }
@@ -33,10 +23,5 @@ public class ElevatorStateSetpointIOSimulatedTalonFX implements ElevatorStateSet
     @Override
     public void setState(Angle value) {
         elevatorIOTalonFX.setState(value);
-    }
-
-    @Override
-    public Angle getTolerance() {
-        return elevatorIOTalonFX.getTolerance();
     }
 }

@@ -40,14 +40,4 @@ public class WristStateSetpointIOTalonFX implements WristStateSetpointIO {
     public void setState(Angle value) {
         wristMotor.setControl(motorReq.withPosition(value));
     }
-
-    @Override
-    public boolean isAtSetpoint(Angle setpoint) {
-        return isAtSetpoint(setpoint, WristConfigs.WRIST_TOLERANCE);
-    }
-
-    @Override
-    public boolean isAtSetpoint(Angle setpoint, Angle tolerance) {
-        return getState().isNear(setpoint, tolerance);
-    }
 }

@@ -5,8 +5,11 @@ import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
 import frc.robot.constants.HardwareConstants;
+import frc.robot.subsystems.coral.elevator.ElevatorPosition;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
 public class ElevatorStateSetpointIOTalonFX implements ElevatorStateSetpointIO {
@@ -32,9 +35,12 @@ public class ElevatorStateSetpointIOTalonFX implements ElevatorStateSetpointIO {
 
     private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
 
-    @Override
-    public Angle getTolerance() {
-        return ElevatorConfig.HEIGHT_TOLERANCE;
+    public ElevatorStateSetpointIOTalonFX() {
+        new Trigger(this::bottomSwitchTriggered)
+                .debounce(2)
+                .onTrue(Commands.runOnce(() -> primaryElevatorMotor.setPosition(0))
+                        .andThen(() -> toSetpoint(ElevatorPosition.BOTTOM))
+                        .andThen(primaryElevatorMotor::stopMotor));
     }
 
     @Override
@@ -50,15 +56,5 @@ public class ElevatorStateSetpointIOTalonFX implements ElevatorStateSetpointIO {
     @Override
     public boolean bottomSwitchTriggered() {
         return magSwitch.get();
-    }
-
-    @Override
-    public void setCurrentPositionToZero() {
-        primaryElevatorMotor.setPosition(0);
-    }
-
-    @Override
-    public void stopOutput() {
-        primaryElevatorMotor.stopMotor();
     }
 }

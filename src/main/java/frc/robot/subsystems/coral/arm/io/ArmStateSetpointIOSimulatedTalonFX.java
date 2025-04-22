@@ -19,9 +19,4 @@ public class ArmStateSetpointIOSimulatedTalonFX implements ArmStateSetpointIO {
     public void setState(Angle value) {
         talonFXIO.setState(value);
     }
-
-    @Override
-    public Angle getTolerance() {
-        return talonFXIO.getTolerance();
-    }
 }
