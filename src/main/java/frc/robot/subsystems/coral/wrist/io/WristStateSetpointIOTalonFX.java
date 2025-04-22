@@ -10,7 +10,7 @@ import frc.robot.constants.HardwareConstants;
 import frc.robot.util.akit.device.can.cancoder.CANCoderDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
-public class WristIOTalonFX implements WristIO {
+public class WristStateSetpointIOTalonFX implements WristStateSetpointIO {
     final CANcoder wristCancoder =
             CANCoderDevice.configure(WristConfigs.WRIST_CANCODER_ID, Constants.CANIVORE_BUS)
                     .log("WristIO/WristCancoder")
@@ -32,12 +32,12 @@ public class WristIOTalonFX implements WristIO {
     private final PositionVoltage motorReq = new PositionVoltage(0);
 
     @Override
-    public Angle getPosition() {
+    public Angle getState() {
         return positionSignal.getValue();
     }
 
     @Override
-    public void setPosition(Angle value) {
+    public void setState(Angle value) {
         wristMotor.setControl(motorReq.withPosition(value));
     }
 
@@ -48,6 +48,6 @@ public class WristIOTalonFX implements WristIO {
 
     @Override
     public boolean isAtSetpoint(Angle setpoint, Angle tolerance) {
-        return getPosition().isNear(setpoint, tolerance);
+        return getState().isNear(setpoint, tolerance);
     }
 }

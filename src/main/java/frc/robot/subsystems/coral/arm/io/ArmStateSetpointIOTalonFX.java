@@ -4,15 +4,18 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.constants.Constants;
 import frc.robot.constants.HardwareConstants;
+import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.util.akit.device.can.cancoder.CANCoderDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
+import frc.robot.util.akit.io.impl.TalonFXStateSetpointIO;
 import jakarta.inject.Singleton;
 
 @Singleton
-public class ArmIOTalonFX implements ArmIO {
+public class ArmStateSetpointIOTalonFX implements ArmStateSetpointIO {
     private final MotionMagicTorqueCurrentFOC motionMagicReq = new MotionMagicTorqueCurrentFOC(0);
 
     final CANcoder armCancoder =
@@ -27,30 +30,24 @@ public class ArmIOTalonFX implements ArmIO {
                     .log("ArmIO/Motor")
                     .using(ArmConfig.talonFXConfiguration)
                     .withFusedCANcoder(armCancoder)
-                    .withStatusSignalFrequency(
-                            HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
+                    .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
                     .syncConfigs()
                     .getDevice();
 
-    private final StatusSignal<Angle> positionSignal = armMotor.getPosition();
+    final StatusSignal<Angle> positionSignal = armMotor.getPosition();
 
     @Override
-    public Angle getPosition() {
+    public Angle getState() {
         return positionSignal.getValue();
     }
 
     @Override
-    public void setPosition(Angle value) {
+    public void setState(Angle value) {
         armMotor.setControl(motionMagicReq.withPosition(value));
     }
 
     @Override
-    public boolean isAtSetpoint(Angle setpoint) {
-        return isAtSetpoint(setpoint, ArmConfig.ANGLE_TOLERANCE);
-    }
-
-    @Override
-    public boolean isAtSetpoint(Angle setpoint, Angle tolerance) {
-        return getPosition().isNear(setpoint, tolerance);
+    public Angle getTolerance() {
+        return ArmConfig.ANGLE_TOLERANCE;
     }
 }

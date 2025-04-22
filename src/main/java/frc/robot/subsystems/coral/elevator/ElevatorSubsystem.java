@@ -2,11 +2,11 @@ package frc.robot.subsystems.coral.elevator;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.coral.elevator.io.ElevatorIO;
+import frc.robot.subsystems.coral.elevator.io.ElevatorStateSetpointIO;
 import frc.robot.util.state.StateSubsystem;
 
-public class ElevatorSubsystem extends StateSubsystem<Angle, ElevatorPosition, ElevatorIO> {
-    public ElevatorSubsystem(ElevatorIO io) {
+public class ElevatorSubsystem extends StateSubsystem<Angle, ElevatorPosition, ElevatorStateSetpointIO> {
+    public ElevatorSubsystem(ElevatorStateSetpointIO io) {
         super(io);
 
         new Trigger(io::bottomSwitchTriggered)
@@ -19,6 +19,6 @@ public class ElevatorSubsystem extends StateSubsystem<Angle, ElevatorPosition, E
     }
 
     public Angle position() {
-        return io.getPosition();
+        return io.getState();
     }
 }

@@ -8,7 +8,7 @@ import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.util.akit.device.can.cancolor.CANColorDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
-public class GrabberIOTalonFX implements GrabberIO {
+public class GrabberSetpointIOTalonFX implements GrabberSetpointIO {
     private final Canandcolor clawSwitch =
             CANColorDevice.configure(GrabberConfig.CLAW_ID)
                     .log("GrabberIO/ColorSensor")

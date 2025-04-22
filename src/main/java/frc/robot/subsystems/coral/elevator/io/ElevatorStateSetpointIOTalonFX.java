@@ -9,7 +9,7 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.HardwareConstants;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
-public class ElevatorIOTalonFX implements ElevatorIO {
+public class ElevatorStateSetpointIOTalonFX implements ElevatorStateSetpointIO {
     protected final TalonFX primaryElevatorMotor =
             TalonFXDevice.configure(ElevatorConfig.primaryElevatorMotorID, Constants.CANIVORE_BUS)
                     .log("ElevatorIO/PrimaryMotor")
@@ -33,22 +33,17 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
 
     @Override
-    public boolean isAtSetpoint(Angle setpoint) {
-        return isAtSetpoint(setpoint, ElevatorConfig.HEIGHT_TOLERANCE);
+    public Angle getTolerance() {
+        return ElevatorConfig.HEIGHT_TOLERANCE;
     }
 
     @Override
-    public boolean isAtSetpoint(Angle setpoint, Angle tolerance) {
-        return getPosition().isNear(setpoint, tolerance);
-    }
-
-    @Override
-    public Angle getPosition() {
+    public Angle getState() {
         return elevatorPosition.getValue();
     }
 
     @Override
-    public void setPosition(Angle value) {
+    public void setState(Angle value) {
         primaryElevatorMotor.setControl(motionMagicReq.withPosition(value));
     }
 

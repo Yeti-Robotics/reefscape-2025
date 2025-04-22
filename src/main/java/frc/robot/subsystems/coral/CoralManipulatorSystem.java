@@ -6,27 +6,26 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
-import frc.robot.subsystems.coral.arm.io.ArmIOSimulatedTalonFX;
+import frc.robot.subsystems.coral.arm.io.ArmStateSetpointIOSimulatedTalonFX;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.coral.elevator.io.ElevatorIOSimulatedTalonFX;
+import frc.robot.subsystems.coral.elevator.io.ElevatorStateSetpointIOSimulatedTalonFX;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
-import frc.robot.subsystems.coral.grabber.io.GrabberIOTalonFX;
+import frc.robot.subsystems.coral.grabber.io.GrabberSetpointIOTalonFX;
 import frc.robot.subsystems.coral.wrist.WristPosition;
 import frc.robot.subsystems.coral.wrist.WristSubsystem;
-import frc.robot.subsystems.coral.wrist.io.WristIOTalonFX;
-import frc.robot.util.state.TransitionableSubsystem;
+import frc.robot.subsystems.coral.wrist.io.WristStateSetpointIOTalonFX;
+
 import java.util.Map;
 
-public class CoralManipulatorSystem extends SubsystemBase
-        implements TransitionableSubsystem<CoralManipulatorState> {
-    public final ArmSubsystem arm = new ArmSubsystem(new ArmIOSimulatedTalonFX());
+public class CoralManipulatorSystem extends SubsystemBase {
+    public final ArmSubsystem arm = new ArmSubsystem(new ArmStateSetpointIOSimulatedTalonFX());
 
     public final ElevatorSubsystem elevator =
-            new ElevatorSubsystem(new ElevatorIOSimulatedTalonFX());
+            new ElevatorSubsystem(new ElevatorStateSetpointIOSimulatedTalonFX());
 
-    public final GrabberSubsystem grabber = new GrabberSubsystem(new GrabberIOTalonFX());
+    public final GrabberSubsystem grabber = new GrabberSubsystem(new GrabberSetpointIOTalonFX());
 
-    public final WristSubsystem wrist = new WristSubsystem(new WristIOTalonFX());
+    public final WristSubsystem wrist = new WristSubsystem(new WristStateSetpointIOTalonFX());
 
     private CoralManipulatorState queuedState;
 
@@ -104,8 +103,7 @@ public class CoralManipulatorSystem extends SubsystemBase
         }
     }
 
-    @Override
-    public Command transitionTo(CoralManipulatorState targetState) {
+        public Command transitionTo(CoralManipulatorState targetState) {
         Command coralManipulatorCommand;
 
         if (isIntaking(targetState) || !isElevMovingUp(targetState)) {

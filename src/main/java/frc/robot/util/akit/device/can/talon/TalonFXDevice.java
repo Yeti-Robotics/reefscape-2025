@@ -10,6 +10,7 @@ import edu.wpi.first.units.measure.Frequency;
 import frc.robot.util.akit.device.DeviceLogger;
 import frc.robot.util.akit.device.can.CANDeviceBuilder;
 import java.util.function.Function;
+import static frc.robot.util.akit.device.can.CANDeviceBuilder.CONNECTED_DEBOUNCE_TIME;
 
 public class TalonFXDevice
         extends CANDeviceBuilder<
@@ -24,6 +25,10 @@ public class TalonFXDevice
 
     public static TalonFXDevice configure(int deviceID, String canBus) {
         return new TalonFXDevice(new TalonFX(deviceID, canBus));
+    }
+
+    public static TalonFXDevice from(TalonFX motor) {
+        return new TalonFXDevice(motor);
     }
 
     @Override

@@ -15,7 +15,11 @@ public class CANCoderDevice
     }
 
     public static CANCoderDevice configure(int deviceID, String canBus) {
-        return new CANCoderDevice(new CANcoder(deviceID, canBus));
+        return from(new CANcoder(deviceID, canBus));
+    }
+
+    public static CANCoderDevice from(CANcoder cancoder) {
+        return new CANCoderDevice(cancoder);
     }
 
     @Override

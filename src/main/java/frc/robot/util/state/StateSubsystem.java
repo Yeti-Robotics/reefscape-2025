@@ -2,10 +2,10 @@ package frc.robot.util.state;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.akit.io.SetpointMotorIO;
+import frc.robot.util.akit.io.MotorSetpointIO;
 
-public abstract class StateSubsystem<T, E extends SetpointEnum<T>, H extends SetpointMotorIO<E, T>>
-        extends SubsystemBase implements TransitionableSubsystem<E> {
+public abstract class StateSubsystem<T, E extends SetpointEnum<T>, H extends MotorSetpointIO<E, T>>
+        extends SubsystemBase {
     private E targetState;
     protected final H io;
 
@@ -13,7 +13,6 @@ public abstract class StateSubsystem<T, E extends SetpointEnum<T>, H extends Set
         this.io = io;
     }
 
-    @Override
     public Command transitionTo(E setpoint) {
         targetState = setpoint;
         return runOnce(() -> io.toSetpoint(setpoint));
@@ -23,11 +22,7 @@ public abstract class StateSubsystem<T, E extends SetpointEnum<T>, H extends Set
         return io.isAtSetpoint(setpoint);
     }
 
-    public E getTargetState() {
-        if (isAt(targetState)) {
-            targetState = null;
-        }
-
-        return targetState;
+    public boolean reachedTargetState() {
+        return isAt(targetState);
     }
 }

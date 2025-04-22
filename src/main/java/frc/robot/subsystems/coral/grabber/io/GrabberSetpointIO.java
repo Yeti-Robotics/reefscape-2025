@@ -1,8 +1,8 @@
 package frc.robot.subsystems.coral.grabber.io;
 
 import frc.robot.subsystems.coral.grabber.GrabberState;
-import frc.robot.util.akit.io.SetpointMotorIO;
+import frc.robot.util.akit.io.MotorSetpointIO;
 
-public interface GrabberIO extends SetpointMotorIO<GrabberState, Double> {
+public interface GrabberSetpointIO extends MotorSetpointIO<GrabberState, Double> {
     boolean hasCoral();
 }

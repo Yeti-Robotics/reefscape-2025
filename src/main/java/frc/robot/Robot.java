@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.util.akit.device.DeviceLoggingRegistry;
+import frc.robot.util.akit.device.DeviceLogging;
 import frc.robot.util.sim.PhysicsSim;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -73,7 +73,7 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void robotPeriodic() {
-        DeviceLoggingRegistry.get().updateDeviceLogging();
+        DeviceLogging.get().updateDeviceLogging();
 
         CommandScheduler.getInstance().run();
         robotContainer.updateMechanisms();
