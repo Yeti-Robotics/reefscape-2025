@@ -74,19 +74,20 @@ public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
                         pidOutput);
 
         inputs.isConnected = connectedDebouncer.calculate(refreshCode.isOK());
-        inputs.motorVoltage = motorVoltage.getValue();
-        inputs.motorAmps = motorAmps.getValue();
-        inputs.positionRotations = positionRotations.getValue();
-        inputs.velocityRotationsPerSec = velocityRotationsPerSec.getValue();
-        inputs.accelerationRotationsPerSecSq = accelerationRotationsPerSecSq.getValue();
+        inputs.motorInputs.motorVoltage = motorVoltage.getValue();
+        inputs.motorInputs.motorAmps = motorAmps.getValue();
+        inputs.positionInputs.positionRotations = positionRotations.getValue();
+        inputs.positionInputs.velocityRotationsPerSec = velocityRotationsPerSec.getValue();
+        inputs.positionInputs.accelerationRotationsPerSecSq =
+                accelerationRotationsPerSecSq.getValue();
 
-        inputs.pGain = pGain.getValue();
-        inputs.iGain = iGain.getValue();
-        inputs.dGain = dGain.getValue();
-        inputs.feedForward = feedForward.getValue();
-        inputs.error = error.getValue();
-        inputs.pidOutput = pidOutput.getValue();
+        inputs.pidInputs.pGain = pGain.getValue();
+        inputs.pidInputs.iGain = iGain.getValue();
+        inputs.pidInputs.dGain = dGain.getValue();
+        inputs.pidInputs.feedForward = feedForward.getValue();
+        inputs.pidInputs.error = error.getValue();
+        inputs.pidInputs.pidOutput = pidOutput.getValue();
 
-        inputs.motorTemperature = motorTemperature.getValue();
+        inputs.motorInputs.motorTemperature = motorTemperature.getValue();
     }
 }
