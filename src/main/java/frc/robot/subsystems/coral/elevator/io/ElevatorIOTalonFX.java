@@ -3,14 +3,16 @@ package frc.robot.subsystems.coral.elevator.io;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Robot;
 import frc.robot.constants.Constants;
 import frc.robot.constants.HardwareConstants;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
+import frc.robot.util.akit.device.digital.DigitalInputDevice;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
     protected final TalonFX primaryElevatorMotor =
@@ -33,10 +35,23 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     private final MotionMagicTorqueCurrentFOC motionMagicReq = new MotionMagicTorqueCurrentFOC(0);
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
 
-    private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
+    private final DigitalInput magSwitch;
 
     public ElevatorIOTalonFX() {
-        new Trigger(this::bottomSwitchTriggered)
+        DigitalInputDevice digitalSwitch = DigitalInputDevice.configure(ElevatorConfig.magSwitchID);
+
+        if (Robot.isSimulation()) {
+            SimDevice deviceSim = SimDevice.create("Elevator Switch", ElevatorConfig.magSwitchID);
+
+            if (deviceSim != null) {
+                digitalSwitch.usingSimDevice(deviceSim);
+            }
+        }
+
+        magSwitch = digitalSwitch.getDevice();
+
+        digitalSwitch
+                .toTrigger()
                 .debounce(2)
                 .onTrue(
                         Commands.runOnce(() -> primaryElevatorMotor.setPosition(0))

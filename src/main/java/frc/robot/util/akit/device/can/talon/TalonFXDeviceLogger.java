@@ -1,7 +1,5 @@
 package frc.robot.util.akit.device.can.talon;
 
-import static frc.robot.util.akit.device.can.CANDeviceBuilder.CONNECTED_DEBOUNCE_TIME;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -25,6 +23,7 @@ public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
     private final StatusSignal<Double> pidOutput;
     private final Debouncer connectedDebouncer = new Debouncer(CONNECTED_DEBOUNCE_TIME);
 
+    public static double CONNECTED_DEBOUNCE_TIME = 0.5;
     protected static final double DEFAULT_UPDATE_HZ = 50.0;
 
     public TalonFXDeviceLogger(TalonFX talon) {

@@ -22,6 +22,10 @@ public class TalonFXDevice
 
     private TalonFXDevice(TalonFX motor) {
         super(motor);
+
+        if (Robot.isSimulation()) {
+            simProfile = PhysicsSim.getInstance().addTalonFX(motor);
+        }
     }
 
     protected TalonFXConfiguration getDefaultConfig() {
@@ -71,23 +75,15 @@ public class TalonFXDevice
     }
 
     public TalonFXDevice withCANCoder(CANcoder cancoder, FeedbackSensorSourceValue source) {
-        updateSimProfile(cancoder);
         TalonFXConfiguration config = getConfig();
         config.Feedback.FeedbackSensorSource = source;
         config.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
-        return this;
-    }
 
-    private void updateSimProfile(CANcoder cancoder) {
-        if (Robot.isSimulation()) {
-            if (simProfile == null) {
-                simProfile = PhysicsSim.getInstance().addTalonFX(super.getDevice());
-            }
-
-            if (cancoder != null) {
-                simProfile.setCancoder(cancoder);
-            }
+        if (simProfile != null) {
+            simProfile.setCancoder(cancoder);
         }
+
+        return this;
     }
 
     public TalonFXDevice optimizeBusUtilization() {
@@ -108,12 +104,6 @@ public class TalonFXDevice
     private TalonFXDevice followWithRequest(int primaryDeviceID, boolean oppose) {
         getDevice().setControl(new Follower(primaryDeviceID, oppose));
         return this;
-    }
-
-    @Override
-    public TalonFX getDevice() {
-        updateSimProfile(null);
-        return super.getDevice();
     }
 
     @Override

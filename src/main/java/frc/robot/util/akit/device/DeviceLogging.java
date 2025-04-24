@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import org.littletonrobotics.junction.Logger;
 
 public class DeviceLogging {
-    private static final DeviceLogging INSTANCE = new DeviceLogging();
     private static final ArrayList<LoggingEntry<?>> loggers = new ArrayList<>();
     private static boolean disable = false;
 

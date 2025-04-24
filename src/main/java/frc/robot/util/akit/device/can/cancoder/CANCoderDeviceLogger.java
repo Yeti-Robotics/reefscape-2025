@@ -1,7 +1,5 @@
 package frc.robot.util.akit.device.can.cancoder;
 
-import static frc.robot.util.akit.device.can.CANDeviceBuilder.CONNECTED_DEBOUNCE_TIME;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -15,6 +13,7 @@ public class CANCoderDeviceLogger implements DeviceLogger<CANCoderDeviceInputs> 
     private final StatusSignal<Angle> absolutePosition;
     private final Debouncer connectedDebouncer = new Debouncer(CONNECTED_DEBOUNCE_TIME);
 
+    public static double CONNECTED_DEBOUNCE_TIME = 0.5;
     private static final double DEFAULT_UPDATE_HZ = 250.0;
 
     public CANCoderDeviceLogger(CANcoder cancoder) {
