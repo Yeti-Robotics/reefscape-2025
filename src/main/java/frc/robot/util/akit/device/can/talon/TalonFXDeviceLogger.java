@@ -7,6 +7,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.*;
 import frc.robot.util.akit.device.DeviceLogger;
+import frc.robot.util.akit.device.can.CANConstants;
 
 public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
     private final StatusSignal<Voltage> motorVoltage;
@@ -21,10 +22,7 @@ public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
     private final StatusSignal<Double> feedForward;
     private final StatusSignal<Double> error;
     private final StatusSignal<Double> pidOutput;
-    private final Debouncer connectedDebouncer = new Debouncer(CONNECTED_DEBOUNCE_TIME);
-
-    public static double CONNECTED_DEBOUNCE_TIME = 0.5;
-    protected static final double DEFAULT_UPDATE_HZ = 50.0;
+    private final Debouncer connectedDebouncer = new Debouncer(CANConstants.CONNECTED_DEBOUNCE_TIME);
 
     public TalonFXDeviceLogger(TalonFX talon) {
         motorVoltage = talon.getMotorVoltage();
@@ -41,7 +39,7 @@ public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
         pidOutput = talon.getClosedLoopOutput();
 
         BaseStatusSignal.setUpdateFrequencyForAll(
-                DEFAULT_UPDATE_HZ,
+                CANConstants.TALON_DEFAULT_UPDATE_HZ,
                 motorVoltage,
                 motorAmps,
                 positionRotations,
@@ -57,28 +55,26 @@ public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
     }
 
     public void updateInputs(TalonFXDeviceInputs inputs) {
-        StatusCode refreshCode =
-                BaseStatusSignal.refreshAll(
-                        motorVoltage,
-                        motorAmps,
-                        positionRotations,
-                        velocityRotationsPerSec,
-                        accelerationRotationsPerSecSq,
-                        motorTemperature,
-                        pGain,
-                        iGain,
-                        dGain,
-                        feedForward,
-                        error,
-                        pidOutput);
+        StatusCode refreshCode = BaseStatusSignal.refreshAll(
+                motorVoltage,
+                motorAmps,
+                positionRotations,
+                velocityRotationsPerSec,
+                accelerationRotationsPerSecSq,
+                motorTemperature,
+                pGain,
+                iGain,
+                dGain,
+                feedForward,
+                error,
+                pidOutput);
 
         inputs.isConnected = connectedDebouncer.calculate(refreshCode.isOK());
         inputs.motorInputs.motorVoltage = motorVoltage.getValue();
         inputs.motorInputs.motorAmps = motorAmps.getValue();
         inputs.positionInputs.positionRotations = positionRotations.getValue();
         inputs.positionInputs.velocityRotationsPerSec = velocityRotationsPerSec.getValue();
-        inputs.positionInputs.accelerationRotationsPerSecSq =
-                accelerationRotationsPerSecSq.getValue();
+        inputs.positionInputs.accelerationRotationsPerSecSq = accelerationRotationsPerSecSq.getValue();
 
         inputs.pidInputs.pGain = pGain.getValue();
         inputs.pidInputs.iGain = iGain.getValue();

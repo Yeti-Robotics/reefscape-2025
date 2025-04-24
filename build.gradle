@@ -1,13 +1,17 @@
+import groovy.json.JsonSlurper
+
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2025.3.1"
     id 'com.diffplug.spotless' version '6.25.0'
 }
+
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
 
+def formatOnCompile = true
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
@@ -57,10 +61,11 @@ task(replayWatch, type: JavaExec) {
 }
 
 dependencies {
-    def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
+    def akitJson = new JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
     annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
+
     annotationProcessor wpi.java.deps.wpilibAnnotations()
-    // Add Dagger dependencies
+    //  Add Dagger dependencies
     annotationProcessor 'com.google.dagger:dagger-compiler:2.56.1'
     implementation 'com.google.dagger:dagger:2.56.1'
 
@@ -123,11 +128,7 @@ spotless {
             include '**/*.java'
             exclude '**/build/**', '**/build-*/**'
         }
-        toggleOffOn()
-        googleJavaFormat().aosp()
-        removeUnusedImports()
-        trimTrailingWhitespace()
-        endWithNewline()
+        palantirJavaFormat("2.63.0")
     }
     groovyGradle {
         target fileTree('.') {
@@ -160,7 +161,10 @@ spotless {
     }
 }
 
-tasks.compileJava.dependsOn(tasks.spotlessApply)
+if (formatOnCompile) {
+    tasks.compileJava.dependsOn(tasks.spotlessApply)
+}
+
 sourceSets {
     main {
         java {

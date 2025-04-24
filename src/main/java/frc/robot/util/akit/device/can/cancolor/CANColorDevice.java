@@ -4,8 +4,7 @@ import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
 import frc.robot.util.akit.device.can.CANDeviceBuilder;
 
-public class CANColorDevice
-        extends CANDeviceBuilder<Canandcolor, CanandcolorSettings, CANColorInputs, CANColorDevice> {
+public class CANColorDevice extends CANDeviceBuilder<Canandcolor, CanandcolorSettings, CANColorInputs, CANColorDevice> {
     private CANColorDevice(Canandcolor device) {
         super(device);
     }

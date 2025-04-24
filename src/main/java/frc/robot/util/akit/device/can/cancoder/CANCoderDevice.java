@@ -1,15 +1,16 @@
 package frc.robot.util.akit.device.can.cancoder;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import frc.robot.util.akit.device.DeviceLogger;
+import frc.robot.util.akit.device.can.CANConstants;
 import frc.robot.util.akit.device.can.CANDeviceBuilder;
 
 public class CANCoderDevice
-        extends CANDeviceBuilder<
-                CANcoder, CANcoderConfiguration, CANCoderDeviceInputs, CANCoderDevice> {
+        extends CANDeviceBuilder<CANcoder, CANcoderConfiguration, CANCoderDeviceInputs, CANCoderDevice> {
     private CANCoderDevice(CANcoder device) {
         super(device);
     }
@@ -20,6 +21,21 @@ public class CANCoderDevice
 
     public static CANCoderDevice from(CANcoder cancoder) {
         return new CANCoderDevice(cancoder);
+    }
+
+    /**
+     * @apiNote
+     *     <p>Make sure this is always the last call you make before {@link
+     *     CANCoderDevice#getDevice}, otherwise logging and other status signals won't work
+     */
+    public CANCoderDevice optimizeBusUtilization() {
+        // enable important signals before optimizing
+        BaseStatusSignal.setUpdateFrequencyForAll(
+                CANConstants.CANCODER_DEFAULT_UPDATE_HZ,
+                getDevice().getAbsolutePosition(),
+                getDevice().getPosition());
+        getDevice().optimizeBusUtilization();
+        return this;
     }
 
     @Override
@@ -41,9 +57,7 @@ public class CANCoderDevice
     protected CANcoderConfiguration getDefaultConfig() {
         return new CANcoderConfiguration()
                 .withMagnetSensor(
-                        new MagnetSensorConfigs()
-                                .withSensorDirection(
-                                        SensorDirectionValue.CounterClockwise_Positive));
+                        new MagnetSensorConfigs().withSensorDirection(SensorDirectionValue.CounterClockwise_Positive));
     }
 
     @Override

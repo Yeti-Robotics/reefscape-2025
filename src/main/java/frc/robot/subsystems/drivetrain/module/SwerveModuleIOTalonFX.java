@@ -59,8 +59,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
         turnAppliedVolts = turnTalon.getMotorVoltage();
         turnCurrent = turnTalon.getStatorCurrent();
 
-        BaseStatusSignal.setUpdateFrequencyForAll(
-                TunerConstants.ODOMETRY_FREQUENCY, drivePosition, turnPosition);
+        BaseStatusSignal.setUpdateFrequencyForAll(TunerConstants.ODOMETRY_FREQUENCY, drivePosition, turnPosition);
         BaseStatusSignal.setUpdateFrequencyForAll(
                 50.0,
                 driveVelocity,
@@ -75,12 +74,8 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
     @Override
     public void updateInputs(SwerveModuleIOInputs inputs) {
-        var driveStatus =
-                BaseStatusSignal.refreshAll(
-                        drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
-        var turnStatus =
-                BaseStatusSignal.refreshAll(
-                        turnPosition, turnVelocity, turnAppliedVolts, turnCurrent);
+        var driveStatus = BaseStatusSignal.refreshAll(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
+        var turnStatus = BaseStatusSignal.refreshAll(turnPosition, turnVelocity, turnAppliedVolts, turnCurrent);
         var turnEncoderStatus = BaseStatusSignal.refreshAll(turnAbsolutePosition);
 
         // Update drive inputs
@@ -92,10 +87,8 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
         // Update turn inputs
         inputs.turnConnected = turnConnectedDebounce.calculate(turnStatus.isOK());
-        inputs.turnEncoderConnected =
-                turnEncoderConnectedDebounce.calculate(turnEncoderStatus.isOK());
-        inputs.turnAbsolutePosition =
-                Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());
+        inputs.turnEncoderConnected = turnEncoderConnectedDebounce.calculate(turnEncoderStatus.isOK());
+        inputs.turnAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());
         inputs.turnPosition = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
         inputs.turnVelocityRadPerSec = Units.rotationsToRadians(turnVelocity.getValueAsDouble());
         inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();

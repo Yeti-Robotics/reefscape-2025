@@ -15,22 +15,19 @@ import jakarta.inject.Singleton;
 public class ArmIOTalonFX implements ArmIO {
     private final MotionMagicTorqueCurrentFOC motionMagicReq = new MotionMagicTorqueCurrentFOC(0);
 
-    final CANcoder armCancoder =
-            CANCoderDevice.configure(ArmConfig.ARM_CANCODER_ID, Constants.CANIVORE_BUS)
-                    .log("ArmIO/Cancoder")
-                    .withConfig(ArmConfig.cancoderConfiguration)
-                    .syncConfigs()
-                    .getDevice();
+    final CANcoder armCancoder = CANCoderDevice.configure(ArmConfig.ARM_CANCODER_ID, Constants.CANIVORE_BUS)
+            .log("ArmIO/Cancoder")
+            .withConfig(ArmConfig.cancoderConfiguration)
+            .syncConfigs()
+            .getDevice();
 
-    final TalonFX armMotor =
-            TalonFXDevice.configure(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS)
-                    .log("ArmIO/Motor")
-                    .withConfig(ArmConfig.talonFXConfiguration)
-                    .withFusedCANcoder(armCancoder)
-                    .withStatusSignalFrequency(
-                            HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
-                    .syncConfigs()
-                    .getDevice();
+    final TalonFX armMotor = TalonFXDevice.configure(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS)
+            .log("ArmIO/Motor")
+            .withConfig(ArmConfig.talonFXConfiguration)
+            .withFusedCANcoder(armCancoder)
+            .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
+            .syncConfigs()
+            .getDevice();
 
     final StatusSignal<Angle> positionSignal = armMotor.getPosition();
 

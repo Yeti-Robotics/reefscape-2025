@@ -10,14 +10,13 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import edu.wpi.first.units.measure.Frequency;
 import frc.robot.Robot;
 import frc.robot.util.akit.device.DeviceLogger;
+import frc.robot.util.akit.device.can.CANConstants;
 import frc.robot.util.akit.device.can.CANDeviceBuilder;
 import frc.robot.util.sim.PhysicsSim;
 import frc.robot.util.sim.TalonFXSimProfile;
 import java.util.function.Function;
 
-public class TalonFXDevice
-        extends CANDeviceBuilder<
-                TalonFX, TalonFXConfiguration, TalonFXDeviceInputs, TalonFXDevice> {
+public class TalonFXDevice extends CANDeviceBuilder<TalonFX, TalonFXConfiguration, TalonFXDeviceInputs, TalonFXDevice> {
     private TalonFXSimProfile simProfile;
 
     private TalonFXDevice(TalonFX motor) {
@@ -86,10 +85,15 @@ public class TalonFXDevice
         return this;
     }
 
+    /**
+     * @apiNote
+     *     <p>Make sure this is always the last call you make before {@link
+     *     TalonFXDevice#getDevice}, otherwise logging and other status signals won't work
+     */
     public TalonFXDevice optimizeBusUtilization() {
         // ensure important status signals are enabled before optimizing
         BaseStatusSignal.setUpdateFrequencyForAll(
-                TalonFXDeviceLogger.DEFAULT_UPDATE_HZ,
+                CANConstants.TALON_DEFAULT_UPDATE_HZ,
                 getDevice().getDutyCycle(),
                 getDevice().getTorqueCurrent(),
                 getDevice().getMotorVoltage(),

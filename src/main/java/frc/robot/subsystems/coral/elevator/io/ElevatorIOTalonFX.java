@@ -15,22 +15,21 @@ import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 import frc.robot.util.akit.device.digital.DigitalInputDevice;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
-    protected final TalonFX primaryElevatorMotor =
-            TalonFXDevice.configure(ElevatorConfig.primaryElevatorMotorID, Constants.CANIVORE_BUS)
-                    .log("ElevatorIO/PrimaryMotor")
-                    .withConfig(ElevatorConfig.primaryTalonFXConfigs)
-                    .withStatusSignalFrequency(
-                            HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
-                    .syncConfigs()
-                    .getDevice();
+    protected final TalonFX primaryElevatorMotor = TalonFXDevice.configure(
+                    ElevatorConfig.primaryElevatorMotorID, Constants.CANIVORE_BUS)
+            .log("ElevatorIO/PrimaryMotor")
+            .withConfig(ElevatorConfig.primaryTalonFXConfigs)
+            .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
+            .syncConfigs()
+            .getDevice();
 
-    protected final TalonFX secondaryElevatorMotor =
-            TalonFXDevice.configure(ElevatorConfig.secondaryElevatorMotorID, Constants.CANIVORE_BUS)
-                    .log("ElevatorIO/SecondaryMotor")
-                    .withConfig(ElevatorConfig.secondaryTalonFXConfigs)
-                    .syncConfigs()
-                    .oppose(primaryElevatorMotor)
-                    .getDevice();
+    protected final TalonFX secondaryElevatorMotor = TalonFXDevice.configure(
+                    ElevatorConfig.secondaryElevatorMotorID, Constants.CANIVORE_BUS)
+            .log("ElevatorIO/SecondaryMotor")
+            .withConfig(ElevatorConfig.secondaryTalonFXConfigs)
+            .syncConfigs()
+            .oppose(primaryElevatorMotor)
+            .getDevice();
 
     private final MotionMagicTorqueCurrentFOC motionMagicReq = new MotionMagicTorqueCurrentFOC(0);
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
@@ -53,10 +52,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         digitalSwitch
                 .toTrigger()
                 .debounce(2)
-                .onTrue(
-                        Commands.runOnce(() -> primaryElevatorMotor.setPosition(0))
-                                .andThen(() -> toSetpoint(ElevatorPosition.BOTTOM))
-                                .andThen(primaryElevatorMotor::stopMotor));
+                .onTrue(Commands.runOnce(() -> primaryElevatorMotor.setPosition(0))
+                        .andThen(() -> toSetpoint(ElevatorPosition.BOTTOM))
+                        .andThen(primaryElevatorMotor::stopMotor));
     }
 
     @Override

@@ -7,17 +7,15 @@ import frc.robot.util.akit.device.can.cancolor.CANColorDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
 public class GrabberIOTalonFX implements GrabberIO {
-    private final Canandcolor clawSwitch =
-            CANColorDevice.configure(GrabberConfig.CLAW_ID)
-                    .log("GrabberIO/ColorSensor")
-                    .getDevice();
+    private final Canandcolor clawSwitch = CANColorDevice.configure(GrabberConfig.CLAW_ID)
+            .log("GrabberIO/ColorSensor")
+            .getDevice();
 
-    final TalonFX grabberMotor =
-            TalonFXDevice.configure(GrabberConfig.CLAW_ID, Constants.RIO_BUS)
-                    .log("GrabberIO/GrabberMotor")
-                    .withConfig(GrabberConfig.coralMotorConfig)
-                    .syncConfigs()
-                    .getDevice();
+    final TalonFX grabberMotor = TalonFXDevice.configure(GrabberConfig.CLAW_ID, Constants.RIO_BUS)
+            .log("GrabberIO/GrabberMotor")
+            .withConfig(GrabberConfig.coralMotorConfig)
+            .syncConfigs()
+            .getDevice();
 
     @Override
     public Double getState() {

@@ -21,29 +21,15 @@ public class CoralManipulatorMechanismVisualizer {
             new CoralManipulatorMechanismVisualizer();
 
     private CoralManipulatorMechanismVisualizer() {
-        elevatorLigament =
-                elevatorArmMech
-                        .getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
-                        .append(
-                                new LoggedMechanismLigament2d(
-                                        "lift",
-                                        Units.feetToMeters(3),
-                                        90,
-                                        6,
-                                        new Color8Bit(Color.kRed)));
+        elevatorLigament = elevatorArmMech
+                .getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
+                .append(new LoggedMechanismLigament2d("lift", Units.feetToMeters(3), 90, 6, new Color8Bit(Color.kRed)));
         elevatorArmMech
                 .getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
-                .append(
-                        new LoggedMechanismLigament2d(
-                                "bottom",
-                                Units.feetToMeters(3),
-                                0,
-                                6,
-                                new Color8Bit(Color.kGreen)));
-        armLigament =
-                elevatorLigament.append(
-                        new LoggedMechanismLigament2d(
-                                "arm", Units.inchesToMeters(12), 0, 6, new Color8Bit(Color.kBlue)));
+                .append(new LoggedMechanismLigament2d(
+                        "bottom", Units.feetToMeters(3), 0, 6, new Color8Bit(Color.kGreen)));
+        armLigament = elevatorLigament.append(
+                new LoggedMechanismLigament2d("arm", Units.inchesToMeters(12), 0, 6, new Color8Bit(Color.kBlue)));
     }
 
     public double scaleLength(double elevatorPosition) {

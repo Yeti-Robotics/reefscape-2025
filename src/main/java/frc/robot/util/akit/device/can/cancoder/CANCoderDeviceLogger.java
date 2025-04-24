@@ -7,20 +7,18 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.util.akit.device.DeviceLogger;
+import frc.robot.util.akit.device.can.CANConstants;
 
 public class CANCoderDeviceLogger implements DeviceLogger<CANCoderDeviceInputs> {
     private final StatusSignal<Angle> position;
     private final StatusSignal<Angle> absolutePosition;
-    private final Debouncer connectedDebouncer = new Debouncer(CONNECTED_DEBOUNCE_TIME);
-
-    public static double CONNECTED_DEBOUNCE_TIME = 0.5;
-    private static final double DEFAULT_UPDATE_HZ = 250.0;
+    private final Debouncer connectedDebouncer = new Debouncer(CANConstants.CONNECTED_DEBOUNCE_TIME);
 
     public CANCoderDeviceLogger(CANcoder cancoder) {
         position = cancoder.getPosition();
         absolutePosition = cancoder.getAbsolutePosition();
 
-        BaseStatusSignal.setUpdateFrequencyForAll(DEFAULT_UPDATE_HZ, position, absolutePosition);
+        BaseStatusSignal.setUpdateFrequencyForAll(CANConstants.CANCODER_DEFAULT_UPDATE_HZ, position, absolutePosition);
     }
 
     public void updateInputs(CANCoderDeviceInputs inputs) {

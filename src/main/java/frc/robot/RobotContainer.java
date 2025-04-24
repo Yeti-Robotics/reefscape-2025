@@ -33,17 +33,15 @@ public class RobotContainer {
 
     final CoralManipulatorSystem coralManipulator;
 
-    private final SwerveRequest.FieldCentric drive =
-            new SwerveRequest.FieldCentric()
-                    .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
-                    .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
-                    .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
+            .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
+            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
-        secondaryXboxController =
-                new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
+        secondaryXboxController = new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
         drivetrain = TunerConstants.createDrivetrain();
         coralManipulator = new CoralManipulatorSystem();
         configureBindings();
@@ -60,20 +58,10 @@ public class RobotContainer {
      */
     private void configureBindings() {
         DriverStation.silenceJoystickConnectionWarning(true);
-        drivetrain.setDefaultCommand(
-                drivetrain.applyRequest(
-                        () ->
-                                drive.withVelocityX(
-                                                -primaryXboxController.getLeftY()
-                                                        * TunerConstants.kSpeedAt12Volts
-                                                                .magnitude())
-                                        .withVelocityY(
-                                                -primaryXboxController.getLeftX()
-                                                        * TunerConstants.kSpeedAt12Volts
-                                                                .magnitude())
-                                        .withRotationalRate(
-                                                -primaryXboxController.getRightX()
-                                                        * TunerConstants.MaFxAngularRate)));
+        drivetrain.setDefaultCommand(drivetrain.applyRequest(() -> drive.withVelocityX(
+                        -primaryXboxController.getLeftY() * TunerConstants.kSpeedAt12Volts.magnitude())
+                .withVelocityY(-primaryXboxController.getLeftX() * TunerConstants.kSpeedAt12Volts.magnitude())
+                .withRotationalRate(-primaryXboxController.getRightX() * TunerConstants.MaFxAngularRate)));
 
         simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
         simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));

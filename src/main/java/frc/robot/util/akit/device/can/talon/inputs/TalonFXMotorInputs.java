@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.AutoLog;
 public class TalonFXMotorInputs {
     public Voltage motorVoltage;
     public Current motorAmps;
+    public Current motorStatorAmps;
 
     public Temperature motorTemperature;
 }

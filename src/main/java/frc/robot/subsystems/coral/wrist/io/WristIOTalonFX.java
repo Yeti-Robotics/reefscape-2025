@@ -11,22 +11,19 @@ import frc.robot.util.akit.device.can.cancoder.CANCoderDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
 public class WristIOTalonFX implements WristIO {
-    final CANcoder wristCancoder =
-            CANCoderDevice.configure(WristConfigs.WRIST_CANCODER_ID, Constants.CANIVORE_BUS)
-                    .log("WristIO/WristCancoder")
-                    .withConfig(WristConfigs.wristEncoderConfigs)
-                    .syncConfigs()
-                    .getDevice();
+    final CANcoder wristCancoder = CANCoderDevice.configure(WristConfigs.WRIST_CANCODER_ID, Constants.CANIVORE_BUS)
+            .log("WristIO/WristCancoder")
+            .withConfig(WristConfigs.wristEncoderConfigs)
+            .syncConfigs()
+            .getDevice();
 
-    final TalonFX wristMotor =
-            TalonFXDevice.configure(WristConfigs.WRIST_KRAKEN_ID, Constants.CANIVORE_BUS)
-                    .log("WristIO/WristMotor")
-                    .withConfig(WristConfigs.wristMotorConfigs)
-                    .withFusedCANcoder(wristCancoder)
-                    .withStatusSignalFrequency(
-                            HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
-                    .syncConfigs()
-                    .getDevice();
+    final TalonFX wristMotor = TalonFXDevice.configure(WristConfigs.WRIST_KRAKEN_ID, Constants.CANIVORE_BUS)
+            .log("WristIO/WristMotor")
+            .withConfig(WristConfigs.wristMotorConfigs)
+            .withFusedCANcoder(wristCancoder)
+            .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
+            .syncConfigs()
+            .getDevice();
 
     private final StatusSignal<Angle> positionSignal = wristMotor.getPosition();
     private final PositionVoltage motorReq = new PositionVoltage(0);

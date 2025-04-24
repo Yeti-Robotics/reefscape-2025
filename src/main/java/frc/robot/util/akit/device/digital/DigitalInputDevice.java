@@ -6,8 +6,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.util.akit.device.DeviceBuilder;
 import frc.robot.util.akit.device.DeviceLogger;
 
-public class DigitalInputDevice
-        extends DeviceBuilder<DigitalInput, DigitalInputDeviceInputs, DigitalInputDevice> {
+public class DigitalInputDevice extends DeviceBuilder<DigitalInput, DigitalInputDeviceInputs, DigitalInputDevice> {
 
     private DigitalInputDevice(DigitalInput digitalInput) {
         super(digitalInput);

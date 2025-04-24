@@ -15,16 +15,14 @@ public class DeviceLogging {
     private static final ArrayList<LoggingEntry<?>> loggers = new ArrayList<>();
     private static boolean disable = false;
 
-    private record LoggingEntry<T extends DeviceInputs>(
-            String key, DeviceLogger<T> logger, T inputs) {
+    private record LoggingEntry<T extends DeviceInputs>(String key, DeviceLogger<T> logger, T inputs) {
         public T getUpdatedInputs() {
             logger.updateInputs(inputs);
             return inputs;
         }
     }
 
-    protected static <T extends DeviceInputs> void addLoggerWithInputs(
-            String key, DeviceLogger<T> logger, T inputs) {
+    protected static <T extends DeviceInputs> void addLoggerWithInputs(String key, DeviceLogger<T> logger, T inputs) {
         if (!disable) {
             loggers.add(new LoggingEntry<>(key, logger, inputs));
         }

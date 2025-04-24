@@ -15,70 +15,57 @@ public class ArmConfig {
 
     static final double ARM_DEPLOY_LOWER_BOUND = 0;
 
-    private static final Slot0Configs SLOT_0_REAL_CONFIGS =
-            new Slot0Configs()
-                    .withKP(1440)
-                    .withKI(0)
-                    .withKD(300)
-                    .withKG(7.5)
-                    .withKV(1)
-                    .withKA(2)
-                    .withGravityType(GravityTypeValue.Arm_Cosine);
+    private static final Slot0Configs SLOT_0_REAL_CONFIGS = new Slot0Configs()
+            .withKP(1440)
+            .withKI(0)
+            .withKD(300)
+            .withKG(7.5)
+            .withKV(1)
+            .withKA(2)
+            .withGravityType(GravityTypeValue.Arm_Cosine);
 
-    static final Slot1Configs SLOT_1_WOOD_CONFIGS =
-            new Slot1Configs()
-                    .withKP(256)
-                    .withKI(8)
-                    .withKG(1)
-                    .withKD(8)
-                    .withKA(3)
-                    .withGravityType(GravityTypeValue.Arm_Cosine);
+    static final Slot1Configs SLOT_1_WOOD_CONFIGS = new Slot1Configs()
+            .withKP(256)
+            .withKI(8)
+            .withKG(1)
+            .withKD(8)
+            .withKA(3)
+            .withGravityType(GravityTypeValue.Arm_Cosine);
 
-    private static final Slot2Configs SLOT_2_SIM_CONFIGS =
-            new Slot2Configs()
-                    .withKP(300)
-                    .withKI(0)
-                    .withKD(600)
-                    .withKG(0)
-                    .withKV(0)
-                    .withKA(60)
-                    .withGravityType(GravityTypeValue.Arm_Cosine);
+    private static final Slot2Configs SLOT_2_SIM_CONFIGS = new Slot2Configs()
+            .withKP(300)
+            .withKI(0)
+            .withKD(600)
+            .withKG(0)
+            .withKV(0)
+            .withKA(60)
+            .withGravityType(GravityTypeValue.Arm_Cosine);
 
-    static final MotionMagicConfigs motionMagicConfigs =
-            new MotionMagicConfigs()
-                    .withMotionMagicCruiseVelocity(0.5)
-                    .withMotionMagicAcceleration(1)
-                    .withMotionMagicJerk(0);
+    static final MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs()
+            .withMotionMagicCruiseVelocity(0.5)
+            .withMotionMagicAcceleration(1)
+            .withMotionMagicJerk(0);
 
-    static final TalonFXConfiguration talonFXConfiguration =
-            new TalonFXConfiguration()
-                    .withFeedback(
-                            new FeedbackConfigs()
-                                    .withFeedbackRemoteSensorID(ARM_CANCODER_ID)
-                                    .withFeedbackSensorSource(
-                                            FeedbackSensorSourceValue.FusedCANcoder)
-                                    .withRotorToSensorRatio(Robot.isReal() ? GEAR_RATIO : 1)
-                                    .withSensorToMechanismRatio(Robot.isReal() ? 1 : GEAR_RATIO))
-                    .withMotorOutput(
-                            new MotorOutputConfigs()
-                                    .withInverted(
-                                            Robot.isReal()
-                                                    ? InvertedValue.Clockwise_Positive
-                                                    : InvertedValue.CounterClockwise_Positive)
-                                    .withNeutralMode(NeutralModeValue.Brake))
-                    .withSlot0(SLOT_0_REAL_CONFIGS)
-                    .withSlot1(SLOT_1_WOOD_CONFIGS)
-                    .withSlot2(SLOT_2_SIM_CONFIGS)
-                    .withMotionMagic(motionMagicConfigs);
+    static final TalonFXConfiguration talonFXConfiguration = new TalonFXConfiguration()
+            .withFeedback(new FeedbackConfigs()
+                    .withFeedbackRemoteSensorID(ARM_CANCODER_ID)
+                    .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+                    .withRotorToSensorRatio(Robot.isReal() ? GEAR_RATIO : 1)
+                    .withSensorToMechanismRatio(Robot.isReal() ? 1 : GEAR_RATIO))
+            .withMotorOutput(new MotorOutputConfigs()
+                    .withInverted(
+                            Robot.isReal() ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive)
+                    .withNeutralMode(NeutralModeValue.Brake))
+            .withSlot0(SLOT_0_REAL_CONFIGS)
+            .withSlot1(SLOT_1_WOOD_CONFIGS)
+            .withSlot2(SLOT_2_SIM_CONFIGS)
+            .withMotionMagic(motionMagicConfigs);
 
-    static final CANcoderConfiguration cancoderConfiguration =
-            new CANcoderConfiguration()
-                    .withMagnetSensor(
-                            new MagnetSensorConfigs()
-                                    .withSensorDirection(
-                                            SensorDirectionValue.CounterClockwise_Positive)
-                                    .withMagnetOffset(MAGNET_OFFSET)
-                                    .withAbsoluteSensorDiscontinuityPoint(0.625));
+    static final CANcoderConfiguration cancoderConfiguration = new CANcoderConfiguration()
+            .withMagnetSensor(new MagnetSensorConfigs()
+                    .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
+                    .withMagnetOffset(MAGNET_OFFSET)
+                    .withAbsoluteSensorDiscontinuityPoint(0.625));
 
     public static final Angle ANGLE_TOLERANCE = Units.Rotations.of(0.05);
 }
