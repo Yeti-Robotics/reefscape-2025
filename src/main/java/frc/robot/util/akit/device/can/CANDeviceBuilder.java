@@ -33,7 +33,7 @@ public abstract class CANDeviceBuilder<
      * @param configConsumer - function to modify the currently used configuration
      * @return the device builder
      */
-    public U extendConfig(Consumer<C> configConsumer) {
+    public U modifyConfig(Consumer<C> configConsumer) {
         configConsumer.accept(getConfig());
         return getDeviceBuilderClass();
     }
