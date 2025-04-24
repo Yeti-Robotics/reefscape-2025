@@ -51,8 +51,6 @@ public class CoralManipulatorMechanismVisualizer {
     }
 
     public void update(Angle armPosition, Angle elevatorPosition) {
-        System.out.println(
-                "armPosition = " + armPosition + ", elevatorPosition = " + elevatorPosition);
         armLigament.setAngle(armPosition.in(Degrees) - 90.0);
         elevatorLigament.setLength(scaleLength(elevatorPosition.magnitude()));
 

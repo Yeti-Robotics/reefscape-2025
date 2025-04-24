@@ -12,11 +12,11 @@ import frc.robot.constants.HardwareConstants;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
-public class ElevatorStateSetpointIOTalonFX implements ElevatorStateSetpointIO {
+public class ElevatorIOTalonFX implements ElevatorIO {
     protected final TalonFX primaryElevatorMotor =
             TalonFXDevice.configure(ElevatorConfig.primaryElevatorMotorID, Constants.CANIVORE_BUS)
                     .log("ElevatorIO/PrimaryMotor")
-                    .using(ElevatorConfig.primaryTalonFXConfigs)
+                    .withConfig(ElevatorConfig.primaryTalonFXConfigs)
                     .withStatusSignalFrequency(
                             HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
                     .syncConfigs()
@@ -25,7 +25,7 @@ public class ElevatorStateSetpointIOTalonFX implements ElevatorStateSetpointIO {
     protected final TalonFX secondaryElevatorMotor =
             TalonFXDevice.configure(ElevatorConfig.secondaryElevatorMotorID, Constants.CANIVORE_BUS)
                     .log("ElevatorIO/SecondaryMotor")
-                    .using(ElevatorConfig.secondaryTalonFXConfigs)
+                    .withConfig(ElevatorConfig.secondaryTalonFXConfigs)
                     .syncConfigs()
                     .oppose(primaryElevatorMotor)
                     .getDevice();
@@ -35,12 +35,13 @@ public class ElevatorStateSetpointIOTalonFX implements ElevatorStateSetpointIO {
 
     private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
 
-    public ElevatorStateSetpointIOTalonFX() {
+    public ElevatorIOTalonFX() {
         new Trigger(this::bottomSwitchTriggered)
                 .debounce(2)
-                .onTrue(Commands.runOnce(() -> primaryElevatorMotor.setPosition(0))
-                        .andThen(() -> toSetpoint(ElevatorPosition.BOTTOM))
-                        .andThen(primaryElevatorMotor::stopMotor));
+                .onTrue(
+                        Commands.runOnce(() -> primaryElevatorMotor.setPosition(0))
+                                .andThen(() -> toSetpoint(ElevatorPosition.BOTTOM))
+                                .andThen(primaryElevatorMotor::stopMotor));
     }
 
     @Override

@@ -73,7 +73,7 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void robotPeriodic() {
-        DeviceLogging.get().updateDeviceLogging();
+        DeviceLogging.updateDeviceLogging();
 
         CommandScheduler.getInstance().run();
         robotContainer.updateMechanisms();

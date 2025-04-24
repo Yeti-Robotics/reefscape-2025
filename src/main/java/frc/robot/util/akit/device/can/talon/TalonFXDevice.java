@@ -1,5 +1,6 @@
 package frc.robot.util.akit.device.can.talon;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -7,14 +8,18 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import edu.wpi.first.units.measure.Frequency;
+import frc.robot.Robot;
 import frc.robot.util.akit.device.DeviceLogger;
 import frc.robot.util.akit.device.can.CANDeviceBuilder;
+import frc.robot.util.sim.PhysicsSim;
+import frc.robot.util.sim.TalonFXSimProfile;
 import java.util.function.Function;
-import static frc.robot.util.akit.device.can.CANDeviceBuilder.CONNECTED_DEBOUNCE_TIME;
 
 public class TalonFXDevice
         extends CANDeviceBuilder<
                 TalonFX, TalonFXConfiguration, TalonFXDeviceInputs, TalonFXDevice> {
+    private TalonFXSimProfile simProfile;
+
     private TalonFXDevice(TalonFX motor) {
         super(motor);
     }
@@ -65,24 +70,50 @@ public class TalonFXDevice
         return withCANCoder(cancoder, FeedbackSensorSourceValue.FusedCANcoder);
     }
 
-    public TalonFXDevice withFusedCANcoder(int cancoderID) {
-        return withCANCoder(cancoderID, FeedbackSensorSourceValue.FusedCANcoder);
-    }
-
     public TalonFXDevice withCANCoder(CANcoder cancoder, FeedbackSensorSourceValue source) {
-        return withCANCoder(cancoder.getDeviceID(), source);
-    }
-
-    public TalonFXDevice withCANCoder(int cancoderID, FeedbackSensorSourceValue source) {
+        updateSimProfile(cancoder);
         TalonFXConfiguration config = getConfig();
         config.Feedback.FeedbackSensorSource = source;
-        config.Feedback.FeedbackRemoteSensorID = cancoderID;
+        config.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
+        return this;
+    }
+
+    private void updateSimProfile(CANcoder cancoder) {
+        if (Robot.isSimulation()) {
+            if (simProfile == null) {
+                simProfile = PhysicsSim.getInstance().addTalonFX(super.getDevice());
+            }
+
+            if (cancoder != null) {
+                simProfile.setCancoder(cancoder);
+            }
+        }
+    }
+
+    public TalonFXDevice optimizeBusUtilization() {
+        // ensure important status signals are enabled before optimizing
+        BaseStatusSignal.setUpdateFrequencyForAll(
+                TalonFXDeviceLogger.DEFAULT_UPDATE_HZ,
+                getDevice().getDutyCycle(),
+                getDevice().getTorqueCurrent(),
+                getDevice().getMotorVoltage(),
+                getDevice().getPosition(),
+                getDevice().getVelocity(),
+                getDevice().getAcceleration());
+
+        getDevice().optimizeBusUtilization();
         return this;
     }
 
     private TalonFXDevice followWithRequest(int primaryDeviceID, boolean oppose) {
         getDevice().setControl(new Follower(primaryDeviceID, oppose));
         return this;
+    }
+
+    @Override
+    public TalonFX getDevice() {
+        updateSimProfile(null);
+        return super.getDevice();
     }
 
     @Override

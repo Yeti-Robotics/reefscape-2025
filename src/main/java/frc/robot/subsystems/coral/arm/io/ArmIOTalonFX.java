@@ -12,22 +12,23 @@ import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 import jakarta.inject.Singleton;
 
 @Singleton
-public class ArmStateSetpointIOTalonFX implements ArmStateSetpointIO {
+public class ArmIOTalonFX implements ArmIO {
     private final MotionMagicTorqueCurrentFOC motionMagicReq = new MotionMagicTorqueCurrentFOC(0);
 
     final CANcoder armCancoder =
             CANCoderDevice.configure(ArmConfig.ARM_CANCODER_ID, Constants.CANIVORE_BUS)
                     .log("ArmIO/Cancoder")
-                    .using(ArmConfig.cancoderConfiguration)
+                    .withConfig(ArmConfig.cancoderConfiguration)
                     .syncConfigs()
                     .getDevice();
 
     final TalonFX armMotor =
             TalonFXDevice.configure(ArmConfig.ARM_KRAKEN_ID, Constants.CANIVORE_BUS)
                     .log("ArmIO/Motor")
-                    .using(ArmConfig.talonFXConfiguration)
+                    .withConfig(ArmConfig.talonFXConfiguration)
                     .withFusedCANcoder(armCancoder)
-                    .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
+                    .withStatusSignalFrequency(
+                            HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
                     .syncConfigs()
                     .getDevice();
 

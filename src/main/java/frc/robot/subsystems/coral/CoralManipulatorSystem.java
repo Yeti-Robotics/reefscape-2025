@@ -6,31 +6,30 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.arm.ArmSubsystem;
-import frc.robot.subsystems.coral.arm.io.ArmStateSetpointIOSimulatedTalonFX;
+import frc.robot.subsystems.coral.arm.io.ArmIOTalonFX;
 import frc.robot.subsystems.coral.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.coral.elevator.io.ElevatorStateSetpointIOSimulatedTalonFX;
+import frc.robot.subsystems.coral.elevator.io.ElevatorIOTalonFX;
 import frc.robot.subsystems.coral.grabber.GrabberSubsystem;
-import frc.robot.subsystems.coral.grabber.io.GrabberSetpointIOTalonFX;
+import frc.robot.subsystems.coral.grabber.io.GrabberIOTalonFX;
 import frc.robot.subsystems.coral.wrist.WristPosition;
 import frc.robot.subsystems.coral.wrist.WristSubsystem;
-import frc.robot.subsystems.coral.wrist.io.WristStateSetpointIOTalonFX;
-
+import frc.robot.subsystems.coral.wrist.io.WristIOTalonFX;
 import java.util.Map;
+import org.littletonrobotics.junction.Logger;
 
 public class CoralManipulatorSystem extends SubsystemBase {
-    public final ArmSubsystem arm = new ArmSubsystem(new ArmStateSetpointIOSimulatedTalonFX());
+    public final ArmSubsystem arm = new ArmSubsystem(new ArmIOTalonFX());
 
-    public final ElevatorSubsystem elevator =
-            new ElevatorSubsystem(new ElevatorStateSetpointIOSimulatedTalonFX());
+    public final ElevatorSubsystem elevator = new ElevatorSubsystem(new ElevatorIOTalonFX());
 
-    public final GrabberSubsystem grabber = new GrabberSubsystem(new GrabberSetpointIOTalonFX());
+    public final GrabberSubsystem grabber = new GrabberSubsystem(new GrabberIOTalonFX());
 
-    public final WristSubsystem wrist = new WristSubsystem(new WristStateSetpointIOTalonFX());
+    public final WristSubsystem wrist = new WristSubsystem(new WristIOTalonFX());
 
     private CoralManipulatorState queuedState;
 
     public boolean isElevMovingUp(CoralManipulatorState targetState) {
-        return targetState.getElevatorPosition().getSetpoint().gt(elevator.position());
+        return targetState.getElevatorPosition().getSetpoint().gt(elevator.getState());
     }
 
     public boolean isMovingL2(CoralManipulatorState targetState) {
@@ -43,7 +42,7 @@ public class CoralManipulatorSystem extends SubsystemBase {
     }
 
     public boolean isArmInDanger(CoralManipulatorState targetState) {
-        return arm.position().lt(ArmPosition.AWAY.getSetpoint())
+        return arm.getState().lt(ArmPosition.AWAY.getSetpoint())
                 || targetState.getArmPosition().getSetpoint().lt(ArmPosition.AWAY.getSetpoint());
     }
 
@@ -95,15 +94,29 @@ public class CoralManipulatorSystem extends SubsystemBase {
         return runOnce(() -> queueState(queuedState));
     }
 
+    public CoralManipulatorState getCurrentState() {
+        for (CoralManipulatorState state : CoralManipulatorState.values()) {
+            if (isAt(state)) {
+                return state;
+            }
+        }
+
+        return null;
+    }
+
     @Override
     public void periodic() {
         if (Robot.isSimulation()) {
             CoralManipulatorMechanismVisualizer.getInstance()
-                    .update(arm.position(), elevator.position());
+                    .update(arm.getState(), elevator.getState());
         }
+
+        Logger.recordOutput(
+                "CoralManipulator/CurrentState",
+                getCurrentState() == null ? "None" : getCurrentState().name());
     }
 
-        public Command transitionTo(CoralManipulatorState targetState) {
+    public Command transitionTo(CoralManipulatorState targetState) {
         Command coralManipulatorCommand;
 
         if (isIntaking(targetState) || !isElevMovingUp(targetState)) {
@@ -154,8 +167,6 @@ public class CoralManipulatorSystem extends SubsystemBase {
         }
 
         coralManipulatorCommand = wrist.holdPosition().andThen(coralManipulatorCommand);
-
-        coralManipulatorCommand.schedule();
 
         return coralManipulatorCommand;
     }

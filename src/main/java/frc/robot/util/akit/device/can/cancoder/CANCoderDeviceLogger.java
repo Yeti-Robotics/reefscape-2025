@@ -1,5 +1,7 @@
 package frc.robot.util.akit.device.can.cancoder;
 
+import static frc.robot.util.akit.device.can.CANDeviceBuilder.CONNECTED_DEBOUNCE_TIME;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
@@ -7,8 +9,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.util.akit.device.DeviceLogger;
-
-import static frc.robot.util.akit.device.can.CANDeviceBuilder.CONNECTED_DEBOUNCE_TIME;
 
 public class CANCoderDeviceLogger implements DeviceLogger<CANCoderDeviceInputs> {
     private final StatusSignal<Angle> position;

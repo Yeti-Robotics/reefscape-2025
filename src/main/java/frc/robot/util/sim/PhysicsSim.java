@@ -4,6 +4,8 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import java.util.ArrayList;
+import java.util.Objects;
+import org.jspecify.annotations.NonNull;
 
 /** Manages physics simulation for CTRE products. */
 public class PhysicsSim {
@@ -20,18 +22,21 @@ public class PhysicsSim {
      *
      * @param talonFX The TalonFX device
      */
-    public void addTalonFX(TalonFX talonFX) {
-        if (talonFX != null) {
-            TalonFXSimProfile simTalonFX = new TalonFXSimProfile(talonFX, 0.001);
-            simProfiles.add(simTalonFX);
-        }
+    public TalonFXSimProfile addTalonFX(@NonNull TalonFX talonFX) {
+        Objects.requireNonNull(talonFX, "TalonFX cannot be null");
+
+        TalonFXSimProfile simTalonFX = new TalonFXSimProfile(talonFX, 0.001);
+        simProfiles.add(simTalonFX);
+        return simTalonFX;
     }
 
-    public void addTalonFX(TalonFX talonFX, CANcoder cancoder) {
-        if (talonFX != null && cancoder != null) {
-            TalonFXSimProfile simTalonFX = new TalonFXSimProfile(talonFX, 0.001, cancoder);
-            simProfiles.add(simTalonFX);
-        }
+    public TalonFXSimProfile addTalonFX(@NonNull TalonFX talonFX, @NonNull CANcoder cancoder) {
+        Objects.requireNonNull(talonFX, "TalonFX cannot be null");
+        Objects.requireNonNull(cancoder, "CANcoder cannot be null");
+
+        TalonFXSimProfile simTalonFX = new TalonFXSimProfile(talonFX, 0.001, cancoder);
+        simProfiles.add(simTalonFX);
+        return simTalonFX;
     }
 
     /** Runs the simulator: - enable the robot - simulate sensors */
@@ -48,7 +53,7 @@ public class PhysicsSim {
         private boolean _running = false;
 
         /** Runs the simulation profile. Implemented by device-specific profiles. */
-        public void run() {}
+        protected void run() {}
 
         /** Returns the time since last call, in seconds. */
         protected double getPeriod() {

@@ -3,7 +3,8 @@ package frc.robot.util.akit.device;
 import java.util.function.Consumer;
 
 public abstract class ConfigurableDeviceBuilder<
-        D, C, I extends DeviceInputs, U extends DeviceBuilder<D, I, U>> extends DeviceBuilder<D, I, U> {
+                D, C, I extends DeviceInputs, U extends DeviceBuilder<D, I, U>>
+        extends DeviceBuilder<D, I, U> {
     protected C config;
 
     protected ConfigurableDeviceBuilder(D device) {
@@ -13,15 +14,11 @@ public abstract class ConfigurableDeviceBuilder<
     protected abstract C getDefaultConfig();
 
     protected C getConfig() {
-        if (!hasConfig()) {
+        if (config == null) {
             config = getDefaultConfig();
         }
 
         return config;
-    }
-
-    protected boolean hasConfig() {
-        return config != null;
     }
 
     /**
@@ -31,7 +28,7 @@ public abstract class ConfigurableDeviceBuilder<
      * @param configConsumer - function to modify the currently used configuration
      * @return the device builder
      */
-    public U extend(Consumer<C> configConsumer) {
+    public U extendConfig(Consumer<C> configConsumer) {
         configConsumer.accept(getConfig());
         return getDeviceBuilderClass();
     }
@@ -45,7 +42,7 @@ public abstract class ConfigurableDeviceBuilder<
      * @param config Configuration object you want to use
      * @return the device builder
      */
-    public U using(C config) {
+    public U withConfig(C config) {
         this.config = config;
         return getDeviceBuilderClass();
     }

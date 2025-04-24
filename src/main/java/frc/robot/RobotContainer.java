@@ -39,8 +39,6 @@ public class RobotContainer {
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
-    private final CommandJoystick joystick = new CommandJoystick(0);
-
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
@@ -77,7 +75,16 @@ public class RobotContainer {
                                                 -primaryXboxController.getRightX()
                                                         * TunerConstants.MaFxAngularRate)));
 
-        simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+        simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+        simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
+        simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
+        simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+        simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
+        simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
+        simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        simJoy.button(8).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
+        simJoy.button(9).onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3));
+
         //        secondaryXboxController
         //                .povUp()
         //                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));

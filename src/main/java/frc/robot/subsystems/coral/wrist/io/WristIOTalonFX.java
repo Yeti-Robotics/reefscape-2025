@@ -10,18 +10,18 @@ import frc.robot.constants.HardwareConstants;
 import frc.robot.util.akit.device.can.cancoder.CANCoderDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
-public class WristStateSetpointIOTalonFX implements WristStateSetpointIO {
+public class WristIOTalonFX implements WristIO {
     final CANcoder wristCancoder =
             CANCoderDevice.configure(WristConfigs.WRIST_CANCODER_ID, Constants.CANIVORE_BUS)
                     .log("WristIO/WristCancoder")
-                    .using(WristConfigs.wristEncoderConfigs)
+                    .withConfig(WristConfigs.wristEncoderConfigs)
                     .syncConfigs()
                     .getDevice();
 
     final TalonFX wristMotor =
             TalonFXDevice.configure(WristConfigs.WRIST_KRAKEN_ID, Constants.CANIVORE_BUS)
                     .log("WristIO/WristMotor")
-                    .using(WristConfigs.wristMotorConfigs)
+                    .withConfig(WristConfigs.wristMotorConfigs)
                     .withFusedCANcoder(wristCancoder)
                     .withStatusSignalFrequency(
                             HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)

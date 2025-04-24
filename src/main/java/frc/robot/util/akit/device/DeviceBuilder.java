@@ -1,7 +1,6 @@
 package frc.robot.util.akit.device;
 
-public abstract class DeviceBuilder<
-        D, I extends DeviceInputs, U extends DeviceBuilder<D, I, U>> {
+public abstract class DeviceBuilder<D, I extends DeviceInputs, U extends DeviceBuilder<D, I, U>> {
     private final D device;
 
     protected DeviceBuilder(D device) {

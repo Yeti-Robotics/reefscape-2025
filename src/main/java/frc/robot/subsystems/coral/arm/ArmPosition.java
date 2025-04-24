@@ -4,9 +4,9 @@ import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.subsystems.coral.arm.io.ArmConfig;
-import frc.robot.util.state.SetpointEnum;
+import frc.robot.util.state.MeasuredSetpointEnum;
 
-public enum ArmPosition implements SetpointEnum<Angle, AngleUnit> {
+public enum ArmPosition implements MeasuredSetpointEnum<Angle, AngleUnit> {
     DOWN(-0.254),
     UP(0.254),
     POS_L1(-0.1),

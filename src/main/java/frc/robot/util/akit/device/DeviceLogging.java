@@ -8,9 +8,8 @@ import frc.robot.util.akit.device.can.cancoder.CANCoderDevice;
 import frc.robot.util.akit.device.can.cancolor.CANColorDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 import frc.robot.util.akit.device.digital.DigitalInputDevice;
-import org.littletonrobotics.junction.Logger;
-
 import java.util.ArrayList;
+import org.littletonrobotics.junction.Logger;
 
 public class DeviceLogging {
     private static final DeviceLogging INSTANCE = new DeviceLogging();
@@ -27,7 +26,7 @@ public class DeviceLogging {
 
     protected static <T extends DeviceInputs> void addLoggerWithInputs(
             String key, DeviceLogger<T> logger, T inputs) {
-        if (!disable && loggers.stream().anyMatch(loggingEntry -> loggingEntry.)) {
+        if (!disable) {
             loggers.add(new LoggingEntry<>(key, logger, inputs));
         }
     }
@@ -52,22 +51,18 @@ public class DeviceLogging {
     }
 
     public void log(String key, DigitalInput digitalInput) {
-        DigitalInputDevice.from(digitalInput)
-                .log(key);
+        DigitalInputDevice.from(digitalInput).log(key);
     }
 
     public void log(String key, TalonFX talonFX) {
-        TalonFXDevice.from(talonFX)
-                .log(key);
+        TalonFXDevice.from(talonFX).log(key);
     }
 
     public void log(String key, Canandcolor canandcolor) {
-        CANColorDevice.from(canandcolor)
-                .log(key);
+        CANColorDevice.from(canandcolor).log(key);
     }
 
     public void log(String key, CANcoder cancoder) {
-        CANCoderDevice.from(cancoder)
-                .log(key);
+        CANCoderDevice.from(cancoder).log(key);
     }
 }

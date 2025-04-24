@@ -1,28 +1,30 @@
 package frc.robot.subsystems.coral.grabber;
 
-import edu.wpi.first.units.DimensionlessUnit;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Dimensionless;
 import frc.robot.util.state.SetpointEnum;
 
-public enum GrabberState implements SetpointEnum<Dimensionless, DimensionlessUnit> {
+public enum GrabberState implements SetpointEnum<Double> {
     ROLL_OUT(-0.8),
     ROLL_IN(1),
     OFF(0);
 
-    private final Dimensionless speed;
+    private final Double speed;
 
     GrabberState(double speed) {
-        this.speed = Units.Value.of(speed);
+        this.speed = speed;
     }
 
     @Override
-    public Dimensionless getSetpoint() {
+    public Double getSetpoint() {
         return speed;
     }
 
     @Override
-    public Dimensionless getTolerance() {
-        return Units.Value.zero();
+    public boolean isNear(Double value) {
+        return isNear(value, 0.01);
+    }
+
+    @Override
+    public boolean isNear(Double value, Double tolerance) {
+        return Math.abs(speed.compareTo(value)) < tolerance;
     }
 }

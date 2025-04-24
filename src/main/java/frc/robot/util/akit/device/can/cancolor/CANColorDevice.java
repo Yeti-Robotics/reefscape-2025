@@ -1,10 +1,8 @@
 package frc.robot.util.akit.device.can.cancolor;
 
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
 import frc.robot.util.akit.device.can.CANDeviceBuilder;
-import frc.robot.util.akit.device.can.cancoder.CANCoderDevice;
 
 public class CANColorDevice
         extends CANDeviceBuilder<Canandcolor, CanandcolorSettings, CANColorInputs, CANColorDevice> {

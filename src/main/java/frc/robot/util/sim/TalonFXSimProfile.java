@@ -10,7 +10,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 /** Holds information about a simulated TalonFX. */
-class TalonFXSimProfile extends PhysicsSim.SimProfile {
+public class TalonFXSimProfile extends PhysicsSim.SimProfile {
     private static final double MOTOR_RESISTANCE =
             0.002; // Assume 2mOhm resistance for voltage drop calculation
 
@@ -44,7 +44,7 @@ class TalonFXSimProfile extends PhysicsSim.SimProfile {
      * of our products in simulation using our examples out of the box. Users may modify this to
      * utilize more accurate physics simulation.
      */
-    public void run() {
+    protected void run() {
         /// DEVICE SPEED SIMULATION
 
         motorSim.setInputVoltage(talonFXSim.getMotorVoltage());
@@ -64,5 +64,11 @@ class TalonFXSimProfile extends PhysicsSim.SimProfile {
         talonFXSim.setRotorVelocity(velocity_rps);
 
         talonFXSim.setSupplyVoltage(12 - talonFXSim.getSupplyCurrent() * MOTOR_RESISTANCE);
+    }
+
+    public void setCancoder(CANcoder canCoder) {
+        if (canCoder != null) {
+            cancoderSimState = canCoder.getSimState();
+        }
     }
 }
