@@ -15,6 +15,7 @@ import frc.robot.subsystems.drivetrain.module.SwerveModuleIOInputsAutoLogged;
 import frc.robot.subsystems.drivetrain.module.SwerveModuleIOTalonFX;
 import frc.robot.util.akit.LoggingUtils;
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 public class CommandSwerveDrivetrainLogging {
     private final CommandSwerveDrivetrain commandSwerveDrivetrain;
@@ -39,10 +40,12 @@ public class CommandSwerveDrivetrainLogging {
     }
 
     public void log() {
-        LoggingUtils.logInputs("Drive/Gyro", gyro, gyroInputs);
+        gyro.updateInputs(gyroInputs);
+        Logger.processInputs("Drive/Gyro", gyroInputs);
 
         for (int i = 0; i < swerveModules.length; i++) {
-            LoggingUtils.logInputs("Drive/Module " + i, swerveModules[i], swerveModuleLogs[i]);
+            swerveModules[i].updateInputs(swerveModuleLogs[i]);
+            Logger.processInputs("Drive/Module" + i, swerveModuleLogs[i]);
         }
     }
 
