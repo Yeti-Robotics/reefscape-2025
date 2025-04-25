@@ -4,7 +4,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.hardware.traits.HasTalonSignals;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.constants.Constants;
 import frc.robot.constants.HardwareConstants;
