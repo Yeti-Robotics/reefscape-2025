@@ -68,7 +68,7 @@ public class CoralManipulatorSystem extends SubsystemBase {
     }
 
     public Command selectQueuedStateCommand() {
-        return new SelectCommand(
+        return new SelectCommand<>(
                 Map.of(
                         CoralManipulatorState.L1, transitionTo(CoralManipulatorState.L1),
                         CoralManipulatorState.L2, transitionTo(CoralManipulatorState.L2),
@@ -78,7 +78,7 @@ public class CoralManipulatorSystem extends SubsystemBase {
     }
 
     public Command scoreState() {
-        return new SelectCommand(
+        return new SelectCommand<>(
                 Map.of(
                         CoralManipulatorState.L1, transitionTo(CoralManipulatorState.SCORE_L1),
                         CoralManipulatorState.L2, transitionTo(CoralManipulatorState.SCORE_L2),

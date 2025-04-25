@@ -5,7 +5,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import java.util.ArrayList;
 import java.util.Objects;
-import org.jspecify.annotations.NonNull;
 
 /** Manages physics simulation for CTRE products. */
 public class PhysicsSim {
@@ -22,18 +21,13 @@ public class PhysicsSim {
      *
      * @param talonFX The TalonFX device
      */
-    public TalonFXSimProfile addTalonFX(@NonNull TalonFX talonFX) {
-        Objects.requireNonNull(talonFX, "TalonFX cannot be null");
-
+    public TalonFXSimProfile addTalonFX(TalonFX talonFX) {
         TalonFXSimProfile simTalonFX = new TalonFXSimProfile(talonFX, 0.001);
         simProfiles.add(simTalonFX);
         return simTalonFX;
     }
 
-    public TalonFXSimProfile addTalonFX(@NonNull TalonFX talonFX, @NonNull CANcoder cancoder) {
-        Objects.requireNonNull(talonFX, "TalonFX cannot be null");
-        Objects.requireNonNull(cancoder, "CANcoder cannot be null");
-
+    public TalonFXSimProfile addTalonFX(TalonFX talonFX, CANcoder cancoder) {
         TalonFXSimProfile simTalonFX = new TalonFXSimProfile(talonFX, 0.001, cancoder);
         simProfiles.add(simTalonFX);
         return simTalonFX;

@@ -11,7 +11,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-def formatOnCompile = true
+def formatOnCompile = false
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
@@ -66,8 +66,8 @@ dependencies {
 
     annotationProcessor wpi.java.deps.wpilibAnnotations()
     //  Add Dagger dependencies
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.56.1'
-    implementation 'com.google.dagger:dagger:2.56.1'
+//    annotationProcessor 'com.google.dagger:dagger-compiler:2.56.1'
+//    implementation 'com.google.dagger:dagger:2.56.1'
 
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
@@ -171,4 +171,12 @@ sourceSets {
             srcDir "${buildDir.absolutePath}/generated/sources/annotationProcessor/java/main"
         }
     }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += [
+            "-Xlint:unchecked",
+            "-XprintRounds",
+            "-XprintProcessorInfo"
+    ]
 }
