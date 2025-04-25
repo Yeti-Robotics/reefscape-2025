@@ -1,6 +1,5 @@
 package frc.robot.util.akit.device.digital;
 
-import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.util.akit.device.DeviceBuilder;
@@ -18,11 +17,6 @@ public class DigitalInputDevice extends DeviceBuilder<DigitalInput, DigitalInput
 
     public static DigitalInputDevice from(DigitalInput digitalInput) {
         return new DigitalInputDevice(digitalInput);
-    }
-
-    public DigitalInputDevice usingSimDevice(SimDevice simDevice) {
-        getDevice().setSimDevice(simDevice);
-        return this;
     }
 
     public Trigger toTrigger() {
