@@ -43,7 +43,6 @@ public class TalonFXSimProfile extends PhysicsSim.SimProfile {
      */
     protected void run() {
         /// DEVICE SPEED SIMULATION
-
         motorSim.setInputVoltage(talonFXSim.getMotorVoltage());
 
         motorSim.update(getPeriod());
@@ -52,19 +51,20 @@ public class TalonFXSimProfile extends PhysicsSim.SimProfile {
         final double position_rot = motorSim.getAngularPositionRotations();
         final double velocity_rps = Units.radiansToRotations(motorSim.getAngularVelocityRadPerSec());
 
-        if (cancoderSimState != null) {
-            cancoderSimState.setRawPosition(position_rot);
-            cancoderSimState.setVelocity(velocity_rps);
-        }
         talonFXSim.setRawRotorPosition(position_rot);
         talonFXSim.setRotorVelocity(velocity_rps);
 
         talonFXSim.setSupplyVoltage(12 - talonFXSim.getSupplyCurrent() * MOTOR_RESISTANCE);
+
+        if (cancoderSimState != null) {
+            cancoderSimState.setRawPosition(position_rot);
+            cancoderSimState.setVelocity(velocity_rps);
+        }
     }
 
-    public void setCancoder(CANcoder canCoder) {
-        if (canCoder != null) {
-            cancoderSimState = canCoder.getSimState();
+    public void setCancoder(CANcoder cancoder) {
+        if (cancoder != null) {
+            cancoderSimState = cancoder.getSimState();
         }
     }
 }

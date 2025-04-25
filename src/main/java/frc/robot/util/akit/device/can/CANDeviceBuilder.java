@@ -2,6 +2,7 @@ package frc.robot.util.akit.device.can;
 
 import frc.robot.util.akit.device.DeviceBuilder;
 import frc.robot.util.akit.device.DeviceInputs;
+
 import java.util.function.Consumer;
 
 public abstract class CANDeviceBuilder<D, C, I extends DeviceInputs, U extends DeviceBuilder<D, I, U>>

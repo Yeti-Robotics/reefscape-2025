@@ -1,7 +1,5 @@
 package frc.robot.subsystems.coral;
 
-import static edu.wpi.first.units.Units.Degrees;
-
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.util.Color;
@@ -10,6 +8,8 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 public class CoralManipulatorMechanismVisualizer {
     private final LoggedMechanism2d elevatorArmMech =
             new LoggedMechanism2d(Units.inchesToMeters(60), Units.inchesToMeters(100));
@@ -17,10 +17,7 @@ public class CoralManipulatorMechanismVisualizer {
     private final LoggedMechanismLigament2d armLigament;
     private final LoggedMechanismLigament2d elevatorLigament;
 
-    private static final CoralManipulatorMechanismVisualizer visualizerInstance =
-            new CoralManipulatorMechanismVisualizer();
-
-    private CoralManipulatorMechanismVisualizer() {
+    protected CoralManipulatorMechanismVisualizer() {
         elevatorLigament = elevatorArmMech
                 .getRoot("startPoint", Units.inchesToMeters(30), Units.inchesToMeters(4))
                 .append(new LoggedMechanismLigament2d("lift", Units.feetToMeters(3), 90, 6, new Color8Bit(Color.kRed)));
@@ -41,9 +38,5 @@ public class CoralManipulatorMechanismVisualizer {
         elevatorLigament.setLength(scaleLength(elevatorPosition.magnitude()));
 
         Logger.recordOutput("Mechanisms/CoralManipulator", elevatorArmMech);
-    }
-
-    public static CoralManipulatorMechanismVisualizer getInstance() {
-        return visualizerInstance;
     }
 }

@@ -172,11 +172,3 @@ sourceSets {
         }
     }
 }
-
-tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += [
-            "-Xlint:unchecked",
-            "-XprintRounds",
-            "-XprintProcessorInfo"
-    ]
-}

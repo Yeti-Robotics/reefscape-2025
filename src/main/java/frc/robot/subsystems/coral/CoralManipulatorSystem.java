@@ -14,8 +14,9 @@ import frc.robot.subsystems.coral.grabber.io.GrabberIOTalonFX;
 import frc.robot.subsystems.coral.wrist.WristPosition;
 import frc.robot.subsystems.coral.wrist.WristSubsystem;
 import frc.robot.subsystems.coral.wrist.io.WristIOTalonFX;
-import java.util.Map;
 import org.littletonrobotics.junction.Logger;
+
+import java.util.Map;
 
 public class CoralManipulatorSystem extends SubsystemBase {
     public final ArmSubsystem arm = new ArmSubsystem(new ArmIOTalonFX());
@@ -27,6 +28,8 @@ public class CoralManipulatorSystem extends SubsystemBase {
     public final WristSubsystem wrist = new WristSubsystem(new WristIOTalonFX());
 
     private CoralManipulatorState queuedState;
+
+    private final CoralManipulatorMechanismVisualizer positionVisualizer = new CoralManipulatorMechanismVisualizer();
 
     public boolean isElevMovingUp(CoralManipulatorState targetState) {
         return targetState.getElevatorPosition().getSetpoint().gt(elevator.getState());
@@ -104,7 +107,7 @@ public class CoralManipulatorSystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (Robot.isSimulation()) {
-            CoralManipulatorMechanismVisualizer.getInstance().update(arm.getState(), elevator.getState());
+            positionVisualizer.update(arm.getState(), elevator.getState());
         }
 
         Logger.recordOutput(

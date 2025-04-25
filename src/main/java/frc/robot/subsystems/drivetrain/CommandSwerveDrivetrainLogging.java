@@ -1,9 +1,8 @@
-package frc.robot.subsystems.drivetrain.logging;
+package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveModule;
-import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.gyro.GyroIO;
 import frc.robot.subsystems.drivetrain.gyro.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.drivetrain.gyro.GyroIOPigeon2;

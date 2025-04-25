@@ -36,7 +36,7 @@ public class DigitalInputDevice extends DeviceBuilder<DigitalInput, DigitalInput
 
     @Override
     protected DigitalInputDeviceInputs createDeviceInputs() {
-        return new DigitalInputDeviceInputs();
+        return new DigitalInputDeviceInputsAutoLogged();
     }
 
     @Override

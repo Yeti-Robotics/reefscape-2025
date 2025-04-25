@@ -14,6 +14,7 @@ import frc.robot.util.akit.device.can.CANConstants;
 import frc.robot.util.akit.device.can.CANDeviceBuilder;
 import frc.robot.util.sim.PhysicsSim;
 import frc.robot.util.sim.TalonFXSimProfile;
+
 import java.util.function.Function;
 
 public class TalonFXDevice extends CANDeviceBuilder<TalonFX, TalonFXConfiguration, TalonFXDeviceInputs, TalonFXDevice> {
@@ -23,6 +24,7 @@ public class TalonFXDevice extends CANDeviceBuilder<TalonFX, TalonFXConfiguratio
         super(motor);
 
         if (Robot.isSimulation()) {
+            System.out.println("motor = " + motor.getDescription());
             simProfile = PhysicsSim.getInstance().addTalonFX(motor);
         }
     }

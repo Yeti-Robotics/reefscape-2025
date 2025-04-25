@@ -5,7 +5,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class ClimberConfig {
-    static final int CLIMBER_MOTOR_ID = 12;
+    static final int CLIMBER_MOTOR_ID = 23;
 
     public static final double CLIMB_SPEED = 0.75;
     public static final double UNCLIMB_SPEED = -0.7;

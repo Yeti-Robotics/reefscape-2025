@@ -6,8 +6,12 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 // easiest way to avoid typecasting/problems with generics
 public interface DeviceInputs extends LoggableInputs {
     @Override
-    default void toLog(LogTable table) {}
+    default void toLog(LogTable table) {
+        throw new UnsupportedOperationException("Not implemented, you probably meant to use AutoLogged");
+    }
 
     @Override
-    default void fromLog(LogTable table) {}
+    default void fromLog(LogTable table) {
+        throw new UnsupportedOperationException("Not implemented, you probably meant to use AutoLogged");
+    }
 }

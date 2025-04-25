@@ -3,10 +3,14 @@ package frc.robot.subsystems.coral.elevator.io;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.hal.HALValue;
+import edu.wpi.first.hal.SimBoolean;
 import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.constants.Constants;
 import frc.robot.constants.HardwareConstants;
@@ -17,7 +21,7 @@ import frc.robot.util.akit.device.digital.DigitalInputDevice;
 public class ElevatorIOTalonFX implements ElevatorIO {
     protected final TalonFX primaryElevatorMotor = TalonFXDevice.configure(
                     ElevatorConfig.primaryElevatorMotorID, Constants.CANIVORE_BUS)
-            .log("ElevatorIO/PrimaryMotor")
+            .log("Elevator/PrimaryMotor")
             .withConfig(ElevatorConfig.primaryTalonFXConfigs)
             .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
             .syncConfigs()
@@ -25,7 +29,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
     protected final TalonFX secondaryElevatorMotor = TalonFXDevice.configure(
                     ElevatorConfig.secondaryElevatorMotorID, Constants.CANIVORE_BUS)
-            .log("ElevatorIO/SecondaryMotor")
+            .log("Elevator/SecondaryMotor")
             .withConfig(ElevatorConfig.secondaryTalonFXConfigs)
             .syncConfigs()
             .oppose(primaryElevatorMotor)
@@ -34,22 +38,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     private final MotionMagicTorqueCurrentFOC motionMagicReq = new MotionMagicTorqueCurrentFOC(0);
     private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
 
-    private final DigitalInput magSwitch;
-
     public ElevatorIOTalonFX() {
-        DigitalInputDevice digitalSwitch = DigitalInputDevice.configure(ElevatorConfig.magSwitchID);
-
-        if (Robot.isSimulation()) {
-            SimDevice deviceSim = SimDevice.create("Elevator Switch", ElevatorConfig.magSwitchID);
-
-            if (deviceSim != null) {
-                digitalSwitch.usingSimDevice(deviceSim);
-            }
-        }
-
-        magSwitch = digitalSwitch.getDevice();
-
-        digitalSwitch
+        DigitalInputDevice.configure(ElevatorConfig.magSwitchID)
+                .log("Elevator/MagSwitch")
                 .toTrigger()
                 .debounce(2)
                 .onTrue(Commands.runOnce(() -> primaryElevatorMotor.setPosition(0))
@@ -65,10 +56,5 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     @Override
     public void setState(Angle value) {
         primaryElevatorMotor.setControl(motionMagicReq.withPosition(value));
-    }
-
-    @Override
-    public boolean bottomSwitchTriggered() {
-        return magSwitch.get();
     }
 }

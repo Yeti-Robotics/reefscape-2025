@@ -9,12 +9,16 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.climber.ClimberSubsystem;
+import frc.robot.subsystems.climber.io.ClimberIOTalonFX;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
+import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 
@@ -32,7 +36,7 @@ public class RobotContainer {
     final CommandSwerveDrivetrain drivetrain;
 
     final CoralManipulatorSystem coralManipulator;
-
+    final ClimberSubsystem climber = new ClimberSubsystem(new ClimberIOTalonFX());
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
             .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
@@ -72,7 +76,8 @@ public class RobotContainer {
         simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         simJoy.button(8).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
         simJoy.button(9).onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3));
-
+        simJoy.button(10).onTrue(Commands.print("Pressed")
+                .andThen(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN)));
         //        secondaryXboxController
         //                .povUp()
         //                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));

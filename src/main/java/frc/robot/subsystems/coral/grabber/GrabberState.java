@@ -20,7 +20,7 @@ public enum GrabberState implements SetpointEnum<Double> {
 
     @Override
     public boolean isNear(Double value) {
-        return isNear(value, 0.01);
+        return isNear(value, Double.POSITIVE_INFINITY);
     }
 
     @Override

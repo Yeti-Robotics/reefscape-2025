@@ -4,6 +4,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.traits.HasTalonSignals;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.constants.Constants;
 import frc.robot.constants.HardwareConstants;
@@ -12,13 +13,13 @@ import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
 public class WristIOTalonFX implements WristIO {
     final CANcoder wristCancoder = CANCoderDevice.configure(WristConfigs.WRIST_CANCODER_ID, Constants.CANIVORE_BUS)
-            .log("WristIO/WristCancoder")
+            .log("Wrist/WristCancoder")
             .withConfig(WristConfigs.wristEncoderConfigs)
             .syncConfigs()
             .getDevice();
 
     final TalonFX wristMotor = TalonFXDevice.configure(WristConfigs.WRIST_KRAKEN_ID, Constants.CANIVORE_BUS)
-            .log("WristIO/WristMotor")
+            .log("Wrist/WristMotor")
             .withConfig(WristConfigs.wristMotorConfigs)
             .withFusedCANcoder(wristCancoder)
             .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
