@@ -16,7 +16,7 @@ public class TalonFXSimProfile extends PhysicsSim.SimProfile {
     private final DCMotorSim motorSim;
     private final TalonFXSimState talonFXSim;
     private CANcoderSimState cancoderSimState;
-
+    boolean isArmMotor = false;
     /**
      * Creates a new simulation profile for a TalonFX device.
      *
@@ -25,7 +25,8 @@ public class TalonFXSimProfile extends PhysicsSim.SimProfile {
      */
     public TalonFXSimProfile(final TalonFX talonFX, final double rotorInertia) {
         var gearbox = DCMotor.getKrakenX60Foc(1);
-        this.motorSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(gearbox, rotorInertia, 1.0), gearbox);
+        isArmMotor = talonFX.getDeviceID() == 10;
+        this.motorSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(gearbox, rotorInertia, 75.6055), gearbox);
         this.talonFXSim = talonFX.getSimState();
     }
 
@@ -50,6 +51,7 @@ public class TalonFXSimProfile extends PhysicsSim.SimProfile {
         /// SET SIM PHYSICS INPUTS
         final double position_rot = motorSim.getAngularPositionRotations();
         final double velocity_rps = Units.radiansToRotations(motorSim.getAngularVelocityRadPerSec());
+
 
         talonFXSim.setRawRotorPosition(position_rot);
         talonFXSim.setRotorVelocity(velocity_rps);

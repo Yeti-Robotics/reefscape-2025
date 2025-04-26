@@ -3,7 +3,6 @@ package frc.robot.util.state;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.util.akit.io.StateSetpointIO;
 
 public abstract class StateSubsystem<T, E extends SetpointEnum<T>, H extends StateSetpointIO<E, T>>
@@ -17,9 +16,7 @@ public abstract class StateSubsystem<T, E extends SetpointEnum<T>, H extends Sta
 
     public Command transitionTo(E setpoint) {
         targetState = setpoint;
-        return runOnce(() -> io.toSetpoint(setpoint))
-                .andThen(Commands.waitUntil(this::reachedTargetState))
-                .andThen(Robot.isSimulation() ? Commands.waitSeconds(0.5) : Commands.none());
+        return runOnce(() -> io.toSetpoint(setpoint)).andThen(Commands.waitUntil(this::reachedTargetState));
     }
 
     public boolean isAt(E setpoint) {
@@ -27,7 +24,6 @@ public abstract class StateSubsystem<T, E extends SetpointEnum<T>, H extends Sta
     }
 
     public boolean reachedTargetState() {
-        System.out.println(io.getState() + " " + targetState);
         return isAt(targetState);
     }
 

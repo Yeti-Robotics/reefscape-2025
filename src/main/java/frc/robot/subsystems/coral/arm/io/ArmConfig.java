@@ -4,7 +4,6 @@ import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
-import frc.robot.Robot;
 
 public class ArmConfig {
     static final int ARM_KRAKEN_ID = 10;
@@ -12,8 +11,6 @@ public class ArmConfig {
 
     static final double MAGNET_OFFSET = 0.501221;
     static final double GEAR_RATIO = 75.6055;
-
-    static final double ARM_DEPLOY_LOWER_BOUND = 0;
 
     private static final Slot0Configs SLOT_0_REAL_CONFIGS = new Slot0Configs()
             .withKP(1440)
@@ -50,11 +47,10 @@ public class ArmConfig {
             .withFeedback(new FeedbackConfigs()
                     .withFeedbackRemoteSensorID(ARM_CANCODER_ID)
                     .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
-                    .withRotorToSensorRatio(Robot.isReal() ? GEAR_RATIO : 1)
-                    .withSensorToMechanismRatio(Robot.isReal() ? 1 : GEAR_RATIO))
+                    .withRotorToSensorRatio(GEAR_RATIO)
+                    .withSensorToMechanismRatio(GEAR_RATIO))
             .withMotorOutput(new MotorOutputConfigs()
-                    .withInverted(
-                            Robot.isReal() ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive)
+                    .withInverted(InvertedValue.Clockwise_Positive)
                     .withNeutralMode(NeutralModeValue.Brake))
             .withSlot0(SLOT_0_REAL_CONFIGS)
             .withSlot1(SLOT_1_WOOD_CONFIGS)

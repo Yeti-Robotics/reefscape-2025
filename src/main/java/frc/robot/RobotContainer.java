@@ -18,6 +18,7 @@ import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.climber.io.ClimberIOTalonFX;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
+import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
@@ -67,7 +68,8 @@ public class RobotContainer {
                 .withVelocityY(-primaryXboxController.getLeftX() * TunerConstants.kSpeedAt12Volts.magnitude())
                 .withRotationalRate(-primaryXboxController.getRightX() * TunerConstants.MaFxAngularRate)));
 
-        simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+        //   simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
+        simJoy.button(1).onTrue(Commands.print("up").andThen(coralManipulator.arm.transitionTo(ArmPosition.UP)));
         simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
         simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
         simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
@@ -76,8 +78,8 @@ public class RobotContainer {
         simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         simJoy.button(8).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
         simJoy.button(9).onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L3));
-        simJoy.button(10).onTrue(Commands.print("Pressed")
-                .andThen(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN)));
+        simJoy.button(10)
+                .onTrue(Commands.print("Pressed").andThen(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN)));
         //        secondaryXboxController
         //                .povUp()
         //                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));

@@ -11,15 +11,15 @@ import frc.robot.util.akit.device.can.cancoder.CANCoderDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
 public class WristIOTalonFX implements WristIO {
-    final CANcoder wristCancoder = CANCoderDevice.configure(WristConfigs.WRIST_CANCODER_ID, Constants.CANIVORE_BUS)
+    private final CANcoder wristCancoder = CANCoderDevice.configure(WristConfig.WRIST_CANCODER_ID, Constants.CANIVORE_BUS)
             .log("Wrist/WristCancoder")
-            .withConfig(WristConfigs.wristEncoderConfigs)
+            .withConfig(WristConfig.wristEncoderConfigs)
             .syncConfigs()
             .getDevice();
 
-    final TalonFX wristMotor = TalonFXDevice.configure(WristConfigs.WRIST_KRAKEN_ID, Constants.CANIVORE_BUS)
+    private final TalonFX wristMotor = TalonFXDevice.configure(WristConfig.WRIST_KRAKEN_ID, Constants.CANIVORE_BUS)
             .log("Wrist/WristMotor")
-            .withConfig(WristConfigs.wristMotorConfigs)
+            .withConfig(WristConfig.wristMotorConfigs)
             .withFusedCANcoder(wristCancoder)
             .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
             .syncConfigs()

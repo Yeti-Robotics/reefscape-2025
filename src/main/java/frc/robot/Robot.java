@@ -73,10 +73,11 @@ public class Robot extends LoggedRobot {
         DeviceLogging.updateDeviceLogging();
 
         CommandScheduler.getInstance().run();
-        robotContainer.updateMechanisms();
     }
 
-    /** This method is called once each time the robot enters Disabled mode. */
+    /**
+     * This method is called once each time the robot enters Disabled mode.
+     */
     @Override
     public void disabledInit() {}
 
@@ -95,7 +96,9 @@ public class Robot extends LoggedRobot {
         }
     }
 
-    /** This method is called periodically during autonomous. */
+    /**
+     * This method is called periodically during autonomous.
+     */
     @Override
     public void autonomousPeriodic() {}
 
@@ -106,27 +109,32 @@ public class Robot extends LoggedRobot {
         }
     }
 
-    /** This method is called periodically during operator control. */
+    /**
+     * This method is called periodically during operator control.
+     */
     @Override
     public void teleopPeriodic() {}
-
-    @Override
-    public void teleopExit() {}
 
     @Override
     public void testInit() {
         CommandScheduler.getInstance().cancelAll();
     }
 
-    /** This method is called periodically during test mode. */
+    /**
+     * This method is called periodically during test mode.
+     */
     @Override
     public void testPeriodic() {}
 
-    /** This method is called once when the robot is first started up. */
+    /**
+     * This method is called once when the robot is first started up.
+     */
     @Override
     public void simulationInit() {}
 
-    /** This method is called periodically whilst in simulation. */
+    /**
+     * This method is called periodically whilst in simulation.
+     */
     @Override
     public void simulationPeriodic() {
         PhysicsSim.getInstance().run();

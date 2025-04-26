@@ -1,12 +1,11 @@
 package frc.robot.util.akit.device.can.cancolor;
 
+import static frc.robot.util.akit.device.can.CANUtil.CONNECTED_DEBOUNCE_TIME;
 
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.ColorData;
 import edu.wpi.first.math.filter.Debouncer;
 import frc.robot.util.akit.device.DeviceLogger;
-
-import static frc.robot.util.akit.device.can.CANConstants.CONNECTED_DEBOUNCE_TIME;
 
 public class CANColorDeviceLogger implements DeviceLogger<CANColorInputs> {
     private final Canandcolor canColor;

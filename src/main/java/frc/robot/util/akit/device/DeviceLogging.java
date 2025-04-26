@@ -8,9 +8,10 @@ import frc.robot.util.akit.device.can.cancoder.CANCoderDevice;
 import frc.robot.util.akit.device.can.cancolor.CANColorDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 import frc.robot.util.akit.device.digital.DigitalInputDevice;
-import org.littletonrobotics.junction.Logger;
 
 import java.util.ArrayList;
+
+import org.littletonrobotics.junction.Logger;
 
 public class DeviceLogging {
     private static final ArrayList<LoggingEntry<?>> loggers = new ArrayList<>();
@@ -24,9 +25,9 @@ public class DeviceLogging {
     }
 
     protected static <T extends DeviceInputs> void addLoggerWithInputs(String key, DeviceLogger<T> logger, T inputs) {
-        if (!disable) {
-            loggers.add(new LoggingEntry<>(key, logger, inputs));
-        }
+        if (disable) return;
+
+        loggers.add(new LoggingEntry<>(key, logger, inputs));
     }
 
     /**

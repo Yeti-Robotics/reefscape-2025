@@ -3,7 +3,7 @@ package frc.robot.subsystems.coral.wrist;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
-import frc.robot.subsystems.coral.wrist.io.WristConfigs;
+import frc.robot.subsystems.coral.wrist.io.WristConfig;
 import frc.robot.util.state.MeasuredSetpointEnum;
 
 public enum WristPosition implements MeasuredSetpointEnum<Angle, AngleUnit> {
@@ -27,6 +27,6 @@ public enum WristPosition implements MeasuredSetpointEnum<Angle, AngleUnit> {
 
     @Override
     public Angle getTolerance() {
-        return WristConfigs.WRIST_TOLERANCE;
+        return WristConfig.WRIST_TOLERANCE;
     }
 }

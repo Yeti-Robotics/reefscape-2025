@@ -8,7 +8,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 
-public class WristConfigs {
+public class WristConfig {
     public static final Angle WRIST_TOLERANCE = Units.Rotations.of(0.1);
     static final int WRIST_KRAKEN_ID = 19;
     static final int WRIST_CANCODER_ID = 42;

@@ -12,7 +12,7 @@ import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 import frc.robot.util.akit.device.digital.DigitalInputDevice;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
-    protected final TalonFX primaryElevatorMotor = TalonFXDevice.configure(
+    private final TalonFX primaryElevatorMotor = TalonFXDevice.configure(
                     ElevatorConfig.primaryElevatorMotorID, Constants.CANIVORE_BUS)
             .log("Elevator/PrimaryMotor")
             .withConfig(ElevatorConfig.primaryTalonFXConfigs)
@@ -20,7 +20,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
             .syncConfigs()
             .getDevice();
 
-    protected final TalonFX secondaryElevatorMotor = TalonFXDevice.configure(
+    @SuppressWarnings("unused")
+    private final TalonFX secondaryElevatorMotor = TalonFXDevice.configure(
                     ElevatorConfig.secondaryElevatorMotorID, Constants.CANIVORE_BUS)
             .log("Elevator/SecondaryMotor")
             .withConfig(ElevatorConfig.secondaryTalonFXConfigs)

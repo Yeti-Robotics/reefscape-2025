@@ -3,6 +3,7 @@ package frc.robot.util.akit.device.can.cancolor;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
 import frc.robot.util.akit.device.can.CANDeviceBuilder;
+import frc.robot.util.akit.device.can.CANUtil;
 
 public class CANColorDevice extends CANDeviceBuilder<Canandcolor, CanandcolorSettings, CANColorInputs, CANColorDevice> {
     private CANColorDevice(Canandcolor device) {
@@ -24,7 +25,7 @@ public class CANColorDevice extends CANDeviceBuilder<Canandcolor, CanandcolorSet
 
     @Override
     public CANColorDevice syncConfigs() {
-        getDevice().setSettings(getConfig());
+        CANUtil.tryUntilOk(() -> getDevice().setSettings(getConfig()));
         return this;
     }
 

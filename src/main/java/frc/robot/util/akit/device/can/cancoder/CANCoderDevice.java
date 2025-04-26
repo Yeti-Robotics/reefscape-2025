@@ -6,7 +6,7 @@ import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import frc.robot.util.akit.device.DeviceLogger;
-import frc.robot.util.akit.device.can.CANConstants;
+import frc.robot.util.akit.device.can.CANUtil;
 import frc.robot.util.akit.device.can.CANDeviceBuilder;
 
 public class CANCoderDevice
@@ -24,14 +24,13 @@ public class CANCoderDevice
     }
 
     /**
-     * @apiNote
-     *     <p>Make sure this is always the last call you make before {@link
-     *     CANCoderDevice#getDevice}, otherwise logging and other status signals won't work
+     * @apiNote <p>Make sure this is always the last call you make before {@link
+     * CANCoderDevice#getDevice}, otherwise logging and other status signals won't work
      */
     public CANCoderDevice optimizeBusUtilization() {
         // enable important signals before optimizing
         BaseStatusSignal.setUpdateFrequencyForAll(
-                CANConstants.CANCODER_DEFAULT_UPDATE_HZ,
+                CANUtil.CANCODER_DEFAULT_UPDATE_HZ,
                 getDevice().getAbsolutePosition(),
                 getDevice().getPosition());
         getDevice().optimizeBusUtilization();
@@ -40,7 +39,7 @@ public class CANCoderDevice
 
     @Override
     public CANCoderDevice syncConfigs() {
-        getDevice().getConfigurator().apply(getConfig());
+        CANUtil.tryUntilOk(() -> getDevice().getConfigurator().apply(getConfig()));
         return this;
     }
 

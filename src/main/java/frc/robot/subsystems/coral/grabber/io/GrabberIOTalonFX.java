@@ -8,9 +8,11 @@ import frc.robot.util.akit.device.can.cancolor.CANColorDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
 public class GrabberIOTalonFX implements GrabberIO {
-    private final Canandcolor clawSwitch = Robot.isSimulation() ? null : CANColorDevice.configure(GrabberConfig.GRABBER_CANANDCOLOR)
-            .log("Grabber/ColorSensor")
-            .getDevice();
+    private final Canandcolor clawSwitch = Robot.isSimulation()
+            ? null // TODO: add simulation support for grabber switch
+            : CANColorDevice.configure(GrabberConfig.GRABBER_CANANDCOLOR)
+                    .log("Grabber/ColorSensor")
+                    .getDevice();
 
     private final TalonFX grabberMotor = TalonFXDevice.configure(GrabberConfig.CLAW_ID, Constants.RIO_BUS)
             .log("Grabber/Motor")

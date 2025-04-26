@@ -1,6 +1,7 @@
 package frc.robot.util.akit.device.can.talon;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -10,7 +11,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import edu.wpi.first.units.measure.Frequency;
 import frc.robot.Robot;
 import frc.robot.util.akit.device.DeviceLogger;
-import frc.robot.util.akit.device.can.CANConstants;
+import frc.robot.util.akit.device.can.CANUtil;
 import frc.robot.util.akit.device.can.CANDeviceBuilder;
 import frc.robot.util.sim.PhysicsSim;
 import frc.robot.util.sim.TalonFXSimProfile;
@@ -24,7 +25,6 @@ public class TalonFXDevice extends CANDeviceBuilder<TalonFX, TalonFXConfiguratio
         super(motor);
 
         if (Robot.isSimulation()) {
-            System.out.println("motor = " + motor.getDescription());
             simProfile = PhysicsSim.getInstance().addTalonFX(motor);
         }
     }
@@ -43,7 +43,7 @@ public class TalonFXDevice extends CANDeviceBuilder<TalonFX, TalonFXConfiguratio
 
     @Override
     public TalonFXDevice syncConfigs() {
-        getDevice().getConfigurator().apply(getConfig());
+        CANUtil.tryUntilOk(() -> getDevice().getConfigurator().apply(getConfig()));
         return this;
     }
 
@@ -88,14 +88,13 @@ public class TalonFXDevice extends CANDeviceBuilder<TalonFX, TalonFXConfiguratio
     }
 
     /**
-     * @apiNote
-     *     <p>Make sure this is always the last call you make before {@link
-     *     TalonFXDevice#getDevice}, otherwise logging and other status signals won't work
+     * @apiNote <p>Make sure this is always the last call you make before {@link
+     * TalonFXDevice#getDevice}, otherwise logging and other status signals won't work
      */
     public TalonFXDevice optimizeBusUtilization() {
         // ensure important status signals are enabled before optimizing
         BaseStatusSignal.setUpdateFrequencyForAll(
-                CANConstants.TALON_DEFAULT_UPDATE_HZ,
+                CANUtil.TALON_DEFAULT_UPDATE_HZ,
                 getDevice().getDutyCycle(),
                 getDevice().getTorqueCurrent(),
                 getDevice().getMotorVoltage(),

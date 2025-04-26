@@ -7,7 +7,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.measure.*;
 import frc.robot.util.akit.device.DeviceLogger;
-import frc.robot.util.akit.device.can.CANConstants;
+import frc.robot.util.akit.device.can.CANUtil;
 
 public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
     private final StatusSignal<Voltage> motorVoltage;
@@ -22,7 +22,7 @@ public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
     private final StatusSignal<Double> feedForward;
     private final StatusSignal<Double> error;
     private final StatusSignal<Double> pidOutput;
-    private final Debouncer connectedDebouncer = new Debouncer(CANConstants.CONNECTED_DEBOUNCE_TIME);
+    private final Debouncer connectedDebouncer = new Debouncer(CANUtil.CONNECTED_DEBOUNCE_TIME);
 
     public TalonFXDeviceLogger(TalonFX talon) {
         motorVoltage = talon.getMotorVoltage();
@@ -39,7 +39,7 @@ public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
         pidOutput = talon.getClosedLoopOutput();
 
         BaseStatusSignal.setUpdateFrequencyForAll(
-                CANConstants.TALON_DEFAULT_UPDATE_HZ,
+                CANUtil.TALON_DEFAULT_UPDATE_HZ,
                 motorVoltage,
                 motorAmps,
                 positionRotations,
