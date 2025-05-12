@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision.io.impl;
 
 import frc.robot.subsystems.vision.VisionCameraID;
+import frc.robot.subsystems.vision.io.api.VisionHandle;
 import frc.robot.subsystems.vision.io.api.VisionProcessor;
 import frc.robot.subsystems.vision.io.pipeline.PipelineIdentifier;
 import frc.robot.subsystems.vision.io.pipeline.VisionProcessorType;
@@ -12,8 +13,8 @@ import java.util.Map;
  * Abstract base class for vision handles.
  * This class provides common functionality for all vision handles.
  */
-public abstract class AbstractVisionHandle<P> {
-    public final VisionCameraID cameraID;
+public abstract class AbstractVisionHandle<P> implements VisionHandle<P> {
+    protected final VisionCameraID cameraID;
     protected final Map<VisionProcessorType<? extends VisionProcessor>, VisionProcessor> ioMap = new HashMap<>();
     protected final Map<VisionProcessorType<? extends VisionProcessor>, PipelineIdentifier<P>> pipelineIdentifiers = new HashMap<>();
     protected VisionProcessorType<? extends VisionProcessor> currentProcessor;
@@ -88,5 +89,10 @@ public abstract class AbstractVisionHandle<P> {
      */
     public boolean hasProcessor(VisionProcessorType<? extends VisionProcessor> processorType) {
         return ioMap.containsKey(processorType);
+    }
+
+    @Override
+    public VisionCameraID getCameraID() {
+        return cameraID;
     }
 }

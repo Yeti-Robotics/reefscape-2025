@@ -4,8 +4,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
+import frc.robot.subsystems.vision.io.api.VisionHandle;
+import frc.robot.subsystems.vision.io.api.VisionNNProcessor;
 import frc.robot.subsystems.vision.io.api.VisionProcessor;
-import frc.robot.subsystems.vision.io.impl.AbstractVisionHandle;
 import frc.robot.subsystems.vision.io.impl.AbstractVisionHandleBuilder;
 import frc.robot.subsystems.vision.io.impl.limelight.LimelightBuilder;
 import frc.robot.subsystems.vision.io.impl.photon.PhotonVisionBuilder;
@@ -17,7 +19,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class VisionSubsystem extends SubsystemBase {
-    private final Map<VisionCameraID, AbstractVisionHandle<?>> visionHandles = new HashMap<>();
+    private final Map<VisionCameraID, VisionHandle<?>> visionHandles = new HashMap<>();
     protected final Supplier<Rotation2d> drivetrainRotation;
 
     public VisionSubsystem(CommandSwerveDrivetrain drivetrain) {
@@ -51,17 +53,26 @@ public class VisionSubsystem extends SubsystemBase {
         };
     }
 
-    public void addVisionHandle(AbstractVisionHandle<?> handle) {
-        visionHandles.put(handle.cameraID, handle);
+    public void addVisionHandle(VisionHandle<?> handle) {
+        visionHandles.put(handle.getCameraID(), handle);
     }
 
     @Override
     public void periodic() {
         // Call visionPeriodic on all processors
-        for (AbstractVisionHandle<?> handle : visionHandles.values()) {
+        for (VisionHandle<?> handle : visionHandles.values()) {
             VisionProcessor processor = handle.activeVisionProcessor();
             if (processor != null) {
                 processor.visionPeriodic();
+
+                switch (processor) {
+                    case VisionAprilTagProcessor aprilTagProcessor -> {
+
+                    }
+                    case VisionNNProcessor visionNNProcessor -> {
+
+                    }
+                }
             }
         }
     }

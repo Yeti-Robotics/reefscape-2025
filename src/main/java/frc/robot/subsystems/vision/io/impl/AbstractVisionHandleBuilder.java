@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionCameraID;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
+import frc.robot.subsystems.vision.io.api.VisionHandle;
 import frc.robot.subsystems.vision.io.api.VisionNNProcessor;
 import frc.robot.subsystems.vision.io.api.VisionProcessor;
 import frc.robot.subsystems.vision.io.pipeline.PipelineIdentifier;
@@ -21,7 +22,7 @@ public abstract class AbstractVisionHandleBuilder<P> {
     protected final VisionCameraID.VisionType visionType;
     protected final Supplier<Rotation2d> drivetrainRotation;
     protected final Transform3d robotToCameraTransform;
-    protected final AbstractVisionHandle<P> handle;
+    protected final VisionHandle<P> handle;
     protected final VisionSubsystem visionSubsystem;
     protected boolean hasProcessor = false;
 
@@ -36,7 +37,7 @@ public abstract class AbstractVisionHandleBuilder<P> {
             VisionCameraID cameraID,
             Supplier<Rotation2d> drivetrainRotation,
             Transform3d robotToCameraTransform,
-            AbstractVisionHandle handle,
+            VisionHandle<P> handle,
             VisionSubsystem visionSubsystem) {
         this.cameraName = cameraID.getCameraName();
         this.visionType = cameraID.visionType;
@@ -52,7 +53,7 @@ public abstract class AbstractVisionHandleBuilder<P> {
      * @param aprilTagMode The AprilTag processing mode
      * @return This builder for chaining
      */
-    public AbstractVisionHandleBuilder<P> addAprilTagProcessor(PipelineIdentifier pipelineIdentifier, AprilTagVisionSettings.VisionAprilTagMode aprilTagMode) {
+    public AbstractVisionHandleBuilder<P> addAprilTagProcessor(PipelineIdentifier<P> pipelineIdentifier, AprilTagVisionSettings.VisionAprilTagMode aprilTagMode) {
         VisionAprilTagProcessor processor = createAprilTagProcessor(aprilTagMode);
         handle.addProcessor(VisionProcessorType.APRILTAG, pipelineIdentifier, processor);
 
@@ -107,7 +108,7 @@ public abstract class AbstractVisionHandleBuilder<P> {
      *
      * @return The built vision handle
      */
-    public AbstractVisionHandle<P> build() {
+    public VisionHandle<P> build() {
         visionSubsystem.addVisionHandle(handle);
         return handle;
     }
