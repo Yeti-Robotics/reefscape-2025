@@ -4,9 +4,9 @@ import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.subsystems.coral.wrist.io.WristConfig;
-import frc.robot.util.state.MeasuredSetpointEnum;
+import frc.robot.util.state.MeasuredSetpointProvider;
 
-public enum WristPosition implements MeasuredSetpointEnum<Angle, AngleUnit> {
+public enum WristPosition implements MeasuredSetpointProvider<Angle, AngleUnit> {
     SAFE(0),
     UNSAFE(0.25);
 

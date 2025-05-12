@@ -2,6 +2,6 @@ package frc.robot.subsystems.coral.elevator.io;
 
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
-import frc.robot.util.akit.io.StateSetpointIO;
+import frc.robot.util.state.StatefulIO;
 
-public interface ElevatorIO extends StateSetpointIO<ElevatorPosition, Angle> {}
+public interface ElevatorIO extends StatefulIO<ElevatorPosition, Angle> {}

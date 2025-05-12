@@ -8,9 +8,7 @@ import frc.robot.util.akit.device.can.cancoder.CANCoderDevice;
 import frc.robot.util.akit.device.can.cancolor.CANColorDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 import frc.robot.util.akit.device.digital.DigitalInputDevice;
-
 import java.util.ArrayList;
-
 import org.littletonrobotics.junction.Logger;
 
 public class DeviceLogging {

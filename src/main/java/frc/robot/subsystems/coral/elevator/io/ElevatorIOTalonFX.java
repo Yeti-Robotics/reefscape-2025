@@ -38,7 +38,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
                 .toTrigger()
                 .debounce(2)
                 .onTrue(Commands.runOnce(() -> primaryElevatorMotor.setPosition(0))
-                        .andThen(() -> toSetpoint(ElevatorPosition.BOTTOM))
+                        .andThen(() -> setState(ElevatorPosition.BOTTOM))
                         .andThen(primaryElevatorMotor::stopMotor));
     }
 

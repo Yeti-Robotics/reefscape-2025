@@ -35,7 +35,6 @@ public class RobotContainer {
     public final CommandXboxController secondaryXboxController;
     public final CommandJoystick simJoy = new CommandJoystick(2);
     final CommandSwerveDrivetrain drivetrain;
-
     final CoralManipulatorSystem coralManipulator;
     final ClimberSubsystem climber = new ClimberSubsystem(new ClimberIOTalonFX());
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()

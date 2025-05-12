@@ -1,6 +1,6 @@
 package frc.robot.util.state;
 
-public interface SetpointEnum<V> {
+public interface SetpointProvider<V> {
     V getSetpoint();
 
     boolean isNear(V value);

@@ -12,8 +12,10 @@ public abstract class CANDeviceBuilder<D, C, I extends DeviceInputs, U extends D
         super(device);
     }
 
-    // TODO: add methods to specify retry/timeout for CAN config sync
-    public abstract U syncConfigs();
+    /**
+     * {@return} whether or not the configuration was successfully synced.
+     */
+    protected abstract boolean doConfigSync();
 
     protected abstract C getDefaultConfig();
 
@@ -23,6 +25,27 @@ public abstract class CANDeviceBuilder<D, C, I extends DeviceInputs, U extends D
         }
 
         return config;
+    }
+
+    public U syncOnce() {
+        doConfigSync();
+        return getDeviceBuilderClass();
+    }
+
+    /**
+     * Tries to sync configs for {@link CANUtil#DEFAULT_RETRY_ATTEMPTS} number of times
+     */
+    public U syncConfigs() {
+        CANUtil.tryUntilOk(this::doConfigSync);
+        return getDeviceBuilderClass();
+    }
+
+    /**
+     * Tries to sync configs {@code attempts} number of times
+     */
+    public U syncConfigs(int attempts) {
+        CANUtil.tryUntilOk(attempts, this::doConfigSync);
+        return getDeviceBuilderClass();
     }
 
     /**
@@ -41,7 +64,7 @@ public abstract class CANDeviceBuilder<D, C, I extends DeviceInputs, U extends D
      * Provide the device with a configuration to use.
      *
      * <p>Note: if you want to reuse a configuration object for multiple CAN devices, make sure to
-     * call {@link frc.robot.util.akit.device.can.CANDeviceBuilder#syncConfigs()} first.
+     * call {@link frc.robot.util.akit.device.can.CANDeviceBuilder#doConfigSync()} first.
      *
      * @param config Configuration object you want to use
      * @return the device builder

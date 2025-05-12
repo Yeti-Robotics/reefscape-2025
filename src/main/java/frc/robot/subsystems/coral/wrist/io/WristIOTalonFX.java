@@ -11,7 +11,8 @@ import frc.robot.util.akit.device.can.cancoder.CANCoderDevice;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
 public class WristIOTalonFX implements WristIO {
-    private final CANcoder wristCancoder = CANCoderDevice.configure(WristConfig.WRIST_CANCODER_ID, Constants.CANIVORE_BUS)
+    private final CANcoder wristCancoder = CANCoderDevice.configure(
+                    WristConfig.WRIST_CANCODER_ID, Constants.CANIVORE_BUS)
             .log("Wrist/WristCancoder")
             .withConfig(WristConfig.wristEncoderConfigs)
             .syncConfigs()

@@ -4,9 +4,9 @@ import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.subsystems.coral.elevator.io.ElevatorConfig;
-import frc.robot.util.state.MeasuredSetpointEnum;
+import frc.robot.util.state.MeasuredSetpointProvider;
 
-public enum ElevatorPosition implements MeasuredSetpointEnum<Angle, AngleUnit> {
+public enum ElevatorPosition implements MeasuredSetpointProvider<Angle, AngleUnit> {
     BOTTOM(0.0),
     SAFE_POSITION(2.2),
     POS_L1(2.4),

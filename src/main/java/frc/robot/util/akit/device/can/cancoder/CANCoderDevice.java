@@ -6,8 +6,8 @@ import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import frc.robot.util.akit.device.DeviceLogger;
-import frc.robot.util.akit.device.can.CANUtil;
 import frc.robot.util.akit.device.can.CANDeviceBuilder;
+import frc.robot.util.akit.device.can.CANUtil;
 
 public class CANCoderDevice
         extends CANDeviceBuilder<CANcoder, CANcoderConfiguration, CANCoderDeviceInputs, CANCoderDevice> {
@@ -25,7 +25,7 @@ public class CANCoderDevice
 
     /**
      * @apiNote <p>Make sure this is always the last call you make before {@link
-     * CANCoderDevice#getDevice}, otherwise logging and other status signals won't work
+     * CANCoderDevice#getDevice}, otherwise logging and other status signals may not work
      */
     public CANCoderDevice optimizeBusUtilization() {
         // enable important signals before optimizing
@@ -38,9 +38,8 @@ public class CANCoderDevice
     }
 
     @Override
-    public CANCoderDevice syncConfigs() {
-        CANUtil.tryUntilOk(() -> getDevice().getConfigurator().apply(getConfig()));
-        return this;
+    public boolean doConfigSync() {
+        return getDevice().getConfigurator().apply(getConfig()).isOK();
     }
 
     @Override

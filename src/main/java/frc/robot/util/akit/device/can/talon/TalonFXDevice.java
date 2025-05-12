@@ -1,7 +1,6 @@
 package frc.robot.util.akit.device.can.talon;
 
 import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -11,11 +10,10 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import edu.wpi.first.units.measure.Frequency;
 import frc.robot.Robot;
 import frc.robot.util.akit.device.DeviceLogger;
-import frc.robot.util.akit.device.can.CANUtil;
 import frc.robot.util.akit.device.can.CANDeviceBuilder;
+import frc.robot.util.akit.device.can.CANUtil;
 import frc.robot.util.sim.PhysicsSim;
 import frc.robot.util.sim.TalonFXSimProfile;
-
 import java.util.function.Function;
 
 public class TalonFXDevice extends CANDeviceBuilder<TalonFX, TalonFXConfiguration, TalonFXDeviceInputs, TalonFXDevice> {
@@ -42,9 +40,8 @@ public class TalonFXDevice extends CANDeviceBuilder<TalonFX, TalonFXConfiguratio
     }
 
     @Override
-    public TalonFXDevice syncConfigs() {
-        CANUtil.tryUntilOk(() -> getDevice().getConfigurator().apply(getConfig()));
-        return this;
+    protected boolean doConfigSync() {
+        return getDevice().getConfigurator().apply(getConfig()).isOK();
     }
 
     @Override
@@ -89,7 +86,7 @@ public class TalonFXDevice extends CANDeviceBuilder<TalonFX, TalonFXConfiguratio
 
     /**
      * @apiNote <p>Make sure this is always the last call you make before {@link
-     * TalonFXDevice#getDevice}, otherwise logging and other status signals won't work
+     * TalonFXDevice#getDevice}, otherwise logging and other status signals may not work
      */
     public TalonFXDevice optimizeBusUtilization() {
         // ensure important status signals are enabled before optimizing

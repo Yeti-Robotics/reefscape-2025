@@ -9,23 +9,24 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
-/** Holds information about a simulated TalonFX. */
+/**
+ * Holds information about a simulated TalonFX.
+ */
 public class TalonFXSimProfile extends PhysicsSim.SimProfile {
     private static final double MOTOR_RESISTANCE = 0.002; // Assume 2mOhm resistance for voltage drop calculation
 
     private final DCMotorSim motorSim;
     private final TalonFXSimState talonFXSim;
     private CANcoderSimState cancoderSimState;
-    boolean isArmMotor = false;
+
     /**
      * Creates a new simulation profile for a TalonFX device.
      *
-     * @param talonFX The TalonFX device
+     * @param talonFX      The TalonFX device
      * @param rotorInertia Rotational Inertia of the mechanism at the rotor
      */
     public TalonFXSimProfile(final TalonFX talonFX, final double rotorInertia) {
         var gearbox = DCMotor.getKrakenX60Foc(1);
-        isArmMotor = talonFX.getDeviceID() == 10;
         this.motorSim = new DCMotorSim(LinearSystemId.createDCMotorSystem(gearbox, rotorInertia, 75.6055), gearbox);
         this.talonFXSim = talonFX.getSimState();
     }
@@ -51,7 +52,6 @@ public class TalonFXSimProfile extends PhysicsSim.SimProfile {
         /// SET SIM PHYSICS INPUTS
         final double position_rot = motorSim.getAngularPositionRotations();
         final double velocity_rps = Units.radiansToRotations(motorSim.getAngularVelocityRadPerSec());
-
 
         talonFXSim.setRawRotorPosition(position_rot);
         talonFXSim.setRotorVelocity(velocity_rps);

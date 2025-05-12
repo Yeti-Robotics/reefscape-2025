@@ -1,8 +1,8 @@
 package frc.robot.subsystems.coral.grabber;
 
-import frc.robot.util.state.SetpointEnum;
+import frc.robot.util.state.SetpointProvider;
 
-public enum GrabberState implements SetpointEnum<Double> {
+public enum GrabberState implements SetpointProvider<Double> {
     ROLL_OUT(-0.8),
     ROLL_IN(1),
     OFF(0);
