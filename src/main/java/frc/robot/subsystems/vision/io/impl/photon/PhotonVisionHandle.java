@@ -1,15 +1,15 @@
 package frc.robot.subsystems.vision.io.impl.photon;
 
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.impl.AbstractVisionHandle;
-import frc.robot.subsystems.vision.io.pipeline.PipelineIdentifier;
+import frc.robot.subsystems.vision.io.api.VisionProcessor;
+import frc.robot.subsystems.vision.io.impl.AbstractIndexedVisionHandle;
 import org.photonvision.PhotonCamera;
 
 /**
  * Specialized vision handle for PhotonVision cameras.
  * This class provides PhotonVision-specific functionality for switching pipelines.
  */
-public class PhotonVisionHandle extends AbstractVisionHandle<Integer> {
+public class PhotonVisionHandle extends AbstractIndexedVisionHandle {
     private final PhotonCamera camera;
 
     /**
@@ -17,16 +17,14 @@ public class PhotonVisionHandle extends AbstractVisionHandle<Integer> {
      * 
      * @param camera The camera ID
      */
-    public PhotonVisionHandle(VisionCameraID cameraID, PhotonCamera camera) {
-        super(cameraID);
+    public PhotonVisionHandle(VisionCameraID cameraID, PhotonCamera camera, VisionProcessor[] visionProcessors) {
+        super(cameraID, visionProcessors);
         this.camera = camera;
     }
 
     @Override
-    protected void switchPipeline(PipelineIdentifier<Integer> pipelineIdentifier) {
-        if (pipelineIdentifier != null) {
-            camera.setPipelineIndex(pipelineIdentifier.getIdentifier());
-        }
+    protected void switchPipeline(int pipelineIdentifier) {
+        camera.setPipelineIndex(pipelineIdentifier);
     }
 
     /**

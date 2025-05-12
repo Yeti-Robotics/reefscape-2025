@@ -1,25 +1,14 @@
 package frc.robot.subsystems.vision.io.api;
 
+import java.util.Optional;
+
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.pipeline.PipelineIdentifier;
-import frc.robot.subsystems.vision.io.pipeline.VisionProcessorType;
 
 /**
  * Interface for vision handles.
  * Provides methods for managing vision processors and switching pipelines.
  */
-public interface VisionHandle<P> {
-
-    /**
-     * Adds a processor to this handle.
-     *
-     * @param <T> The type of processor
-     * @param processorType The processor type
-     * @param identifier The pipeline identifier associated with the processor
-     * @param processor The processor instance
-     */
-    <T extends VisionProcessor> void addProcessor(VisionProcessorType<T> processorType, PipelineIdentifier<P> identifier, T processor);
-
+public interface VisionHandle {
     /**
      * Sets the current processor type.
      * This should also switch the camera pipeline if applicable.
@@ -42,7 +31,7 @@ public interface VisionHandle<P> {
      * @param processorType The processor type to get
      * @return The processor of the specified type, or null if none exists
      */
-    <T extends VisionProcessor> T getProcessor(VisionProcessorType<T> processorType);
+    <T extends VisionProcessor> Optional<T> getProcessor(VisionProcessorType<T> processorType);
 
     /**
      * Checks if this handle has a processor of the specified type.

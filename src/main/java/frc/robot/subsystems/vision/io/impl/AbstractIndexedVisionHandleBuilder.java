@@ -3,27 +3,26 @@ package frc.robot.subsystems.vision.io.impl;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
 import frc.robot.subsystems.vision.io.api.VisionHandle;
 import frc.robot.subsystems.vision.io.api.VisionNNProcessor;
 import frc.robot.subsystems.vision.io.api.VisionProcessor;
-import frc.robot.subsystems.vision.io.pipeline.PipelineIdentifier;
-import frc.robot.subsystems.vision.io.pipeline.VisionProcessorType;
+import frc.robot.subsystems.vision.io.api.VisionProcessorType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
  * Abstract base class for vision handle builders.
  * This class provides common functionality for all vision handle builders.
  */
-public abstract class AbstractVisionHandleBuilder<P> {
-    protected final String cameraName;
-    protected final VisionCameraID.VisionType visionType;
+public abstract class AbstractIndexedVisionHandleBuilder {
+    protected final VisionCameraID cameraID;
     protected final Supplier<Rotation2d> drivetrainRotation;
     protected final Transform3d robotToCameraTransform;
-    protected final VisionHandle<P> handle;
-    protected final VisionSubsystem visionSubsystem;
+    protected final List<VisionProcessor> visionProcessors = new ArrayList<>();
     protected boolean hasProcessor = false;
 
     /**
@@ -33,18 +32,13 @@ public abstract class AbstractVisionHandleBuilder<P> {
      * @param drivetrainRotation     Supplier for the drivetrain rotation
      * @param robotToCameraTransform The transform from robot to camera
      */
-    public AbstractVisionHandleBuilder(
+    public AbstractIndexedVisionHandleBuilder(
             VisionCameraID cameraID,
             Supplier<Rotation2d> drivetrainRotation,
-            Transform3d robotToCameraTransform,
-            VisionHandle<P> handle,
-            VisionSubsystem visionSubsystem) {
-        this.cameraName = cameraID.getCameraName();
-        this.visionType = cameraID.visionType;
+            Transform3d robotToCameraTransform) {
+        this.cameraID = cameraID;
         this.drivetrainRotation = drivetrainRotation;
         this.robotToCameraTransform = robotToCameraTransform;
-        this.handle = handle;
-        this.visionSubsystem = visionSubsystem;
     }
 
     /**
@@ -53,15 +47,9 @@ public abstract class AbstractVisionHandleBuilder<P> {
      * @param aprilTagMode The AprilTag processing mode
      * @return This builder for chaining
      */
-    public AbstractVisionHandleBuilder<P> addAprilTagProcessor(PipelineIdentifier<P> pipelineIdentifier, AprilTagVisionSettings.VisionAprilTagMode aprilTagMode) {
-        VisionAprilTagProcessor processor = createAprilTagProcessor(aprilTagMode);
-        handle.addProcessor(VisionProcessorType.APRILTAG, pipelineIdentifier, processor);
-
-        if (!hasProcessor) {
-            handle.setCurrentProcessor(VisionProcessorType.APRILTAG);
-            hasProcessor = true;
-        }
-
+    public AbstractIndexedVisionHandleBuilder addAprilTagProcessor(
+            AprilTagVisionSettings.AprilTagVisionMode aprilTagMode) {
+        visionProcessors.add(createAprilTagProcessor(aprilTagMode));
         return this;
     }
 
@@ -71,14 +59,8 @@ public abstract class AbstractVisionHandleBuilder<P> {
      * @param classNames The class names for neural network detection
      * @return This builder for chaining
      */
-    public AbstractVisionHandleBuilder<P> addNNProcessor(PipelineIdentifier<P> pipelineIdentifier, String[] classNames) {
-        VisionNNProcessor processor = createNNProcessor(classNames);
-        handle.addProcessor(VisionProcessorType.NN, pipelineIdentifier, processor);
-
-        if (!hasProcessor) {
-            handle.setCurrentProcessor(VisionProcessorType.NN);
-            hasProcessor = true;
-        }
+    public AbstractIndexedVisionHandleBuilder addNNProcessor(String[] classNames) {
+        visionProcessors.add(createNNProcessor(classNames));
         return this;
     }
 
@@ -90,16 +72,9 @@ public abstract class AbstractVisionHandleBuilder<P> {
      * @param processor     The processor instance
      * @return This builder for chaining
      */
-    public <T extends VisionProcessor> AbstractVisionHandleBuilder<P> addProcessor(
-            VisionProcessorType<T> processorType, PipelineIdentifier<P> pipelineIdentifier, T processor) {
-        if (processor != null) {
-            handle.addProcessor(processorType, pipelineIdentifier, processor);
-
-            if (!hasProcessor) {
-                handle.setCurrentProcessor(processorType);
-                hasProcessor = true;
-            }
-        }
+    public <T extends VisionProcessor> AbstractIndexedVisionHandleBuilder addProcessor(
+            VisionProcessorType<T> processorType, T processor) {
+        visionProcessors.add(processor);
         return this;
     }
 
@@ -108,10 +83,7 @@ public abstract class AbstractVisionHandleBuilder<P> {
      *
      * @return The built vision handle
      */
-    public VisionHandle<P> build() {
-        visionSubsystem.addVisionHandle(handle);
-        return handle;
-    }
+    public abstract VisionHandle build();
 
     /**
      * Creates an AprilTag processor for the current camera type.
@@ -119,7 +91,8 @@ public abstract class AbstractVisionHandleBuilder<P> {
      * @param aprilTagMode The AprilTag processing mode
      * @return The created processor
      */
-    protected abstract VisionAprilTagProcessor createAprilTagProcessor(AprilTagVisionSettings.VisionAprilTagMode aprilTagMode);
+    protected abstract VisionAprilTagProcessor createAprilTagProcessor(
+            AprilTagVisionSettings.AprilTagVisionMode aprilTagMode);
 
     /**
      * Creates a neural network processor for the current camera type.

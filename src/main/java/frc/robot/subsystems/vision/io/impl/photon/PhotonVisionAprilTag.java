@@ -7,8 +7,11 @@ import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionUtil;
 import frc.robot.subsystems.vision.data.VisionAprilTag;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
+import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings;
+import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings.AprilTagVisionFeatures;
+import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings.AprilTagVisionMode;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
-import frc.robot.subsystems.vision.io.impl.AprilTagVisionSettings;
+
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -35,13 +38,13 @@ public class PhotonVisionAprilTag implements VisionAprilTagProcessor {
 
     private final Transform3d robotToCameraTransform;
     private final PhotonPoseEstimator poseEstimator;
-    private final AprilTagVisionSettings.VisionAprilTagMode mode;
+    private final AprilTagVisionSettings.AprilTagVisionMode mode;
 
     public PhotonVisionAprilTag(
             PhotonCamera camera,
             Transform3d robotToCameraTransform,
             Supplier<Rotation2d> drivetrainRotation,
-            AprilTagVisionSettings.VisionAprilTagMode mode) {
+            AprilTagVisionSettings.AprilTagVisionMode mode) {
         this.camera = camera;
         this.robotToCameraTransform = robotToCameraTransform;
         this.poseEstimator = new PhotonPoseEstimator(
@@ -72,7 +75,8 @@ public class PhotonVisionAprilTag implements VisionAprilTagProcessor {
     public void visionPeriodic() {
         List<PhotonPipelineResult> results = camera.getAllUnreadResults();
 
-        if (results.isEmpty()) return;
+        if (results.isEmpty())
+            return;
 
         PhotonPipelineResult latestResult = results.get(0);
         aprilTagEstimates.clear();
@@ -83,33 +87,35 @@ public class PhotonVisionAprilTag implements VisionAprilTagProcessor {
                 latestResult = pipelineResult;
             }
 
-            Optional<MultiTargetPNPResult> multiTargetPNPResult = pipelineResult.getMultiTagResult();
+            if (mode.hasEnabled(AprilTagVisionFeatures.LOCALIZATION)) {
+                Optional<MultiTargetPNPResult> multiTargetPNPResult = pipelineResult.getMultiTagResult();
 
-            boolean ambiguousMulti = multiTargetPNPResult.isEmpty()
-                    || multiTargetPNPResult.get().estimatedPose.ambiguity > MAX_APRILTAG_AMBIGUITY;
+                boolean ambiguousMulti = multiTargetPNPResult.isEmpty()
+                        || multiTargetPNPResult.get().estimatedPose.ambiguity > MAX_APRILTAG_AMBIGUITY;
 
-            if (ambiguousMulti) {
-                pipelineResult.multitagResult = Optional.empty();
+                if (ambiguousMulti) {
+                    pipelineResult.multitagResult = Optional.empty();
 
-                pipelineResult.getTargets().removeIf(PhotonVisionAprilTag::isAmbiguousTarget);
-            }
+                    pipelineResult.getTargets().removeIf(PhotonVisionAprilTag::isAmbiguousTarget);
+                }
 
-            if (pipelineResult.hasTargets()) {
-                Optional<EstimatedRobotPose> estimatedRobotPoseOptional = poseEstimator.update(pipelineResult);
+                if (pipelineResult.hasTargets()) {
+                    Optional<EstimatedRobotPose> estimatedRobotPoseOptional = poseEstimator.update(pipelineResult);
 
-                if (estimatedRobotPoseOptional.isPresent()) {
-                    EstimatedRobotPose estimatedRobotPose = estimatedRobotPoseOptional.get();
-                    Pose2d robotPose = estimatedRobotPose.estimatedPose.toPose2d();
+                    if (estimatedRobotPoseOptional.isPresent()) {
+                        EstimatedRobotPose estimatedRobotPose = estimatedRobotPoseOptional.get();
+                        Pose2d robotPose = estimatedRobotPose.estimatedPose.toPose2d();
 
-                    if (poseIsReasonable(drivetrainRotation.get(), robotPose)) {
-                        poseEstimates.add(new VisionRobotPose(
-                                robotPose,
-                                mapToTagIds(estimatedRobotPose.targetsUsed),
-                                estimatedRobotPose.timestampSeconds));
+                        if (poseIsReasonable(drivetrainRotation.get(), robotPose)) {
+                            poseEstimates.add(new VisionRobotPose(
+                                    robotPose,
+                                    mapToTagIds(estimatedRobotPose.targetsUsed),
+                                    estimatedRobotPose.timestampSeconds));
+                        }
                     }
                 }
 
-                if (mode.hasEnabled(AprilTagVisionSettings.VisionAprilTagOptions.BEST_DETECTION)) {
+                if (mode.hasEnabled(AprilTagVisionSettings.AprilTagVisionFeatures.BEST_DETECTION)) {
                     PhotonTrackedTarget bestTarget = getBestTarget(pipelineResult);
 
                     if (bestTarget != null) {
@@ -119,9 +125,10 @@ public class PhotonVisionAprilTag implements VisionAprilTagProcessor {
             }
         }
 
-        if (mode.hasEnabled(AprilTagVisionSettings.VisionAprilTagOptions.ALL_DETECTIONS)) {
+        if (mode.hasEnabled(AprilTagVisionSettings.AprilTagVisionFeatures.ALL_DETECTIONS)) {
             for (PhotonTrackedTarget target : latestResult.getTargets()) {
-                if (target.fiducialId == -1) continue;
+                if (target.fiducialId == -1)
+                    continue;
 
                 aprilTagEstimates.add(mapToVisionAprilTag(latestResult, target));
             }
@@ -137,8 +144,8 @@ public class PhotonVisionAprilTag implements VisionAprilTagProcessor {
     }
 
     private VisionAprilTag mapToVisionAprilTag(PhotonPipelineResult pipelineResult, PhotonTrackedTarget target) {
-        Pose3d robotToTargetPose =
-                new Pose3d().transformBy(robotToCameraTransform).transformBy(target.bestCameraToTarget);
+        Pose3d robotToTargetPose = new Pose3d().transformBy(robotToCameraTransform)
+                .transformBy(target.bestCameraToTarget);
 
         return new VisionAprilTag(
                 target.fiducialId,
@@ -164,5 +171,10 @@ public class PhotonVisionAprilTag implements VisionAprilTagProcessor {
     @Override
     public Optional<VisionAprilTag> getBestAprilTagObservation() {
         return Optional.ofNullable(bestAprilTagEstimate);
+    }
+
+    @Override
+    public AprilTagVisionMode getSettings() {
+        return mode;
     }
 }
