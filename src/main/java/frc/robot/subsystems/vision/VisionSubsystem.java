@@ -4,11 +4,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
-import frc.robot.subsystems.vision.processor.AbstractVisionHandleBuilder;
-import frc.robot.subsystems.vision.processor.VisionHandleAbstract;
-import frc.robot.subsystems.vision.processor.VisionProcessor;
-import frc.robot.subsystems.vision.processor.impl.limelight.VisionHandleBuilderLimelight;
-import frc.robot.subsystems.vision.processor.impl.photon.VisionHandleBuilderPhoton;
+import frc.robot.subsystems.vision.io.api.VisionProcessor;
+import frc.robot.subsystems.vision.io.impl.AbstractVisionHandle;
+import frc.robot.subsystems.vision.io.impl.AbstractVisionHandleBuilder;
+import frc.robot.subsystems.vision.io.impl.limelight.LimelightBuilder;
+import frc.robot.subsystems.vision.io.impl.photon.PhotonVisionBuilder;
+import frc.robot.subsystems.vision.io.pipeline.VisionProcessorType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class VisionSubsystem extends SubsystemBase {
-    private final Map<VisionCameraID, VisionHandleAbstract<?>> visionHandles = new HashMap<>();
+    private final Map<VisionCameraID, AbstractVisionHandle<?>> visionHandles = new HashMap<>();
     protected final Supplier<Rotation2d> drivetrainRotation;
 
     public VisionSubsystem(CommandSwerveDrivetrain drivetrain) {
@@ -39,25 +40,25 @@ public class VisionSubsystem extends SubsystemBase {
             VisionCameraID cameraID,
             Transform3d robotToCameraTransform) {
         return switch (cameraID.visionType) {
-            case LIMELIGHT_MEGATAG_2 -> new VisionHandleBuilderLimelight(
+            case LIMELIGHT_MEGATAG_2 -> new LimelightBuilder(
                     cameraID,
                     drivetrainRotation,
                     robotToCameraTransform, this);
-            case PHOTONVISION -> VisionHandleBuilderPhoton.createBuilder(
+            case PHOTONVISION -> PhotonVisionBuilder.createBuilder(
                     cameraID,
                     drivetrainRotation,
                     robotToCameraTransform, this);
         };
     }
 
-    public void addVisionHandle(VisionHandleAbstract<?> handle) {
+    public void addVisionHandle(AbstractVisionHandle<?> handle) {
         visionHandles.put(handle.cameraID, handle);
     }
 
     @Override
     public void periodic() {
         // Call visionPeriodic on all processors
-        for (VisionHandleAbstract<?> handle : visionHandles.values()) {
+        for (AbstractVisionHandle<?> handle : visionHandles.values()) {
             VisionProcessor processor = handle.activeVisionProcessor();
             if (processor != null) {
                 processor.visionPeriodic();

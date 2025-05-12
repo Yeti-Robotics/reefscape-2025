@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision.processor.impl.limelight.util;
+package frc.robot.subsystems.vision.io.impl.limelight.util;
 // LimelightHelpers v1.12 (REQUIRES LLOS 2025.0 OR LATER)
 
 import com.fasterxml.jackson.annotation.JsonFormat;

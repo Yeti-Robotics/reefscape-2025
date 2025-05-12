@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision.processor.impl.limelight.util;
+package frc.robot.subsystems.vision.io.impl.limelight.util;
 
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Frequency;

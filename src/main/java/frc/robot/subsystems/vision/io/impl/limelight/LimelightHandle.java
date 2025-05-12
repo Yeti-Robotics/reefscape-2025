@@ -1,22 +1,22 @@
-package frc.robot.subsystems.vision.processor.impl.limelight;
+package frc.robot.subsystems.vision.io.impl.limelight;
 
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.processor.PipelineIdentifier;
-import frc.robot.subsystems.vision.processor.VisionHandleAbstract;
-import frc.robot.subsystems.vision.processor.impl.limelight.util.LimelightHelpers;
+import frc.robot.subsystems.vision.io.impl.AbstractVisionHandle;
+import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightHelpers;
+import frc.robot.subsystems.vision.io.pipeline.PipelineIdentifier;
 
 /**
  * Specialized vision handle for Limelight cameras.
  * This class provides Limelight-specific functionality for switching pipelines.
  */
-public class VisionHandleLimelight extends VisionHandleAbstract<Integer> {
+public class LimelightHandle extends AbstractVisionHandle<Integer> {
 
     /**
      * Creates a Limelight vision handle for a predefined camera ID.
      * 
      * @param camera The camera ID
      */
-    public VisionHandleLimelight(VisionCameraID camera) {
+    public LimelightHandle(VisionCameraID camera) {
         super(camera);
     }
 

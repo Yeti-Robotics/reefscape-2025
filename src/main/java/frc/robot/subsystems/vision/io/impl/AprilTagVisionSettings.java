@@ -1,8 +1,8 @@
-package frc.robot.subsystems.vision.processor;
+package frc.robot.subsystems.vision.io.impl;
 
 import java.util.EnumSet;
 
-public class VisionAprilTagSettings {
+public class AprilTagVisionSettings {
     public enum VisionAprilTagOptions {
         LOCALIZATION,
         BEST_DETECTION,
@@ -34,13 +34,13 @@ public class VisionAprilTagSettings {
         }
     }
 
-    public static VisionAprilTagSettings defaultMode() {
-        return new VisionAprilTagSettings()
+    public static AprilTagVisionSettings defaultMode() {
+        return new AprilTagVisionSettings()
                 .enable(VisionAprilTagOptions.LOCALIZATION, VisionAprilTagOptions.BEST_DETECTION);
     }
 
     @SuppressWarnings({"UseBulkOperation", "ManualArrayToCollectionCopy"})
-    public VisionAprilTagSettings enable(VisionAprilTagOptions... mode) {
+    public AprilTagVisionSettings enable(VisionAprilTagOptions... mode) {
         for (VisionAprilTagOptions m : mode) {
             visionAprilTagOptions.add(m);
         }
@@ -48,7 +48,7 @@ public class VisionAprilTagSettings {
         return this;
     }
 
-    public VisionAprilTagSettings disable(VisionAprilTagOptions... mode) {
+    public AprilTagVisionSettings disable(VisionAprilTagOptions... mode) {
         for (VisionAprilTagOptions m : mode) {
             visionAprilTagOptions.remove(m);
         }
@@ -56,17 +56,17 @@ public class VisionAprilTagSettings {
         return this;
     }
 
-    public VisionAprilTagSettings enableAll() {
+    public AprilTagVisionSettings enableAll() {
         visionAprilTagOptions.addAll(EnumSet.allOf(VisionAprilTagOptions.class));
         return this;
     }
 
-    public VisionAprilTagSettings disableAll() {
+    public AprilTagVisionSettings disableAll() {
         visionAprilTagOptions.clear();
         return this;
     }
 
-    public VisionAprilTagSettings apply(VisionAprilTagSettings otherFeature) {
+    public AprilTagVisionSettings apply(AprilTagVisionSettings otherFeature) {
         visionAprilTagOptions.addAll(otherFeature.visionAprilTagOptions);
         return this;
     }

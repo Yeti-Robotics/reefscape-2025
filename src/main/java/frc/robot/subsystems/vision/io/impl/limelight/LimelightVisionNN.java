@@ -1,18 +1,18 @@
-package frc.robot.subsystems.vision.processor.impl.limelight;
+package frc.robot.subsystems.vision.io.impl.limelight;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.vision.data.VisionNNDetection;
-import frc.robot.subsystems.vision.processor.VisionNNProcessor;
-import frc.robot.subsystems.vision.processor.impl.limelight.util.LimelightHelpers;
+import frc.robot.subsystems.vision.io.api.VisionNNProcessor;
+import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightHelpers;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class VisionNNLimelight implements VisionNNProcessor {
+public class LimelightVisionNN implements VisionNNProcessor {
     private final String limelightName;
     private final String[] classNames;
 
-    public VisionNNLimelight(String limelightName, String[] classNames) {
+    public LimelightVisionNN(String limelightName, String[] classNames) {
         this.limelightName = limelightName;
         this.classNames = classNames;
     }

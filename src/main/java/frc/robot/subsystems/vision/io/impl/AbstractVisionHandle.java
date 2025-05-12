@@ -1,7 +1,9 @@
-package frc.robot.subsystems.vision.processor;
+package frc.robot.subsystems.vision.io.impl;
 
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.VisionProcessorType;
+import frc.robot.subsystems.vision.io.api.VisionProcessor;
+import frc.robot.subsystems.vision.io.pipeline.PipelineIdentifier;
+import frc.robot.subsystems.vision.io.pipeline.VisionProcessorType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +12,7 @@ import java.util.Map;
  * Abstract base class for vision handles.
  * This class provides common functionality for all vision handles.
  */
-public abstract class VisionHandleAbstract<P> {
+public abstract class AbstractVisionHandle<P> {
     public final VisionCameraID cameraID;
     protected final Map<VisionProcessorType<? extends VisionProcessor>, VisionProcessor> ioMap = new HashMap<>();
     protected final Map<VisionProcessorType<? extends VisionProcessor>, PipelineIdentifier<P>> pipelineIdentifiers = new HashMap<>();
@@ -21,7 +23,7 @@ public abstract class VisionHandleAbstract<P> {
      * 
      * @param cameraID The camera ID
      */
-    public VisionHandleAbstract(VisionCameraID cameraID) {
+    public AbstractVisionHandle(VisionCameraID cameraID) {
         this.cameraID = cameraID;
     }
 
@@ -41,7 +43,7 @@ public abstract class VisionHandleAbstract<P> {
      * Sets the current processor type.
      * This method also switches the camera pipeline if the processor has a pipeline identifier.
      * 
-     * @param processorType The processor type to set as current
+     * @param processorType The processor types to set as current
      */
     public void setCurrentProcessor(VisionProcessorType<? extends VisionProcessor> processorType) {
         if (hasProcessor(processorType)) {

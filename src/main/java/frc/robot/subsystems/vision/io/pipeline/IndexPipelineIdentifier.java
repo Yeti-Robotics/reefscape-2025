@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision.processor;
+package frc.robot.subsystems.vision.io.pipeline;
 
 public class IndexPipelineIdentifier implements PipelineIdentifier<Integer> {
     private final int index;

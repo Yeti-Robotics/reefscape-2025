@@ -1,8 +1,8 @@
-package frc.robot.subsystems.vision;
+package frc.robot.subsystems.vision.io.pipeline;
 
-import frc.robot.subsystems.vision.processor.VisionAprilTagProcessor;
-import frc.robot.subsystems.vision.processor.VisionNNProcessor;
-import frc.robot.subsystems.vision.processor.VisionProcessor;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
+import frc.robot.subsystems.vision.io.api.VisionNNProcessor;
+import frc.robot.subsystems.vision.io.api.VisionProcessor;
 
 public class VisionProcessorType<T extends VisionProcessor> {
     public static final VisionProcessorType<VisionAprilTagProcessor> APRILTAG =

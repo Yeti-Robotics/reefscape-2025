@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision.processor;
+package frc.robot.subsystems.vision.io.api;
 
 import frc.robot.subsystems.vision.data.VisionNNDetection;
 

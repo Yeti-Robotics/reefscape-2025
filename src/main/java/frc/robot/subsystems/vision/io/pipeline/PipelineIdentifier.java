@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision.processor;
+package frc.robot.subsystems.vision.io.pipeline;
 
 /**
  * Represents a pipeline identifier for a vision processor.

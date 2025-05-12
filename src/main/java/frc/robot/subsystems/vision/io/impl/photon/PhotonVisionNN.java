@@ -1,7 +1,7 @@
-package frc.robot.subsystems.vision.processor.impl.photon;
+package frc.robot.subsystems.vision.io.impl.photon;
 
 import frc.robot.subsystems.vision.data.VisionNNDetection;
-import frc.robot.subsystems.vision.processor.VisionNNProcessor;
+import frc.robot.subsystems.vision.io.api.VisionNNProcessor;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -9,12 +9,12 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VisionNNPhoton implements VisionNNProcessor {
+public class PhotonVisionNN implements VisionNNProcessor {
     private final PhotonCamera camera;
     private final List<VisionNNDetection> nnDetections = new ArrayList<>();
     private final String[] classNames;
 
-    public VisionNNPhoton(PhotonCamera camera, String[] classNames) {
+    public PhotonVisionNN(PhotonCamera camera, String[] classNames) {
         this.camera = camera;
         this.classNames = classNames;
     }

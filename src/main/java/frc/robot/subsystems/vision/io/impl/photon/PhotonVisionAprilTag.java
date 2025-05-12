@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision.processor.impl.photon;
+package frc.robot.subsystems.vision.io.impl.photon;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -7,8 +7,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionUtil;
 import frc.robot.subsystems.vision.data.VisionAprilTag;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
-import frc.robot.subsystems.vision.processor.VisionAprilTagProcessor;
-import frc.robot.subsystems.vision.processor.VisionAprilTagSettings;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
+import frc.robot.subsystems.vision.io.impl.AprilTagVisionSettings;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class VisionAprilTagPhoton implements VisionAprilTagProcessor {
+public class PhotonVisionAprilTag implements VisionAprilTagProcessor {
     private static final double MAX_APRILTAG_AMBIGUITY = 0.2;
     private static final double MAX_ALLOWABLE_DETECTION_DISTANCE_METERS = 5;
     private static final double MAX_THETA_VARIANCE_DEGREES = 10;
@@ -35,13 +35,13 @@ public class VisionAprilTagPhoton implements VisionAprilTagProcessor {
 
     private final Transform3d robotToCameraTransform;
     private final PhotonPoseEstimator poseEstimator;
-    private final VisionAprilTagSettings.VisionAprilTagMode mode;
+    private final AprilTagVisionSettings.VisionAprilTagMode mode;
 
-    public VisionAprilTagPhoton(
+    public PhotonVisionAprilTag(
             PhotonCamera camera,
             Transform3d robotToCameraTransform,
             Supplier<Rotation2d> drivetrainRotation,
-            VisionAprilTagSettings.VisionAprilTagMode mode) {
+            AprilTagVisionSettings.VisionAprilTagMode mode) {
         this.camera = camera;
         this.robotToCameraTransform = robotToCameraTransform;
         this.poseEstimator = new PhotonPoseEstimator(
@@ -91,7 +91,7 @@ public class VisionAprilTagPhoton implements VisionAprilTagProcessor {
             if (ambiguousMulti) {
                 pipelineResult.multitagResult = Optional.empty();
 
-                pipelineResult.getTargets().removeIf(VisionAprilTagPhoton::isAmbiguousTarget);
+                pipelineResult.getTargets().removeIf(PhotonVisionAprilTag::isAmbiguousTarget);
             }
 
             if (pipelineResult.hasTargets()) {
@@ -109,7 +109,7 @@ public class VisionAprilTagPhoton implements VisionAprilTagProcessor {
                     }
                 }
 
-                if (mode.hasEnabled(VisionAprilTagSettings.VisionAprilTagOptions.BEST_DETECTION)) {
+                if (mode.hasEnabled(AprilTagVisionSettings.VisionAprilTagOptions.BEST_DETECTION)) {
                     PhotonTrackedTarget bestTarget = getBestTarget(pipelineResult);
 
                     if (bestTarget != null) {
@@ -119,7 +119,7 @@ public class VisionAprilTagPhoton implements VisionAprilTagProcessor {
             }
         }
 
-        if (mode.hasEnabled(VisionAprilTagSettings.VisionAprilTagOptions.ALL_DETECTIONS)) {
+        if (mode.hasEnabled(AprilTagVisionSettings.VisionAprilTagOptions.ALL_DETECTIONS)) {
             for (PhotonTrackedTarget target : latestResult.getTargets()) {
                 if (target.fiducialId == -1) continue;
 

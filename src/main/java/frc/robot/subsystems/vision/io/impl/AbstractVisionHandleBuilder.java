@@ -1,10 +1,14 @@
-package frc.robot.subsystems.vision.processor;
+package frc.robot.subsystems.vision.io.impl;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.VisionProcessorType;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
+import frc.robot.subsystems.vision.io.api.VisionNNProcessor;
+import frc.robot.subsystems.vision.io.api.VisionProcessor;
+import frc.robot.subsystems.vision.io.pipeline.PipelineIdentifier;
+import frc.robot.subsystems.vision.io.pipeline.VisionProcessorType;
 
 import java.util.function.Supplier;
 
@@ -17,7 +21,7 @@ public abstract class AbstractVisionHandleBuilder<P> {
     protected final VisionCameraID.VisionType visionType;
     protected final Supplier<Rotation2d> drivetrainRotation;
     protected final Transform3d robotToCameraTransform;
-    protected final VisionHandleAbstract<P> handle;
+    protected final AbstractVisionHandle<P> handle;
     protected final VisionSubsystem visionSubsystem;
     protected boolean hasProcessor = false;
 
@@ -32,7 +36,7 @@ public abstract class AbstractVisionHandleBuilder<P> {
             VisionCameraID cameraID,
             Supplier<Rotation2d> drivetrainRotation,
             Transform3d robotToCameraTransform,
-            VisionHandleAbstract handle,
+            AbstractVisionHandle handle,
             VisionSubsystem visionSubsystem) {
         this.cameraName = cameraID.getCameraName();
         this.visionType = cameraID.visionType;
@@ -48,7 +52,7 @@ public abstract class AbstractVisionHandleBuilder<P> {
      * @param aprilTagMode The AprilTag processing mode
      * @return This builder for chaining
      */
-    public AbstractVisionHandleBuilder<P> addAprilTagProcessor(PipelineIdentifier pipelineIdentifier, VisionAprilTagSettings.VisionAprilTagMode aprilTagMode) {
+    public AbstractVisionHandleBuilder<P> addAprilTagProcessor(PipelineIdentifier pipelineIdentifier, AprilTagVisionSettings.VisionAprilTagMode aprilTagMode) {
         VisionAprilTagProcessor processor = createAprilTagProcessor(aprilTagMode);
         handle.addProcessor(VisionProcessorType.APRILTAG, pipelineIdentifier, processor);
 
@@ -66,7 +70,7 @@ public abstract class AbstractVisionHandleBuilder<P> {
      * @param classNames The class names for neural network detection
      * @return This builder for chaining
      */
-    public AbstractVisionHandleBuilder<P> addNNProcessor(PipelineIdentifier pipelineIdentifier, String[] classNames) {
+    public AbstractVisionHandleBuilder<P> addNNProcessor(PipelineIdentifier<P> pipelineIdentifier, String[] classNames) {
         VisionNNProcessor processor = createNNProcessor(classNames);
         handle.addProcessor(VisionProcessorType.NN, pipelineIdentifier, processor);
 
@@ -85,8 +89,8 @@ public abstract class AbstractVisionHandleBuilder<P> {
      * @param processor     The processor instance
      * @return This builder for chaining
      */
-    public <T extends VisionProcessor> AbstractVisionHandleBuilder addProcessor(
-            VisionProcessorType<T> processorType, PipelineIdentifier pipelineIdentifier, T processor) {
+    public <T extends VisionProcessor> AbstractVisionHandleBuilder<P> addProcessor(
+            VisionProcessorType<T> processorType, PipelineIdentifier<P> pipelineIdentifier, T processor) {
         if (processor != null) {
             handle.addProcessor(processorType, pipelineIdentifier, processor);
 
@@ -103,7 +107,7 @@ public abstract class AbstractVisionHandleBuilder<P> {
      *
      * @return The built vision handle
      */
-    public VisionHandleAbstract<P> build() {
+    public AbstractVisionHandle<P> build() {
         visionSubsystem.addVisionHandle(handle);
         return handle;
     }
@@ -114,7 +118,7 @@ public abstract class AbstractVisionHandleBuilder<P> {
      * @param aprilTagMode The AprilTag processing mode
      * @return The created processor
      */
-    protected abstract VisionAprilTagProcessor createAprilTagProcessor(VisionAprilTagSettings.VisionAprilTagMode aprilTagMode);
+    protected abstract VisionAprilTagProcessor createAprilTagProcessor(AprilTagVisionSettings.VisionAprilTagMode aprilTagMode);
 
     /**
      * Creates a neural network processor for the current camera type.

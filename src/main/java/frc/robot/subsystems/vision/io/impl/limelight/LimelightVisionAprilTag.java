@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision.processor.impl.limelight;
+package frc.robot.subsystems.vision.io.impl.limelight;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -6,10 +6,10 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import frc.robot.subsystems.vision.data.VisionAprilTag;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
-import frc.robot.subsystems.vision.processor.VisionAprilTagProcessor;
-import frc.robot.subsystems.vision.processor.VisionAprilTagSettings;
-import frc.robot.subsystems.vision.processor.impl.limelight.util.LimelightDataParsingHelper;
-import frc.robot.subsystems.vision.processor.impl.limelight.util.LimelightHelpers;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
+import frc.robot.subsystems.vision.io.impl.AprilTagVisionSettings;
+import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightDataParsingHelper;
+import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightHelpers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,19 +17,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class VisionAprilTagLimelight implements VisionAprilTagProcessor {
+public class LimelightVisionAprilTag implements VisionAprilTagProcessor {
     private final String limelightName;
-    private final VisionAprilTagSettings.VisionAprilTagMode mode;
+    private final AprilTagVisionSettings.VisionAprilTagMode mode;
     private final Supplier<Rotation2d> drivetrainRotation;
 
     private List<VisionAprilTag> aprilTagObservations;
     private final List<VisionRobotPose> robotPoseObservation = Arrays.asList(new VisionRobotPose[1]);
 
-    public VisionAprilTagLimelight(
+    public LimelightVisionAprilTag(
             String limelightName,
             Transform3d robotToCameraTransform,
             Supplier<Rotation2d> drivetrainRotation,
-            VisionAprilTagSettings.VisionAprilTagMode mode) {
+            AprilTagVisionSettings.VisionAprilTagMode mode) {
         this.limelightName = limelightName;
         this.drivetrainRotation = drivetrainRotation;
         this.mode = mode;
@@ -92,7 +92,7 @@ public class VisionAprilTagLimelight implements VisionAprilTagProcessor {
         LimelightHelpers.SetRobotOrientation(
                 limelightName, drivetrainRotation.get().getDegrees(), 0, 0, 0, 0, 0);
 
-        if (mode.hasEnabled(VisionAprilTagSettings.VisionAprilTagOptions.ALL_DETECTIONS)) {
+        if (mode.hasEnabled(AprilTagVisionSettings.VisionAprilTagOptions.ALL_DETECTIONS)) {
             if (aprilTagObservations == null) aprilTagObservations = new ArrayList<>();
             LimelightHelpers.LimelightResults results = LimelightDataParsingHelper.getResults(limelightName);
 
