@@ -7,9 +7,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionUtil;
 import frc.robot.subsystems.vision.data.VisionAprilTag;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
-import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings;
-import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings.AprilTagVisionFeatures;
-import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings.AprilTagVisionMode;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagFeature;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -37,13 +36,13 @@ public class PhotonVisionAprilTag implements VisionAprilTagProcessor {
 
     private final Transform3d robotToCameraTransform;
     private final PhotonPoseEstimator poseEstimator;
-    private final AprilTagVisionSettings.AprilTagVisionMode mode;
+    private final VisionAprilTagSettings mode;
 
     public PhotonVisionAprilTag(
             PhotonCamera camera,
             Transform3d robotToCameraTransform,
             Supplier<Rotation2d> drivetrainRotation,
-            AprilTagVisionSettings.AprilTagVisionMode mode) {
+            VisionAprilTagSettings mode) {
         this.camera = camera;
         this.robotToCameraTransform = robotToCameraTransform;
         this.poseEstimator = new PhotonPoseEstimator(
@@ -86,7 +85,7 @@ public class PhotonVisionAprilTag implements VisionAprilTagProcessor {
                 latestResult = pipelineResult;
             }
 
-            if (mode.hasEnabled(AprilTagVisionFeatures.LOCALIZATION)) {
+            if (mode.hasEnabled(VisionAprilTagFeature.LOCALIZATION)) {
                 Optional<MultiTargetPNPResult> multiTargetPNPResult = pipelineResult.getMultiTagResult();
 
                 boolean ambiguousMulti = multiTargetPNPResult.isEmpty()
@@ -114,7 +113,7 @@ public class PhotonVisionAprilTag implements VisionAprilTagProcessor {
                     }
                 }
 
-                if (mode.hasEnabled(AprilTagVisionSettings.AprilTagVisionFeatures.BEST_DETECTION)) {
+                if (mode.hasEnabled(VisionAprilTagFeature.BEST_DETECTION)) {
                     PhotonTrackedTarget bestTarget = getBestTarget(pipelineResult);
 
                     if (bestTarget != null) {
@@ -124,7 +123,7 @@ public class PhotonVisionAprilTag implements VisionAprilTagProcessor {
             }
         }
 
-        if (mode.hasEnabled(AprilTagVisionSettings.AprilTagVisionFeatures.ALL_DETECTIONS)) {
+        if (mode.hasEnabled(VisionAprilTagFeature.ALL_DETECTIONS)) {
             for (PhotonTrackedTarget target : latestResult.getTargets()) {
                 if (target.fiducialId == -1)
                     continue;
@@ -173,7 +172,7 @@ public class PhotonVisionAprilTag implements VisionAprilTagProcessor {
     }
 
     @Override
-    public AprilTagVisionMode getSettings() {
+    public VisionAprilTagSettings getSettings() {
         return mode;
     }
 }

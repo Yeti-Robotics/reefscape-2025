@@ -6,8 +6,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import frc.robot.subsystems.vision.data.VisionAprilTag;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
-import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings;
-import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings.AprilTagVisionMode;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
 import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightDataParsingHelper;
 import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightHelpers;
@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 public class LimelightVisionAprilTag implements VisionAprilTagProcessor {
     private final String limelightName;
-    private final AprilTagVisionSettings.AprilTagVisionMode mode;
+    private final VisionAprilTagSettings mode;
     private final Supplier<Rotation2d> drivetrainRotation;
 
     private List<VisionAprilTag> aprilTagObservations;
@@ -30,7 +30,7 @@ public class LimelightVisionAprilTag implements VisionAprilTagProcessor {
             String limelightName,
             Transform3d robotToCameraTransform,
             Supplier<Rotation2d> drivetrainRotation,
-            AprilTagVisionSettings.AprilTagVisionMode mode) {
+            VisionAprilTagSettings mode) {
         this.limelightName = limelightName;
         this.drivetrainRotation = drivetrainRotation;
         this.mode = mode;
@@ -93,7 +93,7 @@ public class LimelightVisionAprilTag implements VisionAprilTagProcessor {
         LimelightHelpers.SetRobotOrientation(
                 limelightName, drivetrainRotation.get().getDegrees(), 0, 0, 0, 0, 0);
 
-        if (mode.hasEnabled(AprilTagVisionSettings.AprilTagVisionFeatures.ALL_DETECTIONS)) {
+        if (mode.hasEnabled(VisionAprilTagSettingsConfigurator.VisionAprilTagFeature.ALL_DETECTIONS)) {
             if (aprilTagObservations == null) aprilTagObservations = new ArrayList<>();
             LimelightHelpers.LimelightResults results = LimelightDataParsingHelper.getResults(limelightName);
 
@@ -113,7 +113,7 @@ public class LimelightVisionAprilTag implements VisionAprilTagProcessor {
     }
 
     @Override
-    public AprilTagVisionMode getSettings() {
+    public VisionAprilTagSettings getSettings() {
         return mode;
     }
 }

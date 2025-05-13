@@ -2,7 +2,7 @@ package frc.robot.subsystems.vision.io.api;
 
 import frc.robot.subsystems.vision.data.VisionAprilTag;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
-import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings.AprilTagVisionMode;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagSettings;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,5 +14,5 @@ public non-sealed interface VisionAprilTagProcessor extends VisionProcessor {
 
     Optional<VisionAprilTag> getBestAprilTagObservation();
 
-    AprilTagVisionMode getSettings();
+    VisionAprilTagSettings getSettings();
 }

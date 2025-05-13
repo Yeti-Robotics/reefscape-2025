@@ -43,18 +43,18 @@ public abstract class AbstractIndexedVisionHandleBuilder implements VisionHandle
      * @return This builder for chaining
      */
     public AbstractIndexedVisionHandleBuilder addAprilTagProcessor(
-            AprilTagVisionSettings aprilTagMode) {
-        visionProcessors.add(createAprilTagProcessor(aprilTagMode.settings()));
+            VisionAprilTagSettingsConfigurator aprilTagMode) {
+        visionProcessors.add(createAprilTagProcessor(aprilTagMode.toSettings()));
         return this;
     }
 
     /**
      * Adds an AprilTag processor to the vision handle.
-     * This uses the default settings specified in {@link AprilTagVisionSettings#defaultSettings()}
+     * This uses the default settings specified in {@link VisionAprilTagSettingsConfigurator#defaultSettingsConfig()}
      * @return This builder for chaining
      */
     public AbstractIndexedVisionHandleBuilder addAprilTagProcessor() {
-        visionProcessors.add(createAprilTagProcessor(AprilTagVisionSettings.defaultSettings().settings()));
+        visionProcessors.add(createAprilTagProcessor(VisionAprilTagSettingsConfigurator.defaultSettingsConfig().toSettings()));
         return this;
     }
 
@@ -91,7 +91,7 @@ public abstract class AbstractIndexedVisionHandleBuilder implements VisionHandle
      * @return The created processor
      */
     protected abstract VisionAprilTagProcessor createAprilTagProcessor(
-            AprilTagVisionSettings.AprilTagVisionMode aprilTagMode);
+            VisionAprilTagSettingsConfigurator.VisionAprilTagSettings aprilTagMode);
 
     /**
      * Creates a neural network processor for the current camera type.

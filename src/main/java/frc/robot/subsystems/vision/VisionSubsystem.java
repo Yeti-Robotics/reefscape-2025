@@ -5,8 +5,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.data.*;
-import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings.AprilTagVisionFeatures;
-import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings.AprilTagVisionMode;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagFeature;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.api.*;
 import frc.robot.subsystems.vision.io.impl.limelight.LimelightBuilder;
 import frc.robot.subsystems.vision.io.impl.photon.PhotonVisionBuilder;
@@ -33,7 +33,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public <T extends VisionProcessor> Optional<T> getProcessor(VisionCameraID cameraID,
-            VisionProcessorType<T> processorType) {
+                                                                VisionProcessorType<T> processorType) {
         return visionHandles.get(cameraID).getProcessor(processorType);
     }
 
@@ -58,10 +58,9 @@ public class VisionSubsystem extends SubsystemBase {
 
         for (VisionHandle handle : visionHandles.values()) {
             if (handle.activeVisionProcessorType() == VisionProcessorType.APRILTAG) {
-                Optional<VisionAprilTag> bestDetOpt = handle.getProcessor(VisionProcessorType.APRILTAG)
-                                .flatMap(VisionAprilTagProcessor::getBestAprilTagObservation);
-
-                bestDetOpt.ifPresent(visionAprilTag -> bestDetections.add(new VisionData<>(handle.getCameraID(), visionAprilTag)));
+                handle.getProcessor(VisionProcessorType.APRILTAG)
+                        .flatMap(VisionAprilTagProcessor::getBestAprilTagObservation)
+                        .ifPresent(visionAprilTag -> bestDetections.add(new VisionData<>(handle.getCameraID(), visionAprilTag)));
             }
         }
 
@@ -73,14 +72,14 @@ public class VisionSubsystem extends SubsystemBase {
         return entry == null ? Optional.empty() : Optional.of(entry.getValue());
     }
 
-    public void addVisionHandle(VisionHandle ...handles) {
+    public void addVisionHandle(VisionHandle... handles) {
         for (VisionHandle handle : handles) {
             visionHandles.put(handle.getCameraID(), handle);
 
             if (aprilTagAllDetectionsMap == null) {
                 boolean enabledAllDetections = handle.getProcessor(VisionProcessorType.APRILTAG)
                         .map(VisionAprilTagProcessor::getSettings)
-                        .map(s -> s.hasEnabled(AprilTagVisionFeatures.ALL_DETECTIONS))
+                        .filter(s -> s.hasEnabled(VisionAprilTagFeature.ALL_DETECTIONS))
                         .isPresent();
 
                 if (enabledAllDetections) {
@@ -100,30 +99,38 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
 
+    public static <T extends VisionProcessor> Optional<T> getProcessor(VisionHandle handle, VisionProcessorType<T> processorType) {
+        Optional<T> processor = handle.getProcessor(processorType);
+        processor.ifPresent(VisionProcessor::visionPeriodic);
+        return processor;
+    }
+
     @Override
     public void periodic() {
         for (VisionHandle handle : visionHandles.values()) {
-            VisionProcessor processor = handle.activeVisionProcessor();
+            if (handle.activeVisionProcessorType() == VisionProcessorType.APRILTAG) {
+                Optional<VisionAprilTagProcessor> aprilTagProcessor = getProcessor(handle, VisionProcessorType.APRILTAG);
 
-            if (processor != null) {
-                processor.visionPeriodic();
+                if (aprilTagProcessor.isPresent()) {
+                    VisionAprilTagProcessor visionAprilTagProcessor = aprilTagProcessor.get();
+                    VisionAprilTagSettings mode = visionAprilTagProcessor.getSettings();
 
-                switch (processor) {
-                    case VisionAprilTagProcessor aprilTagProcessor -> {
-                        AprilTagVisionMode mode = aprilTagProcessor.getSettings();
-
-                        if (mode.hasEnabled(AprilTagVisionFeatures.LOCALIZATION)) {
-                            populateMap(visionPoses, aprilTagProcessor.getRobotPoseObservation(), handle.getCameraID());
-                        }
-
-                        if (mode.hasEnabled(AprilTagVisionFeatures.ALL_DETECTIONS) && aprilTagAllDetectionsMap != null) {
-                            populateMap(aprilTagAllDetectionsMap, aprilTagProcessor.getLatestAprilTagObservations(), handle.getCameraID());
-                        }
+                    if (mode.hasEnabled(VisionAprilTagFeature.LOCALIZATION)) {
+                        populateMap(visionPoses, visionAprilTagProcessor.getRobotPoseObservation(), handle.getCameraID());
                     }
-                    case VisionNNProcessor visionNNProcessor -> {
-                        if (nnDetectionsMap != null) {
-                            populateMap(nnDetectionsMap, visionNNProcessor.getLatestNNDetections(), handle.getCameraID());
-                        }
+
+                    if (mode.hasEnabled(VisionAprilTagFeature.ALL_DETECTIONS) && aprilTagAllDetectionsMap != null) {
+                        populateMap(aprilTagAllDetectionsMap, visionAprilTagProcessor.getLatestAprilTagObservations(), handle.getCameraID());
+                    }
+                }
+            } else if (handle.activeVisionProcessorType() == VisionProcessorType.NN) {
+                Optional<VisionNNProcessor> nnProcessor = getProcessor(handle, VisionProcessorType.NN);
+
+                if (nnProcessor.isPresent()) {
+                    VisionNNProcessor visionNNProcessor = nnProcessor.get();
+
+                    if (nnDetectionsMap != null) {
+                        populateMap(nnDetectionsMap, visionNNProcessor.getLatestNNDetections(), handle.getCameraID());
                     }
                 }
             }

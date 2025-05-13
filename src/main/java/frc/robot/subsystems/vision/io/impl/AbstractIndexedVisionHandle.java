@@ -48,11 +48,6 @@ public abstract class AbstractIndexedVisionHandle implements VisionHandle {
         currentProcessor = processorType;
     }
 
-    @Override
-    public VisionProcessor activeVisionProcessor() {
-        return visionProcessors[pipelineIndex];
-    }
-
     @SuppressWarnings("unchecked")
     public <T extends VisionProcessor> Optional<T> getProcessor(VisionProcessorType<T> processorType) {
       int index = getProcessorIndex(processorType);

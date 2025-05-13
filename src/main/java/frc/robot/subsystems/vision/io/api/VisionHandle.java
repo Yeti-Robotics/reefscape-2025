@@ -18,15 +18,7 @@ public interface VisionHandle {
     void setCurrentProcessor(VisionProcessorType<? extends VisionProcessor> processorType);
 
     /**
-     * Gets the active vision processor.
-     *
-     * @return The currently active vision processor, or null if none is set
-     */
-    VisionProcessor activeVisionProcessor();
-
-    /**
      * Gets the active vision processor's type
-     *
      * @return {@link VisionProcessorType}
      */
     VisionProcessorType<? extends VisionProcessor> activeVisionProcessorType();
