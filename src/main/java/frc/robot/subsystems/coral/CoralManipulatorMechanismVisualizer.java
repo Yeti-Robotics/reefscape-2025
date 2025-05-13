@@ -1,7 +1,5 @@
 package frc.robot.subsystems.coral;
 
-import static edu.wpi.first.units.Units.Degrees;
-
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.util.Color;
@@ -9,6 +7,8 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+
+import static edu.wpi.first.units.Units.Degrees;
 
 public class CoralManipulatorMechanismVisualizer {
     private final LoggedMechanism2d elevatorArmMech =

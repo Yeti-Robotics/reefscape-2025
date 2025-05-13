@@ -14,6 +14,7 @@ import frc.robot.util.akit.device.can.CANDeviceBuilder;
 import frc.robot.util.akit.device.can.CANUtil;
 import frc.robot.util.sim.PhysicsSim;
 import frc.robot.util.sim.TalonFXSimProfile;
+
 import java.util.function.Function;
 
 public class TalonFXDevice extends CANDeviceBuilder<TalonFX, TalonFXConfiguration, TalonFXDeviceInputs, TalonFXDevice> {

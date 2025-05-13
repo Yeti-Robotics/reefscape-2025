@@ -14,8 +14,9 @@ import frc.robot.subsystems.coral.grabber.io.GrabberIOTalonFX;
 import frc.robot.subsystems.coral.wrist.WristPosition;
 import frc.robot.subsystems.coral.wrist.WristSubsystem;
 import frc.robot.subsystems.coral.wrist.io.WristIOTalonFX;
-import java.util.Map;
 import org.littletonrobotics.junction.Logger;
+
+import java.util.Map;
 
 public class CoralManipulatorSystem extends SubsystemBase {
     public final ArmSubsystem arm = new ArmSubsystem(new ArmIOTalonFX());
