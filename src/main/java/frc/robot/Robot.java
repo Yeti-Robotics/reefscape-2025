@@ -5,8 +5,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -37,7 +35,7 @@ public class Robot extends LoggedRobot {
             Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
             new PowerDistribution(1, PowerDistribution.ModuleType.kRev); // Enables power distribution logging
         } else {
-            setUseTiming(false); // Run as fast as possible
+            setUseTiming(true); // Run as fast as possible
             //            String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from
             //            //             AdvantageScope (or prompt
             //            //                        // the user)
@@ -57,8 +55,6 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
         robotContainer = new RobotContainer();
-        DataLogManager.start();
-        DriverStation.startDataLog(DataLogManager.getLog());
     }
 
     /**
@@ -71,7 +67,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotPeriodic() {
         DeviceLogging.updateDeviceLogging();
-
+        robotContainer.updatePoseEstimate();
         CommandScheduler.getInstance().run();
     }
 
@@ -138,5 +134,6 @@ public class Robot extends LoggedRobot {
     @Override
     public void simulationPeriodic() {
         PhysicsSim.getInstance().run();
+        robotContainer.updateVisionSim();
     }
 }

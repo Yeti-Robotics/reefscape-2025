@@ -11,7 +11,6 @@ import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings;
 import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings.AprilTagVisionFeatures;
 import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings.AprilTagVisionMode;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
-
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -155,7 +154,7 @@ public class PhotonVisionAprilTag implements VisionAprilTagProcessor {
     }
 
     private PhotonTrackedTarget getBestTarget(PhotonPipelineResult pipelineResult) {
-        return pipelineResult.getBestTarget(); // TODO: replace with something more robust
+        return pipelineResult.hasTargets() ? pipelineResult.getBestTarget() : null; // TODO: replace with something more robust
     }
 
     @Override

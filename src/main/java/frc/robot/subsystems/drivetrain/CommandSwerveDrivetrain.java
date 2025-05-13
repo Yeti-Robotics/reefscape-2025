@@ -1,8 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Volts;
-
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -20,7 +17,11 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 import java.util.function.Supplier;
+
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements Subsystem so it can easily
@@ -103,7 +104,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
      * themselves. If they need the devices, they can access them through getters in the classes.
      *
      * @param drivetrainConstants Drivetrain-wide constants for the swerve drive
-     * @param modules Constants for each specific module
+     * @param modules             Constants for each specific module
      */
     public CommandSwerveDrivetrain(
             SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
@@ -119,10 +120,10 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
      * <p>This constructs the underlying hardware devices, so users should not construct the devices
      * themselves. If they need the devices, they can access them through getters in the classes.
      *
-     * @param drivetrainConstants Drivetrain-wide constants for the swerve drive
+     * @param drivetrainConstants     Drivetrain-wide constants for the swerve drive
      * @param odometryUpdateFrequency The frequency to run the odometry loop. If unspecified or set
-     *     to 0 Hz, this is 250 Hz on CAN FD, and 100 Hz on CAN 2.0.
-     * @param modules Constants for each specific module
+     *                                to 0 Hz, this is 250 Hz on CAN FD, and 100 Hz on CAN 2.0.
+     * @param modules                 Constants for each specific module
      */
     public CommandSwerveDrivetrain(
             SwerveDrivetrainConstants drivetrainConstants,
@@ -140,14 +141,14 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
      * <p>This constructs the underlying hardware devices, so users should not construct the devices
      * themselves. If they need the devices, they can access them through getters in the classes.
      *
-     * @param drivetrainConstants Drivetrain-wide constants for the swerve drive
-     * @param odometryUpdateFrequency The frequency to run the odometry loop. If unspecified or set
-     *     to 0 Hz, this is 250 Hz on CAN FD, and 100 Hz on CAN 2.0.
+     * @param drivetrainConstants       Drivetrain-wide constants for the swerve drive
+     * @param odometryUpdateFrequency   The frequency to run the odometry loop. If unspecified or set
+     *                                  to 0 Hz, this is 250 Hz on CAN FD, and 100 Hz on CAN 2.0.
      * @param odometryStandardDeviation The standard deviation for odometry calculation in the form
-     *     [x, y, theta]ᵀ, with units in meters and radians
-     * @param visionStandardDeviation The standard deviation for vision calculation in the form [x,
-     *     y, theta]ᵀ, with units in meters and radians
-     * @param modules Constants for each specific module
+     *                                  [x, y, theta]ᵀ, with units in meters and radians
+     * @param visionStandardDeviation   The standard deviation for vision calculation in the form [x,
+     *                                  y, theta]ᵀ, with units in meters and radians
+     * @param modules                   Constants for each specific module
      */
     public CommandSwerveDrivetrain(
             SwerveDrivetrainConstants drivetrainConstants,
@@ -217,7 +218,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
             });
         }
 
-        logging.log();
+       logging.log();
     }
 
     private void startSimThread() {
@@ -240,7 +241,7 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
      * while still accounting for measurement noise.
      *
      * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
-     * @param timestampSeconds The timestamp of the vision measurement in seconds.
+     * @param timestampSeconds      The timestamp of the vision measurement in seconds.
      */
     @Override
     public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
@@ -255,10 +256,10 @@ public class CommandSwerveDrivetrain extends TunerConstants.TunerSwerveDrivetrai
      * to apply to future measurements until a subsequent call to {@link
      * #setVisionMeasurementStdDevs(Matrix)} or this method.
      *
-     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
-     * @param timestampSeconds The timestamp of the vision measurement in seconds.
+     * @param visionRobotPoseMeters    The pose of the robot as measured by the vision camera.
+     * @param timestampSeconds         The timestamp of the vision measurement in seconds.
      * @param visionMeasurementStdDevs Standard deviations of the vision pose measurement in the
-     *     form [x, y, theta]ᵀ, with units in meters and radians.
+     *                                 form [x, y, theta]ᵀ, with units in meters and radians.
      */
     @Override
     public void addVisionMeasurement(

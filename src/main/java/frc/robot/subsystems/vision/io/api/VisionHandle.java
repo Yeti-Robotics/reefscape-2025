@@ -1,8 +1,8 @@
 package frc.robot.subsystems.vision.io.api;
 
-import java.util.Optional;
-
 import frc.robot.subsystems.vision.VisionCameraID;
+
+import java.util.Optional;
 
 /**
  * Interface for vision handles.
@@ -23,6 +23,13 @@ public interface VisionHandle {
      * @return The currently active vision processor, or null if none is set
      */
     VisionProcessor activeVisionProcessor();
+
+    /**
+     * Gets the active vision processor's type
+     *
+     * @return {@link VisionProcessorType}
+     */
+    VisionProcessorType<? extends VisionProcessor> activeVisionProcessorType();
 
     /**
      * Gets a specific type of processor from this handle.

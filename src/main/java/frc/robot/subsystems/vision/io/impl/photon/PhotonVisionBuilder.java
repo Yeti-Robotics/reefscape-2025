@@ -2,15 +2,13 @@ package frc.robot.subsystems.vision.io.impl.photon;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.Robot;
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.VisionSubsystem;
-import frc.robot.subsystems.vision.io.api.AprilTagVisionSettings;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
-import frc.robot.subsystems.vision.io.api.VisionHandle;
-import frc.robot.subsystems.vision.io.api.VisionNNProcessor;
-import frc.robot.subsystems.vision.io.api.VisionProcessor;
+import frc.robot.subsystems.vision.io.api.*;
 import frc.robot.subsystems.vision.io.impl.AbstractIndexedVisionHandleBuilder;
-
+import frc.robot.subsystems.vision.io.impl.photon.sim.AprilTagCamSim;
+import frc.robot.subsystems.vision.io.impl.photon.sim.AprilTagCamSimBuilder;
+import frc.robot.subsystems.vision.io.impl.photon.sim.AprilTagSimulator;
 import org.photonvision.PhotonCamera;
 
 import java.util.function.Supplier;
@@ -28,7 +26,6 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder {
      * @param cameraID               The camera ID
      * @param drivetrainRotation     Supplier for the drivetrain rotation
      * @param robotToCameraTransform The transform from robot to camera
-     * @param visionSubsystem
      */
     private PhotonVisionBuilder(VisionCameraID cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform, PhotonCamera photonCamera) {
         super(cameraID, drivetrainRotation, robotToCameraTransform);
@@ -36,7 +33,19 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder {
     }
 
     public static PhotonVisionBuilder createBuilder(VisionCameraID cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
-        PhotonCamera photonCamera = new PhotonCamera(cameraID.cameraName);
+        PhotonCamera photonCamera;
+
+        if (Robot.isSimulation()) {
+            AprilTagCamSim camSim = AprilTagCamSimBuilder.newCamera()
+                    .withCameraName(cameraID.cameraName)
+                    .withTransform(robotToCameraTransform)
+                    .build();
+
+            AprilTagSimulator.getInstance().addCamera(camSim);
+            photonCamera = camSim.getCamera();
+        } else {
+            photonCamera = new PhotonCamera(cameraID.cameraName);
+        }
 
         return new PhotonVisionBuilder(
                 cameraID, drivetrainRotation, robotToCameraTransform,

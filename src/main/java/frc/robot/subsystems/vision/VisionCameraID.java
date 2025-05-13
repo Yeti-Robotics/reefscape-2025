@@ -17,13 +17,4 @@ public enum VisionCameraID {
         this.cameraName = cameraName;
         this.visionType = visionType;
     }
-
-    /**
-     * Gets the camera name.
-     * 
-     * @return The camera name
-     */
-    public String getCameraName() {
-        return cameraName;
-    }
 }

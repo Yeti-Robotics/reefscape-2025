@@ -17,6 +17,7 @@ public abstract class AbstractIndexedVisionHandle implements VisionHandle {
     protected VisionProcessorType<? extends VisionProcessor> currentProcessor;
     private int pipelineIndex = 0;
 
+
     /**
      * Creates a vision handle for a predefined camera ID.
      * @param cameraID The camera ID
@@ -36,12 +37,6 @@ public abstract class AbstractIndexedVisionHandle implements VisionHandle {
        return -1;
     }
 
-    /**
-     * Sets the current processor type.
-     * This method also switches the camera pipeline if the processor has a pipeline identifier.
-     * 
-     * @param processorType The processor types to set as current
-     */
     @Override
     public void setCurrentProcessor(VisionProcessorType<? extends VisionProcessor> processorType) {
         int pipelineIndex = getProcessorIndex(processorType);
@@ -68,6 +63,11 @@ public abstract class AbstractIndexedVisionHandle implements VisionHandle {
     @Override
     public boolean hasProcessor(VisionProcessorType<? extends VisionProcessor> processorType) {
         return getProcessorIndex(processorType) != -1;
+    }
+
+    @Override
+    public VisionProcessorType<? extends VisionProcessor> activeVisionProcessorType() {
+        return currentProcessor;
     }
 
     @Override

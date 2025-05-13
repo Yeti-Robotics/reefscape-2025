@@ -7,6 +7,10 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -22,6 +26,14 @@ import frc.robot.subsystems.coral.arm.ArmPosition;
 import frc.robot.subsystems.coral.grabber.GrabberState;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
+import frc.robot.subsystems.vision.VisionCameraID;
+import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.vision.data.VisionData;
+import frc.robot.subsystems.vision.data.VisionRobotPose;
+import frc.robot.subsystems.vision.io.api.VisionHandle;
+import frc.robot.subsystems.vision.io.impl.photon.sim.AprilTagSimulator;
+
+import java.util.Optional;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -33,22 +45,77 @@ public class RobotContainer {
 
     public final CommandXboxController primaryXboxController;
     public final CommandXboxController secondaryXboxController;
-    public final CommandJoystick simJoy = new CommandJoystick(2);
-    final CommandSwerveDrivetrain drivetrain;
-    final CoralManipulatorSystem coralManipulator;
+    public final CommandJoystick simJoy = new CommandJoystick(0);
+    final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    final CoralManipulatorSystem coralManipulator = new CoralManipulatorSystem();
     final ClimberSubsystem climber = new ClimberSubsystem(new ClimberIOTalonFX());
+    final VisionSubsystem visionSubsystem = new VisionSubsystem(drivetrain);
+
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
             .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
     public RobotContainer() {
         primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
         secondaryXboxController = new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
-        drivetrain = TunerConstants.createDrivetrain();
-        coralManipulator = new CoralManipulatorSystem();
+
+        configureVision();
         configureBindings();
+    }
+
+    public void configureVision() {
+        VisionHandle radioCam = visionSubsystem.createPhotonVisionCamera(VisionCameraID.RADIO_CAM, new Transform3d(
+                        new Translation3d(
+                                Units.inchesToMeters(-9.5),
+                                Units.inchesToMeters(-8),
+                                Units.inchesToMeters(11)),
+                        new Rotation3d(0, Math.toRadians(-15), Math.toRadians(-90))))
+                .addAprilTagProcessor()
+                .build();
+
+        VisionHandle scoreCam = visionSubsystem.createPhotonVisionCamera(VisionCameraID.SCORE_CAM, new Transform3d(
+                        new Translation3d(
+                                Units.inchesToMeters(-9.5),
+                                Units.inchesToMeters(10),
+                                Units.inchesToMeters(11)),
+                        new Rotation3d(0, Math.toRadians(-15), Math.toRadians(90))))
+                .addAprilTagProcessor()
+                .build();
+
+        // TODO: figure out actual transform
+        VisionHandle belugaLimelight = visionSubsystem.createPhotonVisionCamera(VisionCameraID.SCORE_CAM, new Transform3d(
+                        new Translation3d(
+                                Units.inchesToMeters(-9.5),
+                                Units.inchesToMeters(10),
+                                Units.inchesToMeters(11)),
+                        new Rotation3d(0, Math.toRadians(-15), Math.toRadians(90))))
+                .addAprilTagProcessor()
+                .build();
+
+        visionSubsystem.addVisionHandle(radioCam, scoreCam);
+    }
+
+    public void updateVisionSim() {
+        AprilTagSimulator.getInstance()
+                .update(drivetrain.getState().Pose);
+    }
+
+    public static int MAX_POSE_UPDATES = 10;
+
+    public void updatePoseEstimate() {
+        Optional<VisionData<VisionRobotPose>> robotPoseUpdate = visionSubsystem.pollVisionPoseUpdate();
+
+        int i = 0; // to prevent loop overruns in sim or a potential infinite loop
+        while (robotPoseUpdate.isPresent() && i < MAX_POSE_UPDATES) {
+            VisionRobotPose visionData = robotPoseUpdate.get().data();
+            drivetrain.addVisionMeasurement(visionData.estimatedRobotPose(), visionData.timestamp());
+            robotPoseUpdate = visionSubsystem.pollVisionPoseUpdate();
+            i++;
+        }
     }
 
     /**
@@ -96,7 +163,8 @@ public class RobotContainer {
         //        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
     }
 
-    public void updateMechanisms() {}
+    public void updateMechanisms() {
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

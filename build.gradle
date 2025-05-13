@@ -120,8 +120,15 @@ wpi.java.configureTestTasks(test)
 
 // Configure string concat to always inline compile
 tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs.add '-XDstringConcat=inline'
-    options.compilerArgs.add '--enable-preview'
+    options.compilerArgs.add('--enable-preview')
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs += '--enable-preview'
+}
+
+tasks.withType(JavaExec).configureEach {
+    jvmArgs += '--enable-preview'
 }
 
 spotless {
