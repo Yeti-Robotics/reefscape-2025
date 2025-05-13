@@ -6,19 +6,20 @@ import frc.robot.Robot;
 import frc.robot.subsystems.vision.VisionCameraID;
 import frc.robot.subsystems.vision.io.api.*;
 import frc.robot.subsystems.vision.io.impl.AbstractIndexedVisionHandleBuilder;
-import frc.robot.subsystems.vision.io.impl.photon.sim.AprilTagCamSim;
-import frc.robot.subsystems.vision.io.impl.photon.sim.AprilTagCamSimBuilder;
-import frc.robot.subsystems.vision.io.impl.photon.sim.AprilTagSimulator;
+import frc.robot.subsystems.vision.io.impl.photon.sim.PhotonVisionAprilTagSimulator;
 import org.photonvision.PhotonCamera;
+import org.photonvision.simulation.SimCameraProperties;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
  * Specialized builder for PhotonVision cameras.
  * This builder creates processors specifically for PhotonVision cameras.
  */
-public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder {
+public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<PhotonVisionBuilder> {
     private final PhotonCamera photonCamera;
+    private Consumer<SimCameraProperties> cameraSettings;
 
     /**
      * Creates a new vision handle builder for a predefined camera ID.
@@ -33,24 +34,22 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder {
     }
 
     public static PhotonVisionBuilder createBuilder(VisionCameraID cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
-        PhotonCamera photonCamera;
-
-        if (Robot.isSimulation()) {
-            AprilTagCamSim camSim = AprilTagCamSimBuilder.newCamera()
-                    .withCameraName(cameraID.cameraName)
-                    .withTransform(robotToCameraTransform)
-                    .build();
-
-            AprilTagSimulator.getInstance().addCamera(camSim);
-            photonCamera = camSim.getCamera();
-        } else {
-            photonCamera = new PhotonCamera(cameraID.cameraName);
-        }
+        PhotonCamera photonCamera = new PhotonCamera(cameraID.cameraName);
 
         return new PhotonVisionBuilder(
                 cameraID, drivetrainRotation, robotToCameraTransform,
                 photonCamera
         );
+    }
+
+    public PhotonVisionBuilder withSimCameraSettings(Consumer<SimCameraProperties> cameraSettings) {
+        this.cameraSettings = cameraSettings;
+        return this;
+    }
+
+    @Override
+    protected PhotonVisionBuilder getThis() {
+        return this;
     }
 
     @Override
@@ -69,6 +68,12 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder {
 
     @Override
     public VisionHandle build() {
+        if (Robot.isSimulation()) {
+            PhotonVisionAprilTagSimulator
+                    .getInstance()
+                    .ifPresent(sim -> sim.addCamera(cameraID, photonCamera, robotToCameraTransform, cameraSettings));
+        }
+
         return new PhotonVisionHandle(cameraID, photonCamera, visionProcessors.toArray(VisionProcessor[]::new));
     }
 }

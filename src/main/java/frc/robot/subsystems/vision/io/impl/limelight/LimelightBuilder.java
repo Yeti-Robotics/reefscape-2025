@@ -12,7 +12,7 @@ import java.util.function.Supplier;
  * Specialized builder for Limelight cameras.
  * This builder creates processors specifically for Limelight cameras.
  */
-public class LimelightBuilder extends AbstractIndexedVisionHandleBuilder {
+public class LimelightBuilder extends AbstractIndexedVisionHandleBuilder<LimelightBuilder> {
     /**
      * Creates a new vision handle builder for a predefined camera ID.
      *
@@ -22,6 +22,11 @@ public class LimelightBuilder extends AbstractIndexedVisionHandleBuilder {
      */
     public LimelightBuilder(VisionCameraID cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
         super(cameraID, drivetrainRotation, robotToCameraTransform);
+    }
+
+    @Override
+    protected LimelightBuilder getThis() {
+        return this;
     }
 
     @Override

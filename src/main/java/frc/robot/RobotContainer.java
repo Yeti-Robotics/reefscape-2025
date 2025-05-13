@@ -31,7 +31,7 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.data.VisionData;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
 import frc.robot.subsystems.vision.io.api.VisionHandle;
-import frc.robot.subsystems.vision.io.impl.photon.sim.AprilTagSimulator;
+import frc.robot.subsystems.vision.io.impl.photon.sim.PhotonVisionAprilTagSimulator;
 
 import java.util.Optional;
 
@@ -100,8 +100,8 @@ public class RobotContainer {
     }
 
     public void updateVisionSim() {
-        AprilTagSimulator.getInstance()
-                .update(drivetrain.getState().Pose);
+        PhotonVisionAprilTagSimulator.getInstance()
+                .ifPresent(sim -> sim.update(drivetrain.getState().Pose));
     }
 
     public static int MAX_POSE_UPDATES = 10;
@@ -161,9 +161,6 @@ public class RobotContainer {
         //
         // primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         //        primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-    }
-
-    public void updateMechanisms() {
     }
 
     /**

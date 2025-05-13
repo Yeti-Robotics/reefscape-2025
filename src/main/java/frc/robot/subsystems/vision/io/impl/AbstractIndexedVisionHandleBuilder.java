@@ -13,12 +13,11 @@ import java.util.function.Supplier;
  * Abstract base class for vision handle builders.
  * This class provides common functionality for all vision handle builders.
  */
-public abstract class AbstractIndexedVisionHandleBuilder implements VisionHandleBuilder {
+public abstract class AbstractIndexedVisionHandleBuilder<B extends VisionHandleBuilder> implements VisionHandleBuilder {
     protected final VisionCameraID cameraID;
     protected final Supplier<Rotation2d> drivetrainRotation;
     protected final Transform3d robotToCameraTransform;
     protected final List<VisionProcessor> visionProcessors = new ArrayList<>();
-    protected boolean hasProcessor = false;
 
     /**
      * Creates a new vision handle builder for a predefined camera ID.
@@ -42,10 +41,10 @@ public abstract class AbstractIndexedVisionHandleBuilder implements VisionHandle
      * @param aprilTagMode The AprilTag processing mode
      * @return This builder for chaining
      */
-    public AbstractIndexedVisionHandleBuilder addAprilTagProcessor(
+    public B addAprilTagProcessor(
             VisionAprilTagSettingsConfigurator aprilTagMode) {
         visionProcessors.add(createAprilTagProcessor(aprilTagMode.toSettings()));
-        return this;
+        return getThis();
     }
 
     /**
@@ -53,9 +52,9 @@ public abstract class AbstractIndexedVisionHandleBuilder implements VisionHandle
      * This uses the default settings specified in {@link VisionAprilTagSettingsConfigurator#defaultSettingsConfig()}
      * @return This builder for chaining
      */
-    public AbstractIndexedVisionHandleBuilder addAprilTagProcessor() {
+    public B addAprilTagProcessor() {
         visionProcessors.add(createAprilTagProcessor(VisionAprilTagSettingsConfigurator.defaultSettingsConfig().toSettings()));
-        return this;
+        return getThis();
     }
 
     /**
@@ -64,9 +63,9 @@ public abstract class AbstractIndexedVisionHandleBuilder implements VisionHandle
      * @param classNames The class names for neural network detection
      * @return This builder for chaining
      */
-    public AbstractIndexedVisionHandleBuilder addNNProcessor(String[] classNames) {
+    public B addNNProcessor(String[] classNames) {
         visionProcessors.add(createNNProcessor(classNames));
-        return this;
+        return getThis();
     }
 
     /**
@@ -78,11 +77,13 @@ public abstract class AbstractIndexedVisionHandleBuilder implements VisionHandle
      * @return This builder for chaining
      */
     @Override
-    public <T extends VisionProcessor> AbstractIndexedVisionHandleBuilder addProcessor(
+    public <T extends VisionProcessor> B addProcessor(
             VisionProcessorType<T> processorType, T processor) {
         visionProcessors.add(processor);
-        return this;
+        return getThis();
     }
+
+    protected abstract B getThis();
 
     /**
      * Creates an AprilTag processor for the current camera type.

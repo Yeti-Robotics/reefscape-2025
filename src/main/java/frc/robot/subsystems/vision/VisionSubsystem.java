@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.data.*;
@@ -113,13 +114,13 @@ public class VisionSubsystem extends SubsystemBase {
 
                 if (aprilTagProcessor.isPresent()) {
                     VisionAprilTagProcessor visionAprilTagProcessor = aprilTagProcessor.get();
-                    VisionAprilTagSettings mode = visionAprilTagProcessor.getSettings();
+                    VisionAprilTagSettings settings = visionAprilTagProcessor.getSettings();
 
-                    if (mode.hasEnabled(VisionAprilTagFeature.LOCALIZATION)) {
+                    if (settings.hasEnabled(VisionAprilTagFeature.LOCALIZATION)) {
                         populateMap(visionPoses, visionAprilTagProcessor.getRobotPoseObservation(), handle.getCameraID());
                     }
 
-                    if (mode.hasEnabled(VisionAprilTagFeature.ALL_DETECTIONS) && aprilTagAllDetectionsMap != null) {
+                    if (settings.hasEnabled(VisionAprilTagFeature.ALL_DETECTIONS) && aprilTagAllDetectionsMap != null) {
                         populateMap(aprilTagAllDetectionsMap, visionAprilTagProcessor.getLatestAprilTagObservations(), handle.getCameraID());
                     }
                 }
