@@ -6,9 +6,9 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import frc.robot.subsystems.vision.data.VisionAprilTag;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagSettings;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
 import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightDataParsingHelper;
 import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightHelpers;
 
