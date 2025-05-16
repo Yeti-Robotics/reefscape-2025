@@ -48,9 +48,4 @@ public class LimelightBuilder extends AbstractIndexedVisionHandleBuilder<Limelig
     protected VisionNNProcessor createNNProcessor(String[] classNames) {
         return new LimelightVisionNN(cameraID.cameraName, classNames);
     }
-
-    @Override
-    public VisionHandle build() {
-        return new LimelightHandle(cameraID, visionProcessors.toArray(VisionProcessor[]::new));
-    }
 }

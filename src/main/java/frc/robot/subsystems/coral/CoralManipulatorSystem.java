@@ -29,7 +29,8 @@ public class CoralManipulatorSystem extends SubsystemBase {
 
     private CoralManipulatorState queuedState;
 
-    private final CoralManipulatorMechanismVisualizer positionVisualizer = new CoralManipulatorMechanismVisualizer();
+    private final CoralManipulatorMechanismVisualizer actualPositionVisualizer = new CoralManipulatorMechanismVisualizer("Actual");
+    private final CoralManipulatorMechanismVisualizer setpointPositionVisualizer = new CoralManipulatorMechanismVisualizer("Setpoint");
 
     public boolean isElevMovingUp(CoralManipulatorState targetState) {
         return targetState.getElevatorPosition().getSetpoint().gt(elevator.getState());
@@ -107,16 +108,20 @@ public class CoralManipulatorSystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (Robot.isSimulation()) {
-            positionVisualizer.update(arm.getState(), elevator.getState());
-        }
+            actualPositionVisualizer.update(arm.getState(), elevator.getState());
 
-        Logger.recordOutput(
-                "CoralManipulator/CurrentState",
-                getCurrentState() == null ? "None" : getCurrentState().name());
+            Logger.recordOutput(
+                    "CoralManipulator/CurrentState",
+                    getCurrentState() == null ? "None" : getCurrentState().name());
+        }
     }
 
     public Command transitionTo(CoralManipulatorState targetState) {
         Command coralManipulatorCommand;
+
+        if (Robot.isSimulation()) {
+            setpointPositionVisualizer.update(targetState.getArmPosition().getSetpoint(), targetState.getElevatorPosition().getSetpoint());
+        }
 
         if (isIntaking(targetState) || !isElevMovingUp(targetState)) {
             if (targetState == CoralManipulatorState.STOWED) {
