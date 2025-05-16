@@ -4,7 +4,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.Robot;
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.api.*;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator;
+import frc.robot.subsystems.vision.io.api.VisionHandle;
+import frc.robot.subsystems.vision.io.api.VisionNNProcessor;
 import frc.robot.subsystems.vision.io.impl.AbstractIndexedVisionHandleBuilder;
 import frc.robot.subsystems.vision.io.impl.photon.sim.PhotonVisionAprilTagSimulator;
 import org.photonvision.PhotonCamera;
@@ -48,6 +51,11 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<Phot
     }
 
     @Override
+    protected void switchPipeline(int index) {
+        photonCamera.setPipelineIndex(index);
+    }
+
+    @Override
     protected PhotonVisionBuilder getThis() {
         return this;
     }
@@ -74,6 +82,6 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<Phot
                     .ifPresent(sim -> sim.addCamera(cameraID, photonCamera, robotToCameraTransform, cameraSettings));
         }
 
-        return new PhotonVisionHandle(cameraID, photonCamera, visionProcessors.toArray(VisionProcessor[]::new));
+        return super.build();
     }
 }

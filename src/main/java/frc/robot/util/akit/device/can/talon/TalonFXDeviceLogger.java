@@ -72,9 +72,9 @@ public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
         inputs.isConnected = connectedDebouncer.calculate(refreshCode.isOK());
         inputs.motorInputs.motorVoltage = motorVoltage.getValue();
         inputs.motorInputs.motorAmps = motorAmps.getValue();
-        inputs.positionInputs.positionRotations = positionRotations.getValue();
-        inputs.positionInputs.velocityRotationsPerSec = velocityRotationsPerSec.getValue();
-        inputs.positionInputs.accelerationRotationsPerSecSq = accelerationRotationsPerSecSq.getValue();
+        inputs.positionInputs.positionRotations = positionRotations.getValueAsDouble();
+        inputs.positionInputs.velocityRotationsPerSec = velocityRotationsPerSec.getValueAsDouble();
+        inputs.positionInputs.accelerationRotationsPerSecSq = accelerationRotationsPerSecSq.getValueAsDouble();
 
         inputs.pidInputs.pGain = pGain.getValue();
         inputs.pidInputs.iGain = iGain.getValue();

@@ -25,7 +25,7 @@ public class CANCoderDeviceLogger implements DeviceLogger<CANCoderDeviceInputs> 
         StatusCode refreshCode = BaseStatusSignal.refreshAll(position, absolutePosition);
 
         inputs.isConnected = connectedDebouncer.calculate(refreshCode.isOK());
-        inputs.position = position.getValue();
-        inputs.absolutePosition = absolutePosition.getValue();
+        inputs.position = position.getValueAsDouble();
+        inputs.absolutePosition = absolutePosition.getValueAsDouble();
     }
 }

@@ -12,5 +12,5 @@ public class CANColorInputs extends PhysicalDeviceInputs {
     public double green;
     public double blue;
 
-    public double promixity;
+    public double proximity;
 }

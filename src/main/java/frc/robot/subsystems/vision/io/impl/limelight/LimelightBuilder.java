@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionCameraID;
 import frc.robot.subsystems.vision.io.api.*;
 import frc.robot.subsystems.vision.io.impl.AbstractIndexedVisionHandleBuilder;
+import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightHelpers;
 
 import java.util.function.Supplier;
 
@@ -22,6 +23,11 @@ public class LimelightBuilder extends AbstractIndexedVisionHandleBuilder<Limelig
      */
     public LimelightBuilder(VisionCameraID cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
         super(cameraID, drivetrainRotation, robotToCameraTransform);
+    }
+
+    @Override
+    protected void switchPipeline(int index) {
+        LimelightHelpers.setPipelineIndex(cameraID.cameraName, index);
     }
 
     @Override

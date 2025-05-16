@@ -14,8 +14,9 @@ public interface VisionHandle {
      * This should also switch the camera pipeline if applicable.
      *
      * @param processorType The processor type to set as current
+     * @return if setting the current processor was successful (true) or not (false)
      */
-    void setCurrentProcessor(VisionProcessorType<? extends VisionProcessor> processorType);
+    boolean setCurrentProcessor(VisionProcessorType<? extends VisionProcessor> processorType);
 
     /**
      * Gets the active vision processor's type

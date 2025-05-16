@@ -2,13 +2,11 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.vision.data.*;
+import frc.robot.subsystems.vision.io.api.*;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagFeature;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagSettings;
-import frc.robot.subsystems.vision.io.api.*;
 import frc.robot.subsystems.vision.io.impl.limelight.LimelightBuilder;
 import frc.robot.subsystems.vision.io.impl.photon.PhotonVisionBuilder;
 
@@ -20,7 +18,7 @@ public class VisionSubsystem extends SubsystemBase {
     private final Map<VisionCameraID, VisionHandle> visionHandles = new EnumMap<>(VisionCameraID.class);
 
     // apriltag data/configs
-    protected final Supplier<Rotation2d> drivetrainRotation;
+    private final Supplier<Rotation2d> drivetrainRotation;
     // since these are the two most commonly used features, initialize by default
     private final NavigableMap<Double, VisionData<VisionRobotPose>> visionPoses = new ConcurrentSkipListMap<>();
     private final List<VisionData<VisionAprilTag>> bestDetections = new ArrayList<>();
@@ -29,8 +27,8 @@ public class VisionSubsystem extends SubsystemBase {
     // neural net detections
     private NavigableMap<Double, VisionData<VisionNNDetection>> nnDetectionsMap = null;
 
-    public VisionSubsystem(CommandSwerveDrivetrain drivetrain) {
-        drivetrainRotation = () -> drivetrain.getPigeon2().getRotation2d();
+    public VisionSubsystem(Supplier<Rotation2d> drivetrainRotation) {
+        this.drivetrainRotation = drivetrainRotation;
     }
 
     public <T extends VisionProcessor> Optional<T> getProcessor(VisionCameraID cameraID,

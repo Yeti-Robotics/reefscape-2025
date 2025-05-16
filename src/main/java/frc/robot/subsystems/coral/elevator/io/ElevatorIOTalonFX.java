@@ -3,13 +3,15 @@ package frc.robot.subsystems.coral.elevator.io;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.Constants;
 import frc.robot.constants.HardwareConstants;
 import frc.robot.subsystems.coral.elevator.ElevatorPosition;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 import frc.robot.util.akit.device.digital.DigitalInputDevice;
+
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
     private final TalonFX primaryElevatorMotor = TalonFXDevice.configure(
@@ -24,7 +26,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     private final TalonFX secondaryElevatorMotor = TalonFXDevice.configure(
                     ElevatorConfig.secondaryElevatorMotorID, Constants.CANIVORE_BUS)
             .log("Elevator/SecondaryMotor")
-            .withConfig(ElevatorConfig.secondaryTalonFXConfigs)
+            .withConfig(ElevatorConfig.primaryTalonFXConfigs)
+            .modifyConfig(config -> config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive)
             .syncConfigs()
             .oppose(primaryElevatorMotor)
             .getDevice();
@@ -37,8 +40,8 @@ public class ElevatorIOTalonFX implements ElevatorIO {
                 .log("Elevator/MagSwitch")
                 .toTrigger()
                 .debounce(2)
-                .onTrue(Commands.runOnce(() -> primaryElevatorMotor.setPosition(0))
-                        .andThen(() -> setState(ElevatorPosition.BOTTOM))
+                .onTrue(runOnce(() -> primaryElevatorMotor.setPosition(0))
+                        .andThen(() -> setState(ElevatorPosition.BOTTOM.getSetpoint()))
                         .andThen(primaryElevatorMotor::stopMotor));
     }
 

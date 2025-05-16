@@ -3,9 +3,9 @@ package frc.robot.subsystems.coral.wrist;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.coral.wrist.io.WristIO;
-import frc.robot.util.state.AbstractStateSubsystem;
+import frc.robot.util.state.AbstractSetpointStateSubsystem;
 
-public class WristSubsystem extends AbstractStateSubsystem<Angle, WristPosition, WristIO> {
+public class WristSubsystem extends AbstractSetpointStateSubsystem<Angle, WristPosition, WristIO> {
     public WristSubsystem(WristIO io) {
         super(io);
     }

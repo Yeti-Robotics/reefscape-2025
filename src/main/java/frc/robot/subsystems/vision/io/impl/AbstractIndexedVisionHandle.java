@@ -6,25 +6,31 @@ import frc.robot.subsystems.vision.io.api.VisionProcessor;
 import frc.robot.subsystems.vision.io.api.VisionProcessorType;
 
 import java.util.Optional;
+import java.util.function.IntConsumer;
 
 /**
  * Abstract base class for vision handles.
  * This class provides common functionality for all vision handles.
  */
-public abstract class AbstractIndexedVisionHandle implements VisionHandle {
+public class AbstractIndexedVisionHandle implements VisionHandle {
     protected final VisionCameraID cameraID;
     protected final VisionProcessor[] visionProcessors;
+    protected final IntConsumer pipelineSwitcher;
+
     protected VisionProcessorType<? extends VisionProcessor> currentProcessor;
     private int pipelineIndex = 0;
 
 
     /**
      * Creates a vision handle for a predefined camera ID.
+     *
      * @param cameraID The camera ID
      */
-    public AbstractIndexedVisionHandle(VisionCameraID cameraID, VisionProcessor[] visionProcessors) {
+    public AbstractIndexedVisionHandle(VisionCameraID cameraID, VisionProcessor[] visionProcessors, IntConsumer pipelineSwitcher, VisionProcessorType<? extends VisionProcessor> initialProcessor) {
         this.cameraID = cameraID;
         this.visionProcessors = visionProcessors;
+        this.pipelineSwitcher = pipelineSwitcher;
+        this.currentProcessor = initialProcessor;
     }
 
     private <T extends VisionProcessor> int getProcessorIndex(VisionProcessorType<T> processorType) {
@@ -32,32 +38,38 @@ public abstract class AbstractIndexedVisionHandle implements VisionHandle {
             if (processorType.clazz.isInstance(visionProcessors[i])) {
                 return i;
             }
-       }
+        }
 
-       return -1;
+        return -1;
     }
 
     @Override
-    public void setCurrentProcessor(VisionProcessorType<? extends VisionProcessor> processorType) {
+    public boolean setCurrentProcessor(VisionProcessorType<? extends VisionProcessor> processorType) {
+        if (visionProcessors.length == 1) return false;
+
         int pipelineIndex = getProcessorIndex(processorType);
 
-        if (pipelineIndex == -1) return;
+        if (pipelineIndex == -1) return false;
 
-        switchPipeline(pipelineIndex);
         this.pipelineIndex = pipelineIndex;
+        pipelineSwitcher.accept(pipelineIndex);
         currentProcessor = processorType;
+
+        return true;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends VisionProcessor> Optional<T> getProcessor(VisionProcessorType<T> processorType) {
-      int index = getProcessorIndex(processorType);
+        if (processorType == currentProcessor && visionProcessors.length == 1) return Optional.of((T) visionProcessors[0]);
+        if (processorType == currentProcessor && visionProcessors.length > 1) return Optional.of((T) visionProcessors[pipelineIndex]);
+        int index = getProcessorIndex(processorType);
 
-      return index == -1 ? Optional.empty() : Optional.of((T) visionProcessors[index]);
+        return index == -1 ? Optional.empty() : Optional.of((T) visionProcessors[index]);
     }
 
     @Override
     public boolean hasProcessor(VisionProcessorType<? extends VisionProcessor> processorType) {
-        return getProcessorIndex(processorType) != -1;
+        return (processorType == currentProcessor && visionProcessors.length == 1) || getProcessorIndex(processorType) != -1;
     }
 
     @Override
@@ -69,11 +81,4 @@ public abstract class AbstractIndexedVisionHandle implements VisionHandle {
     public VisionCameraID getCameraID() {
         return cameraID;
     }
-
-    /**
-     * Switches the camera pipeline to the one associated with the specified processor.
-     * 
-     * @param pipelineIndex The processor to switch to
-     */
-    protected abstract void switchPipeline(int pipelineIndex);
 }

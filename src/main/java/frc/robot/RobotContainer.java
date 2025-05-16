@@ -49,7 +49,9 @@ public class RobotContainer {
     final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     final CoralManipulatorSystem coralManipulator = new CoralManipulatorSystem();
     final ClimberSubsystem climber = new ClimberSubsystem(new ClimberIOTalonFX());
-    final VisionSubsystem visionSubsystem = new VisionSubsystem(drivetrain);
+    final VisionSubsystem visionSubsystem = new VisionSubsystem(
+            () -> drivetrain.getPigeon2().getRotation2d()
+    );
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(TunerConstants.MAX_VELOCITY_METERS_PER_SECOND * 0.1)
@@ -169,7 +171,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-
         return null;
     }
 }

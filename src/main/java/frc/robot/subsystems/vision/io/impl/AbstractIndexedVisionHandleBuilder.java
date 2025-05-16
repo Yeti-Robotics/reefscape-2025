@@ -18,6 +18,7 @@ public abstract class AbstractIndexedVisionHandleBuilder<B extends VisionHandleB
     protected final Supplier<Rotation2d> drivetrainRotation;
     protected final Transform3d robotToCameraTransform;
     protected final List<VisionProcessor> visionProcessors = new ArrayList<>();
+    protected VisionProcessorType<? extends VisionProcessor> firstAdded;
 
     /**
      * Creates a new vision handle builder for a predefined camera ID.
@@ -43,18 +44,17 @@ public abstract class AbstractIndexedVisionHandleBuilder<B extends VisionHandleB
      */
     public B addAprilTagProcessor(
             VisionAprilTagSettingsConfigurator aprilTagMode) {
-        visionProcessors.add(createAprilTagProcessor(aprilTagMode.toSettings()));
-        return getThis();
+        return addProcessor(VisionProcessorType.APRILTAG, createAprilTagProcessor(aprilTagMode.toSettings()));
     }
 
     /**
      * Adds an AprilTag processor to the vision handle.
      * This uses the default settings specified in {@link VisionAprilTagSettingsConfigurator#defaultSettingsConfig()}
+     *
      * @return This builder for chaining
      */
     public B addAprilTagProcessor() {
-        visionProcessors.add(createAprilTagProcessor(VisionAprilTagSettingsConfigurator.defaultSettingsConfig().toSettings()));
-        return getThis();
+        return addAprilTagProcessor(VisionAprilTagSettingsConfigurator.defaultSettingsConfig());
     }
 
     /**
@@ -64,8 +64,7 @@ public abstract class AbstractIndexedVisionHandleBuilder<B extends VisionHandleB
      * @return This builder for chaining
      */
     public B addNNProcessor(String[] classNames) {
-        visionProcessors.add(createNNProcessor(classNames));
-        return getThis();
+        return addProcessor(VisionProcessorType.NN, createNNProcessor(classNames));
     }
 
     /**
@@ -76,12 +75,17 @@ public abstract class AbstractIndexedVisionHandleBuilder<B extends VisionHandleB
      * @param processor     The processor instance
      * @return This builder for chaining
      */
-    @Override
-    public <T extends VisionProcessor> B addProcessor(
+    protected <T extends VisionProcessor> B addProcessor(
             VisionProcessorType<T> processorType, T processor) {
+        if (firstAdded == null) {
+            firstAdded = processorType;
+        }
+
         visionProcessors.add(processor);
         return getThis();
     }
+
+    protected abstract void switchPipeline(int index);
 
     protected abstract B getThis();
 
@@ -101,4 +105,15 @@ public abstract class AbstractIndexedVisionHandleBuilder<B extends VisionHandleB
      * @return The created processor
      */
     protected abstract VisionNNProcessor createNNProcessor(String[] classNames);
+
+    @Override
+    public VisionHandle build() {
+        if (visionProcessors.isEmpty()) {
+            throw new IllegalStateException("No vision processors were added to the vision handle builder!");
+        } else if (visionProcessors.size() == 1) {
+            return new AbstractSingleProcessorVisionHandle<>(cameraID, visionProcessors.get(0), firstAdded);
+        } else {
+            return new AbstractIndexedVisionHandle(cameraID, visionProcessors.toArray(VisionProcessor[]::new), this::switchPipeline, firstAdded);
+        }
+    }
 }

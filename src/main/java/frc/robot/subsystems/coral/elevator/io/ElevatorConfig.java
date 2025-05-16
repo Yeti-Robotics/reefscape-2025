@@ -42,11 +42,6 @@ public class ElevatorConfig {
                     .withInverted(InvertedValue.CounterClockwise_Positive)
                     .withNeutralMode(NeutralModeValue.Brake))
             .withFeedback(new FeedbackConfigs().withRotorToSensorRatio(1.0).withSensorToMechanismRatio(gearRatio));
-    static final TalonFXConfiguration secondaryTalonFXConfigs = new TalonFXConfiguration()
-            .withMotorOutput(new MotorOutputConfigs()
-                    .withInverted(InvertedValue.Clockwise_Positive)
-                    .withNeutralMode(NeutralModeValue.Brake))
-            .withFeedback(new FeedbackConfigs().withRotorToSensorRatio(1.0).withSensorToMechanismRatio(gearRatio));
 
     public static final Angle HEIGHT_TOLERANCE = Units.Rotations.of(0.08);
 }
