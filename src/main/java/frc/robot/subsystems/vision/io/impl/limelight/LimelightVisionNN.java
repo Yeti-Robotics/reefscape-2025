@@ -2,7 +2,7 @@ package frc.robot.subsystems.vision.io.impl.limelight;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.vision.data.VisionNNDetection;
-import frc.robot.subsystems.vision.io.api.VisionNNProcessor;
+import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
 import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightHelpers;
 
 import java.util.Arrays;
@@ -36,5 +36,10 @@ public class LimelightVisionNN implements VisionNNProcessor {
                         d.ta,
                         Timer.getFPGATimestamp()))
                 .toList();
+    }
+
+    @Override
+    public double latencyMs() {
+        return LimelightHelpers.getLatency_Pipeline(limelightName);
     }
 }

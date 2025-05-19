@@ -1,12 +1,11 @@
 package frc.robot.subsystems.vision.io.impl.photon.sim;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.Robot;
 import frc.robot.subsystems.vision.VisionCameraID;
+import frc.robot.subsystems.vision.VisionUtil;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
@@ -18,13 +17,14 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class PhotonVisionAprilTagSimulator {
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private static final PhotonVisionAprilTagSimulator INSTANCE = Robot.isSimulation() ? new PhotonVisionAprilTagSimulator() : null;
 
     private final VisionSystemSim visionSim = new VisionSystemSim("simVision");
     private final Map<VisionCameraID, PhotonCameraSim> aprilTagCamSims = new HashMap<>();
 
     private static final Consumer<SimCameraProperties> defaultCameraSettings = cameraProp -> {
-        // A 640 x 480 camera with a 100 degree diagonal FOV.
+        // A 640 x 480 camera with a 100-degree diagonal FOV.
         cameraProp.setCalibration(640, 480, Rotation2d.fromDegrees(100));
         // Approximate detection noise with average and standard deviation error in pixels.
         cameraProp.setCalibError(0.25, 0.08);
@@ -40,7 +40,7 @@ public class PhotonVisionAprilTagSimulator {
     }
 
     private PhotonVisionAprilTagSimulator() {
-        visionSim.addAprilTags(AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField));
+        visionSim.addAprilTags(VisionUtil.APRIL_TAG_FIELD_LAYOUT);
     }
 
     public void addCamera(

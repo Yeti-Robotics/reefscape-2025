@@ -4,9 +4,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.data.*;
+import frc.robot.subsystems.vision.data.apriltag.VisionAprilTag3D;
 import frc.robot.subsystems.vision.io.api.*;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagFeature;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagSettings;
+import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
+import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
 import frc.robot.subsystems.vision.io.impl.limelight.LimelightBuilder;
 import frc.robot.subsystems.vision.io.impl.photon.PhotonVisionBuilder;
 
@@ -21,8 +25,8 @@ public class VisionSubsystem extends SubsystemBase {
     private final Supplier<Rotation2d> drivetrainRotation;
     // since these are the two most commonly used features, initialize by default
     private final NavigableMap<Double, VisionData<VisionRobotPose>> visionPoses = new ConcurrentSkipListMap<>();
-    private final List<VisionData<VisionAprilTag>> bestDetections = new ArrayList<>();
-    private NavigableMap<Double, VisionData<VisionAprilTag>> aprilTagAllDetectionsMap = null;
+    private final List<VisionData<VisionAprilTag3D>> bestDetections = new ArrayList<>();
+    private NavigableMap<Double, VisionData<VisionAprilTag3D>> aprilTagAllDetectionsMap = null;
 
     // neural net detections
     private NavigableMap<Double, VisionData<VisionNNDetection>> nnDetectionsMap = null;
@@ -33,7 +37,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     public <T extends VisionProcessor> Optional<T> getProcessor(VisionCameraID cameraID,
                                                                 VisionProcessorType<T> processorType) {
-        return visionHandles.get(cameraID).getProcessor(processorType);
+        return visionHandles.get(cameraID).vision().getProcessor(processorType);
     }
 
     private void checkCameraID(VisionCameraID visionCameraID, VisionCameraID.VisionType requiredType) {
@@ -52,14 +56,15 @@ public class VisionSubsystem extends SubsystemBase {
         return PhotonVisionBuilder.createBuilder(cameraID, drivetrainRotation, robotToCameraTransform);
     }
 
-    public List<VisionData<VisionAprilTag>> getBestDetections() {
+    public List<VisionData<VisionAprilTag3D>> getBestDetections() {
         bestDetections.clear();
 
         for (VisionHandle handle : visionHandles.values()) {
-            if (handle.activeVisionProcessorType() == VisionProcessorType.APRILTAG) {
-                handle.getProcessor(VisionProcessorType.APRILTAG)
-                        .flatMap(VisionAprilTagProcessor::getBestAprilTagObservation)
-                        .ifPresent(visionAprilTag -> bestDetections.add(new VisionData<>(handle.getCameraID(), visionAprilTag)));
+            VisionProcessorManager processorManager = handle.vision();
+            if (processorManager.activeVisionProcessorType() == VisionProcessorType.APRILTAG_3D) {
+                processorManager.getProcessor(VisionProcessorType.APRILTAG_3D)
+                        .flatMap(VisionAprilTag3DProcessor::getBestAprilTagObservation)
+                        .ifPresent(visionAprilTag -> bestDetections.add(new VisionData<>(handle.identifier(), visionAprilTag)));
             }
         }
 
@@ -73,11 +78,11 @@ public class VisionSubsystem extends SubsystemBase {
 
     public void addVisionHandle(VisionHandle... handles) {
         for (VisionHandle handle : handles) {
-            visionHandles.put(handle.getCameraID(), handle);
+            visionHandles.put(handle.identifier(), handle);
 
             if (aprilTagAllDetectionsMap == null) {
-                boolean enabledAllDetections = handle.getProcessor(VisionProcessorType.APRILTAG)
-                        .map(VisionAprilTagProcessor::getSettings)
+                boolean enabledAllDetections = handle.vision().getProcessor(VisionProcessorType.APRILTAG_3D)
+                        .map(VisionAprilTag3DProcessor::getSettings)
                         .filter(s -> s.hasEnabled(VisionAprilTagFeature.ALL_DETECTIONS))
                         .isPresent();
 
@@ -86,7 +91,7 @@ public class VisionSubsystem extends SubsystemBase {
                 }
             }
 
-            if (nnDetectionsMap == null && handle.hasProcessor(VisionProcessorType.NN)) {
+            if (nnDetectionsMap == null && handle.vision().hasProcessor(VisionProcessorType.NN)) {
                 nnDetectionsMap = new ConcurrentSkipListMap<>();
             }
         }
@@ -98,8 +103,8 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
 
-    public static <T extends VisionProcessor> Optional<T> getProcessor(VisionHandle handle, VisionProcessorType<T> processorType) {
-        Optional<T> processor = handle.getProcessor(processorType);
+    private static <T extends VisionProcessor> Optional<T> getProcessor(VisionHandle handle, VisionProcessorType<T> processorType) {
+        Optional<T> processor = handle.vision().getProcessor(processorType);
         processor.ifPresent(VisionProcessor::visionPeriodic);
         return processor;
     }
@@ -107,29 +112,31 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         for (VisionHandle handle : visionHandles.values()) {
-            if (handle.activeVisionProcessorType() == VisionProcessorType.APRILTAG) {
-                Optional<VisionAprilTagProcessor> aprilTagProcessor = getProcessor(handle, VisionProcessorType.APRILTAG);
+            VisionProcessorManager processorManager = handle.vision();
+
+            if (processorManager.activeVisionProcessorType() == VisionProcessorType.APRILTAG_3D) {
+                Optional<VisionAprilTag3DProcessor> aprilTagProcessor = getProcessor(handle, VisionProcessorType.APRILTAG_3D);
 
                 if (aprilTagProcessor.isPresent()) {
-                    VisionAprilTagProcessor visionAprilTagProcessor = aprilTagProcessor.get();
-                    VisionAprilTagSettings settings = visionAprilTagProcessor.getSettings();
+                    VisionAprilTag3DProcessor visionAprilTag3DProcessor = aprilTagProcessor.get();
+                    VisionAprilTagSettings settings = visionAprilTag3DProcessor.getSettings();
 
                     if (settings.hasEnabled(VisionAprilTagFeature.LOCALIZATION)) {
-                        populateMap(visionPoses, visionAprilTagProcessor.getRobotPoseObservation(), handle.getCameraID());
+                        populateMap(visionPoses, visionAprilTag3DProcessor.getRobotPoseObservation(), handle.identifier());
                     }
 
                     if (settings.hasEnabled(VisionAprilTagFeature.ALL_DETECTIONS) && aprilTagAllDetectionsMap != null) {
-                        populateMap(aprilTagAllDetectionsMap, visionAprilTagProcessor.getLatestAprilTagObservations(), handle.getCameraID());
+                        populateMap(aprilTagAllDetectionsMap, visionAprilTag3DProcessor.getLatestAprilTagObservations(), handle.identifier());
                     }
                 }
-            } else if (handle.activeVisionProcessorType() == VisionProcessorType.NN) {
+            } else if (processorManager.activeVisionProcessorType() == VisionProcessorType.NN) {
                 Optional<VisionNNProcessor> nnProcessor = getProcessor(handle, VisionProcessorType.NN);
 
                 if (nnProcessor.isPresent()) {
                     VisionNNProcessor visionNNProcessor = nnProcessor.get();
 
                     if (nnDetectionsMap != null) {
-                        populateMap(nnDetectionsMap, visionNNProcessor.getLatestNNDetections(), handle.getCameraID());
+                        populateMap(nnDetectionsMap, visionNNProcessor.getLatestNNDetections(), handle.identifier());
                     }
                 }
             }

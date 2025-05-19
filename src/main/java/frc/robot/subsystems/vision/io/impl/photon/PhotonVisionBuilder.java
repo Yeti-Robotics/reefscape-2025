@@ -4,12 +4,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.Robot;
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagProcessor;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator;
 import frc.robot.subsystems.vision.io.api.VisionHandle;
-import frc.robot.subsystems.vision.io.api.VisionNNProcessor;
+import frc.robot.subsystems.vision.io.api.VisionProcessorManager;
+import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
+import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
 import frc.robot.subsystems.vision.io.impl.AbstractIndexedVisionHandleBuilder;
 import frc.robot.subsystems.vision.io.impl.photon.sim.PhotonVisionAprilTagSimulator;
+import frc.robot.subsystems.vision.io.impl.pipeline.PipelineManager;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.SimCameraProperties;
 
@@ -22,7 +24,7 @@ import java.util.function.Supplier;
  */
 public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<PhotonVisionBuilder> {
     private final PhotonCamera photonCamera;
-    private Consumer<SimCameraProperties> cameraSettings;
+    private Consumer<SimCameraProperties> simCameraSettings;
 
     /**
      * Creates a new vision handle builder for a predefined camera ID.
@@ -46,13 +48,8 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<Phot
     }
 
     public PhotonVisionBuilder withSimCameraSettings(Consumer<SimCameraProperties> cameraSettings) {
-        this.cameraSettings = cameraSettings;
+        this.simCameraSettings = cameraSettings;
         return this;
-    }
-
-    @Override
-    protected void switchPipeline(int index) {
-        photonCamera.setPipelineIndex(index);
     }
 
     @Override
@@ -61,8 +58,13 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<Phot
     }
 
     @Override
-    protected VisionAprilTagProcessor createAprilTagProcessor(VisionAprilTagSettingsConfigurator.VisionAprilTagSettings aprilTagMode) {
-        return new PhotonVisionAprilTag(
+    protected PipelineManager<Integer> createPipelineSwitcher() {
+        return new PhotonPipelineManager(photonCamera);
+    }
+
+    @Override
+    protected VisionAprilTag3DProcessor createAprilTagProcessor(VisionAprilTagSettingsConfigurator.VisionAprilTagSettings aprilTagMode) {
+        return new PhotonVisionAprilTag3D(
                 photonCamera,
                 robotToCameraTransform,
                 drivetrainRotation,
@@ -75,13 +77,13 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<Phot
     }
 
     @Override
-    public VisionHandle build() {
+    protected VisionHandle buildWithManager(VisionProcessorManager processorManager) {
         if (Robot.isSimulation()) {
             PhotonVisionAprilTagSimulator
                     .getInstance()
-                    .ifPresent(sim -> sim.addCamera(cameraID, photonCamera, robotToCameraTransform, cameraSettings));
+                    .ifPresent(sim -> sim.addCamera(cameraID, photonCamera, robotToCameraTransform, simCameraSettings));
         }
 
-        return super.build();
+        return new PhotonVisionHandle(cameraID, processorManager, photonCamera);
     }
 }

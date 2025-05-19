@@ -4,8 +4,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionCameraID;
 import frc.robot.subsystems.vision.io.api.*;
+import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
+import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
 import frc.robot.subsystems.vision.io.impl.AbstractIndexedVisionHandleBuilder;
 import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightHelpers;
+import frc.robot.subsystems.vision.io.impl.pipeline.PipelineManager;
 
 import java.util.function.Supplier;
 
@@ -26,18 +29,28 @@ public class LimelightBuilder extends AbstractIndexedVisionHandleBuilder<Limelig
     }
 
     @Override
-    protected void switchPipeline(int index) {
-        LimelightHelpers.setPipelineIndex(cameraID.cameraName, index);
-    }
-
-    @Override
     protected LimelightBuilder getThis() {
         return this;
     }
 
     @Override
-    protected VisionAprilTagProcessor createAprilTagProcessor(VisionAprilTagSettingsConfigurator.VisionAprilTagSettings aprilTagMode) {
-        return new LimelightVisionAprilTag(
+    protected PipelineManager<Integer> createPipelineSwitcher() {
+        return new PipelineManager<>() {
+            @Override
+            public Integer getPipeline() {
+                return (int) LimelightHelpers.getCurrentPipelineIndex(cameraID.cameraName);
+            }
+
+            @Override
+            public void setPipeline(Integer pipeline) {
+                LimelightHelpers.setPipelineIndex(cameraID.cameraName, pipeline);
+            }
+        };
+    }
+
+    @Override
+    protected VisionAprilTag3DProcessor createAprilTagProcessor(VisionAprilTagSettingsConfigurator.VisionAprilTagSettings aprilTagMode) {
+        return new LimelightVisionAprilTag3D(
                 cameraID.cameraName,
                 robotToCameraTransform,
                 drivetrainRotation,
@@ -47,5 +60,10 @@ public class LimelightBuilder extends AbstractIndexedVisionHandleBuilder<Limelig
     @Override
     protected VisionNNProcessor createNNProcessor(String[] classNames) {
         return new LimelightVisionNN(cameraID.cameraName, classNames);
+    }
+
+    @Override
+    protected VisionHandle buildWithManager(VisionProcessorManager processorManager) {
+        return new LimelightHandle(cameraID, processorManager, cameraID.cameraName);
     }
 }

@@ -3,22 +3,17 @@ package frc.robot.subsystems.vision.io.impl;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.api.*;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator;
+import frc.robot.subsystems.vision.io.api.VisionHandleBuilder;
+import frc.robot.subsystems.vision.io.api.VisionProcessorType;
+import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
+import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 
-/**
- * Abstract base class for vision handle builders.
- * This class provides common functionality for all vision handle builders.
- */
-public abstract class AbstractIndexedVisionHandleBuilder<B extends VisionHandleBuilder> implements VisionHandleBuilder {
-    protected final VisionCameraID cameraID;
-    protected final Supplier<Rotation2d> drivetrainRotation;
-    protected final Transform3d robotToCameraTransform;
-    protected final List<VisionProcessor> visionProcessors = new ArrayList<>();
-    protected VisionProcessorType<? extends VisionProcessor> firstAdded;
+public abstract class AbstractIndexedVisionHandleBuilder<B extends VisionHandleBuilder> extends AbstractBaseVisionHandleBuilder<B, Integer> {
+    private int pipelineIndex = 0;
 
     /**
      * Creates a new vision handle builder for a predefined camera ID.
@@ -27,14 +22,10 @@ public abstract class AbstractIndexedVisionHandleBuilder<B extends VisionHandleB
      * @param drivetrainRotation     Supplier for the drivetrain rotation
      * @param robotToCameraTransform The transform from robot to camera
      */
-    public AbstractIndexedVisionHandleBuilder(
-            VisionCameraID cameraID,
-            Supplier<Rotation2d> drivetrainRotation,
-            Transform3d robotToCameraTransform) {
-        this.cameraID = cameraID;
-        this.drivetrainRotation = drivetrainRotation;
-        this.robotToCameraTransform = robotToCameraTransform;
+    public AbstractIndexedVisionHandleBuilder(VisionCameraID cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
+        super(cameraID, drivetrainRotation, robotToCameraTransform);
     }
+
 
     /**
      * Adds an AprilTag processor to the vision handle.
@@ -44,7 +35,7 @@ public abstract class AbstractIndexedVisionHandleBuilder<B extends VisionHandleB
      */
     public B addAprilTagProcessor(
             VisionAprilTagSettingsConfigurator aprilTagMode) {
-        return addProcessor(VisionProcessorType.APRILTAG, createAprilTagProcessor(aprilTagMode.toSettings()));
+        return addProcessor(VisionProcessorType.APRILTAG_3D, createAprilTagProcessor(aprilTagMode.toSettings()));
     }
 
     /**
@@ -77,17 +68,19 @@ public abstract class AbstractIndexedVisionHandleBuilder<B extends VisionHandleB
      */
     protected <T extends VisionProcessor> B addProcessor(
             VisionProcessorType<T> processorType, T processor) {
-        if (firstAdded == null) {
-            firstAdded = processorType;
+        if (!registeredProcessors.containsKey(processorType)) {
+            registeredProcessors.put(processorType, new VisionProcessorData<>(processor, pipelineIndex));
         }
 
-        visionProcessors.add(processor);
         return getThis();
     }
 
-    protected abstract void switchPipeline(int index);
-
-    protected abstract B getThis();
+    @Override
+    protected <T extends VisionProcessor> B addProcessor(VisionProcessorType<T> processorType, T processor, Integer identifier) {
+        super.addProcessor(processorType, processor, identifier);
+        pipelineIndex++;
+        return getThis();
+    }
 
     /**
      * Creates an AprilTag processor for the current camera type.
@@ -95,7 +88,7 @@ public abstract class AbstractIndexedVisionHandleBuilder<B extends VisionHandleB
      * @param aprilTagMode The AprilTag processing mode
      * @return The created processor
      */
-    protected abstract VisionAprilTagProcessor createAprilTagProcessor(
+    protected abstract VisionAprilTag3DProcessor createAprilTagProcessor(
             VisionAprilTagSettingsConfigurator.VisionAprilTagSettings aprilTagMode);
 
     /**
@@ -105,15 +98,4 @@ public abstract class AbstractIndexedVisionHandleBuilder<B extends VisionHandleB
      * @return The created processor
      */
     protected abstract VisionNNProcessor createNNProcessor(String[] classNames);
-
-    @Override
-    public VisionHandle build() {
-        if (visionProcessors.isEmpty()) {
-            throw new IllegalStateException("No vision processors were added to the vision handle builder!");
-        } else if (visionProcessors.size() == 1) {
-            return new AbstractSingleProcessorVisionHandle<>(cameraID, visionProcessors.get(0), firstAdded);
-        } else {
-            return new AbstractIndexedVisionHandle(cameraID, visionProcessors.toArray(VisionProcessor[]::new), this::switchPipeline, firstAdded);
-        }
-    }
 }

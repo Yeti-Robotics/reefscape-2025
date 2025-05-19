@@ -1,25 +1,22 @@
 package frc.robot.subsystems.vision.io.impl;
 
-import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.api.VisionHandle;
-import frc.robot.subsystems.vision.io.api.VisionProcessor;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
+import frc.robot.subsystems.vision.io.api.VisionProcessorManager;
 import frc.robot.subsystems.vision.io.api.VisionProcessorType;
 
 import java.util.Optional;
 
-public class AbstractSingleProcessorVisionHandle<T extends VisionProcessor> implements VisionHandle {
+public class DefaultSingleProcessorManager<T extends VisionProcessor> implements VisionProcessorManager {
     private final VisionProcessorType<T> processorType;
     private final VisionProcessor visionProcessor;
-    private final VisionCameraID cameraID;
 
-    public AbstractSingleProcessorVisionHandle(VisionCameraID cameraID, VisionProcessor visionProcessor, VisionProcessorType<T> processorType) {
+    public DefaultSingleProcessorManager(VisionProcessor visionProcessor, VisionProcessorType<T> processorType) {
         if (!processorType.clazz.isInstance(visionProcessor)) {
             throw new IllegalArgumentException("The processor type does not match the processor instance!");
         }
 
         this.processorType = processorType;
         this.visionProcessor = visionProcessor;
-        this.cameraID = cameraID;
     }
 
     @Override
@@ -41,10 +38,5 @@ public class AbstractSingleProcessorVisionHandle<T extends VisionProcessor> impl
     @Override
     public boolean hasProcessor(VisionProcessorType<? extends VisionProcessor> processorType) {
         return processorType == this.processorType;
-    }
-
-    @Override
-    public VisionCameraID getCameraID() {
-        return cameraID;
     }
 }
