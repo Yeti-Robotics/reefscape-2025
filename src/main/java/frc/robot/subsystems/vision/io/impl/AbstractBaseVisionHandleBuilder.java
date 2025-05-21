@@ -4,6 +4,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionCameraID;
 import frc.robot.subsystems.vision.io.api.*;
+import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
+import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
 import frc.robot.subsystems.vision.io.impl.pipeline.PipelineManager;
 
@@ -42,7 +44,7 @@ public abstract class AbstractBaseVisionHandleBuilder<B extends VisionHandleBuil
     protected final VisionCameraID cameraID;
     protected final Supplier<Rotation2d> drivetrainRotation;
     protected final Transform3d robotToCameraTransform;
-    protected VisionProcessorType<? extends VisionProcessor> firstAdded;
+    protected VisionProcessorType<? extends VisionProcessor> mainProcessorType;
     protected final Map<VisionProcessorType<? extends VisionProcessor>, VisionProcessorData<? extends VisionProcessor, I>> registeredProcessors = new HashMap<>();
 
     /**
@@ -71,6 +73,10 @@ public abstract class AbstractBaseVisionHandleBuilder<B extends VisionHandleBuil
      */
     protected <T extends VisionProcessor> B addProcessor(
             VisionProcessorType<T> processorType, T processor, I identifier) {
+        if (mainProcessorType == null) {
+            mainProcessorType = processorType;
+        }
+
         if (!registeredProcessors.containsKey(processorType)) {
             registeredProcessors.put(processorType, new VisionProcessorData<>(processor, identifier));
         }
@@ -89,16 +95,24 @@ public abstract class AbstractBaseVisionHandleBuilder<B extends VisionHandleBuil
         return getThis();
     }
 
+    public <T extends VisionProcessor> B setDefaultProcessor(VisionProcessorType<T> processorType) {
+        mainProcessorType = processorType;
+        return getThis();
+    }
+
     protected VisionProcessorManager makeProcessorManager() {
         if (registeredProcessors.isEmpty()) {
             throw new IllegalStateException("No vision processors were added to the vision handle builder!");
         } else if (registeredProcessors.size() == 1) {
-            return new DefaultSingleProcessorManager<>(registeredProcessors.get(firstAdded).processor, firstAdded);
+            Map.Entry<VisionProcessorType<? extends VisionProcessor>, VisionProcessorData<? extends VisionProcessor, I>> singleProcessorData =
+                    registeredProcessors.entrySet().iterator().next();
+
+            return new DefaultSingleProcessorManager<>(singleProcessorData.getKey(), singleProcessorData.getValue().processor);
         } else {
             return new DefaultMultiProcessorManager<>(
                     registeredProcessors,
-                    createPipelineSwitcher(),
-                    firstAdded
+                    createPipelineManager(),
+                    mainProcessorType
             );
         }
     }
@@ -111,7 +125,24 @@ public abstract class AbstractBaseVisionHandleBuilder<B extends VisionHandleBuil
 
     protected abstract B getThis();
 
-    protected abstract PipelineManager<I> createPipelineSwitcher();
+    protected abstract PipelineManager<I> createPipelineManager();
 
     protected abstract VisionHandle buildWithManager(VisionProcessorManager processorManager);
+
+    /**
+     * Creates an AprilTag processor for the current camera type.
+     *
+     * @param aprilTagMode The AprilTag processing mode
+     * @return The created processor
+     */
+    protected abstract VisionAprilTag3DProcessor createAprilTagProcessor(
+            VisionAprilTagSettingsConfigurator.VisionAprilTagSettings aprilTagMode);
+
+    /**
+     * Creates a neural network processor for the current camera type.
+     *
+     * @param classNames The class names for neural network detection
+     * @return The created processor
+     */
+    protected abstract VisionNNProcessor createNNProcessor(String[] classNames);
 }

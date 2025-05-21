@@ -34,7 +34,7 @@ public class LimelightBuilder extends AbstractIndexedVisionHandleBuilder<Limelig
     }
 
     @Override
-    protected PipelineManager<Integer> createPipelineSwitcher() {
+    protected PipelineManager<Integer> createPipelineManager() {
         return new PipelineManager<>() {
             @Override
             public Integer getPipeline() {

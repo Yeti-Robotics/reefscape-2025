@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class PhotonVisionAprilTagSimulator {
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private static final PhotonVisionAprilTagSimulator INSTANCE = Robot.isSimulation() ? new PhotonVisionAprilTagSimulator() : null;
 
     private final VisionSystemSim visionSim = new VisionSystemSim("simVision");

@@ -31,6 +31,7 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.data.VisionData;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
 import frc.robot.subsystems.vision.io.api.VisionHandle;
+import frc.robot.subsystems.vision.io.api.VisionProcessorType;
 import frc.robot.subsystems.vision.io.impl.photon.sim.PhotonVisionAprilTagSimulator;
 
 import java.util.Optional;
@@ -89,7 +90,7 @@ public class RobotContainer {
                 .build();
 
         // TODO: figure out actual transform
-        VisionHandle belugaLimelight = visionSubsystem.createPhotonVisionCamera(VisionCameraID.SCORE_CAM, new Transform3d(
+        VisionHandle belugaLimelight = visionSubsystem.createLimelightCamera(VisionCameraID.BELUGA_LIMELIGHT, new Transform3d(
                         new Translation3d(
                                 Units.inchesToMeters(-9.5),
                                 Units.inchesToMeters(10),
@@ -99,6 +100,10 @@ public class RobotContainer {
                 .build();
 
         visionSubsystem.addVisionHandle(radioCam, scoreCam);
+
+        if (!Robot.isSimulation()) {
+            visionSubsystem.addVisionHandle(belugaLimelight);
+        }
     }
 
     public void updateVisionSim() {

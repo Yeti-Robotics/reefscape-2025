@@ -6,8 +6,6 @@ import frc.robot.subsystems.vision.VisionCameraID;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator;
 import frc.robot.subsystems.vision.io.api.VisionHandleBuilder;
 import frc.robot.subsystems.vision.io.api.VisionProcessorType;
-import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
-import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
 
 import java.util.function.Supplier;
@@ -68,34 +66,8 @@ public abstract class AbstractIndexedVisionHandleBuilder<B extends VisionHandleB
      */
     protected <T extends VisionProcessor> B addProcessor(
             VisionProcessorType<T> processorType, T processor) {
-        if (!registeredProcessors.containsKey(processorType)) {
-            registeredProcessors.put(processorType, new VisionProcessorData<>(processor, pipelineIndex));
-        }
-
-        return getThis();
-    }
-
-    @Override
-    protected <T extends VisionProcessor> B addProcessor(VisionProcessorType<T> processorType, T processor, Integer identifier) {
-        super.addProcessor(processorType, processor, identifier);
+        addProcessor(processorType, processor, pipelineIndex);
         pipelineIndex++;
         return getThis();
     }
-
-    /**
-     * Creates an AprilTag processor for the current camera type.
-     *
-     * @param aprilTagMode The AprilTag processing mode
-     * @return The created processor
-     */
-    protected abstract VisionAprilTag3DProcessor createAprilTagProcessor(
-            VisionAprilTagSettingsConfigurator.VisionAprilTagSettings aprilTagMode);
-
-    /**
-     * Creates a neural network processor for the current camera type.
-     *
-     * @param classNames The class names for neural network detection
-     * @return The created processor
-     */
-    protected abstract VisionNNProcessor createNNProcessor(String[] classNames);
 }

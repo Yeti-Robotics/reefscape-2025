@@ -10,7 +10,7 @@ public class DefaultSingleProcessorManager<T extends VisionProcessor> implements
     private final VisionProcessorType<T> processorType;
     private final VisionProcessor visionProcessor;
 
-    public DefaultSingleProcessorManager(VisionProcessor visionProcessor, VisionProcessorType<T> processorType) {
+    public DefaultSingleProcessorManager(VisionProcessorType<T> processorType, VisionProcessor visionProcessor) {
         if (!processorType.clazz.isInstance(visionProcessor)) {
             throw new IllegalArgumentException("The processor type does not match the processor instance!");
         }

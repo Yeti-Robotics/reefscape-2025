@@ -58,7 +58,7 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<Phot
     }
 
     @Override
-    protected PipelineManager<Integer> createPipelineSwitcher() {
+    protected PipelineManager<Integer> createPipelineManager() {
         return new PhotonPipelineManager(photonCamera);
     }
 

@@ -35,8 +35,8 @@ public class VisionSubsystem extends SubsystemBase {
         this.drivetrainRotation = drivetrainRotation;
     }
 
-    public <T extends VisionProcessor> Optional<T> getProcessor(VisionCameraID cameraID,
-                                                                VisionProcessorType<T> processorType) {
+    public <T extends VisionProcessor> Optional<T> fetchProcessorForHandle(VisionCameraID cameraID,
+                                                                           VisionProcessorType<T> processorType) {
         return visionHandles.get(cameraID).vision().getProcessor(processorType);
     }
 
@@ -76,23 +76,23 @@ public class VisionSubsystem extends SubsystemBase {
         return entry == null ? Optional.empty() : Optional.of(entry.getValue());
     }
 
+    private static boolean hasEnabledAllDetections(VisionHandle handle) {
+        return handle.vision().getProcessor(VisionProcessorType.APRILTAG_3D)
+                .map(VisionAprilTag3DProcessor::getSettings)
+                .filter(s -> s.hasEnabled(VisionAprilTagFeature.ALL_DETECTIONS))
+                .isPresent();
+    }
+
     public void addVisionHandle(VisionHandle... handles) {
         for (VisionHandle handle : handles) {
             visionHandles.put(handle.identifier(), handle);
 
-            if (aprilTagAllDetectionsMap == null) {
-                boolean enabledAllDetections = handle.vision().getProcessor(VisionProcessorType.APRILTAG_3D)
-                        .map(VisionAprilTag3DProcessor::getSettings)
-                        .filter(s -> s.hasEnabled(VisionAprilTagFeature.ALL_DETECTIONS))
-                        .isPresent();
-
-                if (enabledAllDetections) {
-                    aprilTagAllDetectionsMap = new ConcurrentSkipListMap<>();
-                }
+            if (aprilTagAllDetectionsMap == null && hasEnabledAllDetections(handle)) {
+                aprilTagAllDetectionsMap = new TreeMap<>();
             }
 
             if (nnDetectionsMap == null && handle.vision().hasProcessor(VisionProcessorType.NN)) {
-                nnDetectionsMap = new ConcurrentSkipListMap<>();
+                nnDetectionsMap = new TreeMap<>();
             }
         }
     }
@@ -103,7 +103,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
 
-    private static <T extends VisionProcessor> Optional<T> getProcessor(VisionHandle handle, VisionProcessorType<T> processorType) {
+    private static <T extends VisionProcessor> Optional<T> fetchProcessorForHandle(VisionHandle handle, VisionProcessorType<T> processorType) {
         Optional<T> processor = handle.vision().getProcessor(processorType);
         processor.ifPresent(VisionProcessor::visionPeriodic);
         return processor;
@@ -115,7 +115,7 @@ public class VisionSubsystem extends SubsystemBase {
             VisionProcessorManager processorManager = handle.vision();
 
             if (processorManager.activeVisionProcessorType() == VisionProcessorType.APRILTAG_3D) {
-                Optional<VisionAprilTag3DProcessor> aprilTagProcessor = getProcessor(handle, VisionProcessorType.APRILTAG_3D);
+                Optional<VisionAprilTag3DProcessor> aprilTagProcessor = fetchProcessorForHandle(handle, VisionProcessorType.APRILTAG_3D);
 
                 if (aprilTagProcessor.isPresent()) {
                     VisionAprilTag3DProcessor visionAprilTag3DProcessor = aprilTagProcessor.get();
@@ -130,7 +130,7 @@ public class VisionSubsystem extends SubsystemBase {
                     }
                 }
             } else if (processorManager.activeVisionProcessorType() == VisionProcessorType.NN) {
-                Optional<VisionNNProcessor> nnProcessor = getProcessor(handle, VisionProcessorType.NN);
+                Optional<VisionNNProcessor> nnProcessor = fetchProcessorForHandle(handle, VisionProcessorType.NN);
 
                 if (nnProcessor.isPresent()) {
                     VisionNNProcessor visionNNProcessor = nnProcessor.get();

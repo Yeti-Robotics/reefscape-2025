@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionUtil;
 import frc.robot.subsystems.vision.data.apriltag.VisionAprilTag3D;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
+import frc.robot.subsystems.vision.data.apriltag.VisionAprilTagRecorder;
 import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagFeature;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagSettings;
@@ -31,8 +32,7 @@ public class PhotonVisionAprilTag3D extends AbstractPhotonProcessor implements V
     private final Supplier<Rotation2d> drivetrainRotation;
 
     private final List<VisionRobotPose> poseEstimates = new ArrayList<>();
-    private final List<VisionAprilTag3D> aprilTagEstimates = new ArrayList<>();
-    private VisionAprilTag3D bestAprilTagEstimate = null;
+    private final VisionAprilTagRecorder aprilTagRecorder = new VisionAprilTagRecorder();
 
     private final Transform3d robotToCameraTransform;
     private final PhotonPoseEstimator poseEstimator;
@@ -75,7 +75,6 @@ public class PhotonVisionAprilTag3D extends AbstractPhotonProcessor implements V
 
     @Override
     protected void runPreprocessing() {
-        aprilTagEstimates.clear();
         poseEstimates.clear();
     }
 
@@ -117,7 +116,8 @@ public class PhotonVisionAprilTag3D extends AbstractPhotonProcessor implements V
                 PhotonTrackedTarget bestTarget = getBestTarget(pipelineResult);
 
                 if (bestTarget != null) {
-                    bestAprilTagEstimate = mapToVisionAprilTag(pipelineResult, bestTarget);
+                   recordVisionAprilTag(pipelineResult, bestTarget);
+                   aprilTagRecorder.setBestTag(bestTarget.fiducialId);
                 }
             }
         }
@@ -130,7 +130,7 @@ public class PhotonVisionAprilTag3D extends AbstractPhotonProcessor implements V
                 if (target.fiducialId == -1)
                     continue;
 
-                aprilTagEstimates.add(mapToVisionAprilTag(latestResult, target));
+                recordVisionAprilTag(latestResult, target);
             }
         }
     }
@@ -143,15 +143,11 @@ public class PhotonVisionAprilTag3D extends AbstractPhotonProcessor implements V
         return tagIds;
     }
 
-    private VisionAprilTag3D mapToVisionAprilTag(PhotonPipelineResult pipelineResult, PhotonTrackedTarget target) {
+    private void recordVisionAprilTag(PhotonPipelineResult pipelineResult, PhotonTrackedTarget target) {
         Pose3d robotToTargetPose = new Pose3d().transformBy(robotToCameraTransform)
                 .transformBy(target.bestCameraToTarget);
 
-        return new VisionAprilTag3D(
-                target.fiducialId,
-                robotToTargetPose.toPose2d(),
-                target.poseAmbiguity,
-                pipelineResult.getTimestampSeconds());
+        aprilTagRecorder.record(target.fiducialId, robotToTargetPose.toPose2d(), target.poseAmbiguity, pipelineResult.getTimestampSeconds());
     }
 
     private PhotonTrackedTarget getBestTarget(PhotonPipelineResult pipelineResult) {
@@ -164,13 +160,8 @@ public class PhotonVisionAprilTag3D extends AbstractPhotonProcessor implements V
     }
 
     @Override
-    public List<VisionAprilTag3D> getLatestAprilTagObservations() {
-        return aprilTagEstimates;
-    }
-
-    @Override
-    public Optional<VisionAprilTag3D> getBestAprilTagObservation() {
-        return Optional.ofNullable(bestAprilTagEstimate);
+    public VisionAprilTagRecorder getAprilTagRecords() {
+        return aprilTagRecorder;
     }
 
     @Override

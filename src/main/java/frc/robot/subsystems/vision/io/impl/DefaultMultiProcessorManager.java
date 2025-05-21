@@ -41,7 +41,8 @@ public class DefaultMultiProcessorManager<I> implements VisionProcessorManager {
     @SuppressWarnings("unchecked")
     @Override
     public <T extends VisionProcessor> Optional<T> getProcessor(VisionProcessorType<T> processorType) {
-        AbstractBaseVisionHandleBuilder.VisionProcessorData<T, I> visionProcessor = (AbstractBaseVisionHandleBuilder.VisionProcessorData<T, I>) processorMap.get(processorType);
+        AbstractBaseVisionHandleBuilder.VisionProcessorData<T, I> visionProcessor = (AbstractBaseVisionHandleBuilder.VisionProcessorData<T, I>)
+                processorMap.get(processorType);
 
         if (visionProcessor != null) {
             return Optional.of(visionProcessor.processor);
