@@ -23,7 +23,7 @@ public class VisionAprilTagSettingsConfigurator {
             return visionAprilTagOptions.isEmpty();
         }
 
-        public boolean hasEnabled(VisionAprilTagFeature... mode) {
+        public boolean hasEnabledAll(VisionAprilTagFeature... mode) {
             for (VisionAprilTagFeature m : mode) {
                 if (!visionAprilTagOptions.contains(m)) {
                     return false;
@@ -31,6 +31,16 @@ public class VisionAprilTagSettingsConfigurator {
             }
 
             return true;
+        }
+
+        public boolean hasEnabledAny(VisionAprilTagFeature... mode) {
+            for (VisionAprilTagFeature m : mode) {
+                if (visionAprilTagOptions.contains(m)) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 

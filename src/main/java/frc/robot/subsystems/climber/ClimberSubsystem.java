@@ -13,7 +13,7 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public Command spinClimber(double speed) {
-        return startEnd(() -> climberIO.spinSpeed(speed), climberIO::stop);
+        return startEnd(() -> climberIO.spinAtPercentSpeed(speed), climberIO::stop);
     }
 
     public Command climbUp() {

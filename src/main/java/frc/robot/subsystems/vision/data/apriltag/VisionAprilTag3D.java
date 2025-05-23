@@ -1,17 +1,19 @@
 package frc.robot.subsystems.vision.data.apriltag;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.util.struct.StructSerializable;
 import frc.robot.subsystems.vision.data.VisionTimestampedResult;
+import frc.robot.subsystems.vision.data.apriltag.struct.VisionAprilTag3DStruct;
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
-@AutoLog
-public class VisionAprilTag3D implements VisionTimestampedResult {
-    protected int fiducialID;
-    protected Pose2d robotToTargetPose;
-    protected double ambiguity;
-    protected double timestamp;
+public class VisionAprilTag3D implements VisionTimestampedResult, StructSerializable {
+    public Pose2d robotToTargetPose;
+    public int fiducialID;
+    public double ambiguity;
+    public double timestamp;
 
     public VisionAprilTag3D(int fiducialID, Pose2d robotToTargetPose, double ambiguity, double timestamp) {
         setFrom(fiducialID, robotToTargetPose, ambiguity, timestamp);
@@ -53,5 +55,7 @@ public class VisionAprilTag3D implements VisionTimestampedResult {
         this.timestamp = visionAprilTag3D.timestamp;
         return this;
     }
+
+    public static final VisionAprilTag3DStruct struct = new VisionAprilTag3DStruct();
 }
 

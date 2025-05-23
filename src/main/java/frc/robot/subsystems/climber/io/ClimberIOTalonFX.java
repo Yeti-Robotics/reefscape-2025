@@ -11,7 +11,7 @@ public class ClimberIOTalonFX implements ClimberIO {
             .getDevice();
 
     @Override
-    public void spinSpeed(double speed) {
+    public void spinAtPercentSpeed(double speed) {
         climberMotor.set(speed);
     }
 

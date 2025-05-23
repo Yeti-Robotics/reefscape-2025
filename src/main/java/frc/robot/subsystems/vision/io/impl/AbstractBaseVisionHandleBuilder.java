@@ -17,7 +17,7 @@ import java.util.function.Supplier;
  * Abstract base class for vision handle builders.
  * This class provides common functionality for all vision handle builders.
  */
-public abstract class AbstractBaseVisionHandleBuilder<B extends VisionHandleBuilder, I> implements VisionHandleBuilder {
+public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B extends VisionHandleBuilder, I> implements VisionHandleBuilder {
     public static class VisionProcessorData<T extends VisionProcessor, I> {
         protected final T processor;
         protected I pipelineID;
@@ -41,7 +41,7 @@ public abstract class AbstractBaseVisionHandleBuilder<B extends VisionHandleBuil
         }
     }
 
-    protected final VisionCameraID cameraID;
+    protected final VisionCameraID<H, B> cameraID;
     protected final Supplier<Rotation2d> drivetrainRotation;
     protected final Transform3d robotToCameraTransform;
     protected VisionProcessorType<? extends VisionProcessor> mainProcessorType;
@@ -55,7 +55,7 @@ public abstract class AbstractBaseVisionHandleBuilder<B extends VisionHandleBuil
      * @param robotToCameraTransform The transform from robot to camera
      */
     public AbstractBaseVisionHandleBuilder(
-            VisionCameraID cameraID,
+            VisionCameraID<H, B> cameraID,
             Supplier<Rotation2d> drivetrainRotation,
             Transform3d robotToCameraTransform) {
         this.cameraID = cameraID;
@@ -119,7 +119,7 @@ public abstract class AbstractBaseVisionHandleBuilder<B extends VisionHandleBuil
 
 
     @Override
-    public VisionHandle build() {
+    public H build() {
         return buildWithManager(makeProcessorManager());
     }
 
@@ -127,7 +127,7 @@ public abstract class AbstractBaseVisionHandleBuilder<B extends VisionHandleBuil
 
     protected abstract PipelineManager<I> createPipelineManager();
 
-    protected abstract VisionHandle buildWithManager(VisionProcessorManager processorManager);
+    protected abstract H buildWithManager(VisionProcessorManager processorManager);
 
     /**
      * Creates an AprilTag processor for the current camera type.

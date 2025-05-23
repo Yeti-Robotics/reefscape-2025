@@ -22,7 +22,7 @@ import java.util.function.Supplier;
  * Specialized builder for PhotonVision cameras.
  * This builder creates processors specifically for PhotonVision cameras.
  */
-public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<PhotonVisionBuilder> {
+public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<PhotonVisionHandle, PhotonVisionBuilder> {
     private final PhotonCamera photonCamera;
     private Consumer<SimCameraProperties> simCameraSettings;
 
@@ -33,12 +33,12 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<Phot
      * @param drivetrainRotation     Supplier for the drivetrain rotation
      * @param robotToCameraTransform The transform from robot to camera
      */
-    private PhotonVisionBuilder(VisionCameraID cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform, PhotonCamera photonCamera) {
+    private PhotonVisionBuilder(VisionCameraID<PhotonVisionHandle, PhotonVisionBuilder> cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform, PhotonCamera photonCamera) {
         super(cameraID, drivetrainRotation, robotToCameraTransform);
         this.photonCamera = photonCamera;
     }
 
-    public static PhotonVisionBuilder createBuilder(VisionCameraID cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
+    public static PhotonVisionBuilder createBuilder(VisionCameraID<PhotonVisionHandle, PhotonVisionBuilder> cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
         PhotonCamera photonCamera = new PhotonCamera(cameraID.cameraName);
 
         return new PhotonVisionBuilder(
@@ -77,7 +77,7 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<Phot
     }
 
     @Override
-    protected VisionHandle buildWithManager(VisionProcessorManager processorManager) {
+    protected PhotonVisionHandle buildWithManager(VisionProcessorManager processorManager) {
         if (Robot.isSimulation()) {
             PhotonVisionAprilTagSimulator
                     .getInstance()

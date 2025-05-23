@@ -4,9 +4,8 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
-import frc.robot.subsystems.vision.data.apriltag.VisionAprilTag3D;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
-import frc.robot.subsystems.vision.data.apriltag.VisionAprilTagRecorder;
+import frc.robot.subsystems.vision.data.apriltag.VisionAprilTagTracker;
 import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator;
 import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagSettings;
@@ -15,7 +14,6 @@ import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightHelpers;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public class LimelightVisionAprilTag3D implements VisionAprilTag3DProcessor {
@@ -23,7 +21,7 @@ public class LimelightVisionAprilTag3D implements VisionAprilTag3DProcessor {
     private final VisionAprilTagSettings mode;
     private final Supplier<Rotation2d> drivetrainRotation;
 
-    private final VisionAprilTagRecorder aprilTagRecorder = new VisionAprilTagRecorder();
+    private final VisionAprilTagTracker aprilTagRecorder = new VisionAprilTagTracker();
     private final List<VisionRobotPose> robotPoseObservation = Arrays.asList(new VisionRobotPose[1]);
     private double latencyPipeline;
 
@@ -72,7 +70,7 @@ public class LimelightVisionAprilTag3D implements VisionAprilTag3DProcessor {
     }
 
     @Override
-    public VisionAprilTagRecorder getAprilTagRecords() {
+    public VisionAprilTagTracker getAprilTags() {
         return aprilTagRecorder;
     }
 
@@ -82,7 +80,7 @@ public class LimelightVisionAprilTag3D implements VisionAprilTag3DProcessor {
                 limelightName, drivetrainRotation.get().getDegrees(), 0, 0, 0, 0, 0);
 
 
-        if (mode.hasEnabled(VisionAprilTagSettingsConfigurator.VisionAprilTagFeature.BEST_DETECTION)) {
+        if (mode.hasEnabledAll(VisionAprilTagSettingsConfigurator.VisionAprilTagFeature.BEST_DETECTION)) {
             TimestampedDoubleArray tagEntry = LimelightHelpers.getLimelightDoubleArrayEntry(
                             limelightName, "targetpose_robotspace")
                     .getAtomic();
@@ -91,24 +89,25 @@ public class LimelightVisionAprilTag3D implements VisionAprilTag3DProcessor {
             if (!(tagPose == null || tagPose == Pose3d.kZero)) {
                 int id = (int) LimelightHelpers.getFiducialID(limelightName);
 
-                aprilTagRecorder.record(id, tagPose.toPose2d(), 0, tagEntry.timestamp);
-                aprilTagRecorder.setBestTag(id);
+                aprilTagRecorder.addBestObservation(id, tagPose.toPose2d(), 0, tagEntry.timestamp);
             }
         }
 
-        if (mode.hasEnabled(VisionAprilTagSettingsConfigurator.VisionAprilTagFeature.ALL_DETECTIONS)) {
+        if (mode.hasEnabledAll(VisionAprilTagSettingsConfigurator.VisionAprilTagFeature.ALL_DETECTIONS)) {
             LimelightHelpers.LimelightResults results = LimelightDataParsingHelper.getResults(limelightName);
 
             if (!results.valid || results.targets_Fiducials.length == 0) return;
 
             for (LimelightHelpers.LimelightTarget_Fiducial fiducial : results.targets_Fiducials) {
-                aprilTagRecorder.record((int) fiducial.fiducialID,
+                aprilTagRecorder.addObservation((int) fiducial.fiducialID,
                         fiducial.getTargetPose_RobotSpace2D(),
                         0, results.timestamp_LIMELIGHT_publish
                 );
             }
 
             latencyPipeline = results.latency_pipeline;
+        } else {
+            latencyPipeline = LimelightHelpers.getLatency_Pipeline(limelightName);
         }
     }
 

@@ -9,7 +9,7 @@ import java.util.Optional;
  * Provides methods for managing vision processors and switching pipelines.
  */
 public interface VisionHandle {
-    VisionCameraID identifier();
+    VisionCameraID<?, ?> identifier();
 
     boolean isConnected();
 

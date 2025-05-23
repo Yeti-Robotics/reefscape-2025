@@ -30,8 +30,10 @@ import frc.robot.subsystems.vision.VisionCameraID;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.data.VisionData;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator;
 import frc.robot.subsystems.vision.io.api.VisionHandle;
 import frc.robot.subsystems.vision.io.api.VisionProcessorType;
+import frc.robot.subsystems.vision.io.impl.limelight.LimelightHandle;
 import frc.robot.subsystems.vision.io.impl.photon.sim.PhotonVisionAprilTagSimulator;
 
 import java.util.Optional;
@@ -71,7 +73,7 @@ public class RobotContainer {
     }
 
     public void configureVision() {
-        VisionHandle radioCam = visionSubsystem.createPhotonVisionCamera(VisionCameraID.RADIO_CAM, new Transform3d(
+        VisionHandle radioCam = visionSubsystem.createCamera(VisionCameraID.RADIO_CAM, new Transform3d(
                         new Translation3d(
                                 Units.inchesToMeters(-9.5),
                                 Units.inchesToMeters(-8),
@@ -80,17 +82,17 @@ public class RobotContainer {
                 .addAprilTagProcessor()
                 .build();
 
-        VisionHandle scoreCam = visionSubsystem.createPhotonVisionCamera(VisionCameraID.SCORE_CAM, new Transform3d(
+        VisionHandle scoreCam = visionSubsystem.createCamera(VisionCameraID.SCORE_CAM, new Transform3d(
                         new Translation3d(
                                 Units.inchesToMeters(-9.5),
                                 Units.inchesToMeters(10),
                                 Units.inchesToMeters(11)),
                         new Rotation3d(0, Math.toRadians(-15), Math.toRadians(90))))
-                .addAprilTagProcessor()
+                .addAprilTagProcessor(VisionAprilTagSettingsConfigurator.defaultSettingsConfig().enable(VisionAprilTagSettingsConfigurator.VisionAprilTagFeature.ALL_DETECTIONS))
                 .build();
 
         // TODO: figure out actual transform
-        VisionHandle belugaLimelight = visionSubsystem.createLimelightCamera(VisionCameraID.BELUGA_LIMELIGHT, new Transform3d(
+        VisionHandle belugaLimelight = visionSubsystem.createCamera(VisionCameraID.BELUGA_LIMELIGHT, new Transform3d(
                         new Translation3d(
                                 Units.inchesToMeters(-9.5),
                                 Units.inchesToMeters(10),
@@ -99,7 +101,7 @@ public class RobotContainer {
                 .addAprilTagProcessor()
                 .build();
 
-        visionSubsystem.addVisionHandle(radioCam, scoreCam);
+        visionSubsystem.addVisionHandle( scoreCam);
 
         if (!Robot.isSimulation()) {
             visionSubsystem.addVisionHandle(belugaLimelight);
