@@ -10,13 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PhotonVisionNN extends AbstractPhotonProcessor implements VisionNNProcessor {
-    private final PhotonCamera camera;
     private final List<VisionNNDetection> nnDetections = new ArrayList<>();
     private final String[] classNames;
 
     public PhotonVisionNN(PhotonCamera camera, String[] classNames) {
         super(camera);
-        this.camera = camera;
         this.classNames = classNames;
     }
 

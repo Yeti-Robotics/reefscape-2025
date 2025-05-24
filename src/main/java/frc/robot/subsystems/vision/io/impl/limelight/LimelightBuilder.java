@@ -49,7 +49,7 @@ public class LimelightBuilder extends AbstractIndexedVisionHandleBuilder<Limelig
     }
 
     @Override
-    protected VisionAprilTag3DProcessor createAprilTagProcessor(VisionAprilTagSettingsConfigurator.VisionAprilTagSettings aprilTagMode) {
+    protected VisionAprilTag3DProcessor createAprilTagProcessor(VisionAprilTagSettings.VisionAprilTagSettings aprilTagMode) {
         return new LimelightVisionAprilTag3D(
                 cameraID.cameraName,
                 robotToCameraTransform,

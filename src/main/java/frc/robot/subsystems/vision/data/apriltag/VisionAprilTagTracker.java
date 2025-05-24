@@ -18,7 +18,6 @@ public class VisionAprilTagTracker implements LoggableInputs, Iterable<VisionApr
     private final VisionAprilTag3D[] tagData = new VisionAprilTag3D[TAG_COUNT];
 
     private final BitSet tagUnreadBitset = new BitSet(TAG_COUNT);
-    private final BitSet logUnreadBitset = new BitSet(TAG_COUNT);
 
     private int bestTagID = -1;
 
@@ -34,7 +33,6 @@ public class VisionAprilTagTracker implements LoggableInputs, Iterable<VisionApr
         tagData[fiducialIndex].setFrom(fiducialID, robotToTargetPose, ambiguity, timestamp);
 
         tagUnreadBitset.set(fiducialIndex);
-        logUnreadBitset.set(fiducialIndex);
 
         return true;
     }
@@ -46,7 +44,7 @@ public class VisionAprilTagTracker implements LoggableInputs, Iterable<VisionApr
     }
 
     public Optional<VisionAprilTag3D> getBestTag() {
-        return (bestTagID < 0 || bestTagID >= tagData.length) ? Optional.empty() : Optional.ofNullable(tagData[bestTagID - 1]);
+        return getTag(bestTagID);
     }
 
     public Optional<VisionAprilTag3D> getTag(int fiducialID) {
@@ -57,25 +55,24 @@ public class VisionAprilTagTracker implements LoggableInputs, Iterable<VisionApr
     public void toLog(LogTable table) {
         table.put(BEST_TAG_KEY, bestTagID);
 
-        int tagsToLog = logUnreadBitset.cardinality();
+        int tagsToLog = tagUnreadBitset.cardinality();
 
         VisionAprilTag3D[] loggedTags = new VisionAprilTag3D[tagsToLog];
         if (tagsToLog > 0) {
             int arrIndex = 0;
 
-            for (int i = logUnreadBitset.nextSetBit(0); i >= 0; i = logUnreadBitset.nextSetBit(i + 1)) {
+            for (int i = tagUnreadBitset.nextSetBit(0); i >= 0; i = tagUnreadBitset.nextSetBit(i + 1)) {
                 loggedTags[arrIndex++] = tagData[i];
             }
         }
 
         table.put(TAGS_KEY, VisionAprilTag3D.struct, loggedTags);
-        logUnreadBitset.clear();
     }
 
     @Override
     public void fromLog(LogTable table) {
         bestTagID = table.get(BEST_TAG_KEY, bestTagID);
-        VisionAprilTag3D[] loggedTagData = table.get(TAGS_KEY, tagData);
+        VisionAprilTag3D[] loggedTagData = table.get(TAGS_KEY, VisionAprilTag3D.struct, tagData);
 
         for (VisionAprilTag3D aprilTag3D : loggedTagData) {
             addObservation(aprilTag3D.fiducialID, aprilTag3D.robotToTargetPose, aprilTag3D.ambiguity, aprilTag3D.timestamp);
@@ -99,6 +96,7 @@ public class VisionAprilTagTracker implements LoggableInputs, Iterable<VisionApr
                 }
 
                 VisionAprilTag3D tag = tagData[nextBit];
+                tagUnreadBitset.clear(nextBit);
                 nextBit = tagUnreadBitset.nextSetBit(nextBit + 1);
                 return tag;
             }

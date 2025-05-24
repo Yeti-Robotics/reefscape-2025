@@ -3,7 +3,7 @@ package frc.robot.subsystems.vision.io.impl;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.api.VisionHandle;
 import frc.robot.subsystems.vision.io.api.VisionHandleBuilder;
 import frc.robot.subsystems.vision.io.api.VisionProcessorType;
@@ -33,18 +33,18 @@ public abstract class AbstractIndexedVisionHandleBuilder<H extends VisionHandle,
      * @return This builder for chaining
      */
     public B addAprilTagProcessor(
-            VisionAprilTagSettingsConfigurator aprilTagMode) {
+            VisionAprilTagSettings aprilTagMode) {
         return addProcessor(VisionProcessorType.APRILTAG_3D, createAprilTagProcessor(aprilTagMode.toSettings()));
     }
 
     /**
      * Adds an AprilTag processor to the vision handle.
-     * This uses the default settings specified in {@link VisionAprilTagSettingsConfigurator#defaultSettingsConfig()}
+     * This uses the default settings specified in {@link VisionAprilTagSettings#defaultSettingsConfig()}
      *
      * @return This builder for chaining
      */
     public B addAprilTagProcessor() {
-        return addAprilTagProcessor(VisionAprilTagSettingsConfigurator.defaultSettingsConfig());
+        return addAprilTagProcessor(VisionAprilTagSettings.defaultSettingsConfig());
     }
 
     /**

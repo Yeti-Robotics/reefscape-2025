@@ -8,8 +8,8 @@ import frc.robot.subsystems.vision.VisionUtil;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
 import frc.robot.subsystems.vision.data.apriltag.VisionAprilTagTracker;
 import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagFeature;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagSettings;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettings.VisionAprilTagFeature;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettings;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -27,7 +27,6 @@ public class PhotonVisionAprilTag3D extends AbstractPhotonProcessor implements V
     private static final double MAX_ALLOWABLE_DETECTION_DISTANCE_METERS = 5;
     private static final double MAX_THETA_VARIANCE_DEGREES = 10;
 
-    private final PhotonCamera camera;
     private final Supplier<Rotation2d> drivetrainRotation;
 
     private final List<VisionRobotPose> poseEstimates = new ArrayList<>();
@@ -45,7 +44,6 @@ public class PhotonVisionAprilTag3D extends AbstractPhotonProcessor implements V
             Supplier<Rotation2d> drivetrainRotation,
             VisionAprilTagSettings mode) {
         super(camera);
-        this.camera = camera;
         this.robotToCameraTransform = robotToCameraTransform;
         this.poseEstimator = new PhotonPoseEstimator(
                 VisionUtil.APRIL_TAG_FIELD_LAYOUT,

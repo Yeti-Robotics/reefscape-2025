@@ -7,8 +7,7 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
 import frc.robot.subsystems.vision.data.apriltag.VisionAprilTagTracker;
 import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagSettings;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightDataParsingHelper;
 import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightHelpers;
 
@@ -18,7 +17,7 @@ import java.util.function.Supplier;
 
 public class LimelightVisionAprilTag3D implements VisionAprilTag3DProcessor {
     private final String limelightName;
-    private final VisionAprilTagSettings mode;
+    private final VisionAprilTagSettings.VisionAprilTagSettings mode;
     private final Supplier<Rotation2d> drivetrainRotation;
 
     private final VisionAprilTagTracker aprilTagRecorder = new VisionAprilTagTracker();
@@ -29,7 +28,7 @@ public class LimelightVisionAprilTag3D implements VisionAprilTag3DProcessor {
             String limelightName,
             Transform3d robotToCameraTransform,
             Supplier<Rotation2d> drivetrainRotation,
-            VisionAprilTagSettings mode) {
+            VisionAprilTagSettings.VisionAprilTagSettings mode) {
         this.limelightName = limelightName;
         this.drivetrainRotation = drivetrainRotation;
         this.mode = mode;
@@ -80,7 +79,7 @@ public class LimelightVisionAprilTag3D implements VisionAprilTag3DProcessor {
                 limelightName, drivetrainRotation.get().getDegrees(), 0, 0, 0, 0, 0);
 
 
-        if (mode.hasEnabledAll(VisionAprilTagSettingsConfigurator.VisionAprilTagFeature.BEST_DETECTION)) {
+        if (mode.hasEnabledAll(VisionAprilTagSettings.VisionAprilTagFeature.BEST_DETECTION)) {
             TimestampedDoubleArray tagEntry = LimelightHelpers.getLimelightDoubleArrayEntry(
                             limelightName, "targetpose_robotspace")
                     .getAtomic();
@@ -93,7 +92,7 @@ public class LimelightVisionAprilTag3D implements VisionAprilTag3DProcessor {
             }
         }
 
-        if (mode.hasEnabledAll(VisionAprilTagSettingsConfigurator.VisionAprilTagFeature.ALL_DETECTIONS)) {
+        if (mode.hasEnabledAll(VisionAprilTagSettings.VisionAprilTagFeature.ALL_DETECTIONS)) {
             LimelightHelpers.LimelightResults results = LimelightDataParsingHelper.getResults(limelightName);
 
             if (!results.valid || results.targets_Fiducials.length == 0) return;
@@ -117,7 +116,7 @@ public class LimelightVisionAprilTag3D implements VisionAprilTag3DProcessor {
     }
 
     @Override
-    public VisionAprilTagSettings getSettings() {
+    public VisionAprilTagSettings.VisionAprilTagSettings getSettings() {
         return mode;
     }
 }

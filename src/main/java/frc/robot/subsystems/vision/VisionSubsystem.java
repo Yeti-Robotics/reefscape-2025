@@ -9,12 +9,8 @@ import frc.robot.subsystems.vision.data.VisionRobotPose;
 import frc.robot.subsystems.vision.data.VisionTimestampedResult;
 import frc.robot.subsystems.vision.data.apriltag.VisionAprilTag3D;
 import frc.robot.subsystems.vision.data.apriltag.VisionAprilTagTracker;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagFeature;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator.VisionAprilTagSettings;
-import frc.robot.subsystems.vision.io.api.VisionHandle;
-import frc.robot.subsystems.vision.io.api.VisionHandleBuilder;
-import frc.robot.subsystems.vision.io.api.VisionProcessorManager;
-import frc.robot.subsystems.vision.io.api.VisionProcessorType;
+import frc.robot.subsystems.vision.io.api.*;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettings.VisionAprilTagFeature;
 import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
 import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
@@ -54,7 +50,6 @@ public class VisionSubsystem extends SubsystemBase {
                 .isPresent();
     }
 
-    @SuppressWarnings("unchecked")
     public void addVisionHandle(VisionHandle... handles) {
         for (VisionHandle handle : handles) {
             visionHandles.put(handle.identifier(), handle);

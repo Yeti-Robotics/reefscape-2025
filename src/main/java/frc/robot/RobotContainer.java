@@ -30,10 +30,8 @@ import frc.robot.subsystems.vision.VisionCameraID;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.data.VisionData;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.api.VisionHandle;
-import frc.robot.subsystems.vision.io.api.VisionProcessorType;
-import frc.robot.subsystems.vision.io.impl.limelight.LimelightHandle;
 import frc.robot.subsystems.vision.io.impl.photon.sim.PhotonVisionAprilTagSimulator;
 
 import java.util.Optional;
@@ -88,7 +86,7 @@ public class RobotContainer {
                                 Units.inchesToMeters(10),
                                 Units.inchesToMeters(11)),
                         new Rotation3d(0, Math.toRadians(-15), Math.toRadians(90))))
-                .addAprilTagProcessor(VisionAprilTagSettingsConfigurator.defaultSettingsConfig().enable(VisionAprilTagSettingsConfigurator.VisionAprilTagFeature.ALL_DETECTIONS))
+                .addAprilTagProcessor(VisionAprilTagSettings.defaultSettingsConfig().enable(VisionAprilTagSettings.VisionAprilTagFeature.ALL_DETECTIONS))
                 .build();
 
         // TODO: figure out actual transform

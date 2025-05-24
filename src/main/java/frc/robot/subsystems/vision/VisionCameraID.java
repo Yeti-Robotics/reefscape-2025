@@ -34,7 +34,7 @@ public abstract class VisionCameraID<T extends VisionHandle, B extends VisionHan
     public final String cameraName;
     public final VisionType visionType;
 
-    public VisionCameraID(String cameraName, VisionType visionType) {
+    protected VisionCameraID(String cameraName, VisionType visionType) {
         this.cameraName = cameraName;
         this.visionType = visionType;
     }

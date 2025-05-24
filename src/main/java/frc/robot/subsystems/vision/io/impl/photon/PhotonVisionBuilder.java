@@ -4,8 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.Robot;
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagSettingsConfigurator;
-import frc.robot.subsystems.vision.io.api.VisionHandle;
+import frc.robot.subsystems.vision.io.api.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.api.VisionProcessorManager;
 import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
 import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
@@ -63,7 +62,7 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<Phot
     }
 
     @Override
-    protected VisionAprilTag3DProcessor createAprilTagProcessor(VisionAprilTagSettingsConfigurator.VisionAprilTagSettings aprilTagMode) {
+    protected VisionAprilTag3DProcessor createAprilTagProcessor(VisionAprilTagSettings.VisionAprilTagSettings aprilTagMode) {
         return new PhotonVisionAprilTag3D(
                 photonCamera,
                 robotToCameraTransform,

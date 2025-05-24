@@ -136,7 +136,7 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B 
      * @return The created processor
      */
     protected abstract VisionAprilTag3DProcessor createAprilTagProcessor(
-            VisionAprilTagSettingsConfigurator.VisionAprilTagSettings aprilTagMode);
+            VisionAprilTagSettings.VisionAprilTagSettings aprilTagMode);
 
     /**
      * Creates a neural network processor for the current camera type.
