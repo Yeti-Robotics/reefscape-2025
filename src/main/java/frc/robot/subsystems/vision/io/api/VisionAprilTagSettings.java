@@ -1,29 +1,22 @@
 package frc.robot.subsystems.vision.io.api;
 
-import java.util.EnumSet;
-
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.Objects;
 import java.util.Set;
 
-import static sun.tools.jconsole.Messages.BLANK;
-
 public final class VisionAprilTagSettings {
-
     public enum VisionAprilTagFeature {
         LOCALIZATION,
         BEST_DETECTION,
         ALL_DETECTIONS,
     }
 
-    // === Singleton instances for shared default and blank configs ===
-    private static final VisionAprilTagSettings DEFAULT = new VisionAprilTagSettings(EnumSet.of(
+    public static final VisionAprilTagSettings DEFAULT = new VisionAprilTagSettings(EnumSet.of(
             VisionAprilTagFeature.LOCALIZATION,
             VisionAprilTagFeature.BEST_DETECTION
     ));
 
-    private static final VisionAprilTagSettings OFF = new VisionAprilTagSettings(EnumSet.noneOf(VisionAprilTagFeature.class));
+    public static final VisionAprilTagSettings OFF = new VisionAprilTagSettings(EnumSet.noneOf(VisionAprilTagFeature.class));
 
     private final Set<VisionAprilTagFeature> features;
 

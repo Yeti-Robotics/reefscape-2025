@@ -86,7 +86,7 @@ public class RobotContainer {
                                 Units.inchesToMeters(10),
                                 Units.inchesToMeters(11)),
                         new Rotation3d(0, Math.toRadians(-15), Math.toRadians(90))))
-                .addAprilTagProcessor(VisionAprilTagSettings.defaultSettingsConfig().enable(VisionAprilTagSettings.VisionAprilTagFeature.ALL_DETECTIONS))
+                .addAprilTagProcessor(VisionAprilTagSettings.DEFAULT.enable(VisionAprilTagSettings.VisionAprilTagFeature.ALL_DETECTIONS))
                 .build();
 
         // TODO: figure out actual transform

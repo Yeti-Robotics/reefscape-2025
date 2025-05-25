@@ -62,7 +62,7 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<Phot
     }
 
     @Override
-    protected VisionAprilTag3DProcessor createAprilTagProcessor(VisionAprilTagSettings.VisionAprilTagSettings aprilTagMode) {
+    protected VisionAprilTag3DProcessor createAprilTagProcessor(VisionAprilTagSettings aprilTagMode) {
         return new PhotonVisionAprilTag3D(
                 photonCamera,
                 robotToCameraTransform,

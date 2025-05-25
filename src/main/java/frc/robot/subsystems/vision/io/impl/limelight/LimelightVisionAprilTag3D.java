@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 
 public class LimelightVisionAprilTag3D implements VisionAprilTag3DProcessor {
     private final String limelightName;
-    private final VisionAprilTagSettings.VisionAprilTagSettings mode;
+    private final VisionAprilTagSettings mode;
     private final Supplier<Rotation2d> drivetrainRotation;
 
     private final VisionAprilTagTracker aprilTagRecorder = new VisionAprilTagTracker();
@@ -28,7 +28,7 @@ public class LimelightVisionAprilTag3D implements VisionAprilTag3DProcessor {
             String limelightName,
             Transform3d robotToCameraTransform,
             Supplier<Rotation2d> drivetrainRotation,
-            VisionAprilTagSettings.VisionAprilTagSettings mode) {
+            VisionAprilTagSettings mode) {
         this.limelightName = limelightName;
         this.drivetrainRotation = drivetrainRotation;
         this.mode = mode;
@@ -116,7 +116,7 @@ public class LimelightVisionAprilTag3D implements VisionAprilTag3DProcessor {
     }
 
     @Override
-    public VisionAprilTagSettings.VisionAprilTagSettings getSettings() {
+    public VisionAprilTagSettings getSettings() {
         return mode;
     }
 }

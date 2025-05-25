@@ -34,17 +34,17 @@ public abstract class AbstractIndexedVisionHandleBuilder<H extends VisionHandle,
      */
     public B addAprilTagProcessor(
             VisionAprilTagSettings aprilTagMode) {
-        return addProcessor(VisionProcessorType.APRILTAG_3D, createAprilTagProcessor(aprilTagMode.toSettings()));
+        return addProcessor(VisionProcessorType.APRILTAG_3D, createAprilTagProcessor(aprilTagMode));
     }
 
     /**
      * Adds an AprilTag processor to the vision handle.
-     * This uses the default settings specified in {@link VisionAprilTagSettings#defaultSettingsConfig()}
+     * This uses the default settings specified in {@link VisionAprilTagSettings#DEFAULT}
      *
      * @return This builder for chaining
      */
     public B addAprilTagProcessor() {
-        return addAprilTagProcessor(VisionAprilTagSettings.defaultSettingsConfig());
+        return addAprilTagProcessor(VisionAprilTagSettings.DEFAULT);
     }
 
     /**
