@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
-public abstract class AbstractStateSubsystem<T, H extends StatefulIO<T>> {
+public abstract class AbstractStateSubsystem<T, H extends StateIO<T>> {
     protected final H io;
 
     public AbstractStateSubsystem(H io) {

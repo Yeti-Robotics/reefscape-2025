@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public abstract class AbstractSetpointStateSubsystem<T, E extends SetpointProvider<T>, H extends StatefulIO<T>>
+public abstract class AbstractSetpointStateSubsystem<T, E extends SetpointProvider<T>, H extends StateIO<T>>
         extends SubsystemBase {
     private E targetState;
     protected final H io;
@@ -28,7 +28,7 @@ public abstract class AbstractSetpointStateSubsystem<T, E extends SetpointProvid
     }
 
     public boolean isNear(E setpoint, T tolerance) {
-        return setpoint.isNear(setpoint.getSetpoint(), tolerance);
+        return setpoint.isNear(io.getState(), tolerance);
     }
 
     public boolean reachedTargetState() {
