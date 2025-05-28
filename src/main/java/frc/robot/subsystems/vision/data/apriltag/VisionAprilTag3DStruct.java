@@ -1,8 +1,7 @@
-package frc.robot.subsystems.vision.data.apriltag.struct;
+package frc.robot.subsystems.vision.data.apriltag;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.struct.Struct;
-import frc.robot.subsystems.vision.data.apriltag.VisionAprilTag3D;
 
 import java.nio.ByteBuffer;
 

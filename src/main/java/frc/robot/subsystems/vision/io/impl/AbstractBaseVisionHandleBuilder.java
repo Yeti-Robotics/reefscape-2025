@@ -8,6 +8,7 @@ import frc.robot.subsystems.vision.io.api.processor.*;
 import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTag3DProcessor;
 import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.impl.pipeline.PipelineManager;
+import frc.robot.subsystems.vision.io.impl.pipeline.PipelineProcessor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,7 @@ import java.util.function.Supplier;
  * This class provides common functionality for all vision handle builders.
  */
 public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B extends VisionHandleBuilder, I> implements VisionHandleBuilder {
-    public static class VisionProcessorData<T extends VisionProcessor, I> {
+    public static class VisionProcessorData<T extends VisionProcessor, I> implements PipelineProcessor<T, I> {
         protected final T processor;
         protected I pipelineID;
 
@@ -32,12 +33,18 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B 
             this.pipelineID = null;
         }
 
-        protected I getPipelineID() {
-            return pipelineID;
+        void setPipelineID(I pipelineID) {
+            this.pipelineID = pipelineID;
         }
 
-        protected void setPipelineID(I pipelineID) {
-            this.pipelineID = pipelineID;
+        @Override
+        public T getProcessor() {
+            return processor;
+        }
+
+        @Override
+        public I getPipelineIdentifier() {
+            return pipelineID;
         }
     }
 
@@ -45,7 +52,7 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B 
     protected final Supplier<Rotation2d> drivetrainRotation;
     protected final Transform3d robotToCameraTransform;
     protected VisionProcessorType<? extends VisionProcessor> mainProcessorType;
-    protected final Map<VisionProcessorType<? extends VisionProcessor>, VisionProcessorData<? extends VisionProcessor, I>> registeredProcessors = new HashMap<>();
+    private final Map<VisionProcessorType<? extends VisionProcessor>, VisionProcessorData<? extends VisionProcessor, I>> registeredProcessors = new HashMap<>();
 
     /**
      * Creates a new vision handle builder for a predefined camera ID.
@@ -84,6 +91,14 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B 
         return getThis();
     }
 
+    public B addAprilTagProcessor(I identifier, VisionAprilTagSettings settings) {
+        return addProcessor(VisionProcessorType.APRILTAG_3D, createAprilTagProcessor(settings), identifier);
+    }
+
+    public B addNNProcessor(I identifier, String[] classNames) {
+        return addProcessor(VisionProcessorType.NN, createNNProcessor(classNames), identifier);
+    }
+
     public <T extends VisionProcessor> B setPipelineID(
             VisionProcessorType<T> processorType, I pipelineID) {
         registeredProcessors.computeIfPresent(processorType,
@@ -100,7 +115,8 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B 
         return getThis();
     }
 
-    protected VisionProcessorManager makeProcessorManager() {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    protected VisionProcessorManager createProcessorManager() {
         if (registeredProcessors.isEmpty()) {
             throw new IllegalStateException("No vision processors were added to the vision handle builder!");
         } else if (registeredProcessors.size() == 1) {
@@ -109,8 +125,11 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B 
 
             return new DefaultSingleProcessorManager<>(singleProcessorData.getKey(), singleProcessorData.getValue().processor);
         } else {
+            Map<VisionProcessorType<? extends VisionProcessor>, PipelineProcessor<? extends VisionProcessor, I>> processorMap =
+                    (Map<VisionProcessorType<? extends VisionProcessor>, PipelineProcessor<? extends VisionProcessor, I>>) (Map) registeredProcessors;
+
             return new DefaultMultiProcessorManager<>(
-                    registeredProcessors,
+                    processorMap,
                     createPipelineManager(),
                     mainProcessorType
             );
@@ -120,7 +139,7 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B 
 
     @Override
     public H build() {
-        return buildWithManager(makeProcessorManager());
+        return buildWithManager(createProcessorManager());
     }
 
     protected abstract B getThis();

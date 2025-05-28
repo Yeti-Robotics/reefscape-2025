@@ -3,7 +3,6 @@ package frc.robot.subsystems.vision.data.apriltag;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.struct.StructSerializable;
 import frc.robot.subsystems.vision.data.VisionTimestampedResult;
-import frc.robot.subsystems.vision.data.apriltag.struct.VisionAprilTag3DStruct;
 
 public class VisionAprilTag3D implements VisionTimestampedResult, StructSerializable {
     public Pose2d robotToTargetPose;

@@ -67,6 +67,7 @@ public class VisionAprilTagTracker implements LoggableInputs, Iterable<VisionApr
         }
 
         table.put(TAGS_KEY, VisionAprilTag3D.struct, loggedTags);
+        tagUnreadBitset.clear();
     }
 
     @Override

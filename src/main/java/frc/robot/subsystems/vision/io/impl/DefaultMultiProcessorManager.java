@@ -4,6 +4,7 @@ import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessorManager;
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessorType;
 import frc.robot.subsystems.vision.io.impl.pipeline.PipelineManager;
+import frc.robot.subsystems.vision.io.impl.pipeline.PipelineProcessor;
 
 import java.util.Map;
 import java.util.Optional;
@@ -16,10 +17,10 @@ public class DefaultMultiProcessorManager<I> implements VisionProcessorManager {
     protected VisionProcessorType<? extends VisionProcessor> currentProcessor;
     protected VisionProcessorType<? extends VisionProcessor> queuedProcessor;
 
-    protected final Map<VisionProcessorType<? extends VisionProcessor>, AbstractBaseVisionHandleBuilder.VisionProcessorData<? extends VisionProcessor, I>> processorMap;
+    protected final Map<VisionProcessorType<? extends VisionProcessor>, PipelineProcessor<? extends VisionProcessor, I>> processorMap;
     protected final PipelineManager<I> pipelineManager;
 
-    public DefaultMultiProcessorManager(Map<VisionProcessorType<? extends VisionProcessor>, AbstractBaseVisionHandleBuilder.VisionProcessorData<? extends VisionProcessor, I>> processorMap,
+    public DefaultMultiProcessorManager(Map<VisionProcessorType<? extends VisionProcessor>, PipelineProcessor<? extends VisionProcessor, I>> processorMap,
                                         PipelineManager<I> pipelineManager,
                                         VisionProcessorType<? extends VisionProcessor> initialProcessor) {
         this.currentProcessor = initialProcessor;
@@ -29,11 +30,11 @@ public class DefaultMultiProcessorManager<I> implements VisionProcessorManager {
 
     @Override
     public boolean setCurrentProcessor(VisionProcessorType<? extends VisionProcessor> processorType) {
-        AbstractBaseVisionHandleBuilder.VisionProcessorData<? extends VisionProcessor, I> visionProcessorInfo = processorMap.get(processorType);
+        PipelineProcessor<? extends VisionProcessor, I> visionProcessorInfo = processorMap.get(processorType);
 
-        if (visionProcessorInfo == null || visionProcessorInfo.getPipelineID() == null) return false;
+        if (visionProcessorInfo == null || visionProcessorInfo.getPipelineIdentifier() == null) return false;
 
-        pipelineManager.setPipeline(visionProcessorInfo.getPipelineID());
+        pipelineManager.setPipeline(visionProcessorInfo.getPipelineIdentifier());
         queuedProcessor = processorType;
         return true;
     }
@@ -41,11 +42,10 @@ public class DefaultMultiProcessorManager<I> implements VisionProcessorManager {
     @SuppressWarnings("unchecked")
     @Override
     public <T extends VisionProcessor> Optional<T> getProcessor(VisionProcessorType<T> processorType) {
-        AbstractBaseVisionHandleBuilder.VisionProcessorData<T, I> visionProcessor = (AbstractBaseVisionHandleBuilder.VisionProcessorData<T, I>)
-                processorMap.get(processorType);
+        PipelineProcessor<T, I> visionProcessor = (PipelineProcessor<T, I>) processorMap.get(processorType);
 
         if (visionProcessor != null) {
-            return Optional.of(visionProcessor.processor);
+            return Optional.of(visionProcessor.getProcessor());
         }
 
         return Optional.empty();
@@ -59,9 +59,9 @@ public class DefaultMultiProcessorManager<I> implements VisionProcessorManager {
     @Override
     public VisionProcessorType<? extends VisionProcessor> activeVisionProcessorType() {
         if (queuedProcessor != null) {
-            AbstractBaseVisionHandleBuilder.VisionProcessorData<? extends VisionProcessor, I> visionProcessorData = processorMap.get(queuedProcessor);
+            PipelineProcessor<? extends VisionProcessor, I> visionProcessorData = processorMap.get(queuedProcessor);
 
-            if (visionProcessorData != null && visionProcessorData.getPipelineID().equals(pipelineManager.getPipeline())) {
+            if (visionProcessorData != null && visionProcessorData.getPipelineIdentifier().equals(pipelineManager.getPipeline())) {
                 currentProcessor = queuedProcessor;
                 queuedProcessor = null;
             }

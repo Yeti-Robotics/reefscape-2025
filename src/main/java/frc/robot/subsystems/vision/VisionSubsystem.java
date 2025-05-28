@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.util.struct.StructGenerator;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.data.VisionData;
 import frc.robot.subsystems.vision.data.VisionNNDetection;
@@ -42,7 +43,7 @@ public class VisionSubsystem extends SubsystemBase {
                                                            Transform3d robotToCameraTransform,
                                                            VisionCameraID.VisionType type) {
         if (cameraID.visionType != type) {
-            throw new IllegalArgumentException("Vision camera " + cameraID.visionType + " is not a " + type + " camera");
+            throw new IllegalArgumentException("Camera " + cameraID.cameraName + " of type " + cameraID.visionType + " is not a " + type + " camera");
         }
 
         return supplier.createBuilder(cameraID, drivetrainRotation, robotToCameraTransform);
@@ -57,7 +58,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public Optional<VisionData<VisionRobotPose>> pollVisionPoseUpdate() {
-        Map.Entry<Double, VisionData<VisionRobotPose>> entry = visionPoses.pollFirstEntry();
+        Map.Entry<Double, VisionData<VisionRobotPose>> entry = visionPoses.pollLastEntry();
         return entry == null ? Optional.empty() : Optional.of(entry.getValue());
     }
 
@@ -87,6 +88,8 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         for (VisionHandle handle : visionHandles.values()) {
+            VisionLog.logHandle(handle);
+
             VisionProcessorManager processorManager = handle.vision();
 
             if (processorManager.activeVisionProcessorType() == VisionProcessorType.APRILTAG_3D) {
@@ -99,6 +102,8 @@ public class VisionSubsystem extends SubsystemBase {
                     if (settings.hasEnabledAll(VisionAprilTagFeature.LOCALIZATION)) {
                         populateMap(visionPoses, visionAprilTag3DProcessor.getRobotPoseObservation(), handle.identifier());
                     }
+
+                    VisionLog.logProcessor(handle, visionAprilTag3DProcessor);
                 }
             } else if (processorManager.activeVisionProcessorType() == VisionProcessorType.NN) {
                 Optional<VisionNNProcessor> nnProcessor = fetchProcessorForHandle(handle, VisionProcessorType.NN);
@@ -109,6 +114,8 @@ public class VisionSubsystem extends SubsystemBase {
                     if (nnDetectionsMap != null) {
                         populateMap(nnDetectionsMap, visionNNProcessor.getLatestNNDetections(), handle.identifier());
                     }
+
+                    VisionLog.logProcessor(handle, visionNNProcessor);
                 }
             }
         }

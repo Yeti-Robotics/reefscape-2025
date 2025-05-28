@@ -86,7 +86,7 @@ public class RobotContainer {
                                 Units.inchesToMeters(10),
                                 Units.inchesToMeters(11)),
                         new Rotation3d(0, Math.toRadians(-15), Math.toRadians(90))))
-                .addAprilTagProcessor(VisionAprilTagSettings.DEFAULT.enable(VisionAprilTagSettings.VisionAprilTagFeature.ALL_DETECTIONS))
+                .addAprilTagProcessor()
                 .build();
 
         // TODO: figure out actual transform
@@ -99,7 +99,7 @@ public class RobotContainer {
                 .addAprilTagProcessor()
                 .build();
 
-        visionSubsystem.addVisionHandle( scoreCam);
+        visionSubsystem.addVisionHandle(radioCam, scoreCam);
 
         if (!Robot.isSimulation()) {
             visionSubsystem.addVisionHandle(belugaLimelight);
