@@ -8,10 +8,10 @@ import frc.robot.subsystems.vision.io.api.processor.*;
 import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTag3DProcessor;
 import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.impl.pipeline.PipelineManager;
-import frc.robot.subsystems.vision.io.impl.pipeline.PipelineProcessor;
+import frc.robot.subsystems.vision.io.impl.pipeline.PipelineProcessorRegistry;
+import frc.robot.subsystems.vision.io.impl.pipeline.PipelineProcessorRegistryImpl;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -19,40 +19,11 @@ import java.util.function.Supplier;
  * This class provides common functionality for all vision handle builders.
  */
 public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B extends VisionHandleBuilder, I> implements VisionHandleBuilder {
-    public static class VisionProcessorData<T extends VisionProcessor, I> implements PipelineProcessor<T, I> {
-        protected final T processor;
-        protected I pipelineID;
-
-        protected VisionProcessorData(T processor, I pipelineID) {
-            this.processor = processor;
-            this.pipelineID = pipelineID;
-        }
-
-        protected VisionProcessorData(T processor) {
-            this.processor = processor;
-            this.pipelineID = null;
-        }
-
-        void setPipelineID(I pipelineID) {
-            this.pipelineID = pipelineID;
-        }
-
-        @Override
-        public T getProcessor() {
-            return processor;
-        }
-
-        @Override
-        public I getPipelineIdentifier() {
-            return pipelineID;
-        }
-    }
-
     protected final VisionCameraID cameraID;
     protected final Supplier<Rotation2d> drivetrainRotation;
     protected final Transform3d robotToCameraTransform;
     protected VisionProcessorType<? extends VisionProcessor> mainProcessorType;
-    protected final Map<VisionProcessorType<? extends VisionProcessor>, VisionProcessorData<? extends VisionProcessor, I>> registeredProcessors = new HashMap<>();
+    protected final PipelineProcessorRegistry<I> registeredProcessors = new PipelineProcessorRegistryImpl<>();
 
     /**
      * Creates a new vision handle builder for a predefined camera ID.
@@ -84,59 +55,41 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B 
             mainProcessorType = processorType;
         }
 
-        if (!registeredProcessors.containsKey(processorType)) {
-            registeredProcessors.put(processorType, new VisionProcessorData<>(processor, identifier));
-        }
+        registeredProcessors.addPipeline(processorType, identifier, processor);
 
         return getThis();
     }
 
-    public B addAprilTagProcessor(I identifier, VisionAprilTagSettings settings) {
-        return addProcessor(VisionProcessorType.APRILTAG_3D, createAprilTagProcessor(settings), identifier);
+    public B addAprilTagProcessor(I pipelineID, VisionAprilTagSettings settings) {
+        return addProcessor(VisionProcessorType.APRILTAG_3D, createAprilTagProcessor(settings), pipelineID);
     }
 
-    public B addNNProcessor(I identifier, String[] classNames) {
-        return addProcessor(VisionProcessorType.NN, createNNProcessor(classNames), identifier);
-    }
-
-    public <T extends VisionProcessor> B setPipelineID(
-            VisionProcessorType<T> processorType, I pipelineID) {
-        // TODO: find more robust solution
-        if (registeredProcessors.values().stream().anyMatch(
-                v-> v.getPipelineIdentifier()
-        .equals(pipelineID))) {
-            throw new IllegalArgumentException("Duplicate pipeline identifier found");
-        }
-
-        registeredProcessors.computeIfPresent(processorType,
-                (_k, v) -> {
-                    v.setPipelineID(pipelineID);
-                    return v;
-                });
-
-        return getThis();
+    public B addNNProcessor(I pipelineID, String[] classNames) {
+        return addProcessor(VisionProcessorType.NN, createNNProcessor(classNames), pipelineID);
     }
 
     public <T extends VisionProcessor> B setDefaultProcessor(VisionProcessorType<T> processorType) {
-        mainProcessorType = processorType;
+        if (processorType != null && registeredProcessors.hasProcessor(processorType)) {
+            mainProcessorType = processorType;
+        }
+
         return getThis();
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     protected VisionProcessorManager createProcessorManager() {
-        if (registeredProcessors.isEmpty()) {
+        if (registeredProcessors.pipelineCount() == 0) {
             throw new IllegalStateException("No vision processors were added to the vision handle builder!");
-        } else if (registeredProcessors.size() == 1) {
-            Map.Entry<VisionProcessorType<? extends VisionProcessor>, VisionProcessorData<? extends VisionProcessor, I>> singleProcessorData =
-                    registeredProcessors.entrySet().iterator().next();
+        } else if (registeredProcessors.pipelineCount() == 1) {
+            Optional<? extends VisionProcessor> visionProcessor = registeredProcessors.getProcessor(mainProcessorType);
 
-            return new DefaultSingleProcessorManager<>(singleProcessorData.getKey(), singleProcessorData.getValue().processor);
+            if (visionProcessor.isEmpty()) {
+                throw new IllegalStateException("Processor for " + mainProcessorType + " is not registered!");
+            }
+
+            return new DefaultSingleProcessorManager<>(mainProcessorType, visionProcessor.get());
         } else {
-            Map<VisionProcessorType<? extends VisionProcessor>, PipelineProcessor<? extends VisionProcessor, I>> processorMap =
-                    (Map<VisionProcessorType<? extends VisionProcessor>, PipelineProcessor<? extends VisionProcessor, I>>) (Map) registeredProcessors;
-
             return new DefaultMultiProcessorManager<>(
-                    processorMap,
+                    registeredProcessors,
                     createPipelineManager(),
                     mainProcessorType
             );

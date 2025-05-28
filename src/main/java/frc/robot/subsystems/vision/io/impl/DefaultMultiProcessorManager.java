@@ -4,9 +4,8 @@ import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessorManager;
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessorType;
 import frc.robot.subsystems.vision.io.impl.pipeline.PipelineManager;
-import frc.robot.subsystems.vision.io.impl.pipeline.PipelineProcessor;
+import frc.robot.subsystems.vision.io.impl.pipeline.PipelineProcessorRegistry;
 
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -17,53 +16,53 @@ public class DefaultMultiProcessorManager<I> implements VisionProcessorManager {
     protected VisionProcessorType<? extends VisionProcessor> currentProcessor;
     protected VisionProcessorType<? extends VisionProcessor> queuedProcessor;
 
-    protected final Map<VisionProcessorType<? extends VisionProcessor>, PipelineProcessor<? extends VisionProcessor, I>> processorMap;
-    protected final PipelineManager<I> pipelineManager;
+    protected final PipelineProcessorRegistry<I> pipelineProcessorRegistry;
+    protected final PipelineManager<I> pipelineSwitcher;
 
-    public DefaultMultiProcessorManager(Map<VisionProcessorType<? extends VisionProcessor>, PipelineProcessor<? extends VisionProcessor, I>> processorMap,
+    public DefaultMultiProcessorManager(PipelineProcessorRegistry<I> pipelineProcessorRegistry,
                                         PipelineManager<I> pipelineManager,
                                         VisionProcessorType<? extends VisionProcessor> initialProcessor) {
         this.currentProcessor = initialProcessor;
-        this.processorMap = processorMap;
-        this.pipelineManager = pipelineManager;
+        this.pipelineProcessorRegistry = pipelineProcessorRegistry;
+        this.pipelineSwitcher = pipelineManager;
     }
 
     @Override
     public boolean setCurrentProcessor(VisionProcessorType<? extends VisionProcessor> processorType) {
-        PipelineProcessor<? extends VisionProcessor, I> visionProcessorInfo = processorMap.get(processorType);
+        Optional<I> identifierOpt = pipelineProcessorRegistry.getPipelineID(processorType);
 
-        if (visionProcessorInfo == null || visionProcessorInfo.getPipelineIdentifier() == null) return false;
+        if (identifierOpt.isPresent()) {
+            I identifier = identifierOpt.get();
+            pipelineSwitcher.setPipeline(identifier);
+            queuedProcessor = processorType;
+            return true;
+        }
 
-        pipelineManager.setPipeline(visionProcessorInfo.getPipelineIdentifier());
-        queuedProcessor = processorType;
         return true;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T extends VisionProcessor> Optional<T> getProcessor(VisionProcessorType<T> processorType) {
-        PipelineProcessor<T, I> visionProcessor = (PipelineProcessor<T, I>) processorMap.get(processorType);
-
-        if (visionProcessor != null) {
-            return Optional.of(visionProcessor.getProcessor());
-        }
-
-        return Optional.empty();
+        return pipelineProcessorRegistry.getProcessor(processorType);
     }
 
     @Override
     public boolean hasProcessor(VisionProcessorType<? extends VisionProcessor> processorType) {
-        return processorMap.containsKey(processorType);
+        return pipelineProcessorRegistry.hasProcessor(processorType);
     }
 
     @Override
     public VisionProcessorType<? extends VisionProcessor> activeVisionProcessorType() {
         if (queuedProcessor != null) {
-            PipelineProcessor<? extends VisionProcessor, I> visionProcessorData = processorMap.get(queuedProcessor);
+            Optional<I> identifierOpt = pipelineProcessorRegistry.getPipelineID(queuedProcessor);
 
-            if (visionProcessorData != null && visionProcessorData.getPipelineIdentifier().equals(pipelineManager.getPipeline())) {
-                currentProcessor = queuedProcessor;
-                queuedProcessor = null;
+            if (identifierOpt.isPresent()) {
+                I identifier = identifierOpt.get();
+
+                if (pipelineSwitcher.getPipeline().equals(identifier)) {
+                    currentProcessor = queuedProcessor;
+                    queuedProcessor = null;
+                }
             }
         }
 
