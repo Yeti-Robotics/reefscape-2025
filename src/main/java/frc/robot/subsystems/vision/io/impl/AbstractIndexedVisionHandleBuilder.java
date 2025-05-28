@@ -12,8 +12,9 @@ import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
 import java.util.function.Supplier;
 
 public abstract class AbstractIndexedVisionHandleBuilder<H extends VisionHandle, B extends VisionHandleBuilder> extends AbstractBaseVisionHandleBuilder<H, B, Integer> {
+    private static final int MAX_PIPELINE_INDEX = 10;
     private int pipelineIndex = 0;
-
+  
     /**
      * Creates a new vision handle builder for a predefined camera ID.
      *
@@ -69,6 +70,7 @@ public abstract class AbstractIndexedVisionHandleBuilder<H extends VisionHandle,
             VisionProcessorType<T> processorType, T processor) {
         addProcessor(processorType, processor, pipelineIndex);
         pipelineIndex++;
+        while (registeredProcessors.containsKey(pipelineIndex) && pipelineIndex < MAX_PIPELINE_INDEX) pipelineIndex++;
         return getThis();
     }
 }
