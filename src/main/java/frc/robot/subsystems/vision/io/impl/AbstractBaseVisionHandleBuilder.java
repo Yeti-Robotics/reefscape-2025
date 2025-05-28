@@ -101,6 +101,13 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B 
 
     public <T extends VisionProcessor> B setPipelineID(
             VisionProcessorType<T> processorType, I pipelineID) {
+        // TODO: find more robust solution
+        if (registeredProcessors.values().stream().anyMatch(
+                v-> v.getPipelineIdentifier()
+        .equals(pipelineID))) {
+            throw new IllegalArgumentException("Duplicate pipeline identifier found");
+        }
+
         registeredProcessors.computeIfPresent(processorType,
                 (_k, v) -> {
                     v.setPipelineID(pipelineID);

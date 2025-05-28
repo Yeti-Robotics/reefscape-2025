@@ -69,8 +69,10 @@ public abstract class AbstractIndexedVisionHandleBuilder<H extends VisionHandle,
     protected <T extends VisionProcessor> B addProcessor(
             VisionProcessorType<T> processorType, T processor) {
         addProcessor(processorType, processor, pipelineIndex);
-        pipelineIndex++;
-        while (registeredProcessors.containsKey(pipelineIndex) && pipelineIndex < MAX_PIPELINE_INDEX) pipelineIndex++;
+        do pipelineIndex++;
+        while (registeredProcessors.values().stream().anyMatch(
+                v-> v.getPipelineIdentifier()
+                        .equals(pipelineIndex)) && pipelineIndex < MAX_PIPELINE_INDEX);
         return getThis();
     }
 }
