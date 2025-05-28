@@ -3,10 +3,10 @@ package frc.robot.subsystems.vision.io.impl;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagSettings;
+import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.api.VisionHandle;
 import frc.robot.subsystems.vision.io.api.VisionHandleBuilder;
-import frc.robot.subsystems.vision.io.api.VisionProcessorType;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessorType;
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
 
 import java.util.function.Supplier;
@@ -21,7 +21,7 @@ public abstract class AbstractIndexedVisionHandleBuilder<H extends VisionHandle,
      * @param drivetrainRotation     Supplier for the drivetrain rotation
      * @param robotToCameraTransform The transform from robot to camera
      */
-    public AbstractIndexedVisionHandleBuilder(VisionCameraID<H, B> cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
+    public AbstractIndexedVisionHandleBuilder(VisionCameraID cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
         super(cameraID, drivetrainRotation, robotToCameraTransform);
     }
 

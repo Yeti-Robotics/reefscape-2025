@@ -2,7 +2,7 @@ package frc.robot.subsystems.vision.io.impl;
 
 import frc.robot.subsystems.vision.VisionCameraID;
 import frc.robot.subsystems.vision.io.api.VisionHandle;
-import frc.robot.subsystems.vision.io.api.VisionProcessorManager;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessorManager;
 
 public abstract class AbstractVisionHandle implements VisionHandle {
     protected final VisionCameraID cameraID;

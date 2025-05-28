@@ -1,7 +1,5 @@
 package frc.robot.subsystems.vision.io.api.processor;
 
-import frc.robot.subsystems.vision.io.api.VisionProcessorType;
-
 import java.util.Collection;
 import java.util.Optional;
 

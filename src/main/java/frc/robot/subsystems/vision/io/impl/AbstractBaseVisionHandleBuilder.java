@@ -4,9 +4,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionCameraID;
 import frc.robot.subsystems.vision.io.api.*;
-import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
-import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
-import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
+import frc.robot.subsystems.vision.io.api.processor.*;
+import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTag3DProcessor;
+import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.impl.pipeline.PipelineManager;
 
 import java.util.HashMap;
@@ -41,7 +41,7 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B 
         }
     }
 
-    protected final VisionCameraID<H, B> cameraID;
+    protected final VisionCameraID cameraID;
     protected final Supplier<Rotation2d> drivetrainRotation;
     protected final Transform3d robotToCameraTransform;
     protected VisionProcessorType<? extends VisionProcessor> mainProcessorType;
@@ -55,7 +55,7 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B 
      * @param robotToCameraTransform The transform from robot to camera
      */
     public AbstractBaseVisionHandleBuilder(
-            VisionCameraID<H, B> cameraID,
+            VisionCameraID cameraID,
             Supplier<Rotation2d> drivetrainRotation,
             Transform3d robotToCameraTransform) {
         this.cameraID = cameraID;

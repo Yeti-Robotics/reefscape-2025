@@ -1,8 +1,6 @@
-package frc.robot.subsystems.vision.io.api;
+package frc.robot.subsystems.vision.io.api.processor;
 
-import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
-import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
-import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
+import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTag3DProcessor;
 
 public class VisionProcessorType<T extends VisionProcessor> {
     public static final VisionProcessorType<VisionAprilTag3DProcessor> APRILTAG_3D =

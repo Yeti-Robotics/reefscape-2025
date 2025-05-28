@@ -2,7 +2,7 @@ package frc.robot.subsystems.vision.io.impl.limelight;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.api.VisionProcessorManager;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessorManager;
 import frc.robot.subsystems.vision.io.impl.AbstractVisionHandle;
 import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightHelpers;
 
@@ -15,7 +15,7 @@ public class LimelightHandle extends AbstractVisionHandle {
 
     private final String cameraName;
 
-    public LimelightHandle(VisionCameraID<LimelightHandle, LimelightBuilder> cameraID, VisionProcessorManager delegate, String cameraName) {
+    public LimelightHandle(VisionCameraID cameraID, VisionProcessorManager delegate, String cameraName) {
         super(cameraID, delegate);
         this.cameraName = cameraName;
     }

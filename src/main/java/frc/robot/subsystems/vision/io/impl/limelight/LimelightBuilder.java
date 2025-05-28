@@ -3,9 +3,10 @@ package frc.robot.subsystems.vision.io.impl.limelight;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.api.*;
-import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
+import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTag3DProcessor;
 import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessorManager;
+import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.impl.AbstractIndexedVisionHandleBuilder;
 import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightHelpers;
 import frc.robot.subsystems.vision.io.impl.pipeline.PipelineManager;
@@ -24,7 +25,7 @@ public class LimelightBuilder extends AbstractIndexedVisionHandleBuilder<Limelig
      * @param drivetrainRotation     Supplier for the drivetrain rotation
      * @param robotToCameraTransform The transform from robot to camera
      */
-    public LimelightBuilder(VisionCameraID<LimelightHandle, LimelightBuilder> cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
+    public LimelightBuilder(VisionCameraID cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
         super(cameraID, drivetrainRotation, robotToCameraTransform);
     }
 

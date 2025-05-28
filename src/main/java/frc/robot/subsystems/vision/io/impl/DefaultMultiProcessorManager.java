@@ -1,8 +1,8 @@
 package frc.robot.subsystems.vision.io.impl;
 
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
-import frc.robot.subsystems.vision.io.api.VisionProcessorManager;
-import frc.robot.subsystems.vision.io.api.VisionProcessorType;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessorManager;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessorType;
 import frc.robot.subsystems.vision.io.impl.pipeline.PipelineManager;
 
 import java.util.Map;

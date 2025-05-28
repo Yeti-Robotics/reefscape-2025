@@ -1,6 +1,4 @@
-package frc.robot.subsystems.vision.io.api;
-
-import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
+package frc.robot.subsystems.vision.io.api.processor;
 
 import java.util.Optional;
 

@@ -10,7 +10,6 @@ public class PhotonPipelineManager implements PipelineManager<Integer> {
         this.photonCamera = photonCamera;
     }
 
-
     @Override
     public Integer getPipeline() {
         return photonCamera.getPipelineIndex();

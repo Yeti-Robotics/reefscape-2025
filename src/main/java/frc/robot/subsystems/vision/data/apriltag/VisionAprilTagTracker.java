@@ -30,7 +30,7 @@ public class VisionAprilTagTracker implements LoggableInputs, Iterable<VisionApr
             tagData[fiducialIndex] = new VisionAprilTag3D();
         } else if (tagData[fiducialIndex].timestamp() > timestamp) return false;
 
-        tagData[fiducialIndex].setFrom(fiducialID, robotToTargetPose, ambiguity, timestamp);
+        tagData[fiducialIndex].setData(fiducialID, robotToTargetPose, ambiguity, timestamp);
 
         tagUnreadBitset.set(fiducialIndex);
 

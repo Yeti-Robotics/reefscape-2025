@@ -1,8 +1,8 @@
-package frc.robot.subsystems.vision.io.api.processor;
+package frc.robot.subsystems.vision.io.api.processor.apriltag;
 
 import frc.robot.subsystems.vision.data.VisionRobotPose;
 import frc.robot.subsystems.vision.data.apriltag.VisionAprilTagTracker;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagSettings;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
 
 import java.util.List;
 

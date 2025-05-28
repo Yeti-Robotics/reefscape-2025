@@ -1,15 +1,14 @@
 package frc.robot.subsystems.vision.io.api;
 
 import frc.robot.subsystems.vision.VisionCameraID;
-
-import java.util.Optional;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessorManager;
 
 /**
  * Interface for vision handles.
  * Provides methods for managing vision processors and switching pipelines.
  */
 public interface VisionHandle {
-    VisionCameraID<?, ?> identifier();
+    VisionCameraID identifier();
 
     boolean isConnected();
 

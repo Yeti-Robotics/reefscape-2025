@@ -1,4 +1,4 @@
-package frc.robot.subsystems.vision.io.api;
+package frc.robot.subsystems.vision.io.api.processor.apriltag;
 
 import java.util.Collections;
 import java.util.EnumSet;

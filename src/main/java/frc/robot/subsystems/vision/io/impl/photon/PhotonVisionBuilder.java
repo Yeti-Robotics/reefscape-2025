@@ -4,9 +4,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.Robot;
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.api.VisionAprilTagSettings;
-import frc.robot.subsystems.vision.io.api.VisionProcessorManager;
-import frc.robot.subsystems.vision.io.api.processor.VisionAprilTag3DProcessor;
+import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTagSettings;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessorManager;
+import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTag3DProcessor;
 import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
 import frc.robot.subsystems.vision.io.impl.AbstractIndexedVisionHandleBuilder;
 import frc.robot.subsystems.vision.io.impl.photon.sim.PhotonVisionAprilTagSimulator;
@@ -32,12 +32,12 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<Phot
      * @param drivetrainRotation     Supplier for the drivetrain rotation
      * @param robotToCameraTransform The transform from robot to camera
      */
-    private PhotonVisionBuilder(VisionCameraID<PhotonVisionHandle, PhotonVisionBuilder> cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform, PhotonCamera photonCamera) {
+    private PhotonVisionBuilder(VisionCameraID cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform, PhotonCamera photonCamera) {
         super(cameraID, drivetrainRotation, robotToCameraTransform);
         this.photonCamera = photonCamera;
     }
 
-    public static PhotonVisionBuilder createBuilder(VisionCameraID<PhotonVisionHandle, PhotonVisionBuilder> cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
+    public static PhotonVisionBuilder createBuilder(VisionCameraID cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
         PhotonCamera photonCamera = new PhotonCamera(cameraID.cameraName);
 
         return new PhotonVisionBuilder(

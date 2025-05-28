@@ -46,7 +46,7 @@ import java.nio.ByteBuffer;
         double ambiguity = bb.getDouble();
         double timestamp = bb.getDouble();
 
-        out.setFrom(
+        out.setData(
                 fiducialID, robotToTargetPose, ambiguity, timestamp
         );
     }

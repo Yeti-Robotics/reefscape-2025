@@ -1,13 +1,9 @@
 package frc.robot.subsystems.vision.data.apriltag;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.struct.StructSerializable;
 import frc.robot.subsystems.vision.data.VisionTimestampedResult;
 import frc.robot.subsystems.vision.data.apriltag.struct.VisionAprilTag3DStruct;
-import org.littletonrobotics.junction.AutoLog;
-import org.littletonrobotics.junction.LogTable;
-import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public class VisionAprilTag3D implements VisionTimestampedResult, StructSerializable {
     public Pose2d robotToTargetPose;
@@ -16,7 +12,7 @@ public class VisionAprilTag3D implements VisionTimestampedResult, StructSerializ
     public double timestamp;
 
     public VisionAprilTag3D(int fiducialID, Pose2d robotToTargetPose, double ambiguity, double timestamp) {
-        setFrom(fiducialID, robotToTargetPose, ambiguity, timestamp);
+        setData(fiducialID, robotToTargetPose, ambiguity, timestamp);
     }
 
     public VisionAprilTag3D() {}
@@ -37,7 +33,7 @@ public class VisionAprilTag3D implements VisionTimestampedResult, StructSerializ
         return timestamp;
     }
 
-    public void setFrom(int fiducialID, Pose2d robotToTargetPose, double ambiguity, double timestamp) {
+    protected void setData(int fiducialID, Pose2d robotToTargetPose, double ambiguity, double timestamp) {
         this.fiducialID = fiducialID;
         this.robotToTargetPose = robotToTargetPose;
         this.ambiguity = ambiguity;
@@ -48,7 +44,7 @@ public class VisionAprilTag3D implements VisionTimestampedResult, StructSerializ
         return new VisionAprilTag3D(fiducialID, robotToTargetPose, ambiguity, timestamp);
     }
 
-    public VisionAprilTag3D from(VisionAprilTag3D visionAprilTag3D) {
+    protected VisionAprilTag3D from(VisionAprilTag3D visionAprilTag3D) {
         this.fiducialID = visionAprilTag3D.fiducialID;
         this.robotToTargetPose = visionAprilTag3D.robotToTargetPose;
         this.ambiguity = visionAprilTag3D.ambiguity;

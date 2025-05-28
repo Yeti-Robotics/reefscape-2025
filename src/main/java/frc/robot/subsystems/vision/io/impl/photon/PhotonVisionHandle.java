@@ -1,7 +1,7 @@
 package frc.robot.subsystems.vision.io.impl.photon;
 
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.api.VisionProcessorManager;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessorManager;
 import frc.robot.subsystems.vision.io.impl.AbstractVisionHandle;
 import org.photonvision.PhotonCamera;
 
