@@ -52,7 +52,7 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionHandle, B 
     protected final Supplier<Rotation2d> drivetrainRotation;
     protected final Transform3d robotToCameraTransform;
     protected VisionProcessorType<? extends VisionProcessor> mainProcessorType;
-    private final Map<VisionProcessorType<? extends VisionProcessor>, VisionProcessorData<? extends VisionProcessor, I>> registeredProcessors = new HashMap<>();
+    protected final Map<VisionProcessorType<? extends VisionProcessor>, VisionProcessorData<? extends VisionProcessor, I>> registeredProcessors = new HashMap<>();
 
     /**
      * Creates a new vision handle builder for a predefined camera ID.
