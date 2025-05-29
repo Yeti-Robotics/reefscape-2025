@@ -12,4 +12,9 @@ public class VisionProcessorType<T extends VisionProcessor> {
     VisionProcessorType(Class<T> clazz) {
         this.clazz = clazz;
     }
+
+    @Override
+    public String toString() {
+        return clazz.getSimpleName();
+    }
 }
