@@ -73,12 +73,7 @@ public class ProcessorPipelineRegistryImpl<I> implements ProcessorPipelineRegist
 
     @Override
     public VisionProcessorPipelineManager<I> toPipelineManager() {
-        if (pipelineCount() == 1) {
-            return singleProcessorManager();
-        }
-
         existingPipelineIDs = null;
-
         return this;
     }
 }

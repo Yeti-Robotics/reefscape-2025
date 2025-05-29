@@ -13,7 +13,10 @@ import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTag3DPro
 import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.impl.pipeline.ProcessorPipelineRegistry;
 import frc.robot.subsystems.vision.io.impl.pipeline.ProcessorPipelineRegistryImpl;
+import frc.robot.subsystems.vision.io.impl.pipeline.SingleProcessorPipelineManager;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -24,8 +27,9 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionCameraHard
     protected final VisionCameraID cameraID;
     protected final Supplier<Rotation2d> drivetrainRotation;
     protected final Transform3d robotToCameraTransform;
+    protected final ProcessorPipelineRegistry<I> registeredProcessors;
+
     protected VisionProcessorType<? extends VisionProcessor> mainProcessorType;
-    protected final ProcessorPipelineRegistry<I> registeredProcessors = new ProcessorPipelineRegistryImpl<>();
 
     /**
      * Creates a new vision handle builder for a predefined camera ID.
@@ -41,6 +45,7 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionCameraHard
         this.cameraID = cameraID;
         this.drivetrainRotation = drivetrainRotation;
         this.robotToCameraTransform = robotToCameraTransform;
+        this.registeredProcessors = createProcessorPipelineRegistry();
     }
 
     /**
@@ -78,15 +83,34 @@ public abstract class AbstractBaseVisionHandleBuilder<H extends VisionCameraHard
         return getThis();
     }
 
+    @SuppressWarnings("unchecked")
+    private <T extends VisionProcessor> SingleProcessorPipelineManager<T, I> singleProcessorPipelineManager() {
+        VisionProcessorType<T> processorType = (VisionProcessorType<T>) mainProcessorType;
+        Optional<T> processor = registeredProcessors.getProcessor(processorType);
+        Optional<I> pipelineID = registeredProcessors.getPipelineID(mainProcessorType);
+
+        if (processor.isPresent() && pipelineID.isPresent()) {
+            return new SingleProcessorPipelineManager<>(processorType, processor.get(), pipelineID.get());
+        }
+
+        throw new IllegalStateException("No processor pipeline registered for " + processorType);
+    }
 
     @Override
     public VisionHandle build() {
         int pipelineCount = registeredProcessors.pipelineCount();
+
         if (pipelineCount > 0) {
-            return new IdentifierVisionHandle<>(cameraID, createCameraHardware(), registeredProcessors.toPipelineManager(), mainProcessorType);
+            return new IdentifierVisionHandle<>(cameraID, createCameraHardware(),
+                        pipelineCount == 1 ? singleProcessorPipelineManager() : registeredProcessors.toPipelineManager()
+                    , mainProcessorType);
         }
 
         throw new IllegalStateException("No vision processors were added to the vision handle builder!");
+    }
+
+    protected ProcessorPipelineRegistry<I> createProcessorPipelineRegistry() {
+        return new ProcessorPipelineRegistryImpl<>();
     }
 
     protected abstract B getThis();

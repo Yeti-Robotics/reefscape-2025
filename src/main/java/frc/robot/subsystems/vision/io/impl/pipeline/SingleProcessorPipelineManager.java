@@ -6,12 +6,12 @@ import frc.robot.subsystems.vision.io.api.processor.VisionProcessorType;
 
 import java.util.Optional;
 
-public class SingleProcessorPipelineManager<T extends VisionProcessor, I> implements VisionProcessorPipelineManager<I> {
-    private final VisionProcessorType<T> type;
-    private final T processor;
+public class SingleProcessorPipelineManager<V extends VisionProcessor, I> implements VisionProcessorPipelineManager<I> {
+    private final VisionProcessorType<V> type;
+    private final V processor;
     private final I identifier;
 
-    public SingleProcessorPipelineManager(VisionProcessorType<T> type, T processor, I identifier) {
+    public SingleProcessorPipelineManager(VisionProcessorType<V> type, V processor, I identifier) {
         this.type = type;
         this.processor = processor;
         this.identifier = identifier;

@@ -13,6 +13,8 @@ public interface ProcessorPipelineRegistry<I> {
 
     boolean hasPipelineID(I identifier);
 
+    <T extends VisionProcessor> Optional<T> getProcessor(VisionProcessorType<T> visionProcessorType);
+
     int pipelineCount();
 
     VisionProcessorPipelineManager<I> toPipelineManager();
