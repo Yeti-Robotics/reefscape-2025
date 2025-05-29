@@ -62,4 +62,9 @@ public class IdentifierVisionHandle<I> implements VisionHandle {
 
         return false;
     }
+
+    @Override
+    public <T extends VisionProcessor> boolean hasProcessor(VisionProcessorType<T> visionProcessorType) {
+        return processorPipelineManager.hasProcessor(visionProcessorType);
+    }
 }

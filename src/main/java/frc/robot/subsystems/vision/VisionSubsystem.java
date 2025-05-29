@@ -66,7 +66,7 @@ public class VisionSubsystem extends SubsystemBase {
         for (VisionHandle handle : handles) {
             visionHandles.put(handle.identifier(), handle);
 
-            if (nnDetectionsMap == null && handle.vision().hasProcessor(VisionProcessorType.NN)) {
+            if (nnDetectionsMap == null && handle.hasProcessor(VisionProcessorType.NN)) {
                 nnDetectionsMap = new TreeMap<>();
             }
         }
@@ -79,7 +79,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     private static <T extends VisionProcessor> Optional<T> fetchProcessorForHandle(VisionHandle handle, VisionProcessorType<T> processorType) {
-        Optional<T> processor = handle.vision().getProcessor(processorType);
+        Optional<T> processor = handle.getProcessor(processorType);
         processor.ifPresent(VisionProcessor::visionPeriodic);
         return processor;
     }
@@ -89,9 +89,7 @@ public class VisionSubsystem extends SubsystemBase {
         for (VisionHandle handle : visionHandles.values()) {
             VisionLog.logHandle(handle);
 
-            VisionProcessorPipelineManager processorManager = handle.vision();
-
-            if (processorManager.activeVisionProcessorType() == VisionProcessorType.APRILTAG_3D) {
+            if (handle.activeVisionProcessorType() == VisionProcessorType.APRILTAG_3D) {
                 Optional<VisionAprilTag3DProcessor> aprilTagProcessor = fetchProcessorForHandle(handle, VisionProcessorType.APRILTAG_3D);
 
                 if (aprilTagProcessor.isPresent()) {
@@ -104,7 +102,7 @@ public class VisionSubsystem extends SubsystemBase {
 
                     VisionLog.logProcessor(handle, visionAprilTag3DProcessor);
                 }
-            } else if (processorManager.activeVisionProcessorType() == VisionProcessorType.NN) {
+            } else if (handle.activeVisionProcessorType() == VisionProcessorType.NN) {
                 Optional<VisionNNProcessor> nnProcessor = fetchProcessorForHandle(handle, VisionProcessorType.NN);
 
                 if (nnProcessor.isPresent()) {

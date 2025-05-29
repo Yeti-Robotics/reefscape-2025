@@ -17,6 +17,8 @@ public interface VisionHandle {
 
     <T extends VisionProcessor> Optional<T> getProcessor(VisionProcessorType<T> visionProcessorType);
 
+    <T extends VisionProcessor> boolean hasProcessor(VisionProcessorType<T> visionProcessorType);
+
     VisionProcessorType<? extends VisionProcessor> activeVisionProcessorType();
 
     <T extends VisionProcessor> boolean switchToProcessor(VisionProcessorType<T> visionProcessorType);
