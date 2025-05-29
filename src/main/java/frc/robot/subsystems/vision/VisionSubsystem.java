@@ -2,7 +2,6 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.util.struct.StructGenerator;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.data.VisionData;
 import frc.robot.subsystems.vision.data.VisionNNDetection;
@@ -90,7 +89,7 @@ public class VisionSubsystem extends SubsystemBase {
         for (VisionHandle handle : visionHandles.values()) {
             VisionLog.logHandle(handle);
 
-            VisionProcessorManager processorManager = handle.vision();
+            VisionProcessorPipelineManager processorManager = handle.vision();
 
             if (processorManager.activeVisionProcessorType() == VisionProcessorType.APRILTAG_3D) {
                 Optional<VisionAprilTag3DProcessor> aprilTagProcessor = fetchProcessorForHandle(handle, VisionProcessorType.APRILTAG_3D);

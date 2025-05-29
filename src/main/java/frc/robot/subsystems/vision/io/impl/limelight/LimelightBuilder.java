@@ -3,13 +3,11 @@ package frc.robot.subsystems.vision.io.impl.limelight;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTag3DProcessor;
+import frc.robot.subsystems.vision.io.api.VisionProcessorPipelineManager;
 import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
-import frc.robot.subsystems.vision.io.api.processor.VisionProcessorManager;
+import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTag3DProcessor;
 import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.impl.AbstractIndexedVisionHandleBuilder;
-import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightHelpers;
-import frc.robot.subsystems.vision.io.impl.pipeline.PipelineManager;
 
 import java.util.function.Supplier;
 
@@ -17,7 +15,7 @@ import java.util.function.Supplier;
  * Specialized builder for Limelight cameras.
  * This builder creates processors specifically for Limelight cameras.
  */
-public class LimelightBuilder extends AbstractIndexedVisionHandleBuilder<LimelightHandle, LimelightBuilder> {
+public class LimelightBuilder extends AbstractIndexedVisionHandleBuilder<LimelightHardware,LimelightBuilder> {
     /**
      * Creates a new vision handle builder for a predefined camera ID.
      *
@@ -35,19 +33,10 @@ public class LimelightBuilder extends AbstractIndexedVisionHandleBuilder<Limelig
     }
 
     @Override
-    protected PipelineManager<Integer> createPipelineManager() {
-        return new PipelineManager<>() {
-            @Override
-            public Integer getPipeline() {
-                return (int) LimelightHelpers.getCurrentPipelineIndex(cameraID.cameraName);
-            }
-
-            @Override
-            public void setPipeline(Integer pipeline) {
-                LimelightHelpers.setPipelineIndex(cameraID.cameraName, pipeline);
-            }
-        };
+    protected LimelightHardware createCameraHardware() {
+        return new LimelightHardware(cameraID.cameraName);
     }
+
 
     @Override
     protected VisionAprilTag3DProcessor createAprilTagProcessor(VisionAprilTagSettings aprilTagMode) {
@@ -61,10 +50,5 @@ public class LimelightBuilder extends AbstractIndexedVisionHandleBuilder<Limelig
     @Override
     protected VisionNNProcessor createNNProcessor(String[] classNames) {
         return new LimelightVisionNN(cameraID.cameraName, classNames);
-    }
-
-    @Override
-    protected LimelightHandle buildWithManager(VisionProcessorManager processorManager) {
-        return new LimelightHandle(cameraID, processorManager, cameraID.cameraName);
     }
 }

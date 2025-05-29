@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision.io.impl;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionCameraID;
+import frc.robot.subsystems.vision.io.api.VisionCameraHardware;
 import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.api.VisionHandle;
 import frc.robot.subsystems.vision.io.api.VisionHandleBuilder;
@@ -11,10 +12,10 @@ import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
 
 import java.util.function.Supplier;
 
-public abstract class AbstractIndexedVisionHandleBuilder<H extends VisionHandle, B extends VisionHandleBuilder> extends AbstractBaseVisionHandleBuilder<H, B, Integer> {
+public abstract class AbstractIndexedVisionHandleBuilder<H extends VisionCameraHardware<Integer>, B extends VisionHandleBuilder> extends AbstractBaseVisionHandleBuilder<H, B, Integer> {
     private static final int MAX_PIPELINE_INDEX = 10;
     private int pipelineIndex = 0;
-  
+
     /**
      * Creates a new vision handle builder for a predefined camera ID.
      *
@@ -70,9 +71,7 @@ public abstract class AbstractIndexedVisionHandleBuilder<H extends VisionHandle,
             VisionProcessorType<T> processorType, T processor) {
         addProcessor(processorType, processor, pipelineIndex);
         do pipelineIndex++;
-        while (registeredProcessors.values().stream().anyMatch(
-                v-> v.getPipelineIdentifier()
-                        .equals(pipelineIndex)) && pipelineIndex < MAX_PIPELINE_INDEX);
+        while (registeredProcessors.hasPipelineID(pipelineIndex) && pipelineIndex < MAX_PIPELINE_INDEX);
         return getThis();
     }
 }

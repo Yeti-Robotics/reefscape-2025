@@ -1,7 +1,10 @@
 package frc.robot.subsystems.vision.io.api;
 
 import frc.robot.subsystems.vision.VisionCameraID;
-import frc.robot.subsystems.vision.io.api.processor.VisionProcessorManager;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
+import frc.robot.subsystems.vision.io.api.processor.VisionProcessorType;
+
+import java.util.Optional;
 
 /**
  * Interface for vision handles.
@@ -12,6 +15,10 @@ public interface VisionHandle {
 
     boolean isConnected();
 
-    VisionProcessorManager vision();
+    <T extends VisionProcessor> Optional<T> getProcessor(VisionProcessorType<T> visionProcessorType);
+
+    VisionProcessorType<? extends VisionProcessor> activeVisionProcessorType();
+
+    <T extends VisionProcessor> boolean switchToProcessor(VisionProcessorType<T> visionProcessorType);
 }
 
