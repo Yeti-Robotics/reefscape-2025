@@ -254,7 +254,8 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
         return !arm.isTransitioning()
                 && !elevator.isTransitioning()
                 && !grabber.isTransitioning()
-                && !wrist.isTransitioning();
+                && !wrist.isTransitioning()
+                && arm.isTransitionFinished();
     }
 
     public Command setClimberSide(Side side) {
