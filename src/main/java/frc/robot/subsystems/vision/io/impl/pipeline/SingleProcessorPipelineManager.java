@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision.io.impl.pipeline;
 
 import frc.robot.subsystems.vision.io.api.VisionProcessorPipelineManager;
+import frc.robot.subsystems.vision.io.api.VisionSettings;
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessorType;
 
@@ -24,12 +25,12 @@ public class SingleProcessorPipelineManager<V extends VisionProcessor, I> implem
     }
 
     @Override
-    public <T extends VisionProcessor> Optional<I> getPipelineID(VisionProcessorType<T> visionProcessorType) {
-        return visionProcessorType == type ? Optional.of(identifier) : Optional.empty();
+    public Optional<VisionProcessorType<? extends VisionProcessor>> getVisionProcessorType(I pipelineID) {
+        return identifier.equals(pipelineID) ? Optional.of(type) : Optional.empty();
     }
 
     @Override
-    public <T extends VisionProcessor> boolean hasProcessor(VisionProcessorType<T> processorType) {
-        return type == processorType;
+    public <T extends VisionProcessor> VisionSettings<T> getSettings(I pipelineID) {
+        return null;
     }
 }

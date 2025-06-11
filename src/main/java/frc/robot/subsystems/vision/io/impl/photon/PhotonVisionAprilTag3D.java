@@ -34,7 +34,7 @@ public class PhotonVisionAprilTag3D extends AbstractPhotonProcessor implements V
 
     private final Transform3d robotToCameraTransform;
     private final PhotonPoseEstimator poseEstimator;
-    private final VisionAprilTagSettings mode;
+    private VisionAprilTagSettings mode;
 
     private PhotonPipelineResult latestResult;
 
@@ -113,7 +113,7 @@ public class PhotonVisionAprilTag3D extends AbstractPhotonProcessor implements V
                 PhotonTrackedTarget bestTarget = getBestTarget(pipelineResult);
 
                 if (bestTarget != null) {
-                   recordVisionAprilTag(pipelineResult, bestTarget, true);
+                    recordVisionAprilTag(pipelineResult, bestTarget, true);
                 }
             }
         }
@@ -180,5 +180,10 @@ public class PhotonVisionAprilTag3D extends AbstractPhotonProcessor implements V
     @Override
     public VisionAprilTagSettings getSettings() {
         return mode;
+    }
+
+    @Override
+    public void setSettings(VisionAprilTagSettings settings) {
+        mode = settings;
     }
 }

@@ -25,7 +25,7 @@ public class CANCoderDevice
 
     /**
      * @apiNote <p>Make sure this is always the last call you make before {@link
-     * CANCoderDevice#getDevice}, otherwise logging and other status signals may not work
+     * CANCoderDevice#device}, otherwise logging and other status signals may not work
      */
     public CANCoderDevice optimizeBusUtilization() {
         // enable important signals before optimizing
@@ -33,7 +33,7 @@ public class CANCoderDevice
                 CANUtil.CANCODER_DEFAULT_UPDATE_HZ,
                 getDevice().getAbsolutePosition(),
                 getDevice().getPosition());
-        getDevice().optimizeBusUtilization();
+        device.optimizeBusUtilization();
         return this;
     }
 
@@ -48,7 +48,7 @@ public class CANCoderDevice
     }
 
     @Override
-    protected DeviceLogger<CANCoderDeviceInputs> getLogger() {
+    protected DeviceLogger<CANCoderDeviceInputs> createLogger() {
         return new CANCoderDeviceLogger(getDevice());
     }
 

@@ -1,6 +1,6 @@
 package frc.robot.subsystems.vision;
 
-import frc.robot.subsystems.vision.data.VisionNNDetection;
+import frc.robot.subsystems.vision.data.nn.VisionNNDetection;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
 import frc.robot.subsystems.vision.io.api.VisionHandle;
 import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
@@ -9,10 +9,10 @@ import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTagSetti
 import org.littletonrobotics.junction.Logger;
 
 public class VisionLog {
-    private static VisionIOAprilTagInputsAutoLogged poseInputsAutoLogged = new VisionIOAprilTagInputsAutoLogged();
-    private static VisionIONNDetectionInputsAutoLogged nnInputsAutoLogged = new VisionIONNDetectionInputsAutoLogged();
+    private static final VisionIOAprilTagInputsAutoLogged poseInputsAutoLogged = new VisionIOAprilTagInputsAutoLogged();
+    private static final VisionIONNDetectionInputsAutoLogged nnInputsAutoLogged = new VisionIONNDetectionInputsAutoLogged();
 
-    public static void logProcessor(VisionHandle handle, VisionAprilTag3DProcessor aprilTag3DProcessor) {
+    public static void logProcessor(VisionHandle<?> handle, VisionAprilTag3DProcessor aprilTag3DProcessor) {
         VisionAprilTagSettings settings = aprilTag3DProcessor.getSettings();
 
         poseInputsAutoLogged.latencyMs = aprilTag3DProcessor.latencyMs();
@@ -28,14 +28,14 @@ public class VisionLog {
         Logger.processInputs(handle.identifier().cameraName, poseInputsAutoLogged);
     }
 
-    public static void logProcessor(VisionHandle handle, VisionNNProcessor visionNNProcessor) {
+    public static void logProcessor(VisionHandle<?> handle, VisionNNProcessor visionNNProcessor) {
         nnInputsAutoLogged.latencyMs = visionNNProcessor.latencyMs();
         nnInputsAutoLogged.detections = visionNNProcessor.getLatestNNDetections().toArray(VisionNNDetection[]::new);
 
         Logger.processInputs(handle.identifier().cameraName, nnInputsAutoLogged);
     }
 
-    public static void logHandle(VisionHandle handle) {
+    public static void logHandle(VisionHandle<?> handle) {
         Logger.recordOutput(handle.identifier().cameraName + "/Connected", handle.isConnected());
     }
 }

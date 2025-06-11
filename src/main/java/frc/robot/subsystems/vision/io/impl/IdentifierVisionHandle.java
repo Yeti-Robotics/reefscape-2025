@@ -9,21 +9,22 @@ import frc.robot.subsystems.vision.io.api.processor.VisionProcessorType;
 
 import java.util.Optional;
 
-public class IdentifierVisionHandle<I> implements VisionHandle {
+public class IdentifierVisionHandle<I> implements VisionHandle<I> {
     protected final VisionCameraID cameraID;
     private final VisionProcessorPipelineManager<I> processorPipelineManager;
     private final VisionCameraHardware<I> cameraHardware;
 
     private VisionProcessorType<? extends VisionProcessor> currentProcessorType;
+    private I queuedID;
 
     public IdentifierVisionHandle(VisionCameraID cameraID,
                                   VisionCameraHardware<I> cameraHardware,
                                   VisionProcessorPipelineManager<I> processorPipelineManager,
-                                  VisionProcessorType<? extends VisionProcessor> initialProcessorType) {
+                                  I initialPipelineID) {
         this.processorPipelineManager = processorPipelineManager;
         this.cameraHardware = cameraHardware;
         this.cameraID = cameraID;
-        this.currentProcessorType = initialProcessorType;
+        this.currentProcessorType = processorPipelineManager.getVisionProcessorType(initialPipelineID).orElse(null);
     }
 
     @Override
@@ -43,28 +44,24 @@ public class IdentifierVisionHandle<I> implements VisionHandle {
 
     @Override
     public VisionProcessorType<? extends VisionProcessor> activeVisionProcessorType() {
+        if (queuedID != null && cameraHardware.getPipelineID().equals(queuedID)) {
+            currentProcessorType = processorPipelineManager.getVisionProcessorType(queuedID).orElse(currentProcessorType);
+            queuedID = null;
+        }
+
         return currentProcessorType;
     }
 
     @Override
-    public <T extends VisionProcessor> boolean switchToProcessor(VisionProcessorType<T> visionProcessorType) {
-        if (currentProcessorType == visionProcessorType) return true;
-        if (!processorPipelineManager.hasProcessor(visionProcessorType)) return false;
+    public boolean switchToPipeline(I pipelineID) {
+        Optional<VisionProcessorType<? extends VisionProcessor>> pipelineProcessorType = processorPipelineManager.getVisionProcessorType(pipelineID);
 
-        Optional<I> identifier = processorPipelineManager.getPipelineID(visionProcessorType);
-
-        if (identifier.isPresent()) {
-            I pipelineID = identifier.get();
+        if (pipelineProcessorType.isPresent()) {
+            currentProcessorType = pipelineProcessorType.get();
             cameraHardware.setPipelineID(pipelineID);
-            currentProcessorType = visionProcessorType;
             return true;
         }
 
         return false;
-    }
-
-    @Override
-    public <T extends VisionProcessor> boolean hasProcessor(VisionProcessorType<T> visionProcessorType) {
-        return processorPipelineManager.hasProcessor(visionProcessorType);
     }
 }

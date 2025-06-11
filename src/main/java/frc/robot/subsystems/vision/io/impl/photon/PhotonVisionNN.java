@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision.io.impl.photon;
 
-import frc.robot.subsystems.vision.data.VisionNNDetection;
+import frc.robot.subsystems.vision.data.nn.VisionNNDetection;
+import frc.robot.subsystems.vision.data.nn.VisionNNID;
 import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -11,11 +12,9 @@ import java.util.List;
 
 public class PhotonVisionNN extends AbstractPhotonProcessor implements VisionNNProcessor {
     private final List<VisionNNDetection> nnDetections = new ArrayList<>();
-    private final String[] classNames;
 
-    public PhotonVisionNN(PhotonCamera camera, String[] classNames) {
+    public PhotonVisionNN(PhotonCamera camera) {
         super(camera);
-        this.classNames = classNames;
     }
 
     @Override
@@ -40,7 +39,6 @@ public class PhotonVisionNN extends AbstractPhotonProcessor implements VisionNNP
                     corners,
                     target.objDetectConf,
                     target.objDetectId,
-                    classNames,
                     target.area,
                     pipelineResult.getTimestampSeconds()));
         }

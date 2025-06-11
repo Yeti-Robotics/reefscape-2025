@@ -6,6 +6,7 @@ import frc.robot.util.akit.device.DeviceBuilder;
 import frc.robot.util.akit.device.DeviceLogger;
 
 public class DigitalInputDevice extends DeviceBuilder<DigitalInput, DigitalInputDeviceInputs, DigitalInputDevice> {
+    public static final int MAX_DIGITAL_ID = 31;
 
     private DigitalInputDevice(DigitalInput digitalInput) {
         super(digitalInput);
@@ -20,7 +21,7 @@ public class DigitalInputDevice extends DeviceBuilder<DigitalInput, DigitalInput
     }
 
     public Trigger toTrigger() {
-        return new Trigger(getDevice()::get);
+        return new Trigger(device::get);
     }
 
     @Override
@@ -34,7 +35,7 @@ public class DigitalInputDevice extends DeviceBuilder<DigitalInput, DigitalInput
     }
 
     @Override
-    protected DeviceLogger<DigitalInputDeviceInputs> getLogger() {
-        return new DigitalInputDeviceLogger(getDevice());
+    protected DeviceLogger<DigitalInputDeviceInputs> createLogger() {
+        return new DigitalInputDeviceLogger(device);
     }
 }

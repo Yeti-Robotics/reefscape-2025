@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.data.VisionData;
-import frc.robot.subsystems.vision.data.VisionNNDetection;
+import frc.robot.subsystems.vision.data.nn.VisionNNDetection;
 import frc.robot.subsystems.vision.data.VisionRobotPose;
 import frc.robot.subsystems.vision.data.VisionTimestampedResult;
 import frc.robot.subsystems.vision.io.api.*;
@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class VisionSubsystem extends SubsystemBase {
-    private interface VisionBuilderSupplier<T extends VisionHandleBuilder> {
+    private interface VisionBuilderSupplier<T extends VisionHandleBuilder<?>> {
         T createBuilder(VisionCameraID cameraID, Supplier<Rotation2d> rotationSupplier, Transform3d robotToCameraTransform);
     }
 
@@ -37,7 +37,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
 
-    private <T extends VisionHandleBuilder> T createCamera(VisionCameraID cameraID,
+    private <T extends VisionHandleBuilder<?>> T createCamera(VisionCameraID cameraID,
                                                            VisionBuilderSupplier<T> supplier,
                                                            Transform3d robotToCameraTransform,
                                                            VisionCameraID.VisionType type) {
@@ -62,11 +62,11 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
 
-    public void addVisionHandle(VisionHandle... handles) {
-        for (VisionHandle handle : handles) {
+    public void addVisionHandle(VisionHandle<?>... handles) {
+        for (VisionHandle<?> handle : handles) {
             visionHandles.put(handle.identifier(), handle);
 
-            if (nnDetectionsMap == null && handle.hasProcessor(VisionProcessorType.NN)) {
+            if (nnDetectionsMap == null && handle.getProcessor(VisionProcessorType.NN).isPresent()) {
                 nnDetectionsMap = new TreeMap<>();
             }
         }
@@ -78,7 +78,7 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
 
-    private static <T extends VisionProcessor> Optional<T> fetchProcessorForHandle(VisionHandle handle, VisionProcessorType<T> processorType) {
+    private static <T extends VisionProcessor> Optional<T> fetchProcessorForHandle(VisionHandle<?> handle, VisionProcessorType<T> processorType) {
         Optional<T> processor = handle.getProcessor(processorType);
         processor.ifPresent(VisionProcessor::visionPeriodic);
         return processor;
@@ -86,35 +86,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        for (VisionHandle handle : visionHandles.values()) {
-            VisionLog.logHandle(handle);
+        for (VisionHandle<?> handle : visionHandles.values()) {
 
-            if (handle.activeVisionProcessorType() == VisionProcessorType.APRILTAG_3D) {
-                Optional<VisionAprilTag3DProcessor> aprilTagProcessor = fetchProcessorForHandle(handle, VisionProcessorType.APRILTAG_3D);
-
-                if (aprilTagProcessor.isPresent()) {
-                    VisionAprilTag3DProcessor visionAprilTag3DProcessor = aprilTagProcessor.get();
-                    VisionAprilTagSettings settings = visionAprilTag3DProcessor.getSettings();
-
-                    if (settings.hasEnabledAll(VisionAprilTagFeature.LOCALIZATION)) {
-                        populateMap(visionPoses, visionAprilTag3DProcessor.getRobotPoseObservation(), handle.identifier());
-                    }
-
-                    VisionLog.logProcessor(handle, visionAprilTag3DProcessor);
-                }
-            } else if (handle.activeVisionProcessorType() == VisionProcessorType.NN) {
-                Optional<VisionNNProcessor> nnProcessor = fetchProcessorForHandle(handle, VisionProcessorType.NN);
-
-                if (nnProcessor.isPresent()) {
-                    VisionNNProcessor visionNNProcessor = nnProcessor.get();
-
-                    if (nnDetectionsMap != null) {
-                        populateMap(nnDetectionsMap, visionNNProcessor.getLatestNNDetections(), handle.identifier());
-                    }
-
-                    VisionLog.logProcessor(handle, visionNNProcessor);
-                }
-            }
         }
     }
 }

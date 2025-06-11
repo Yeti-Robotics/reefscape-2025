@@ -1,79 +1,80 @@
 package frc.robot.subsystems.vision.io.impl.pipeline;
 
 import frc.robot.subsystems.vision.io.api.VisionProcessorPipelineManager;
+import frc.robot.subsystems.vision.io.api.VisionSettings;
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessorType;
 
 import java.util.*;
 
 public class ProcessorPipelineRegistryImpl<I> implements ProcessorPipelineRegistry<I>, VisionProcessorPipelineManager<I> {
-    private record PipelineProcessorPair<T extends VisionProcessor, I>(T processor, I identifier){}
-
-    private final Map<VisionProcessorType<? extends VisionProcessor>, PipelineProcessorPair<? extends VisionProcessor, I>> processors = new HashMap<>();
-    private Set<I> existingPipelineIDs = new HashSet<>();
-
-    @Override
-    public <T extends VisionProcessor> void addPipeline(VisionProcessorType<T> visionProcessorType, I identifier, T visionProcessor) {
-        if (existingPipelineIDs.contains(identifier)) {
-            throw new IllegalArgumentException("Duplicate pipeline identifier: " + identifier);
-        }
-
-        processors.put(visionProcessorType, new PipelineProcessorPair<>(visionProcessor, identifier));
-        existingPipelineIDs.add(identifier);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T extends VisionProcessor> Optional<PipelineProcessorPair<T, I>> getPair(VisionProcessorType<T> visionProcessorType) {
-        return Optional.ofNullable((PipelineProcessorPair<T, I>) processors.get(visionProcessorType));
-    }
+    private final Map<I, VisionProcessorType<? extends VisionProcessor>> idToProcessors = new HashMap<>();
+    private final Map<VisionProcessorType<? extends VisionProcessor>, ? super VisionProcessor> processorTypeMap = new HashMap<>();
+    private final Map<I, VisionSettings<?>> pipelineToSettings = new HashMap<>();
 
     @SuppressWarnings("unchecked")
     @Override
     public <T extends VisionProcessor> Optional<T> getProcessor(VisionProcessorType<T> visionProcessorType) {
-        PipelineProcessorPair<T, I> pipelineProcessorPair = (PipelineProcessorPair<T, I>) processors.get(visionProcessorType);
-
-        if (pipelineProcessorPair == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(pipelineProcessorPair.processor);
+        return Optional.ofNullable((T) processorTypeMap.get(visionProcessorType));
     }
 
     @Override
-    public <T extends VisionProcessor> Optional<I> getPipelineID(VisionProcessorType<T> visionProcessorType) {
-        return getPair(visionProcessorType)
-                .map(r -> r.identifier);
+    public Optional<VisionProcessorType<? extends VisionProcessor>> getVisionProcessorType(I pipelineID) {
+        return Optional.ofNullable(idToProcessors.get(pipelineID));
     }
 
     @Override
-    public <T extends VisionProcessor> boolean hasProcessor(VisionProcessorType<T> processorType) {
-        return processors.containsKey(processorType);
+    public <T extends VisionProcessor> VisionSettings<T> getSettings(I pipelineID) {
+        return null;
     }
 
     @Override
     public int pipelineCount() {
-        return processors.size();
+        return idToProcessors.size();
+    }
+
+    @Override
+    public <T extends VisionProcessor> void addPipelineID(I identifier, VisionProcessorType<T> visionProcessorType) {
+        if (!processorTypeMap.containsKey(visionProcessorType)) {
+            throw new IllegalArgumentException("Unknown VisionProcessorType: " + visionProcessorType);
+        } else if (idToProcessors.containsKey(identifier)) {
+            throw new IllegalArgumentException("Duplicate Pipeline ID: " + identifier);
+        }
+
+        idToProcessors.put(identifier, visionProcessorType);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends VisionProcessor> void setPipelineSettings(I identifier, VisionProcessorType<T> visionProcessorType, VisionSettings<T> visionSettings) {
+        if (idToProcessors.get(identifier) == visionProcessorType) {
+            pipelineToSettings.put(identifier, visionSettings);
+
+            if (!pipelineToSettings.containsKey(identifier)) {
+                T processor = (T) processorTypeMap.get(visionProcessorType);
+
+                visionSettings.applySettings(processor);
+            }
+        }
+    }
+
+    @Override
+    public <T extends VisionProcessor> void registerProcessor(VisionProcessorType<T> visionProcessorType, T processor) {
+        processorTypeMap.put(visionProcessorType, processor);
+    }
+
+    @Override
+    public <T extends VisionProcessor> boolean supports(VisionProcessorType<T> visionProcessorType) {
+        return processorTypeMap.containsKey(visionProcessorType);
     }
 
     @Override
     public boolean hasPipelineID(I identifier) {
-        return existingPipelineIDs.contains(identifier);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T extends VisionProcessor> SingleProcessorPipelineManager<T, I> singleProcessorManager() {
-        Map.Entry<VisionProcessorType<? extends VisionProcessor>, PipelineProcessorPair<? extends VisionProcessor, I>> pipelineProcessorPairEntry =
-                processors.entrySet().iterator().next();
-
-        VisionProcessorType<T> processorType = (VisionProcessorType<T>) pipelineProcessorPairEntry.getKey();
-        T processor = (T) pipelineProcessorPairEntry.getValue().processor;
-
-        return new SingleProcessorPipelineManager<>(processorType, processor, pipelineProcessorPairEntry.getValue().identifier);
+        return idToProcessors.containsKey(identifier);
     }
 
     @Override
     public VisionProcessorPipelineManager<I> toPipelineManager() {
-        existingPipelineIDs = null;
         return this;
     }
 }

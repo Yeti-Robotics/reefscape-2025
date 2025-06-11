@@ -1,38 +1,34 @@
 package frc.robot.subsystems.coral.grabber.io;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.reduxrobotics.sensors.canandcolor.Canandcolor;
-import frc.robot.Robot;
 import frc.robot.constants.Constants;
-import frc.robot.util.akit.device.can.cancolor.CANColorDevice;
+import frc.robot.subsystems.coral.grabber.io.sensor.CoralSensor;
+import frc.robot.util.akit.device.can.CANUtil;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 
-public class GrabberIOTalonFX implements GrabberIO {
-    private final Canandcolor clawSwitch = Robot.isSimulation()
-            ? null // TODO: add simulation support for grabber switch
-            : CANColorDevice.configure(GrabberConfig.GRABBER_CANANDCOLOR)
-                    .log("Grabber/ColorSensor")
-                    .getDevice();
+import java.util.function.Supplier;
 
-    private final TalonFX grabberMotor = TalonFXDevice.configure(GrabberConfig.CLAW_ID, Constants.RIO_BUS)
+public class GrabberIOTalonFX implements GrabberIO {
+    private final TalonFXDevice grabberMotor = TalonFXDevice.configure(GrabberConfig.CLAW_ID, Constants.RIO_BUS)
             .log("Grabber/Motor")
             .withConfig(GrabberConfig.coralMotorConfig)
-            .syncConfigs()
-            .getDevice();
+            .syncConfigs();
+
+    private final Supplier<Double> dutyCycleSupplier = grabberMotor.mapStatusSignalWithInputs(CANUtil.TALON_MAX_UPDATE_HZ, TalonFX::getDutyCycle, inputs -> inputs.motorInputs.dutyCycle);
+    private final CoralSensor sensor = CoralSensor.createCoralSensor();
 
     @Override
     public Double getState() {
-        return grabberMotor.get();
+        return dutyCycleSupplier.get();
     }
 
     @Override
     public void setState(Double value) {
-        grabberMotor.set(value);
+        grabberMotor.getDevice().set(value);
     }
 
     @Override
     public boolean hasCoral() {
-        if (clawSwitch == null) return false;
-        return clawSwitch.getProximity() < 0.05;
+        return sensor.hasCoral();
     }
 }

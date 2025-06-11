@@ -6,21 +6,16 @@ import frc.robot.subsystems.vision.io.api.processor.VisionProcessorType;
 
 import java.util.Optional;
 
-/**
- * Interface for vision handles.
- * Provides methods for managing vision processors and switching pipelines.
- */
-public interface VisionHandle {
+
+public interface VisionHandle<I> {
     VisionCameraID identifier();
 
     boolean isConnected();
 
     <T extends VisionProcessor> Optional<T> getProcessor(VisionProcessorType<T> visionProcessorType);
 
-    <T extends VisionProcessor> boolean hasProcessor(VisionProcessorType<T> visionProcessorType);
-
     VisionProcessorType<? extends VisionProcessor> activeVisionProcessorType();
 
-    <T extends VisionProcessor> boolean switchToProcessor(VisionProcessorType<T> visionProcessorType);
+    boolean switchToPipeline(I pipelineID);
 }
 

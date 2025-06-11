@@ -1,57 +1,54 @@
 package frc.robot.subsystems.coral.elevator.io;
 
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.Constants;
 import frc.robot.constants.HardwareConstants;
-import frc.robot.subsystems.coral.elevator.ElevatorPosition;
+import frc.robot.util.akit.device.can.CANUtil;
 import frc.robot.util.akit.device.can.talon.TalonFXDevice;
 import frc.robot.util.akit.device.digital.DigitalInputDevice;
 
-import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+import java.util.function.Supplier;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
-    private final TalonFX primaryElevatorMotor = TalonFXDevice.configure(
+    private final TalonFXDevice primaryElevatorMotor = TalonFXDevice.configure(
                     ElevatorConfig.primaryElevatorMotorID, Constants.CANIVORE_BUS)
             .log("Elevator/PrimaryMotor")
             .withConfig(ElevatorConfig.primaryTalonFXConfigs)
-            .withStatusSignalFrequency(HardwareConstants.SETPOINT_UPDATE_FREQUENCY, TalonFX::getPosition)
-            .syncConfigs()
-            .getDevice();
+            .syncConfigs();
 
-    @SuppressWarnings("unused")
-    private final TalonFX secondaryElevatorMotor = TalonFXDevice.configure(
-                    ElevatorConfig.secondaryElevatorMotorID, Constants.CANIVORE_BUS)
-            .log("Elevator/SecondaryMotor")
-            .withConfig(ElevatorConfig.primaryTalonFXConfigs)
-            .modifyConfig(config -> config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive)
-            .syncConfigs()
-            .oppose(primaryElevatorMotor)
-            .getDevice();
-
+    private final Supplier<Angle> elevatorPosition = primaryElevatorMotor.positionSupplier(CANUtil.TALON_MAX_UPDATE_HZ);
     private final MotionMagicTorqueCurrentFOC motionMagicReq = new MotionMagicTorqueCurrentFOC(0);
-    private final StatusSignal<Angle> elevatorPosition = primaryElevatorMotor.getPosition();
+
+    private final Trigger zeroSwitch = DigitalInputDevice.configure(ElevatorConfig.magSwitchID)
+            .log("Elevator/MagSwitch")
+            .toTrigger();
 
     public ElevatorIOTalonFX() {
-        DigitalInputDevice.configure(ElevatorConfig.magSwitchID)
-                .log("Elevator/MagSwitch")
-                .toTrigger()
-                .debounce(2)
-                .onTrue(runOnce(() -> primaryElevatorMotor.setPosition(0))
-                        .andThen(() -> setState(ElevatorPosition.BOTTOM.getSetpoint()))
-                        .andThen(primaryElevatorMotor::stopMotor));
+        TalonFXDevice.configure(
+                        ElevatorConfig.secondaryElevatorMotorID, Constants.CANIVORE_BUS)
+                .log("Elevator/SecondaryMotor")
+                .withConfig(ElevatorConfig.primaryTalonFXConfigs)
+                .modifyConfig(config -> config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive)
+                .syncConfigs()
+                .oppose(primaryElevatorMotor.getDevice());
     }
 
     @Override
     public Angle getState() {
-        return elevatorPosition.getValue();
+        return elevatorPosition.get();
     }
 
     @Override
     public void setState(Angle value) {
-        primaryElevatorMotor.setControl(motionMagicReq.withPosition(value));
+        primaryElevatorMotor.getDevice().setControl(motionMagicReq.withPosition(value));
+    }
+
+    @Override
+    public Trigger zeroTrigger() {
+        return zeroSwitch;
     }
 }

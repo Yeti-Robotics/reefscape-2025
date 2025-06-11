@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision.io.api.processor;
 
 import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.vision.io.api.VisionSettings;
 
 
 public interface VisionProcessor {

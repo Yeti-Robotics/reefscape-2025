@@ -23,7 +23,7 @@ public class DeviceLogging {
         }
     }
 
-    protected static <T extends DeviceInputs> void addLoggerWithInputs(String key, DeviceLogger<T> logger, T inputs) {
+    public static <T extends DeviceInputs> void addLoggerWithInputs(String key, DeviceLogger<T> logger, T inputs) {
         if (disable) return;
 
         loggers.add(new LoggingEntry<>(key, logger, inputs));

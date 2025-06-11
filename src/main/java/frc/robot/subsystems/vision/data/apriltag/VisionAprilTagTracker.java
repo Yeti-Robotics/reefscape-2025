@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public class VisionAprilTagTracker implements LoggableInputs, Iterable<VisionAprilTag3D> {
+public class VisionAprilTagTracker implements LoggableInputs {
     private static final int TAG_COUNT = VisionUtil.APRIL_TAG_FIELD_LAYOUT.getTags().size();
     private static final String TAGS_KEY = "Tags";
     private static final String BEST_TAG_KEY = "BestTagID";
@@ -22,25 +22,27 @@ public class VisionAprilTagTracker implements LoggableInputs, Iterable<VisionApr
     private int bestTagID = -1;
 
     public boolean addObservation(int fiducialID, Pose2d robotToTargetPose, double ambiguity, double timestamp) {
-        if (fiducialID < 1 || fiducialID >= tagData.length) return false;
+        if (fiducialID < 0 || fiducialID >= tagData.length) return false;
 
         int fiducialIndex = fiducialID - 1;
+        VisionAprilTag3D tag = tagData[fiducialIndex];
 
-        if (tagData[fiducialIndex] == null) {
-            tagData[fiducialIndex] = new VisionAprilTag3D();
-        } else if (tagData[fiducialIndex].timestamp() > timestamp) return false;
+        if (tag == null) {
+            tagData[fiducialIndex] = tag = new VisionAprilTag3D();
+        } else if (tag.timestamp > timestamp) return false;
 
-        tagData[fiducialIndex].setData(fiducialID, robotToTargetPose, ambiguity, timestamp);
-
+        tag.setData(fiducialID, robotToTargetPose, ambiguity, timestamp);
         tagUnreadBitset.set(fiducialIndex);
-
         return true;
     }
 
-    public void addBestObservation(int fiducialID, Pose2d robotToTargetPose, double ambiguity, double timestamp) {
+    public boolean addBestObservation(int fiducialID, Pose2d robotToTargetPose, double ambiguity, double timestamp) {
         if (addObservation(fiducialID, robotToTargetPose, ambiguity, timestamp)) {
             bestTagID = fiducialID;
+            return true;
         }
+
+        return false;
     }
 
     public Optional<VisionAprilTag3D> getBestTag() {
@@ -78,29 +80,5 @@ public class VisionAprilTagTracker implements LoggableInputs, Iterable<VisionApr
         for (VisionAprilTag3D aprilTag3D : loggedTagData) {
             addObservation(aprilTag3D.fiducialID, aprilTag3D.robotToTargetPose, aprilTag3D.ambiguity, aprilTag3D.timestamp);
         }
-    }
-
-    @Override
-    public Iterator<VisionAprilTag3D> iterator() {
-        return new Iterator<>() {
-            private int nextBit = tagUnreadBitset.nextSetBit(0);
-
-            @Override
-            public boolean hasNext() {
-                return nextBit >= 0;
-            }
-
-            @Override
-            public VisionAprilTag3D next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException("No more unread tags");
-                }
-
-                VisionAprilTag3D tag = tagData[nextBit];
-                tagUnreadBitset.clear(nextBit);
-                nextBit = tagUnreadBitset.nextSetBit(nextBit + 1);
-                return tag;
-            }
-        };
     }
 }

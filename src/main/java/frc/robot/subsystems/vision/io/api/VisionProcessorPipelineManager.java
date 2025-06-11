@@ -14,16 +14,7 @@ public interface VisionProcessorPipelineManager<I> {
      */
     <T extends VisionProcessor> Optional<T> getProcessor(VisionProcessorType<T> visionProcessorType);
 
+    Optional<VisionProcessorType<? extends VisionProcessor>> getVisionProcessorType(I pipelineID);
 
-    <T extends VisionProcessor> Optional<I> getPipelineID(VisionProcessorType<T> visionProcessorType);
-
-    /**
-     * Checks if this handle has a processor of the specified type.
-     *
-     * @param processorType The processor type to check for
-     * @return True if the processor exists, false otherwise
-     */
-    default <T extends VisionProcessor> boolean hasProcessor(VisionProcessorType<T> processorType) {
-        return getProcessor(processorType).isPresent();
-    }
+    <T extends VisionProcessor> VisionSettings<T> getSettings(I pipelineID);
 }

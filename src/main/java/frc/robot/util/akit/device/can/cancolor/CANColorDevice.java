@@ -24,7 +24,7 @@ public class CANColorDevice extends CANDeviceBuilder<Canandcolor, CanandcolorSet
 
     @Override
     public boolean doConfigSync() {
-        return getDevice().setSettings(getConfig());
+        return device.setSettings(getConfig());
     }
 
     @Override
@@ -33,8 +33,8 @@ public class CANColorDevice extends CANDeviceBuilder<Canandcolor, CanandcolorSet
     }
 
     @Override
-    protected CANColorDeviceLogger getLogger() {
-        return new CANColorDeviceLogger(getDevice());
+    protected CANColorDeviceLogger createLogger() {
+        return new CANColorDeviceLogger(device);
     }
 
     @Override

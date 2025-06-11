@@ -2,11 +2,14 @@ package frc.robot.subsystems.vision.io.impl.photon;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.Robot;
 import frc.robot.subsystems.vision.VisionCameraID;
+import frc.robot.subsystems.vision.io.api.VisionHandle;
 import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTagSettings;
 import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTag3DProcessor;
 import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
-import frc.robot.subsystems.vision.io.impl.AbstractIndexedVisionHandleBuilder;
+import frc.robot.subsystems.vision.io.impl.AbstractDefaultVisionHandleBuilder;
+import frc.robot.subsystems.vision.io.impl.photon.sim.PhotonVisionAprilTagSimulator;
 import org.photonvision.PhotonCamera;
 import org.photonvision.simulation.SimCameraProperties;
 
@@ -17,7 +20,7 @@ import java.util.function.Supplier;
  * Specialized builder for PhotonVision cameras.
  * This builder creates processors specifically for PhotonVision cameras.
  */
-public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<PhotonHardware, PhotonVisionBuilder> {
+public class PhotonVisionBuilder extends AbstractDefaultVisionHandleBuilder<PhotonHardware, PhotonVisionBuilder> {
     private final PhotonCamera photonCamera;
     private Consumer<SimCameraProperties> simCameraSettings;
 
@@ -57,18 +60,31 @@ public class PhotonVisionBuilder extends AbstractIndexedVisionHandleBuilder<Phot
         return new PhotonHardware(photonCamera);
     }
 
-
     @Override
-    protected VisionAprilTag3DProcessor createAprilTagProcessor(VisionAprilTagSettings aprilTagMode) {
+    protected VisionAprilTag3DProcessor createAprilTagProcessor(VisionAprilTagSettings visionAprilTagSettings) {
         return new PhotonVisionAprilTag3D(
                 photonCamera,
                 robotToCameraTransform,
                 drivetrainRotation,
-                aprilTagMode);
+                visionAprilTagSettings);
     }
 
     @Override
     protected VisionNNProcessor createNNProcessor(String[] classNames) {
-        return new PhotonVisionNN(photonCamera, classNames);
+        return null;
+    }
+
+    protected VisionNNProcessor createNNProcessor() {
+        return new PhotonVisionNN(photonCamera);
+    }
+
+    @Override
+    public VisionHandle<Integer> build() {
+        if (Robot.isSimulation()) {
+            PhotonVisionAprilTagSimulator.getInstance()
+                    .ifPresent(p -> p.addCamera(cameraID, photonCamera, robotToCameraTransform, simCameraSettings));
+        }
+
+        return super.build();
     }
 }

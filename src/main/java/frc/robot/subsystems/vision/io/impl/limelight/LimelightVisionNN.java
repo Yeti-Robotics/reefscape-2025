@@ -1,7 +1,7 @@
 package frc.robot.subsystems.vision.io.impl.limelight;
 
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.subsystems.vision.data.VisionNNDetection;
+import frc.robot.subsystems.vision.data.nn.VisionNNDetection;
 import frc.robot.subsystems.vision.io.api.processor.VisionNNProcessor;
 import frc.robot.subsystems.vision.io.impl.limelight.util.LimelightHelpers;
 
@@ -10,11 +10,9 @@ import java.util.List;
 
 public class LimelightVisionNN implements VisionNNProcessor {
     private final String limelightName;
-    private final String[] classNames;
 
-    public LimelightVisionNN(String limelightName, String[] classNames) {
+    public LimelightVisionNN(String limelightName) {
         this.limelightName = limelightName;
-        this.classNames = classNames;
     }
 
     @Override
@@ -32,7 +30,6 @@ public class LimelightVisionNN implements VisionNNProcessor {
                         },
                         0, // no confidence from raw detections! what is Limelight doing?!
                         d.classId,
-                        classNames,
                         d.ta,
                         Timer.getFPGATimestamp()))
                 .toList();

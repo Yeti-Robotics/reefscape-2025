@@ -1,6 +1,6 @@
 package frc.robot.subsystems.vision;
 
-import frc.robot.subsystems.vision.data.VisionNNDetection;
+import frc.robot.subsystems.vision.data.nn.VisionNNDetection;
 import org.littletonrobotics.junction.AutoLog;
 
 @AutoLog

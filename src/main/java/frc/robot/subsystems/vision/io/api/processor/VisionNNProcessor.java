@@ -1,6 +1,6 @@
 package frc.robot.subsystems.vision.io.api.processor;
 
-import frc.robot.subsystems.vision.data.VisionNNDetection;
+import frc.robot.subsystems.vision.data.nn.VisionNNDetection;
 
 import java.util.List;
 

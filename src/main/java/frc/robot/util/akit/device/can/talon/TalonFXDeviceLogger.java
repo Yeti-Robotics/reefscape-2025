@@ -9,80 +9,110 @@ import edu.wpi.first.units.measure.*;
 import frc.robot.util.akit.device.DeviceLogger;
 import frc.robot.util.akit.device.can.CANUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 public class TalonFXDeviceLogger implements DeviceLogger<TalonFXDeviceInputs> {
-    private final StatusSignal<Voltage> motorVoltage;
-    private final StatusSignal<Current> motorAmps;
-    private final StatusSignal<Angle> positionRotations;
-    private final StatusSignal<AngularVelocity> velocityRotationsPerSec;
-    private final StatusSignal<AngularAcceleration> accelerationRotationsPerSecSq;
-    private final StatusSignal<Temperature> motorTemperature;
-    private final StatusSignal<Double> pGain;
-    private final StatusSignal<Double> iGain;
-    private final StatusSignal<Double> dGain;
-    private final StatusSignal<Double> feedForward;
-    private final StatusSignal<Double> error;
-    private final StatusSignal<Double> pidOutput;
+    private StatusSignal<Angle> positionRotations;
+    private StatusSignal<AngularVelocity> velocityRotationsPerSec;
+    private StatusSignal<AngularAcceleration> accelerationRotationsPerSecSq;
+
+    private StatusSignal<Temperature> motorTemperature;
+    private StatusSignal<Double> dutyCycleOutput;
+    private StatusSignal<Voltage> motorVoltage;
+    private StatusSignal<Current> motorAmps;
+
+    private StatusSignal<Double> pGain;
+    private StatusSignal<Double> iGain;
+    private StatusSignal<Double> dGain;
+    private StatusSignal<Double> feedForward;
+    private StatusSignal<Double> error;
+    private StatusSignal<Double> pidOutput;
+
     private final Debouncer connectedDebouncer = new Debouncer(CANUtil.CONNECTED_DEBOUNCE_TIME);
 
-    public TalonFXDeviceLogger(TalonFX talon) {
-        motorVoltage = talon.getMotorVoltage();
-        motorAmps = talon.getTorqueCurrent();
-        positionRotations = talon.getPosition();
-        velocityRotationsPerSec = talon.getVelocity();
-        accelerationRotationsPerSecSq = talon.getAcceleration();
-        motorTemperature = talon.getDeviceTemp();
-        pGain = talon.getClosedLoopProportionalOutput();
-        iGain = talon.getClosedLoopIntegratedOutput();
-        dGain = talon.getClosedLoopDerivativeOutput();
-        feedForward = talon.getClosedLoopFeedForward();
-        error = talon.getClosedLoopError();
-        pidOutput = talon.getClosedLoopOutput();
+    private final StatusSignal<?>[] loggedStatusSignals;
 
-        BaseStatusSignal.setUpdateFrequencyForAll(
-                CANUtil.TALON_DEFAULT_UPDATE_HZ,
-                motorVoltage,
-                motorAmps,
-                positionRotations,
-                velocityRotationsPerSec,
-                accelerationRotationsPerSecSq,
-                motorTemperature,
-                pGain,
-                iGain,
-                dGain,
-                feedForward,
-                error,
-                pidOutput);
+    private boolean logPosition = false;
+    private boolean logPID = false;
+    private boolean logMotorInputs = false;
+
+    public TalonFXDeviceLogger(TalonFX talon, Set<TalonFXDevice.TalonFXLogging> loggingTypes) {
+        List<StatusSignal<?>> loggedStatusSignalsList = new ArrayList<>();
+
+        if (loggingTypes.contains(TalonFXDevice.TalonFXLogging.POSITION)) {
+            positionRotations = talon.getPosition();
+            velocityRotationsPerSec = talon.getVelocity();
+            accelerationRotationsPerSecSq = talon.getAcceleration();
+
+            loggedStatusSignalsList.add(positionRotations);
+            loggedStatusSignalsList.add(velocityRotationsPerSec);
+            loggedStatusSignalsList.add(accelerationRotationsPerSecSq);
+            logPosition = true;
+        }
+
+        if (loggingTypes.contains(TalonFXDevice.TalonFXLogging.MOTOR)) {
+            motorTemperature = talon.getDeviceTemp();
+            dutyCycleOutput = talon.getDutyCycle();
+            motorVoltage = talon.getMotorVoltage();
+            motorAmps = talon.getTorqueCurrent();
+
+            loggedStatusSignalsList.add(motorTemperature);
+            loggedStatusSignalsList.add(dutyCycleOutput);
+            loggedStatusSignalsList.add(motorVoltage);
+            loggedStatusSignalsList.add(motorAmps);
+            logMotorInputs = true;
+        }
+
+
+        if (loggingTypes.contains(TalonFXDevice.TalonFXLogging.PID)) {
+            pGain = talon.getClosedLoopProportionalOutput();
+            iGain = talon.getClosedLoopIntegratedOutput();
+            dGain = talon.getClosedLoopDerivativeOutput();
+            feedForward = talon.getClosedLoopFeedForward();
+            error = talon.getClosedLoopError();
+            pidOutput = talon.getClosedLoopOutput();
+
+            loggedStatusSignalsList.add(pGain);
+            loggedStatusSignalsList.add(iGain);
+            loggedStatusSignalsList.add(dGain);
+            loggedStatusSignalsList.add(feedForward);
+            loggedStatusSignalsList.add(error);
+            loggedStatusSignalsList.add(pidOutput);
+            logPID = true;
+        }
+
+        loggedStatusSignals = loggedStatusSignalsList.toArray(StatusSignal[]::new);
+
+        BaseStatusSignal.setUpdateFrequencyForAll(CANUtil.TALON_DEFAULT_UPDATE_HZ, loggedStatusSignals);
     }
 
     public void updateInputs(TalonFXDeviceInputs inputs) {
-        StatusCode refreshCode = BaseStatusSignal.refreshAll(
-                motorVoltage,
-                motorAmps,
-                positionRotations,
-                velocityRotationsPerSec,
-                accelerationRotationsPerSecSq,
-                motorTemperature,
-                pGain,
-                iGain,
-                dGain,
-                feedForward,
-                error,
-                pidOutput);
+        StatusCode refreshCode = BaseStatusSignal.refreshAll(loggedStatusSignals);
 
         inputs.isConnected = connectedDebouncer.calculate(refreshCode.isOK());
-        inputs.motorInputs.motorVoltage = motorVoltage.getValue();
-        inputs.motorInputs.motorAmps = motorAmps.getValue();
-        inputs.positionInputs.positionRotations = positionRotations.getValueAsDouble();
-        inputs.positionInputs.velocityRotationsPerSec = velocityRotationsPerSec.getValueAsDouble();
-        inputs.positionInputs.accelerationRotationsPerSecSq = accelerationRotationsPerSecSq.getValueAsDouble();
 
-        inputs.pidInputs.pGain = pGain.getValue();
-        inputs.pidInputs.iGain = iGain.getValue();
-        inputs.pidInputs.dGain = dGain.getValue();
-        inputs.pidInputs.feedForward = feedForward.getValue();
-        inputs.pidInputs.error = error.getValue();
-        inputs.pidInputs.pidOutput = pidOutput.getValue();
+        if (logPosition) {
+            inputs.positionInputs.positionRotations = positionRotations.getValueAsDouble();
+            inputs.positionInputs.velocityRotationsPerSec = velocityRotationsPerSec.getValueAsDouble();
+            inputs.positionInputs.accelerationRotationsPerSecSq = accelerationRotationsPerSecSq.getValueAsDouble();
+        }
 
-        inputs.motorInputs.motorTemperature = motorTemperature.getValue();
+        if (logPID) {
+            inputs.pidInputs.pGain = pGain.getValue();
+            inputs.pidInputs.iGain = iGain.getValue();
+            inputs.pidInputs.dGain = dGain.getValue();
+            inputs.pidInputs.feedForward = feedForward.getValue();
+            inputs.pidInputs.error = error.getValue();
+            inputs.pidInputs.pidOutput = pidOutput.getValue();
+        }
+
+        if (logMotorInputs) {
+            inputs.motorInputs.motorTemperature = motorTemperature.getValue();
+            inputs.motorInputs.dutyCycle = dutyCycleOutput.getValue();
+            inputs.motorInputs.motorVoltage = motorVoltage.getValue();
+            inputs.motorInputs.motorAmps = motorAmps.getValue();
+        }
     }
 }

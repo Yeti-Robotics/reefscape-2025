@@ -7,5 +7,7 @@ import frc.robot.util.state.AbstractSetpointStateSubsystem;
 public class ElevatorSubsystem extends AbstractSetpointStateSubsystem<Angle, ElevatorPosition, ElevatorIO> {
     public ElevatorSubsystem(ElevatorIO io) {
         super(io);
+
+        io.zeroTrigger().onTrue(transitionTo(ElevatorPosition.BOTTOM));
     }
 }

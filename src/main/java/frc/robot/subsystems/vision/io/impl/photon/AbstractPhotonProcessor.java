@@ -32,6 +32,7 @@ public abstract class AbstractPhotonProcessor implements VisionProcessor {
         if (!results.isEmpty()) {
             latencyMs = totalLatency / results.size();
         }
+
         runPostProcessing();
     }
 

@@ -12,4 +12,5 @@ public interface VisionAprilTag3DProcessor extends VisionProcessor {
     VisionAprilTagTracker getAprilTags();
 
     VisionAprilTagSettings getSettings();
+    void setSettings(VisionAprilTagSettings settings);
 }

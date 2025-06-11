@@ -12,4 +12,5 @@ public class TalonFXMotorInputs {
     public Current motorStatorAmps;
 
     public Temperature motorTemperature;
+    public double dutyCycle;
 }

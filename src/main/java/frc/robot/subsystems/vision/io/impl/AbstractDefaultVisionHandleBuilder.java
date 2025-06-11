@@ -5,14 +5,12 @@ import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.subsystems.vision.VisionCameraID;
 import frc.robot.subsystems.vision.io.api.VisionCameraHardware;
 import frc.robot.subsystems.vision.io.api.processor.apriltag.VisionAprilTagSettings;
-import frc.robot.subsystems.vision.io.api.VisionHandle;
-import frc.robot.subsystems.vision.io.api.VisionHandleBuilder;
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessorType;
 import frc.robot.subsystems.vision.io.api.processor.VisionProcessor;
 
 import java.util.function.Supplier;
 
-public abstract class AbstractIndexedVisionHandleBuilder<H extends VisionCameraHardware<Integer>, B extends VisionHandleBuilder> extends AbstractBaseVisionHandleBuilder<H, B, Integer> {
+public abstract class AbstractDefaultVisionHandleBuilder<H extends VisionCameraHardware<Integer>, B extends AbstractDefaultVisionHandleBuilder<H, B>> extends AbstractBaseVisionHandleBuilder<H, B, Integer> {
     private static final int MAX_PIPELINE_INDEX = 10;
     private int pipelineIndex = 0;
 
@@ -23,7 +21,7 @@ public abstract class AbstractIndexedVisionHandleBuilder<H extends VisionCameraH
      * @param drivetrainRotation     Supplier for the drivetrain rotation
      * @param robotToCameraTransform The transform from robot to camera
      */
-    public AbstractIndexedVisionHandleBuilder(VisionCameraID cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
+    public AbstractDefaultVisionHandleBuilder(VisionCameraID cameraID, Supplier<Rotation2d> drivetrainRotation, Transform3d robotToCameraTransform) {
         super(cameraID, drivetrainRotation, robotToCameraTransform);
     }
 
@@ -41,12 +39,12 @@ public abstract class AbstractIndexedVisionHandleBuilder<H extends VisionCameraH
 
     /**
      * Adds an AprilTag processor to the vision handle.
-     * This uses the default settings specified in {@link VisionAprilTagSettings#DEFAULT}
+     * This uses the default settings
      *
      * @return This builder for chaining
      */
     public B addAprilTagProcessor() {
-        return addAprilTagProcessor(VisionAprilTagSettings.DEFAULT);
+        return addAprilTagProcessor(VisionAprilTagSettings.defaultSettings());
     }
 
     /**
@@ -69,9 +67,8 @@ public abstract class AbstractIndexedVisionHandleBuilder<H extends VisionCameraH
      */
     protected <T extends VisionProcessor> B addProcessor(
             VisionProcessorType<T> processorType, T processor) {
-        addProcessor(processorType, processor, pipelineIndex);
-        do pipelineIndex++;
-        while (registeredProcessors.hasPipelineID(pipelineIndex) && pipelineIndex < MAX_PIPELINE_INDEX);
+        addSupportedProcessor(processorType, processor);
+        addPipeline(pipelineIndex, processorType);
         return getThis();
     }
 }
