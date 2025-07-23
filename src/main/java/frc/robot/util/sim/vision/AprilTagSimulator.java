@@ -23,8 +23,16 @@ public class AprilTagSimulator {
         aprilTagCamSims.add(aprilTagCamSim);
     }
 
+    /* <<<<<<<<<<<<<<  ✨ Windsurf Command ⭐ >>>>>>>>>>>>>>>> */
+    /**
+     * Update the simulator with the current pose of the robot.
+     *
+     * @param pose The current pose of the robot.
+     */
+    /* <<<<<<<<<<  07c48757-5cd3-4ab9-9339-a50b85422bce  >>>>>>>>>>> */
     public void update(Pose2d pose) {
         visionSim.update(pose);
+        aprilTagCamSims.forEach(AprilTagCamSim::publishSeenTags);
     }
 
     public List<AprilTagCamSim> getAprilTagCamSims() {

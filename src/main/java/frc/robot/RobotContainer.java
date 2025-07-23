@@ -11,10 +11,7 @@ import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
@@ -73,13 +70,15 @@ public class RobotContainer {
                             Units.inchesToMeters(11)),
                     new Rotation3d(0, Math.toRadians(-15), Math.toRadians(-90)));
 
-    Transform3d camTrans2 =
+    Transform3d camTrans2 = // 20 inches on y, 3 inches on z, 90 degree rotation
             new Transform3d(
                     new Translation3d(
-                            Units.inchesToMeters(-9.5),
                             Units.inchesToMeters(10),
-                            Units.inchesToMeters(11)),
-                    new Rotation3d(0, Math.toRadians(-15), Math.toRadians(90)));
+                            Units.inchesToMeters(10),
+                            Units.inchesToMeters(8)),
+                    new Rotation3d(0, Math.toRadians(-15), Math.toRadians(0)));
+
+    @Logged Pose3d camPose = new Pose3d(camTrans2.getTranslation(), camTrans2.getRotation());
 
     @Logged(name = "Vision/RadioCam")
     public final PhotonAprilTagSystem radioCam;
@@ -119,10 +118,11 @@ public class RobotContainer {
 
         radioCam = new PhotonAprilTagSystem("RadioCam", camTrans1, drivetrain);
         scoreCam = new PhotonAprilTagSystem("ScoreCam", camTrans2, drivetrain);
+
         if (Robot.isSimulation()) {
             AprilTagCamSim simCam1 =
                     AprilTagCamSimBuilder.newCamera()
-                            .withCameraName("ScoreCam")
+                            .withCameraName("RadioCam")
                             .withTransform(camTrans1)
                             .build();
             aprilTagCamSim.addCamera(simCam1);
@@ -130,7 +130,7 @@ public class RobotContainer {
 
             AprilTagCamSim simCam2 =
                     AprilTagCamSimBuilder.newCamera()
-                            .withCameraName("ClimbCam")
+                            .withCameraName("ScoreCam")
                             .withTransform(camTrans2)
                             .build();
             aprilTagCamSim.addCamera(simCam2);
@@ -226,7 +226,7 @@ public class RobotContainer {
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
         primaryXboxController.y().whileTrue(reefAlignPPOTF.reefAlign());
-        primaryXboxController.a().whileTrue(algaeAlignPPOTF.algaeAlign());
+        //        primaryXboxController.a().whileTrue(algaeAlignPPOTF.algaeAlign());
         primaryXboxController.button(1).whileTrue(reefAlignPPOTF.reefAlign());
         gigaStation
                 .button(2)

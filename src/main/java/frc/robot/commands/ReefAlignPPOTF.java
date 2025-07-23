@@ -96,6 +96,14 @@ public class ReefAlignPPOTF {
         Optional<AprilTagDetection> detection1 = reefCam1.getBestDetection();
         Optional<AprilTagDetection> detection2 = reefCam2.getBestDetection();
 
+        if (!detection1.isPresent()) {
+            System.out.println("No detection from camera 1");
+        }
+
+        if (!detection2.isPresent()) {
+            System.out.println("No detection from camera 2");
+        }
+
         if (detection1.isPresent() && detection2.isPresent()) {
             AprilTagDetection fiducial1 = detection1.get();
             AprilTagDetection fiducial2 = detection2.get();

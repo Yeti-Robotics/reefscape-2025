@@ -33,7 +33,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private double maxAmbiguity = 0.2;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private Optional<AprilTagDetection> bestDetection;
+    private Optional<AprilTagDetection> bestDetection = Optional.empty();
 
     private double bestDetectionTimestamp;
     private final List<AprilTagPose> poseEstimates = new ArrayList<>();
@@ -76,15 +76,21 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         for (PhotonPipelineResult pipelineResult : results) {
             if (pipelineResult.hasTargets()) {
                 for (var target : pipelineResult.targets) {
-                    boolean lessThan5M =
+                    // Skip targets that are too far or have high ambiguity
+                    // but continue processing other targets
+                    double targetDistance =
                             AprilTagDetectionHelpers.getDetectionDistance(
-                                            target.getBestCameraToTarget())
-                                    > 5;
-
+                                    target.getBestCameraToTarget());
                     boolean tagAmb = target.getPoseAmbiguity() > maxAmbiguity;
 
-                    if (lessThan5M || tagAmb) {
-                        break resultLoop;
+                    if (targetDistance <= 5 && !tagAmb) {
+                        // Track the closest valid target for best detection
+                        if (targetDistance < closestDistance) {
+                            closestTarget = target;
+                            closestDistance = targetDistance;
+                        }
+                    } else {
+                        continue; // Skip this target but continue with others
                     }
                 }
             }
