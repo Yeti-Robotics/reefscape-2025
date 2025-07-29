@@ -5,6 +5,8 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -51,11 +53,10 @@ public class AprilTagSimulator {
                     );
                     detections.add(new AprilTagDetection(target.getFiducialId(), pose, targetPose, target.getPoseAmbiguity()));
                 }
-                
+
                 AprilTagResults aprilTagResults = new AprilTagResults(Timer.getFPGATimestamp(), 20, detections);
                 List<Pose3d> seenTags = AprilTagCamSim.publishSeenTags(aprilTagResults);
-                
-                seenTags.forEach(camSim::publishSeenTags);
+                StructArrayPublisher<Pose3d> pub = NetworkTableInstance.getDefault().getTable("vision").getStructArrayTopic("seenTags", Pose3d.struct).publish();
             }
         }
     }
