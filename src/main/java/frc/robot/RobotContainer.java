@@ -102,7 +102,7 @@ public class RobotContainer {
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
-    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
+    AprilTagSimulator aprilTagCamSim;
     private final Mechanisms mechanisms;
     private final ReefAlignPPOTF reefAlignPPOTF;
     private final AlgaeAlignPPOTF algaeAlignPPOTF;
@@ -118,6 +118,7 @@ public class RobotContainer {
 
         radioCam = new PhotonAprilTagSystem("RadioCam", camTrans1, drivetrain);
         scoreCam = new PhotonAprilTagSystem("ScoreCam", camTrans2, drivetrain);
+        aprilTagCamSim = new AprilTagSimulator(radioCam, scoreCam);
 
         if (Robot.isSimulation()) {
             AprilTagCamSim simCam1 =
@@ -226,8 +227,14 @@ public class RobotContainer {
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
         primaryXboxController.y().whileTrue(reefAlignPPOTF.reefAlign());
-        //        primaryXboxController.a().whileTrue(algaeAlignPPOTF.algaeAlign());
+        //                primaryXboxController.a().whileTrue(algaeAlignPPOTF.algaeAlign());
         primaryXboxController.button(1).whileTrue(reefAlignPPOTF.reefAlign());
+        primaryXboxController
+                .button(2)
+                .onTrue(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT));
+        primaryXboxController
+                .button(3)
+                .onTrue(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT));
         gigaStation
                 .button(2)
                 .onTrue(

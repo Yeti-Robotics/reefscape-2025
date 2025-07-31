@@ -26,6 +26,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private final Transform3d cameraTransform;
     private final PhotonPoseEstimator photonPoseEstimator;
     private final CommandSwerveDrivetrain drivetrain;
+    private AprilTagResults aprilTagResults;
 
     private static final double translationBaseStdev = 0.7;
     private static final double rotationBaseStdev = Math.toRadians(30);
@@ -64,6 +65,11 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         if (results.isEmpty()) {
             return;
         }
+
+        List<AprilTagDetection> aprilTagDetections = new ArrayList<>();
+
+        double earliestTimestamp = Double.POSITIVE_INFINITY;
+        double highestLatency = 0;
 
         poseEstimates.clear();
 
@@ -180,6 +186,8 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
         } else if (latestTimestamp - bestDetectionTimestamp > MAX_LIVE_SECONDS) {
             bestDetection = Optional.empty();
         }
+        aprilTagResults =
+                new AprilTagResults(earliestTimestamp, highestLatency, aprilTagDetections);
     }
 
     public void setCamera(PhotonCamera camera) {
@@ -214,9 +222,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
     @Override
     public Optional<AprilTagResults> getResults() {
-        // my favoritest method implementation ever!
-        // but seriously, we don't use this so it's kinda a waste of rio CPU
-        throw new UnsupportedOperationException("Not implemented.");
+        return Optional.of(aprilTagResults);
     }
 
     @Override
