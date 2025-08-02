@@ -32,7 +32,6 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private static final double translationBaseStdev = 0.7;
     private static final double rotationBaseStdev = Math.toRadians(30);
 
-    private Matrix<N3, N1> curStdDevs;
     public static final Matrix<N3, N1> kSingleTagStdDevs =
             VecBuilder.fill(4, 4, 8); // TODO: copied from PV code (NEED TO TUNE)
     public static final Matrix<N3, N1> kMultiTagStdDevs =
@@ -63,11 +62,11 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
                 PhotonPoseEstimator.PoseStrategy.LOWEST_AMBIGUITY);
     }
 
-    private void updateEstimationStdDevs(
+    private Matrix<N3, N1> updateEstimationStdDevs(
             Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
         if (estimatedPose.isEmpty()) {
             // No pose input. Default to single-tag std devs
-            curStdDevs = kSingleTagStdDevs;
+            return kSingleTagStdDevs;
 
         } else {
             // Pose present. Start running Heuristic
@@ -94,7 +93,7 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
 
             if (numTags == 0) {
                 // No tags visible. Default to single-tag std devs
-                curStdDevs = kSingleTagStdDevs;
+                return kSingleTagStdDevs;
             } else {
                 avgDist /= numTags;
                 // Decrease std devs if multiple targets are visible
@@ -104,13 +103,9 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
                     estStdDevs =
                             VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
                 else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
-                curStdDevs = estStdDevs;
+                return estStdDevs;
             }
         }
-    }
-
-    public Matrix<N3, N1> getStdDevs() {
-        return curStdDevs;
     }
 
     @Override
@@ -223,16 +218,16 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
                      *
                      * @see AprilTagPose#DEFAULT_STD_DEVS instead
                      */
-                    Matrix<N3, N1> stdDevs = AprilTagPose.DEFAULT_STD_DEVS;
-
-                    updateEstimationStdDevs(estimatedRobotPoseOpt, pipelineResult.getTargets());
+                    Matrix<N3, N1> estStdDevs =
+                            updateEstimationStdDevs(
+                                    estimatedRobotPoseOpt, pipelineResult.getTargets());
 
                     poseEstimates.add(
                             new AprilTagPose(
                                     estimatedRobotPose.estimatedPose.toPose2d(),
                                     numTags,
                                     pipelineResult.getTimestampSeconds(),
-                                    getStdDevs()));
+                                    estStdDevs));
                 }
             }
         }
