@@ -236,7 +236,9 @@ public class RobotContainer {
                         coralManipulator
                                 .transitionTo(CoralManipulatorState.CLIMB)
                                 .alongWith(leds.runPattern(LEDPatterns.FADING_BLUE_SCROLL)));
-        gigaStation.greenRight2().onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        gigaStation
+                .greenRight2()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         gigaStation.whiteRight2().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         gigaStation
                 .greenLeft2()

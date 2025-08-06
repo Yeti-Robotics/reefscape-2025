@@ -64,33 +64,37 @@ public class CommandGigaStation extends CommandGenericHID {
         return button(GigaButtons.BOTTOM_RIGHT.port);
     }
 
-//    +--------+---------+---------+---------+
-//    | Row    | Left    | Right   | Color   |
-//    +--------+---------+---------+---------+
-//    | 1st    | BL1     | BR1     | Blue    |
-//    | 1st    | WL1     | WR1     | White   |
-//    | 1st    | GL1     | GR1     | Green   |
-//    | 2nd    | BL2     | BR2     | Blue    |
-//    | 2nd    | WL2     | WR2     | White   |
-//    | 2nd    | GL2     | GR2     | Green   |
-//    +--------+---------+---------+---------+
-
+    //    +--------+---------+---------+---------+
+    //    | Row    | Left    | Right   | Color   |
+    //    +--------+---------+---------+---------+
+    //    | 1st    | BL1     | BR1     | Blue    |
+    //    | 1st    | WL1     | WR1     | White   |
+    //    | 1st    | GL1     | GR1     | Green   |
+    //    | 2nd    | BL2     | BR2     | Blue    |
+    //    | 2nd    | WL2     | WR2     | White   |
+    //    | 2nd    | GL2     | GR2     | Green   |
+    //    +--------+---------+---------+---------+
 
     public Trigger blueLeft1() {
         return button(GigaButtons.BL1.port);
     }
+
     public Trigger blueRight1() {
         return button(GigaButtons.BR1.port);
     }
+
     public Trigger whiteLeft1() {
         return button(GigaButtons.WL1.port);
     }
+
     public Trigger whiteRight1() {
         return button(GigaButtons.WR1.port);
     }
+
     public Trigger greenLeft1() {
         return button(GigaButtons.GL1.port);
     }
+
     public Trigger greenRight1() {
         return button(GigaButtons.GR1.port);
     }
@@ -98,18 +102,23 @@ public class CommandGigaStation extends CommandGenericHID {
     public Trigger blueLeft2() {
         return button(GigaButtons.BL2.port);
     }
+
     public Trigger blueRight2() {
         return button(GigaButtons.BR2.port);
     }
+
     public Trigger whiteLeft2() {
         return button(GigaButtons.WL2.port);
     }
+
     public Trigger whiteRight2() {
         return button(GigaButtons.WR2.port);
     }
+
     public Trigger greenLeft2() {
         return button(GigaButtons.GL2.port);
     }
+
     public Trigger greenRight2() {
         return button(GigaButtons.GR2.port);
     }
@@ -117,15 +126,19 @@ public class CommandGigaStation extends CommandGenericHID {
     public Trigger auto1() {
         return button(GigaButtons.AUTO1.port);
     }
+
     public Trigger auto2() {
         return button(GigaButtons.AUTO2.port);
     }
+
     public Trigger auto3() {
         return button(GigaButtons.AUTO3.port);
     }
+
     public Trigger auto4() {
         return button(GigaButtons.AUTO4.port);
     }
+
     public Trigger auto5() {
         return button(GigaButtons.AUTO5.port);
     }
