@@ -254,7 +254,7 @@ public class RobotContainer {
         gigaStation
                 .button(6)
                 .onTrue(coralManipulator.wrist.transitionTo(WristPositions.SAFE))
-                .onFalse(coralManipulator.wrist.transitionTo(WristPositions.UNSAFE));
+                .onFalse(coralManipulator.wrist.transitionTo(WristPositions.FLIP_SAFE));
         gigaStation
                 .button(4)
                 .onTrue(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT))
