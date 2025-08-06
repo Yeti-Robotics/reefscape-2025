@@ -34,6 +34,7 @@ import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.coral.grabber.GrabberState;
+import frc.robot.subsystems.coral.wrist.WristPositions;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.led.LEDPatterns;
@@ -250,7 +251,10 @@ public class RobotContainer {
         gigaStation
                 .button(15)
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
-
+        gigaStation
+                .button(6)
+                .onTrue(coralManipulator.wrist.transitionTo(WristPositions.SAFE))
+                .onFalse(coralManipulator.wrist.transitionTo(WristPositions.UNSAFE));
         gigaStation
                 .button(4)
                 .onTrue(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT))
