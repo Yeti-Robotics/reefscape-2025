@@ -68,7 +68,7 @@ public class RobotContainer {
     Transform3d camTrans1 =
             new Transform3d(
                     new Translation3d(
-                            Units.inchesToMeters(-9.5),
+                            Units.inchesToMeters(-10),
                             Units.inchesToMeters(-8),
                             Units.inchesToMeters(11)),
                     new Rotation3d(0, Math.toRadians(-15), Math.toRadians(-90)));
@@ -76,7 +76,7 @@ public class RobotContainer {
     Transform3d camTrans2 =
             new Transform3d(
                     new Translation3d(
-                            Units.inchesToMeters(-9.5),
+                            Units.inchesToMeters(-10),
                             Units.inchesToMeters(10),
                             Units.inchesToMeters(11)),
                     new Rotation3d(0, Math.toRadians(-15), Math.toRadians(90)));
