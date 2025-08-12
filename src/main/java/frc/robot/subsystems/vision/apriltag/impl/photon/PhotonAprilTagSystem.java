@@ -32,10 +32,8 @@ public class PhotonAprilTagSystem extends SubsystemBase implements AprilTagSubsy
     private static final double translationBaseStdev = 0.7;
     private static final double rotationBaseStdev = Math.toRadians(30);
 
-    public static final Matrix<N3, N1> kSingleTagStdDevs =
-            VecBuilder.fill(7, 5, 20); // SIM NUMBERS
-    public static final Matrix<N3, N1> kMultiTagStdDevs =
-            VecBuilder.fill(2, 2, 2); // SIM NUMBERS
+    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(7, 5, 20); // SIM NUMBERS
+    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(2, 2, 2); // SIM NUMBERS
 
     private double maxAmbiguity = 0.2;
 
