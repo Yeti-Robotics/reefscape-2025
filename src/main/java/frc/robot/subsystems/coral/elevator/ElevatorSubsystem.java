@@ -31,7 +31,7 @@ public class ElevatorSubsystem
             new TalonFX(ElevatorConfig.primaryElevatorMotorID, RIO_BUS);
     private final TalonFX secondaryElevatorMotor =
             new TalonFX(ElevatorConfig.secondaryElevatorMotorID, RIO_BUS);
-    private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
+//    private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
     private final NeutralOut neutralOut = new NeutralOut();
     private final MotionMagicTorqueCurrentFOC magicRequest =
             new MotionMagicTorqueCurrentFOC(0).withSlot(Robot.isReal() ? 0 : 1);
@@ -49,9 +49,9 @@ public class ElevatorSubsystem
         secondaryElevatorMotor.setControl(
                 new Follower(ElevatorConfig.primaryElevatorMotorID, true));
 
-        new Trigger(this::getMagSwitch)
-                .debounce(2)
-                .onTrue(zeroPosition().andThen(transitionTo(ElevatorPosition.BOTTOM)));
+//        new Trigger(this::getMagSwitch)
+//                .debounce(2)
+//                .onTrue(zeroPosition().andThen(transitionTo(ElevatorPosition.BOTTOM)));
 
         primaryElevatorMotor.setPosition(0);
         secondaryElevatorMotor.setPosition(0);
@@ -59,8 +59,8 @@ public class ElevatorSubsystem
         primaryElevatorMotor.setControl(neutralOut);
 
         if (Robot.isSimulation()) {
-            PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
-            PhysicsSim.getInstance().addTalonFX(secondaryElevatorMotor);
+//            PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
+//            PhysicsSim.getInstance().addTalonFX(secondaryElevatorMotor);
         }
     }
 
@@ -73,9 +73,9 @@ public class ElevatorSubsystem
         return runOnce(() -> primaryElevatorMotor.setPosition(0));
     }
 
-    public boolean getMagSwitch() {
-        return !magSwitch.get();
-    }
+//    public boolean getMagSwitch() {
+//        return !magSwitch.get();
+//    }
 
     @Override
     public StatusSignal<Angle> currentStateSignal() {

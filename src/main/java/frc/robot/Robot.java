@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         robotContainer.updateMechanisms();
-        robotContainer.updateVision();
+//        robotContainer.updateVision();
     }
 
     /** This method is called once each time the robot enters Disabled mode. */
@@ -75,12 +75,12 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        autonomousCommand = robotContainer.getAutonomousCommand();
-        Elastic.selectTab("Autonomous");
-
-        if (autonomousCommand != null) {
-            autonomousCommand.schedule();
-        }
+//        autonomousCommand = robotContainer.getAutonomousCommand();
+//        Elastic.selectTab("Autonomous");
+//
+//        if (autonomousCommand != null) {
+//            autonomousCommand.schedule();
+//        }
     }
 
     /** This method is called periodically during autonomous. */
@@ -124,7 +124,7 @@ public class Robot extends TimedRobot {
     /** This method is called periodically whilst in simulation. */
     @Override
     public void simulationPeriodic() {
-        robotContainer.updateVisionSim();
+//        robotContainer.updateVisionSim();
         PhysicsSim.getInstance().run();
     }
 }

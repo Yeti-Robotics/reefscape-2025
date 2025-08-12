@@ -41,7 +41,7 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
         armEncoder.getConfigurator().apply(ArmConfig.cancoderConfiguration);
 
         if (Robot.isSimulation()) {
-            PhysicsSim.getInstance().addTalonFX(armKraken, armEncoder);
+//            PhysicsSim.getInstance().addTalonFX(armKraken, armEncoder);
         }
     }
 

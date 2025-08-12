@@ -5,7 +5,7 @@ import static frc.robot.constants.Constants.RIO_BUS;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.reduxrobotics.sensors.canandcolor.Canandcolor;
+import com.reduxrobotics.sensors.canandcolor.*;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -15,23 +15,23 @@ import frc.robot.util.state.StatefulSubsystem;
 public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
     private final TalonFX claw = new TalonFX(GrabberConfig.CLAW_ID, RIO_BUS);
     private final DutyCycleOut dutyCycleReq = new DutyCycleOut(0);
-    public final Trigger hasCoralTrigger;
-    public final Trigger doesNotHaveCoralTrigger;
+//    public final Trigger hasCoralTrigger;
+//    public final Trigger doesNotHaveCoralTrigger;
     // private final CurrentLimitsConfigs limit = new CurrentLimitsConfigs()
     // .withStatorCurrentLimit().withSupplyCurrentLimit();
 
-    private final Canandcolor clawSwitch = new Canandcolor(GrabberConfig.GRABBER_CANANDCOLOR);
+    // private final Canandcolor clawSwitch = new Canandcolor(GrabberConfig.GRABBER_CANANDCOLOR);
 
     public GrabberSubsystem() {
         super(GrabberState.OFF);
         claw.getConfigurator().apply(GrabberConfig.coralMotorConfig);
 
-        new Trigger(this::hasCoral).onTrue(transitionTo(GrabberState.OFF));
-        new Trigger(() -> getCurrentState() == GrabberState.ROLL_OUT)
-                .debounce(1)
-                .onTrue(transitionTo(GrabberState.OFF));
-        hasCoralTrigger = new Trigger(() -> hasCoral() && !DriverStation.isAutonomous());
-        doesNotHaveCoralTrigger = new Trigger(this::doesNotHaveCoral);
+//        new Trigger(this::hasCoral).onTrue(transitionTo(GrabberState.OFF));
+//        new Trigger(() -> getCurrentState() == GrabberState.ROLL_OUT)
+//                .debounce(1)
+//                .onTrue(transitionTo(GrabberState.OFF));
+//        hasCoralTrigger = new Trigger(() -> hasCoral() && !DriverStation.isAutonomous());
+//        doesNotHaveCoralTrigger = new Trigger(this::doesNotHaveCoral);
     }
 
     @Override
@@ -45,13 +45,13 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
         return true;
     }
 
-    public boolean hasCoral() {
-        return clawSwitch.getProximity() < 0.2;
-    }
-
-    public boolean doesNotHaveCoral() {
-        return clawSwitch.getProximity() > 0.32;
-    }
+//    public boolean hasCoral() {
+//        return clawSwitch.getProximity() < 0.2;
+//    }
+//
+//    public boolean doesNotHaveCoral() {
+//        return clawSwitch.getProximity() > 0.32;
+//    }
 
     //    public boolean hasAlgae() { return clawSwitch.getProximity(); }
     //

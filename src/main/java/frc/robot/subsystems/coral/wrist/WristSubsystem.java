@@ -36,7 +36,7 @@ public class WristSubsystem
         wristMotor.getConfigurator().apply(WristConfigs.wristMotorConfigs);
         wristEncoder.getConfigurator().apply(WristConfigs.wristEncoderConfigs);
         if (Robot.isSimulation()) {
-            PhysicsSim.getInstance().addTalonFX(wristMotor, wristEncoder);
+//            PhysicsSim.getInstance().addTalonFX(wristMotor, wristEncoder);
         }
         wristMotor.setPosition(WristPositions.SAFE.getAngle());
     }
