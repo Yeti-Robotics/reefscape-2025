@@ -64,62 +64,64 @@ public class CommandGigaStation extends CommandGenericHID {
         return button(GigaButtons.BOTTOM_RIGHT.port);
     }
 
-    //    +--------+---------+---------+---------+
-    //    | Row    | Left    | Right   | Color   |
-    //    +--------+---------+---------+---------+
-    //    | 1st    | BL1     | BR1     | Blue    |
-    //    | 1st    | WL1     | WR1     | White   |
-    //    | 1st    | GL1     | GR1     | Green   |
-    //    | 2nd    | BL2     | BR2     | Blue    |
-    //    | 2nd    | WL2     | WR2     | White   |
-    //    | 2nd    | GL2     | GR2     | Green   |
-    //    +--------+---------+---------+---------+
+    /*
+     +--------+---------+---------+---------+
+     | Row    | Left    | Right   | Color   |
+     +--------+---------+---------+---------+
+     | 1st    | BL1     | BR1     | Blue    |
+     | 1st    | WL1     | WR1     | White   |
+     | 1st    | GL1     | GR1     | Green   |
+     | 2nd    | BL2     | BR2     | Blue    |
+     | 2nd    | WL2     | WR2     | White   |
+     | 2nd    | GL2     | GR2     | Green   |
+     +--------+---------+---------+---------+
+     */
 
-    public Trigger blueLeft1() {
+    public Trigger topLeftBlue() {
         return button(GigaButtons.BL1.port);
     }
 
-    public Trigger blueRight1() {
+    public Trigger topRightBlue() {
         return button(GigaButtons.BR1.port);
     }
 
-    public Trigger whiteLeft1() {
+    public Trigger topLeftWhite() {
         return button(GigaButtons.WL1.port);
     }
 
-    public Trigger whiteRight1() {
+    public Trigger topRightWhite() {
         return button(GigaButtons.WR1.port);
     }
 
-    public Trigger greenLeft1() {
+    public Trigger topLeftGreen() {
         return button(GigaButtons.GL1.port);
     }
 
-    public Trigger greenRight1() {
+    public Trigger topRightGreen() {
         return button(GigaButtons.GR1.port);
     }
 
-    public Trigger blueLeft2() {
+    public Trigger bottomLeftBlue() {
         return button(GigaButtons.BL2.port);
     }
 
-    public Trigger blueRight2() {
+    public Trigger bottomRightBlue() {
         return button(GigaButtons.BR2.port);
     }
 
-    public Trigger whiteLeft2() {
+    public Trigger bottomLeftWhite() {
         return button(GigaButtons.WL2.port);
     }
 
-    public Trigger whiteRight2() {
+    public Trigger bottomRightWhite() {
         return button(GigaButtons.WR2.port);
     }
 
-    public Trigger greenLeft2() {
+    public Trigger bottomLeftGreen() {
         return button(GigaButtons.GL2.port);
     }
 
-    public Trigger greenRight2() {
+    public Trigger bottomRightGreen() {
         return button(GigaButtons.GR2.port);
     }
 
