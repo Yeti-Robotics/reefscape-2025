@@ -35,12 +35,13 @@ public class AutoCommands {
         return lineF.isEmpty()
                 ? Commands.none()
                 : AutoBuilder.followPath(lineF.get())
-                        .andThen(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT))
+                        .andThen(
+                                reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT).withTimeout(1))
                         .andThen(reefAlignPPOTF.reefAlign())
                         .andThen(
                                 coralManipulator
                                         .transitionTo(CoralManipulatorState.L4)
-                                        .withTimeout(0.5))
+                                        .withTimeout(1))
                         .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
                         .andThen(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
     }
@@ -133,19 +134,54 @@ public class AutoCommands {
         return auto;
     }
 
+    public Command skipLeft() {
+        Optional<PathPlannerPath> skipLeft = PathPlannerUtils.loadPathByName("skipLeft");
+        Optional<PathPlannerPath> AtoLolli2 = PathPlannerUtils.loadPathByName("AtoLolli2");
+
+        if (skipLeft.isEmpty() || AtoLolli2.isEmpty()) return Commands.none();
+
+        Command skipLeftAutoCommand = (AutoBuilder.followPath(skipLeft.get()));
+        Command aToLolli2AutoCommand = (AutoBuilder.followPath(AtoLolli2.get()));
+
+        return Commands.sequence(
+                skipLeftAutoCommand,
+                reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT),
+                reefAlignPPOTF.reefAlign().withTimeout(3),
+                coralManipulator.transitionTo(CoralManipulatorState.CLIMB_L4),
+                Commands.waitSeconds(0.5),
+                coralManipulator.transitionTo(CoralManipulatorState.SCORE_CLIMB_L4),
+                coralManipulator
+                        .transitionTo(CoralManipulatorState.STOWED)
+                        .andThen(Commands.print("stowed?"))
+                        .andThen(aToLolli2AutoCommand)
+                        .andThen(coralManipulator.transitionTo(CoralManipulatorState.STOWED))
+                        .andThen(
+                                Commands.sequence(
+                                        reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT),
+                                        reefAlignPPOTF.reefAlign().withTimeout(3),
+                                        coralManipulator.transitionTo(
+                                                CoralManipulatorState.CLIMB_L4),
+                                        Commands.waitSeconds(0.5),
+                                        coralManipulator.transitionTo(
+                                                CoralManipulatorState.SCORE_CLIMB_L4),
+                                        coralManipulator.transitionTo(
+                                                CoralManipulatorState.STOWED))));
+    }
+
     public Command left1Pc() {
         Optional<PathPlannerPath> lineJ = PathPlannerUtils.loadPathByName("lineJ");
+
         return lineJ.isEmpty()
                 ? Commands.none()
                 : AutoBuilder.followPath(lineJ.get())
-                        .andThen(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT))
+                        .andThen(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT))
                         .andThen(reefAlignPPOTF.reefAlign())
                         .andThen(coralManipulator.transitionTo(CoralManipulatorState.L4))
                         .andThen(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4))
                         .andThen(
                                 coralManipulator
                                         .transitionTo(CoralManipulatorState.STOWED)
-                                        .withTimeout(0.5));
+                                        .withTimeout(1));
     }
 
     public Command driveForward() {
@@ -168,6 +204,12 @@ public class AutoCommands {
                                         .withTimeout(0.5));
     }
 
+    public Command lolli() {
+        Optional<PathPlannerPath> AtoLolli2 = PathPlannerUtils.loadPathByName("AtoLolli2");
+
+        return AtoLolli2.isEmpty() ? Commands.none() : AutoBuilder.followPath(AtoLolli2.get());
+    }
+
     public SendableChooser<Command> buildAutoCommandChooser() {
         SendableChooser<Command> auto = new SendableChooser<>();
         auto.addOption("Right 1 Piece", right1Pc());
@@ -176,6 +218,8 @@ public class AutoCommands {
         auto.addOption("Left 2 Piece Lollipop", left2PcLolli());
         auto.addOption("Mid 1 Piece", mid1Pc());
         auto.addOption("Drive forward", driveForward());
+        auto.addOption("Skip Left", skipLeft());
+        auto.addOption("lol2", lolli());
 
         auto.setDefaultOption("Drive forward", driveForward());
         return auto;

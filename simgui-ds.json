@@ -1,9 +1,4 @@
 {
-  "Keyboard 0 Settings": {
-    "window": {
-      "visible": true
-    }
-  },
   "keyboardJoysticks": [
     {
       "axisConfig": [
@@ -26,7 +21,7 @@
         }
       ],
       "axisCount": 5,
-      "buttonCount": 10,
+      "buttonCount": 15,
       "buttonKeys": [
         49,
         50,
@@ -37,7 +32,12 @@
         55,
         56,
         57,
-        48
+        48,
+        45,
+        90,
+        88,
+        67,
+        86
       ],
       "povConfig": [
         {
@@ -102,6 +102,8 @@
     }
   ],
   "robotJoysticks": [
+    {},
+    {},
     {
       "guid": "78696e70757401000000000000000000",
       "useGamepad": true
@@ -113,5 +115,7 @@
     {
       "guid": "03000000412300006602000000000000"
     }
-  ]
+  ],
+  "useEnableDisableHotkeys": true,
+  "useEstopHotkey": true
 }

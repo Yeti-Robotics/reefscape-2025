@@ -106,7 +106,7 @@ public class TunerConstants {
     public final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     public final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    // protected static final Telemetry logger = new Telemetry(MAX_VELOCITY_METERS_PER_SECOND);
+    //  protected static final Telemetry logger = new Telemetry(MAX_VELOCITY_METERS_PER_SECOND);
     //
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
