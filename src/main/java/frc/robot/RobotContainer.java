@@ -246,14 +246,18 @@ public class RobotContainer {
         gigaStation
                 .bottomRightGreen()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        gigaStation.bottomRightWhite().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+        gigaStation
+                .bottomRightWhite()
+                .onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         gigaStation
                 .bottomLeftGreen()
                 .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ALGAE_SHOOT));
         gigaStation.topLeftBlue().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
         gigaStation.topRightBlue().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
         gigaStation.topLeftWhite().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
-        gigaStation.topRightWhite().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        gigaStation
+                .topRightWhite()
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
         gigaStation
                 .topRightSwitch()
                 .onTrue(leds.runPattern(LEDPatterns.NICK_MODE))
