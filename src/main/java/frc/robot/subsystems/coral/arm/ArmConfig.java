@@ -16,12 +16,13 @@ class ArmConfig {
 
     private static final Slot0Configs SLOT_0_REAL_CONFIGS =
             new Slot0Configs()
-                    .withKP(1100)
+                    .withKP(500)
                     .withKI(0)
-                    .withKD(350)
-                    .withKG(10)
-                    .withKV(8)
-                    .withKA(12)
+                    .withKD(9)
+                    .withKG(9.95)
+                    .withKV(0)
+                    .withKA(5)
+                    .withKS(1)
                     .withGravityType(GravityTypeValue.Arm_Cosine);
 
     static final Slot1Configs SLOT_1_WOOD_CONFIGS =
@@ -45,8 +46,8 @@ class ArmConfig {
 
     static final MotionMagicConfigs motionMagicConfigs =
             new MotionMagicConfigs()
-                    .withMotionMagicCruiseVelocity(4)
-                    .withMotionMagicAcceleration(3)
+                    .withMotionMagicCruiseVelocity(1)
+                    .withMotionMagicAcceleration(2)
                     .withMotionMagicJerk(0);
 
     static final TalonFXConfiguration talonFXConfiguration =
