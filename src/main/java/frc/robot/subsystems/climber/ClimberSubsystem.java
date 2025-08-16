@@ -18,7 +18,7 @@ public class ClimberSubsystem extends SubsystemBase {
     public final double unClimbSpeed = -0.7;
 
     public ClimberSubsystem() {
-        climber = new TalonFX(climberId, Constants.RIO_BUS);
+        climber = new TalonFX(climberId, Constants.SYSCORE_0_BUS);
         magicRequest = new MotionMagicTorqueCurrentFOC(0);
 
         climber.getConfigurator().apply(climberTalonFXConfigs);

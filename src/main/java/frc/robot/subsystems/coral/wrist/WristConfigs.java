@@ -10,16 +10,16 @@ class WristConfigs {
     static final double WRIST_TOLERANCE = 0.1;
     static final int WRIST_KRAKEN_ID = 19;
     static final int WRIST_CANCODER_ID = 42;
-    static final double MAGNET_OFFSET = -0.386963;
+    static final double MAGNET_OFFSET = 0.248779;
 
     static final Slot0Configs SLOT_0_CONFIGS =
             new Slot0Configs()
-                    .withKP(44)
+                    .withKP(100)
                     .withKI(0)
-                    .withKD(5)
-                    .withKS(0)
+                    .withKD(2)
+                    .withKS(5)
                     .withKV(0)
-                    .withKA(0)
+                    .withKA(1)
                     .withKG(0);
 
     static final Slot1Configs SLOT_1_CONFIGS_SIM =
@@ -34,14 +34,14 @@ class WristConfigs {
 
     static final FeedbackConfigs FEEDBACK_CONFIGS =
             new FeedbackConfigs()
-                    .withRotorToSensorRatio(5)
-                    .withSensorToMechanismRatio(2.75)
+                    .withRotorToSensorRatio(16)
+                    .withSensorToMechanismRatio(2)
                     .withFeedbackRemoteSensorID(WRIST_CANCODER_ID)
                     .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder);
 
     static final MotorOutputConfigs MOTOR_OUTPUT_CONFIGS =
             new MotorOutputConfigs()
-                    .withInverted(InvertedValue.Clockwise_Positive)
+                    .withInverted(InvertedValue.CounterClockwise_Positive)
                     .withNeutralMode(NeutralModeValue.Brake);
 
     static final TalonFXConfiguration wristMotorConfigs =
@@ -57,5 +57,5 @@ class WristConfigs {
                             new MagnetSensorConfigs()
                                     .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
                                     .withMagnetOffset(MAGNET_OFFSET)
-                                    .withAbsoluteSensorDiscontinuityPoint(0.625));
+                                    .withAbsoluteSensorDiscontinuityPoint(0.375));
 }

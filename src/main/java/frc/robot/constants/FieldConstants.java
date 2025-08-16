@@ -18,19 +18,15 @@ public class FieldConstants {
     // license that can be found in the LICENSE file at
     // the root directory of this project.
 
-    public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT;
+    public static AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT;
 
     static {
-        try {
-            if (Robot.isReal()) {
-                APRIL_TAG_FIELD_LAYOUT =
-                        new AprilTagFieldLayout("/home/lvuser/deploy/practice_field.json");
-            } else {
-                APRIL_TAG_FIELD_LAYOUT =
-                        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (Robot.isReal()) {
+            APRIL_TAG_FIELD_LAYOUT =
+                    AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField); // TODO: FIX THIS LATER
+        } else {
+            APRIL_TAG_FIELD_LAYOUT =
+                    AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
         }
     }
 

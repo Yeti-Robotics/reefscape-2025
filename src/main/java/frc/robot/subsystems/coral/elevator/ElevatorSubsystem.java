@@ -1,6 +1,6 @@
 package frc.robot.subsystems.coral.elevator;
 
-import static frc.robot.constants.Constants.RIO_BUS;
+import static frc.robot.constants.Constants.SYSCORE_0_BUS;
 import static frc.robot.subsystems.coral.elevator.ElevatorConfig.*;
 
 import com.ctre.phoenix6.StatusCode;
@@ -14,7 +14,6 @@ import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.MutAngle;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
@@ -28,10 +27,10 @@ public class ElevatorSubsystem
         extends StatefulSetpointSubsystem<ElevatorPosition, AngleUnit, Angle, MutAngle>
         implements SimulatableMechanism {
     private final TalonFX primaryElevatorMotor =
-            new TalonFX(ElevatorConfig.primaryElevatorMotorID, RIO_BUS);
+            new TalonFX(ElevatorConfig.primaryElevatorMotorID, SYSCORE_0_BUS);
     private final TalonFX secondaryElevatorMotor =
-            new TalonFX(ElevatorConfig.secondaryElevatorMotorID, RIO_BUS);
-//    private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
+            new TalonFX(ElevatorConfig.secondaryElevatorMotorID, SYSCORE_0_BUS);
+//    private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID); // TODO: DIO PORTS MAGSWITCH ON SYSCORE
     private final NeutralOut neutralOut = new NeutralOut();
     private final MotionMagicTorqueCurrentFOC magicRequest =
             new MotionMagicTorqueCurrentFOC(0).withSlot(Robot.isReal() ? 0 : 1);
@@ -49,9 +48,9 @@ public class ElevatorSubsystem
         secondaryElevatorMotor.setControl(
                 new Follower(ElevatorConfig.primaryElevatorMotorID, true));
 
-//        new Trigger(this::getMagSwitch)
-//                .debounce(2)
-//                .onTrue(zeroPosition().andThen(transitionTo(ElevatorPosition.BOTTOM)));
+        new Trigger(this::getMagSwitch)
+                .debounce(2)
+                .onTrue(zeroPosition().andThen(transitionTo(ElevatorPosition.BOTTOM)));
 
         primaryElevatorMotor.setPosition(0);
         secondaryElevatorMotor.setPosition(0);
@@ -59,8 +58,8 @@ public class ElevatorSubsystem
         primaryElevatorMotor.setControl(neutralOut);
 
         if (Robot.isSimulation()) {
-//            PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
-//            PhysicsSim.getInstance().addTalonFX(secondaryElevatorMotor);
+            PhysicsSim.getInstance().addTalonFX(primaryElevatorMotor);
+            PhysicsSim.getInstance().addTalonFX(secondaryElevatorMotor);
         }
     }
 
@@ -73,9 +72,9 @@ public class ElevatorSubsystem
         return runOnce(() -> primaryElevatorMotor.setPosition(0));
     }
 
-//    public boolean getMagSwitch() {
-//        return !magSwitch.get();
-//    }
+    public boolean getMagSwitch() {
+        return false;
+    }
 
     @Override
     public StatusSignal<Angle> currentStateSignal() {

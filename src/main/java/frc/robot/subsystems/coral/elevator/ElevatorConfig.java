@@ -14,13 +14,13 @@ class ElevatorConfig {
 
     private static final Slot0Configs SLOT_0_REAL_CONFIGS =
             new Slot0Configs()
-                    .withKP(256)
+                    .withKP(0)
                     .withKI(0)
-                    .withKD(32)
-                    .withKG(91.5)
-                    .withKV(7)
-                    .withKA(2)
-                    .withKS(14)
+                    .withKD(0)
+                    .withKG(0)
+                    .withKV(0)
+                    .withKA(0)
+                    .withKS(0)
                     .withGravityType(GravityTypeValue.Elevator_Static);
     private static final Slot1Configs SLOT_1_SIM_CONFIGS =
             new Slot1Configs()

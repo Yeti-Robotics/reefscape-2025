@@ -20,19 +20,19 @@ public class PhysicsSim {
      *
      * @param talonFX The TalonFX device
      */
-//    public void addTalonFX(TalonFX talonFX) {
-//        if (talonFX != null) {
-//            TalonFXSimProfile simTalonFX = new TalonFXSimProfile(talonFX, 0.001);
-//            simProfiles.add(simTalonFX);
-//        }
-//    }
-//
-//    public void addTalonFX(TalonFX talonFX, CANcoder cancoder) {
-//        if (talonFX != null && cancoder != null) {
-//            TalonFXSimProfile simTalonFX = new TalonFXSimProfile(talonFX, 0.001, cancoder);
-//            simProfiles.add(simTalonFX);
-//        }
-//    }
+    public void addTalonFX(TalonFX talonFX) {
+        if (talonFX != null) {
+            TalonFXSimProfile simTalonFX = new TalonFXSimProfile(talonFX, 0.001);
+            simProfiles.add(simTalonFX);
+        }
+    }
+
+    public void addTalonFX(TalonFX talonFX, CANcoder cancoder) {
+        if (talonFX != null && cancoder != null) {
+            TalonFXSimProfile simTalonFX = new TalonFXSimProfile(talonFX, 0.001, cancoder);
+            simProfiles.add(simTalonFX);
+        }
+    }
 
     /** Runs the simulator: - enable the robot - simulate sensors */
     public void run() {

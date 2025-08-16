@@ -189,7 +189,7 @@ public class CoralManipulatorSystem extends StatefulSubsystem<CoralManipulatorSt
                         || targetState == CoralManipulatorState.SCORE_L2
                         || targetState == CoralManipulatorState.SCORE_L3
                         || targetState == CoralManipulatorState.SCORE_L4)) {
-            targetState = CoralManipulatorState.BARGE;
+            targetState = CoralManipulatorState.PROCESSOR;
         }
 
         //  if (getCurrentState() == targetState) return StatusCode.OK;

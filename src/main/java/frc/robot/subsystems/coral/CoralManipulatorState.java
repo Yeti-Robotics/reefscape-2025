@@ -71,7 +71,13 @@ public enum CoralManipulatorState {
             ArmPosition.ALGAE_STOW,
             ElevatorPosition.BOTTOM,
             GrabberState.ALGAE_HOLD,
-            WristPositions.UNSAFE);
+            WristPositions.UNSAFE),
+    PROCESSOR(
+            ArmPosition.PROCESSOR,
+            ElevatorPosition.BOTTOM,
+            GrabberState.ALGAE_HOLD,
+            WristPositions.UNSAFE
+    );
 
     private final ArmPosition armPosition;
     private final ElevatorPosition elevatorPosition;
