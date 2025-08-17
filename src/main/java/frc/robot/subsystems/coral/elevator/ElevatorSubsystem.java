@@ -14,6 +14,8 @@ import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
@@ -30,7 +32,7 @@ public class ElevatorSubsystem
             new TalonFX(ElevatorConfig.primaryElevatorMotorID, SYSCORE_0_BUS);
     private final TalonFX secondaryElevatorMotor =
             new TalonFX(ElevatorConfig.secondaryElevatorMotorID, SYSCORE_0_BUS);
-//    private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID); // TODO: DIO PORTS MAGSWITCH ON SYSCORE
+    private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
     private final NeutralOut neutralOut = new NeutralOut();
     private final MotionMagicTorqueCurrentFOC magicRequest =
             new MotionMagicTorqueCurrentFOC(0).withSlot(Robot.isReal() ? 0 : 1);
@@ -66,6 +68,7 @@ public class ElevatorSubsystem
     @Override
     public void runPeriodic() {
         super.runPeriodic();
+        SmartDashboard.putBoolean("MAGSWITCH TRIGGERED?", !magSwitch.get());
     }
 
     private Command zeroPosition() {
@@ -73,7 +76,7 @@ public class ElevatorSubsystem
     }
 
     public boolean getMagSwitch() {
-        return false;
+        return !magSwitch.get();
     }
 
     @Override

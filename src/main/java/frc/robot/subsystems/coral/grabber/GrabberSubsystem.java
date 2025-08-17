@@ -5,6 +5,7 @@ import static frc.robot.constants.Constants.SYSCORE_0_BUS;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -19,7 +20,7 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
 //     private final CurrentLimitsConfigs limit = new CurrentLimitsConfigs()
 //     .withStatorCurrentLimit().withSupplyCurrentLimit();
 
-//     private final Canandcolor clawSwitch = new Canandcolor(GrabberConfig.GRABBER_CANANDCOLOR);
+     private final Canandcolor clawSwitch = new Canandcolor(GrabberConfig.GRABBER_CANANDCOLOR);
 
     public GrabberSubsystem() {
         super(GrabberState.OFF);
@@ -45,11 +46,11 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
     }
 
     public boolean hasCoral() {
-        return false; // clawSwitch.getProximity() < 0.2;
+        return clawSwitch.getProximity() < 0.2;
     }
 
     public boolean doesNotHaveCoral() {
-        return false; //clawSwitch.getProximity() > 0.32;
+        return clawSwitch.getProximity() > 0.32;
     }
 
     public boolean hasAlgae() { return false; /*return clawSwitch.getProximity() > 0;*/ }
