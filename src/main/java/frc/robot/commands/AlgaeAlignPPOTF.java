@@ -144,7 +144,7 @@ public class AlgaeAlignPPOTF {
 
     private LinearVelocity getChassisVelocity(ChassisSpeeds chassisSpeeds) {
         return MetersPerSecond.of(
-                new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
+                new Translation2d(chassisSpeeds.vx, chassisSpeeds.vy)
                         .getNorm());
     }
 

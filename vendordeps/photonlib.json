@@ -1,9 +1,9 @@
 {
   "fileName": "photonlib.json",
   "name": "photonlib",
-  "version": "v2025.3.1-rc2",
+  "version": "dev-v2025.3.2-39-gcf7413a1",
   "uuid": "515fe07e-bfc6-11fa-b3de-0242ac130004",
-  "frcYear": "2025",
+  "frcYear": "2027_alpha1",
   "mavenUrls": [
     "https://maven.photonvision.org/repository/internal",
     "https://maven.photonvision.org/repository/snapshots"
@@ -13,12 +13,12 @@
     {
       "groupId": "org.photonvision",
       "artifactId": "photontargeting-cpp",
-      "version": "v2025.3.1-rc2",
+      "version": "dev-v2025.3.2-39-gcf7413a1",
       "skipInvalidPlatforms": true,
       "isJar": false,
       "validPlatforms": [
         "windowsx86-64",
-        "linuxathena",
+        "linuxsystemcore",
         "linuxx86-64",
         "osxuniversal"
       ]
@@ -28,14 +28,14 @@
     {
       "groupId": "org.photonvision",
       "artifactId": "photonlib-cpp",
-      "version": "v2025.3.1-rc2",
+      "version": "dev-v2025.3.2-39-gcf7413a1",
       "libName": "photonlib",
       "headerClassifier": "headers",
       "sharedLibrary": true,
       "skipInvalidPlatforms": true,
       "binaryPlatforms": [
         "windowsx86-64",
-        "linuxathena",
+        "linuxsystemcore",
         "linuxx86-64",
         "osxuniversal"
       ]
@@ -43,14 +43,14 @@
     {
       "groupId": "org.photonvision",
       "artifactId": "photontargeting-cpp",
-      "version": "v2025.3.1-rc2",
+      "version": "dev-v2025.3.2-39-gcf7413a1",
       "libName": "photontargeting",
       "headerClassifier": "headers",
       "sharedLibrary": true,
       "skipInvalidPlatforms": true,
       "binaryPlatforms": [
         "windowsx86-64",
-        "linuxathena",
+        "linuxsystemcore",
         "linuxx86-64",
         "osxuniversal"
       ]
@@ -60,12 +60,12 @@
     {
       "groupId": "org.photonvision",
       "artifactId": "photonlib-java",
-      "version": "v2025.3.1-rc2"
+      "version": "dev-v2025.3.2-39-gcf7413a1"
     },
     {
       "groupId": "org.photonvision",
       "artifactId": "photontargeting-java",
-      "version": "v2025.3.1-rc2"
+      "version": "dev-v2025.3.2-39-gcf7413a1"
     }
   ]
 }

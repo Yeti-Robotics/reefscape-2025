@@ -29,7 +29,7 @@ public class LEDSubsystem extends SubsystemBase {
         ledFlame = new LEDFlame(ledStrip, ledBuffer);
         ledStrip.setLength(ledBuffer.getLength());
         ledStrip.setData(ledBuffer);
-        ledStrip.start();
+        ledStrip.setStart(0);
 
         setDefaultCommand(run(this::updateProgress).ignoringDisable(true));
 

@@ -125,9 +125,9 @@ public class Telemetry {
         m_poseArray[2] = state.Pose.getRotation().getDegrees();
         for (int i = 0; i < 4; ++i) {
             m_moduleStatesArray[i * 2 + 0] = state.ModuleStates[i].angle.getRadians();
-            m_moduleStatesArray[i * 2 + 1] = state.ModuleStates[i].speedMetersPerSecond;
+            m_moduleStatesArray[i * 2 + 1] = state.ModuleStates[i].speed;
             m_moduleTargetsArray[i * 2 + 0] = state.ModuleTargets[i].angle.getRadians();
-            m_moduleTargetsArray[i * 2 + 1] = state.ModuleTargets[i].speedMetersPerSecond;
+            m_moduleTargetsArray[i * 2 + 1] = state.ModuleTargets[i].speed;
         }
 
         SignalLogger.writeDoubleArray("DriveState/Pose", m_poseArray);
@@ -144,7 +144,7 @@ public class Telemetry {
             m_moduleSpeeds[i].setAngle(state.ModuleStates[i].angle);
             m_moduleDirections[i].setAngle(state.ModuleStates[i].angle);
             m_moduleSpeeds[i].setLength(
-                    state.ModuleStates[i].speedMetersPerSecond / (2 * MaxSpeed));
+                    state.ModuleStates[i].speed / (2 * MaxSpeed));
 
             SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
         }

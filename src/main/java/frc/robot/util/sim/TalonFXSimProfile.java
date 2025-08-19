@@ -52,9 +52,9 @@ class TalonFXSimProfile extends PhysicsSim.SimProfile {
         motorSim.update(getPeriod());
 
         /// SET SIM PHYSICS INPUTS
-        final double position_rot = motorSim.getAngularPositionRotations();
+        final double position_rot = motorSim.getAngularPosition();
         final double velocity_rps =
-                Units.radiansToRotations(motorSim.getAngularVelocityRadPerSec());
+                Units.radiansToRotations(motorSim.getAngularVelocity());
 
         if (cancoderSimState != null) {
             cancoderSimState.setRawPosition(position_rot);

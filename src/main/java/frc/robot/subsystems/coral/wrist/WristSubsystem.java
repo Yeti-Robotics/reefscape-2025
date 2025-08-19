@@ -22,7 +22,7 @@ import frc.robot.util.state.StatefulSetpointSubsystem;
 public class WristSubsystem
         extends StatefulSetpointSubsystem<WristPositions, AngleUnit, Angle, MutAngle>
         implements SimulatableMechanism {
-    private final TalonFX wristMotor = new TalonFX(WristConfigs.WRIST_KRAKEN_ID, Constants.RIO_BUS);
+    private final TalonFX wristMotor = new TalonFX(WristConfigs.WRIST_KRAKEN_ID, Constants.SYSCORE_0_BUS);
     private final CANcoder wristEncoder = new CANcoder(WristConfigs.WRIST_CANCODER_ID);
     private final StatusSignal<Angle> wristPosition = wristMotor.getPosition();
     private final StatusSignal<Double> targetWristPosition = wristMotor.getClosedLoopReference();

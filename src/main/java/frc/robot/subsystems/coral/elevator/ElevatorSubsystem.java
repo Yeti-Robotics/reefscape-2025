@@ -1,6 +1,5 @@
 package frc.robot.subsystems.coral.elevator;
 
-import static frc.robot.constants.Constants.RIO_BUS;
 import static frc.robot.subsystems.coral.elevator.ElevatorConfig.*;
 
 import com.ctre.phoenix6.StatusCode;
@@ -18,6 +17,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
+import frc.robot.constants.Constants;
 import frc.robot.util.sim.PhysicsSim;
 import frc.robot.util.sim.SimulatableMechanism;
 import frc.robot.util.state.StateUtils;
@@ -28,9 +28,9 @@ public class ElevatorSubsystem
         extends StatefulSetpointSubsystem<ElevatorPosition, AngleUnit, Angle, MutAngle>
         implements SimulatableMechanism {
     private final TalonFX primaryElevatorMotor =
-            new TalonFX(ElevatorConfig.primaryElevatorMotorID, RIO_BUS);
+            new TalonFX(ElevatorConfig.primaryElevatorMotorID, Constants.SYSCORE_0_BUS);
     private final TalonFX secondaryElevatorMotor =
-            new TalonFX(ElevatorConfig.secondaryElevatorMotorID, RIO_BUS);
+            new TalonFX(ElevatorConfig.secondaryElevatorMotorID, Constants.SYSCORE_0_BUS);
     private final DigitalInput magSwitch = new DigitalInput(ElevatorConfig.magSwitchID);
     private final NeutralOut neutralOut = new NeutralOut();
     private final MotionMagicTorqueCurrentFOC magicRequest =

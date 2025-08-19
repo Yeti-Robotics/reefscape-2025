@@ -1,5 +1,6 @@
 package frc.robot.subsystems.coral.arm;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.*;
@@ -21,7 +22,7 @@ import frc.robot.util.state.StatefulSetpointSubsystem;
 @Logged
 public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUnit, Angle, MutAngle>
         implements SimulatableMechanism {
-    private final TalonFX armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.RIO_BUS);
+    private final TalonFX armKraken = new TalonFX(ArmConfig.ARM_KRAKEN_ID, Constants.SYSCORE_0_BUS);
     private final NeutralOut neutralOut = new NeutralOut();
     private final MotionMagicTorqueCurrentFOC magicRequest =
             new MotionMagicTorqueCurrentFOC(0).withSlot(0);
@@ -36,7 +37,7 @@ public class ArmSubsystem extends StatefulSetpointSubsystem<ArmPosition, AngleUn
                 StateUtils.mutableRotationSetpoint(),
                 Units.Rotations.of(ArmConfig.ANGLE_TOLERANCE));
         armKraken.getConfigurator().apply(ArmConfig.talonFXConfiguration);
-        armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.RIO_BUS);
+        armEncoder = new CANcoder(ArmConfig.ARM_CANCODER_ID, Constants.SYSCORE_0_BUS);
 
         armEncoder.getConfigurator().apply(ArmConfig.cancoderConfiguration);
 

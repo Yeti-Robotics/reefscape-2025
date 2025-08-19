@@ -5,6 +5,8 @@
 
 package frc.robot.constants;
 
+import com.ctre.phoenix6.CANBus;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -16,7 +18,7 @@ package frc.robot.constants;
 public final class Constants {
     public static final int PRIMARY_XBOX_CONTROLLER_PORT = 0;
     public static final String CANIVORE_BUS = "canivoreBus";
-    public static final String RIO_BUS = "rio";
+    public static final CANBus SYSCORE_0_BUS = new CANBus("can_s0");
     public static final int SECONDARY_XBOX_CONTROLLER_PORT = 1;
     public static final int GIGA_PORT = 3;
 }
