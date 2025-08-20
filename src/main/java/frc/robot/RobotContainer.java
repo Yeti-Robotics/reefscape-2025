@@ -239,14 +239,18 @@ public class RobotContainer {
         gigaStation
                 .bottomRightGreen()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        gigaStation.bottomRightWhite().onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
+        gigaStation
+                .bottomRightWhite()
+                .onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         gigaStation
                 .bottomLeftGreen()
                 .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ALGAE_SHOOT));
         gigaStation.topLeftBlue().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
         gigaStation.topRightBlue().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
         gigaStation.topLeftWhite().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
-        gigaStation.topRightWhite().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
+        gigaStation
+                .topRightWhite()
+                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
         gigaStation
                 .topRightSwitch()
                 .onTrue(leds.runPattern(LEDPatterns.NICK_MODE))
@@ -308,6 +312,8 @@ public class RobotContainer {
         simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));
         simJoy.button(3).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L3));
         simJoy.button(4).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L4));
+        simJoy.button(12).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB_L3));
+        simJoy.button(13).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB_L4));
         simJoy.button(5).onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
         simJoy.button(6).onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
         simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));

@@ -65,17 +65,17 @@ public class CommandGigaStation extends CommandGenericHID {
     }
 
     /*
-     +--------+---------+---------+---------+
-     | Row    | Left    | Right   | Color   |
-     +--------+---------+---------+---------+
-     | 1st    | BL1     | BR1     | Blue    |
-     | 1st    | WL1     | WR1     | White   |
-     | 1st    | GL1     | GR1     | Green   |
-     | 2nd    | BL2     | BR2     | Blue    |
-     | 2nd    | WL2     | WR2     | White   |
-     | 2nd    | GL2     | GR2     | Green   |
-     +--------+---------+---------+---------+
-     */
+    +--------+---------+---------+---------+
+    | Row    | Left    | Right   | Color   |
+    +--------+---------+---------+---------+
+    | 1st    | BL1     | BR1     | Blue    |
+    | 1st    | WL1     | WR1     | White   |
+    | 1st    | GL1     | GR1     | Green   |
+    | 2nd    | BL2     | BR2     | Blue    |
+    | 2nd    | WL2     | WR2     | White   |
+    | 2nd    | GL2     | GR2     | Green   |
+    +--------+---------+---------+---------+
+    */
 
     public Trigger topLeftBlue() {
         return button(GigaButtons.BL1.port);
