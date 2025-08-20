@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.730122950819672,
-        "y": 5.829149590163934
+        "x": 7.240573770491803,
+        "y": 7.255686475409835
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.918372950819672,
-        "y": 6.333399590163934
+        "x": 4.962909836065573,
+        "y": 7.375563524590163
       },
       "isLocked": false,
-      "linkedName": "jReef"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.733,
-        "y": 5.8838263358778615
+        "x": 2.697233606557377,
+        "y": 4.04298155737705
       },
       "prevControl": {
-        "x": 2.7905000000000006,
-        "y": 6.227076335877862
+        "x": 1.8101434426229508,
+        "y": 6.308657786885245
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "lolliL"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "Stow",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -45,7 +45,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 2.5,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -60,7 +60,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 150.0
+    "rotation": 135.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
