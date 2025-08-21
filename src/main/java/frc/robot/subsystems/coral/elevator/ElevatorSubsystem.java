@@ -14,6 +14,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
@@ -67,6 +68,7 @@ public class ElevatorSubsystem
     @Override
     public void runPeriodic() {
         super.runPeriodic();
+        SmartDashboard.putBoolean("Mag Switch", getMagSwitch());
     }
 
     private Command zeroPosition() {
@@ -74,7 +76,7 @@ public class ElevatorSubsystem
     }
 
     public boolean getMagSwitch() {
-        return !magSwitch.get();
+        return magSwitch.get();
     }
 
     @Override

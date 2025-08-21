@@ -9,7 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 class ElevatorConfig {
     static final int primaryElevatorMotorID = 9;
     static final int secondaryElevatorMotorID = 11;
-    static final int magSwitchID = 6;
+    static final int magSwitchID = 0;
     static final double gearRatio = 44.0 / 18.0;
 
     private static final Slot0Configs SLOT_0_REAL_CONFIGS =
