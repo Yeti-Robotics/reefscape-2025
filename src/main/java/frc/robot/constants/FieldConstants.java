@@ -24,7 +24,7 @@ public class FieldConstants {
         try {
             if (Robot.isReal()) {
                 APRIL_TAG_FIELD_LAYOUT =
-                        new AprilTagFieldLayout("/home/lvuser/deploy/practice_field.json");
+                        new AprilTagFieldLayout("/home/systemcore/deploy/practice_field.json");
             } else {
                 APRIL_TAG_FIELD_LAYOUT =
                         AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
