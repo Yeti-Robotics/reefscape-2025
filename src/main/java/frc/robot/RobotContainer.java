@@ -243,10 +243,10 @@ public class RobotContainer {
                 .bottomRightWhite()
                 .onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         gigaStation
-                .bottomLeftGreen()
+                .bottomLeftBlue()
                 .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ALGAE_SHOOT));
-        gigaStation.topLeftBlue().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
-        gigaStation.topRightBlue().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
+        gigaStation.topLeftGreen().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
+        gigaStation.topRightGreen().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
         gigaStation.topLeftWhite().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
         gigaStation
                 .topRightWhite()
@@ -270,13 +270,13 @@ public class RobotContainer {
                 .bottomMiddleSwitch()
                 .onTrue(coralManipulator.setMode(CoralManipulatorSystem.Mode.ALGAE))
                 .onFalse(coralManipulator.setMode(CoralManipulatorSystem.Mode.CORAL));
-        gigaStation.bottomLeftBlue().whileTrue(climber.spinClimber(climber.climbSpeed));
-        gigaStation.bottomRightBlue().whileTrue(climber.spinClimber(climber.unClimbSpeed));
+        gigaStation.bottomLeftGreen().whileTrue(climber.spinClimber(climber.climbSpeed));
+        gigaStation.bottomRightGreen().whileTrue(climber.spinClimber(climber.unClimbSpeed));
         gigaStation
-                .topLeftGreen()
+                .topLeftBlue()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAE_HIGH));
         gigaStation
-                .topRightGreen()
+                .topRightBlue()
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ALL_IN));
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(

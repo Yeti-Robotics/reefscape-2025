@@ -76,7 +76,7 @@ public class ElevatorSubsystem
     }
 
     public boolean getMagSwitch() {
-        return magSwitch.get();
+        return !magSwitch.get();
     }
 
     @Override
