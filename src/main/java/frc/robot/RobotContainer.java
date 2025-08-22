@@ -89,7 +89,7 @@ public class RobotContainer {
     @Logged(name = "Vision/ScoreCam")
     public final PhotonAprilTagSystem scoreCam;
 
-    public LEDSubsystem leds;
+//    public LEDSubsystem leds;
 
     @Logged(name = "CoralManipulator")
     final CoralManipulatorSystem coralManipulator;
@@ -142,9 +142,9 @@ public class RobotContainer {
         //        limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         coralManipulator = new CoralManipulatorSystem();
         climber = new ClimberSubsystem();
-        leds = new LEDSubsystem();
-        new Trigger(coralManipulator::isTransitioning)
-                .whileFalse(leds.selectAnimationCommand(coralManipulator::getCurrentState));
+//        leds = new LEDSubsystem();
+//        new Trigger(coralManipulator::isTransitioning)
+//                .whileFalse(leds.selectAnimationCommand(coralManipulator::getCurrentState));
         mechanisms = new Mechanisms();
         reefAlignPPOTF = new ReefAlignPPOTF(drivetrain, radioCam, scoreCam);
         algaeAlignPPOTF = new AlgaeAlignPPOTF(drivetrain, radioCam, scoreCam);
@@ -234,10 +234,9 @@ public class RobotContainer {
                 .topMiddleSwitch()
                 .onTrue(
                         coralManipulator
-                                .transitionTo(CoralManipulatorState.CLIMB)
-                                .alongWith(leds.runPattern(LEDPatterns.FADING_BLUE_SCROLL)));
+                                .transitionTo(CoralManipulatorState.CLIMB));
         gigaStation
-                .bottomRightGreen()
+                .bottomRightBlue()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         gigaStation
                 .bottomRightWhite()
@@ -251,10 +250,10 @@ public class RobotContainer {
         gigaStation
                 .topRightWhite()
                 .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
-        gigaStation
-                .topRightSwitch()
-                .onTrue(leds.runPattern(LEDPatterns.NICK_MODE))
-                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
+//        gigaStation
+//                .topRightSwitch()
+//                .onTrue(leds.runPattern(LEDPatterns.NICK_MODE))
+//                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
         gigaStation
                 .bottomLeftWhite()
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
@@ -304,19 +303,19 @@ public class RobotContainer {
         simJoy.button(7).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
         simJoy.button(8).onTrue(coralManipulator.transitionTo(CoralManipulatorState.CLIMB));
         simJoy.button(9).onTrue(coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4));
-        simJoy.button(10)
-                .onTrue(leds.runPattern(LEDPatterns.NICK_MODE))
-                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
-        simJoy.button(11).onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAE_HIGH));
-        simJoy.button(12).onTrue(runOnce(() -> leds.addProgress()));
-        simJoy.button(13).onTrue(runOnce(() -> leds.subtractProgress()));
-        simJoy.button(14)
-                .whileTrue(
-                        reefAlignPPOTF
-                                .reefAlign()
-                                .alongWith(leds.runPattern(LEDPatterns.AUTO_ALIGN)))
-                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
-        simJoy.button(15).onTrue(leds.runPattern(LEDPatterns.FADING_BLUE_SCROLL));
+//        simJoy.button(10)
+//                .onTrue(leds.runPattern(LEDPatterns.NICK_MODE))
+//                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
+//        simJoy.button(11).onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAE_HIGH));
+//        simJoy.button(12).onTrue(runOnce(() -> leds.addProgress()));
+//        simJoy.button(13).onTrue(runOnce(() -> leds.subtractProgress()));
+//        simJoy.button(14)
+//                .whileTrue(
+//                        reefAlignPPOTF
+//                                .reefAlign()
+//                                .alongWith(leds.runPattern(LEDPatterns.AUTO_ALIGN)))
+//                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
+//        simJoy.button(15).onTrue(leds.runPattern(LEDPatterns.FADING_BLUE_SCROLL));
     }
 
     public void updateMechanisms() {
@@ -336,33 +335,33 @@ public class RobotContainer {
     }
 
     private void configureLEDTriggers() {
-        Trigger coralTrigger =
-                new Trigger(coralManipulator.grabber::hasCoral)
-                        .and(DriverStation::isDisabled)
-                        .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
-                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
-        Trigger elevatorTrigger =
-                new Trigger(coralManipulator.elevator::getMagSwitch)
-                        .and(DriverStation::isDisabled)
-                        .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
-                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
-        Trigger drivetrainTrigger =
-                drivetrain
-                        .zeroedWheels
-                        .and(DriverStation::isDisabled)
-                        .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
-                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
-        Trigger batteryTrigger =
-                new Trigger(() -> RobotController.getBatteryVoltage() > 12.5)
-                        .and(DriverStation::isDisabled)
-                        .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
-                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
-        if (coralTrigger.getAsBoolean()) {
-            leds.addProgress();
-        }
-        if (elevatorTrigger.getAsBoolean()) {
-            leds.addProgress();
-        }
+//        Trigger coralTrigger =
+//                new Trigger(coralManipulator.grabber::hasCoral)
+//                        .and(DriverStation::isDisabled)
+//                        .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+//                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
+//        Trigger elevatorTrigger =
+//                new Trigger(coralManipulator.elevator::getMagSwitch)
+//                        .and(DriverStation::isDisabled)
+//                        .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+//                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
+//        Trigger drivetrainTrigger =
+//                drivetrain
+//                        .zeroedWheels
+//                        .and(DriverStation::isDisabled)
+//                        .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+//                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
+//        Trigger batteryTrigger =
+//                new Trigger(() -> RobotController.getBatteryVoltage() > 12.5)
+//                        .and(DriverStation::isDisabled)
+//                        .onTrue(runOnce(() -> leds.addProgress()).ignoringDisable(true))
+//                        .onFalse(runOnce(() -> leds.subtractProgress()).ignoringDisable(true));
+//        if (coralTrigger.getAsBoolean()) {
+//            leds.addProgress();
+//        }
+//        if (elevatorTrigger.getAsBoolean()) {
+//            leds.addProgress();
+//        }
     }
 
     /**
