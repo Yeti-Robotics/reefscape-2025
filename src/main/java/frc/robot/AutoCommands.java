@@ -147,9 +147,9 @@ public class AutoCommands {
                 skipLeftAutoCommand,
                 reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT),
                 reefAlignPPOTF.reefAlign().withTimeout(3),
-                coralManipulator.transitionTo(CoralManipulatorState.L4),
+                coralManipulator.transitionTo(CoralManipulatorState.CLIMB_L4),
                 Commands.wait(0.5),
-                coralManipulator.transitionTo(CoralManipulatorState.SCORE_L4),
+                coralManipulator.transitionTo(CoralManipulatorState.SCORE_CLIMB_L4),
                 coralManipulator
                         .transitionTo(CoralManipulatorState.STOWED)
                         .andThen(Commands.print("stowed?"))
