@@ -20,7 +20,7 @@ class GrabberConfig {
             new TalonFXConfiguration()
                     .withMotorOutput(
                             new MotorOutputConfigs()
-                                    .withInverted(InvertedValue.Clockwise_Positive)
+                                    .withInverted(InvertedValue.CounterClockwise_Positive)
                                     .withNeutralMode(NeutralModeValue.Brake))
                     .withSlot0(new Slot0Configs().withKV(1).withKA(1))
                     .withMotionMagic(new MotionMagicConfigs().withMotionMagicAcceleration(1));

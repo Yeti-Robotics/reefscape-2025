@@ -10,14 +10,14 @@ class WristConfigs {
     static final double WRIST_TOLERANCE = 0.1;
     static final int WRIST_KRAKEN_ID = 19;
     static final int WRIST_CANCODER_ID = 42;
-    static final double MAGNET_OFFSET = -0.386963;
+    static final double MAGNET_OFFSET = -0.101074;
 
     static final Slot0Configs SLOT_0_CONFIGS =
             new Slot0Configs()
-                    .withKP(44)
+                    .withKP(0)
                     .withKI(0)
-                    .withKD(5)
-                    .withKS(0)
+                    .withKD(0)
+                    .withKS(31)
                     .withKV(0)
                     .withKA(0)
                     .withKG(0);
