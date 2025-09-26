@@ -34,14 +34,14 @@ class WristConfigs {
 
     static final FeedbackConfigs FEEDBACK_CONFIGS =
             new FeedbackConfigs()
-                    .withRotorToSensorRatio(5)
-                    .withSensorToMechanismRatio(2.75)
+                    .withRotorToSensorRatio(16)
+                    .withSensorToMechanismRatio(2)
                     .withFeedbackRemoteSensorID(WRIST_CANCODER_ID)
                     .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder);
 
     static final MotorOutputConfigs MOTOR_OUTPUT_CONFIGS =
             new MotorOutputConfigs()
-                    .withInverted(InvertedValue.Clockwise_Positive)
+                    .withInverted(InvertedValue.CounterClockwise_Positive)
                     .withNeutralMode(NeutralModeValue.Brake);
 
     static final TalonFXConfiguration wristMotorConfigs =
