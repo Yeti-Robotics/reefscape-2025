@@ -10,16 +10,20 @@ class WristConfigs {
     static final double WRIST_TOLERANCE = 0.1;
     static final int WRIST_KRAKEN_ID = 19;
     static final int WRIST_CANCODER_ID = 42;
-    static final double MAGNET_OFFSET = -0.497559;
+    static final double MAGNET_OFFSET = -0.02392578125;
+    static final MotionMagicConfigs WRISTMOTOR =
+            new MotionMagicConfigs()
+                    .withMotionMagicCruiseVelocity(0.5)
+                    .withMotionMagicAcceleration(1);
 
     static final Slot0Configs SLOT_0_CONFIGS =
             new Slot0Configs()
-                    .withKP(44)
+                    .withKP(0)
                     .withKI(0)
-                    .withKD(5)
-                    .withKS(0)
-                    .withKV(0)
-                    .withKA(0)
+                    .withKD(1)
+                    .withKS(0.65)
+                    .withKV(0.1)
+                    .withKA(1.125)
                     .withKG(0);
 
     static final Slot1Configs SLOT_1_CONFIGS_SIM =
@@ -34,14 +38,14 @@ class WristConfigs {
 
     static final FeedbackConfigs FEEDBACK_CONFIGS =
             new FeedbackConfigs()
-                    .withRotorToSensorRatio(5)
-                    .withSensorToMechanismRatio(2.75)
+                    .withRotorToSensorRatio(16)
+                    .withSensorToMechanismRatio(2)
                     .withFeedbackRemoteSensorID(WRIST_CANCODER_ID)
                     .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder);
 
     static final MotorOutputConfigs MOTOR_OUTPUT_CONFIGS =
             new MotorOutputConfigs()
-                    .withInverted(InvertedValue.Clockwise_Positive)
+                    .withInverted(InvertedValue.CounterClockwise_Positive)
                     .withNeutralMode(NeutralModeValue.Brake);
 
     static final TalonFXConfiguration wristMotorConfigs =
@@ -49,7 +53,8 @@ class WristConfigs {
                     .withMotorOutput(MOTOR_OUTPUT_CONFIGS)
                     .withSlot0(SLOT_0_CONFIGS)
                     .withSlot1(SLOT_1_CONFIGS_SIM)
-                    .withFeedback(FEEDBACK_CONFIGS);
+                    .withFeedback(FEEDBACK_CONFIGS)
+                    .withMotionMagic(WRISTMOTOR);
 
     static final CANcoderConfiguration wristEncoderConfigs =
             new CANcoderConfiguration()
