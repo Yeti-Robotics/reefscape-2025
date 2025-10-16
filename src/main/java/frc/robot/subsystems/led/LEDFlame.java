@@ -25,9 +25,9 @@ public class LEDFlame {
             int maxIntense = 16;
             int intensity = random.nextInt(maxIntense + 1);
 
-            int red = (int) (intensity * LEDConstants.CRISP_WHITE.red / maxIntense);
-            int green = (int) (intensity * LEDConstants.CRISP_WHITE.green / maxIntense);
-            int blue = (int) (intensity * LEDConstants.YETI_BLUE.blue / maxIntense);
+            int red = (int) (intensity * LEDConstants.WHITE_ORANGE.red / maxIntense);
+            int green = (int) (intensity * LEDConstants.ROYAL_ORANGE.green / maxIntense);
+            int blue = (int) (intensity * LEDConstants.VIVID_ORANGE.blue / maxIntense);
 
             store.setRGB(i, red, green, blue);
         }

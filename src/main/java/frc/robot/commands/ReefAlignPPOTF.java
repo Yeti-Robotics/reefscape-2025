@@ -44,7 +44,8 @@ public class ReefAlignPPOTF {
             new Transform2d(Units.inchesToMeters(18), Units.inchesToMeters(8.5), Rotation2d.kZero);
 
     private static final Transform2d leftBranchClimbTransform =
-            new Transform2d(Units.inchesToMeters(14), Units.inchesToMeters(-9.5), Rotation2d.kZero);
+            new Transform2d(
+                    Units.inchesToMeters(14), Units.inchesToMeters(-12.5), Rotation2d.kZero);
     private static final Transform2d rightBranchClimbTransform =
             new Transform2d(Units.inchesToMeters(14), Units.inchesToMeters(2.0), Rotation2d.kZero);
 
@@ -59,8 +60,6 @@ public class ReefAlignPPOTF {
     }
 
     Branch branch = Branch.LEFT;
-
-    private Pose2d reefFaceTargetPose;
 
     public ReefAlignPPOTF(
             CommandSwerveDrivetrain commandSwerveDrivetrain,
@@ -184,7 +183,7 @@ public class ReefAlignPPOTF {
                     () -> commandSwerveDrivetrain.setControl(stopReq), commandSwerveDrivetrain);
         }
 
-        reefFaceTargetPose = reefTargetPoseOpt.get();
+        Pose2d reefFaceTargetPose = reefTargetPoseOpt.get();
 
         Transform2d branchTransform;
 
@@ -253,7 +252,7 @@ public class ReefAlignPPOTF {
                                                         reefBranchPose)
                                                 .getTranslation()
                                                 .getNorm()
-                                        < 0.01)
+                                        < 0.03)
                 .andThen(
                         Commands.runOnce(
                                 () -> commandSwerveDrivetrain.setControl(stopReq),

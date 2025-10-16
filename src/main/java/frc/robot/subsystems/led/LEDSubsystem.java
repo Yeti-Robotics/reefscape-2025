@@ -19,7 +19,7 @@ public class LEDSubsystem extends SubsystemBase {
     private final AddressableLEDBufferView rightStrip;
     public final LEDFlame ledFlame;
     private double currentProgress = 0.0;
-    private boolean flameActive = false;
+    private boolean flameActive = true;
 
     public LEDSubsystem() {
         ledStrip = new AddressableLED(LEDConstants.LED_STRIP_PORT);

@@ -17,8 +17,6 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
     private final DutyCycleOut dutyCycleReq = new DutyCycleOut(0);
     public final Trigger hasCoralTrigger;
     public final Trigger doesNotHaveCoralTrigger;
-    // private final CurrentLimitsConfigs limit = new CurrentLimitsConfigs()
-    // .withStatorCurrentLimit().withSupplyCurrentLimit();
 
     private final Canandcolor clawSwitch = new Canandcolor(GrabberConfig.GRABBER_CANANDCOLOR);
 
@@ -30,7 +28,9 @@ public class GrabberSubsystem extends StatefulSubsystem<GrabberState> {
         new Trigger(() -> getCurrentState() == GrabberState.ROLL_OUT)
                 .debounce(1)
                 .onTrue(transitionTo(GrabberState.OFF));
-        hasCoralTrigger = new Trigger(() -> hasCoral() && !DriverStation.isAutonomous());
+
+        hasCoralTrigger =
+                new Trigger(() -> hasCoral() && !DriverStation.isAutonomous()).debounce(0.25);
         doesNotHaveCoralTrigger = new Trigger(this::doesNotHaveCoral);
     }
 

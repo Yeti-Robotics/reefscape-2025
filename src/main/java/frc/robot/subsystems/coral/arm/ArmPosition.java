@@ -20,7 +20,7 @@ public enum ArmPosition implements SetpointEnum {
     SCORE_L4(.05),
     AWAY(0),
     GROUND(-0.029785),
-    HP(0.158691),
+    HP(0.181641),
     AWAY_BUMPER(0.05),
     CLIMB_L4(0.35),
     SCORE_CLIMB_L4(0.45),

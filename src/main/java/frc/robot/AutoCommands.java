@@ -168,6 +168,39 @@ public class AutoCommands {
                                                 CoralManipulatorState.STOWED))));
     }
 
+    public Command skipLeft2() {
+        Optional<PathPlannerPath> skipLeft = PathPlannerUtils.loadPathByName("skipLeft");
+        Optional<PathPlannerPath> AtoLolli2 = PathPlannerUtils.loadPathByName("AtoLolli2");
+
+        if (skipLeft.isEmpty() || AtoLolli2.isEmpty()) return Commands.none();
+
+        Command skipLeftAutoCommand = (AutoBuilder.followPath(skipLeft.get()));
+        Command aToLolli2AutoCommand = (AutoBuilder.followPath(AtoLolli2.get()));
+
+        return Commands.sequence(
+                skipLeftAutoCommand,
+                reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT),
+                reefAlignPPOTF.reefAlign().withTimeout(1.5),
+                coralManipulator.transitionTo(CoralManipulatorState.CLIMB_L4),
+                Commands.waitSeconds(0.2),
+                coralManipulator.transitionTo(CoralManipulatorState.SCORE_CLIMB_L4),
+                coralManipulator
+                        .transitionTo(CoralManipulatorState.STOWED)
+                        .andThen(aToLolli2AutoCommand)
+                        .andThen(
+                                Commands.sequence(
+                                        reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT),
+                                        reefAlignPPOTF.reefAlign().withTimeout(3),
+                                        coralManipulator.transitionTo(CoralManipulatorState.STOWED),
+                                        coralManipulator.transitionTo(
+                                                CoralManipulatorState.CLIMB_L4),
+                                        Commands.waitSeconds(0.2),
+                                        coralManipulator.transitionTo(
+                                                CoralManipulatorState.SCORE_CLIMB_L4),
+                                        coralManipulator.transitionTo(
+                                                CoralManipulatorState.STOWED))));
+    }
+
     public Command left1Pc() {
         Optional<PathPlannerPath> lineJ = PathPlannerUtils.loadPathByName("lineJ");
 
@@ -218,7 +251,8 @@ public class AutoCommands {
         auto.addOption("Left 2 Piece Lollipop", left2PcLolli());
         auto.addOption("Mid 1 Piece", mid1Pc());
         auto.addOption("Drive forward", driveForward());
-        auto.addOption("Skip Left", skipLeft());
+        auto.addOption("Too Long TO", skipLeft());
+        auto.addOption("Skip Left", skipLeft2());
         auto.addOption("lol2", lolli());
 
         auto.setDefaultOption("Drive forward", driveForward());

@@ -11,6 +11,10 @@ public class TagConstants {
     public static final Map<Integer, Pose3d> WELDED_TAG_MAP = new HashMap<>();
     public static final Map<Integer, Pose3d> PRACTICE_FIELD_MAP = new HashMap<>();
 
+    public static Optional<Pose3d> getTagPose(int tagID) {
+        return Optional.ofNullable(WELDED_TAG_MAP.get(tagID));
+    }
+
     static {
         PRACTICE_FIELD_MAP.put(
                 1,
@@ -488,9 +492,5 @@ public class TagConstants {
                         new Translation3d(4.904739999999999, 3.3063179999999996, 0.308102),
                         new Rotation3d(
                                 new Quaternion(-0.8660254037844387, 0, 0, 0.49999999999999994))));
-    }
-
-    public static Optional<Pose3d> getTagPose(int tagID) {
-        return Optional.ofNullable(PRACTICE_FIELD_MAP.get(tagID));
     }
 }

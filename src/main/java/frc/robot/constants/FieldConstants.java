@@ -4,8 +4,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Robot;
-import java.io.IOException;
 import java.util.*;
 
 public class FieldConstants {
@@ -21,17 +19,20 @@ public class FieldConstants {
     public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT;
 
     static {
-        try {
-            if (Robot.isReal()) {
-                APRIL_TAG_FIELD_LAYOUT =
-                        new AprilTagFieldLayout("/home/lvuser/deploy/practice_field.json");
-            } else {
-                APRIL_TAG_FIELD_LAYOUT =
-                        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        //        try {
+        //            if (Robot.isReal()) {
+        //                APRIL_TAG_FIELD_LAYOUT =
+        //                        new
+        // AprilTagFieldLayout("/home/lvuser/deploy/practice_field.json");
+        //            } else {
+        //
+        //            }
+        //
+        //
+        //        } catch (Exception e) {
+        //            throw new RuntimeException(e);
+        //        }
+        APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
     }
 
     public static final double fieldWidth = APRIL_TAG_FIELD_LAYOUT.getFieldWidth();

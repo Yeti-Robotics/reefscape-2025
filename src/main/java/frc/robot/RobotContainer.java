@@ -34,7 +34,6 @@ import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
 import frc.robot.subsystems.coral.CoralManipulatorSystem;
 import frc.robot.subsystems.coral.grabber.GrabberState;
-import frc.robot.subsystems.coral.wrist.WristPositions;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.led.LEDPatterns;
@@ -42,7 +41,6 @@ import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
-import frc.robot.util.CommandGigaStation;
 import frc.robot.util.sim.Mechanisms;
 import frc.robot.util.sim.vision.AprilTagCamSim;
 import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
@@ -59,7 +57,8 @@ public class RobotContainer {
     public final CommandXboxController primaryXboxController;
     public final CommandXboxController secondaryXboxController;
     private final CommandJoystick simJoy = new CommandJoystick(2);
-    public final CommandGigaStation gigaStation;
+    public final CommandJoystick gigaStation;
+    public final boolean isAuto = false;
 
     //    @Logged(name = "Vision/Limelight")
     //    public final LimelightAprilTagSystem limelight;
@@ -116,7 +115,7 @@ public class RobotContainer {
         primaryXboxController = new CommandXboxController(Constants.PRIMARY_XBOX_CONTROLLER_PORT);
         secondaryXboxController =
                 new CommandXboxController(Constants.SECONDARY_XBOX_CONTROLLER_PORT);
-        gigaStation = new CommandGigaStation(Constants.GIGA_PORT);
+        gigaStation = new CommandJoystick(Constants.GIGA_PORT);
         drivetrain = TunerConstants.createDrivetrain();
 
         radioCam = new PhotonAprilTagSystem("RadioCam", camTrans1, drivetrain);
@@ -231,52 +230,43 @@ public class RobotContainer {
         primaryXboxController.a().whileTrue(algaeAlignPPOTF.algaeAlign());
         primaryXboxController.button(1).whileTrue(reefAlignPPOTF.reefAlign());
         gigaStation
-                .topMiddleSwitch()
+                .button(2)
                 .onTrue(
                         coralManipulator
                                 .transitionTo(CoralManipulatorState.CLIMB)
                                 .alongWith(leds.runPattern(LEDPatterns.FADING_BLUE_SCROLL)));
+        gigaStation.button(18).onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        gigaStation.button(16).onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
         gigaStation
-                .bottomRightGreen()
-                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
-        gigaStation
-                .bottomRightWhite()
-                .onTrue(coralManipulator.grabber.transitionTo(GrabberState.OFF));
-        gigaStation
-                .bottomLeftGreen()
+                .button(17)
                 .onTrue(coralManipulator.grabber.transitionTo(GrabberState.ALGAE_SHOOT));
-        gigaStation.topLeftBlue().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
-        gigaStation.topRightBlue().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
-        gigaStation.topLeftWhite().onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
+        gigaStation.button(7).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L1));
+        gigaStation.button(8).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L2));
+        gigaStation.button(9).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L3));
+        gigaStation.button(10).onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
         gigaStation
-                .topRightWhite()
-                .onTrue(coralManipulator.setQueueState(CoralManipulatorState.L4));
-        gigaStation
-                .topRightSwitch()
+                .button(3)
                 .onTrue(leds.runPattern(LEDPatterns.NICK_MODE))
                 .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
         gigaStation
-                .bottomLeftWhite()
+                .button(15)
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ROLL_IN));
+
         gigaStation
-                .bottomRightSwitch()
-                .onTrue(coralManipulator.wrist.transitionTo(WristPositions.SAFE))
-                .onFalse(coralManipulator.wrist.transitionTo(WristPositions.FLIP_SAFE));
-        gigaStation
-                .bottomLeftSwitch()
+                .button(4)
                 .onTrue(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT))
                 .onFalse(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT));
         gigaStation
-                .bottomMiddleSwitch()
+                .button(5)
                 .onTrue(coralManipulator.setMode(CoralManipulatorSystem.Mode.ALGAE))
                 .onFalse(coralManipulator.setMode(CoralManipulatorSystem.Mode.CORAL));
-        gigaStation.bottomLeftBlue().whileTrue(climber.spinClimber(climber.climbSpeed));
-        gigaStation.bottomRightBlue().whileTrue(climber.spinClimber(climber.unClimbSpeed));
+        gigaStation.button(13).whileTrue(climber.spinClimber(climber.climbSpeed));
+        gigaStation.button(14).whileTrue(climber.spinClimber(climber.unClimbSpeed));
         gigaStation
-                .topLeftGreen()
+                .button(11)
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAE_HIGH));
         gigaStation
-                .topRightGreen()
+                .button(12)
                 .whileTrue(coralManipulator.grabber.transitionTo(GrabberState.ALL_IN));
 
         coralManipulator.grabber.hasCoralTrigger.onTrue(
@@ -293,7 +283,11 @@ public class RobotContainer {
                                                 || coralManipulator.getCurrentState()
                                                         == CoralManipulatorState.L3
                                                 || coralManipulator.getCurrentState()
-                                                        == CoralManipulatorState.L2));
+                                                        == CoralManipulatorState.L2
+                                                || coralManipulator.getCurrentState()
+                                                        == CoralManipulatorState.L4
+                                                || coralManipulator.getCurrentState()
+                                                        == CoralManipulatorState.LOLLIPOP));
 
         simJoy.button(1).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L1));
         simJoy.button(2).onTrue(coralManipulator.transitionTo(CoralManipulatorState.L2));

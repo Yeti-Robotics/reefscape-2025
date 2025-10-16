@@ -13,6 +13,11 @@ public final class LEDConstants {
     public static final Color ALGAE_COLOR = new Color(79, 90, 255);
     public static final Color NICK_ORANGE = new Color(255, 0, 50);
     public static final Color CRISP_WHITE = new Color(240, 240, 240);
+
+    public static final Color WHITE_ORANGE = new Color(253, 183, 119);
+    public static final Color ROYAL_ORANGE = new Color(253, 147, 70);
+    public static final Color VIVID_ORANGE = new Color(255, 98, 0);
+
     public static final double ZERO_TOLERANCE = 0.005;
     private static final int PROGRESS_PARTS = 4;
     public static final double PROGRESS_INCREMENT = 1.0 / PROGRESS_PARTS;

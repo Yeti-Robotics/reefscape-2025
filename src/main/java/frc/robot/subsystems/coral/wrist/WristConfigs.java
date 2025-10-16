@@ -10,14 +10,14 @@ class WristConfigs {
     static final double WRIST_TOLERANCE = 0.1;
     static final int WRIST_KRAKEN_ID = 19;
     static final int WRIST_CANCODER_ID = 42;
-    static final double MAGNET_OFFSET = -0.02392578125;
+    static final double MAGNET_OFFSET = -0.497559;
 
     static final Slot0Configs SLOT_0_CONFIGS =
             new Slot0Configs()
-                    .withKP(0)
+                    .withKP(44)
                     .withKI(0)
-                    .withKD(0)
-                    .withKS(31)
+                    .withKD(5)
+                    .withKS(0)
                     .withKV(0)
                     .withKA(0)
                     .withKG(0);
@@ -34,14 +34,14 @@ class WristConfigs {
 
     static final FeedbackConfigs FEEDBACK_CONFIGS =
             new FeedbackConfigs()
-                    .withRotorToSensorRatio(16)
-                    .withSensorToMechanismRatio(2)
+                    .withRotorToSensorRatio(5)
+                    .withSensorToMechanismRatio(2.75)
                     .withFeedbackRemoteSensorID(WRIST_CANCODER_ID)
                     .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder);
 
     static final MotorOutputConfigs MOTOR_OUTPUT_CONFIGS =
             new MotorOutputConfigs()
-                    .withInverted(InvertedValue.CounterClockwise_Positive)
+                    .withInverted(InvertedValue.Clockwise_Positive)
                     .withNeutralMode(NeutralModeValue.Brake);
 
     static final TalonFXConfiguration wristMotorConfigs =
