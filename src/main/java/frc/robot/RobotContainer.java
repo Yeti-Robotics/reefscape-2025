@@ -12,10 +12,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -26,9 +22,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.AlgaeAlignPPOTF;
-import frc.robot.commands.AutoNamedCommands;
-import frc.robot.commands.ReefAlignPPOTF;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.coral.CoralManipulatorState;
@@ -39,15 +32,13 @@ import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.led.LEDPatterns;
 import frc.robot.subsystems.led.LEDSubsystem;
+
 import frc.robot.subsystems.vision.apriltag.AprilTagPose;
 import frc.robot.subsystems.vision.apriltag.AprilTagSubsystem;
 import frc.robot.subsystems.vision.apriltag.impl.photon.PhotonAprilTagSystem;
 import frc.robot.util.CommandGigaStation;
+
 import frc.robot.util.sim.Mechanisms;
-import frc.robot.util.sim.vision.AprilTagCamSim;
-import frc.robot.util.sim.vision.AprilTagCamSimBuilder;
-import frc.robot.util.sim.vision.AprilTagSimulator;
-import java.util.List;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -67,28 +58,6 @@ public class RobotContainer {
     @Logged(name = "Drivetrain")
     public CommandSwerveDrivetrain drivetrain;
 
-    Transform3d camTrans1 =
-            new Transform3d(
-                    new Translation3d(
-                            Units.inchesToMeters(-9.5),
-                            Units.inchesToMeters(-8),
-                            Units.inchesToMeters(11)),
-                    new Rotation3d(0, Math.toRadians(-15), Math.toRadians(-90)));
-
-    Transform3d camTrans2 =
-            new Transform3d(
-                    new Translation3d(
-                            Units.inchesToMeters(-9.5),
-                            Units.inchesToMeters(10),
-                            Units.inchesToMeters(11)),
-                    new Rotation3d(0, Math.toRadians(-15), Math.toRadians(90)));
-
-    @Logged(name = "Vision/RadioCam")
-    public final PhotonAprilTagSystem radioCam;
-
-    @Logged(name = "Vision/ScoreCam")
-    public final PhotonAprilTagSystem scoreCam;
-
     public LEDSubsystem leds;
 
     @Logged(name = "CoralManipulator")
@@ -105,11 +74,7 @@ public class RobotContainer {
                     .withRotationalDeadband(TunerConstants.MaFxAngularRate * 0.1)
                     .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
 
-    AprilTagSimulator aprilTagCamSim = new AprilTagSimulator();
     private final Mechanisms mechanisms;
-    private final ReefAlignPPOTF reefAlignPPOTF;
-    private final AlgaeAlignPPOTF algaeAlignPPOTF;
-    private final AprilTagSubsystem[] aprilTagSubsystems;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -119,26 +84,6 @@ public class RobotContainer {
         gigaStation = new CommandGigaStation(Constants.GIGA_PORT);
         drivetrain = TunerConstants.createDrivetrain();
 
-        radioCam = new PhotonAprilTagSystem("RadioCam", camTrans1, drivetrain);
-        scoreCam = new PhotonAprilTagSystem("ScoreCam", camTrans2, drivetrain);
-        if (Robot.isSimulation()) {
-            AprilTagCamSim simCam1 =
-                    AprilTagCamSimBuilder.newCamera()
-                            .withCameraName("ScoreCam")
-                            .withTransform(camTrans1)
-                            .build();
-            aprilTagCamSim.addCamera(simCam1);
-            radioCam.setCamera(simCam1.getCam());
-
-            AprilTagCamSim simCam2 =
-                    AprilTagCamSimBuilder.newCamera()
-                            .withCameraName("ClimbCam")
-                            .withTransform(camTrans2)
-                            .build();
-            aprilTagCamSim.addCamera(simCam2);
-            scoreCam.setCamera(simCam2.getCam());
-        }
-
         //        limelight = new LimelightAprilTagSystem("limelight", drivetrain);
         coralManipulator = new CoralManipulatorSystem();
         climber = new ClimberSubsystem();
@@ -146,19 +91,14 @@ public class RobotContainer {
         new Trigger(coralManipulator::isTransitioning)
                 .whileFalse(leds.selectAnimationCommand(coralManipulator::getCurrentState));
         mechanisms = new Mechanisms();
-        reefAlignPPOTF = new ReefAlignPPOTF(drivetrain, radioCam, scoreCam);
-        algaeAlignPPOTF = new AlgaeAlignPPOTF(drivetrain, radioCam, scoreCam);
 
         configureBindings();
         configureLEDTriggers();
 
-        var namedCommands = new AutoNamedCommands(coralManipulator, reefAlignPPOTF);
-        var autoCommands = new AutoCommands(coralManipulator, reefAlignPPOTF, drivetrain);
-        namedCommands.registerCommands();
+        var autoCommands = new AutoCommands(coralManipulator, drivetrain);
 
         autoChooser = autoCommands.buildAutoCommandChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
-        aprilTagSubsystems = new AprilTagSubsystem[] {radioCam, scoreCam};
 
         // Set standard deviations to prevent jitter
         // odo data is more trustworthy, lower stddev
@@ -177,29 +117,6 @@ public class RobotContainer {
      */
     final StructPublisher<Pose2d> posePublisher =
             NetworkTableInstance.getDefault().getStructTopic("/Pose", Pose2d.struct).publish();
-
-    public void updateVision() {
-        for (AprilTagSubsystem aprilTagSubsystem : aprilTagSubsystems) {
-            List<AprilTagPose> aprilTagPoseOpt = aprilTagSubsystem.getEstimatedPose();
-
-            if (!aprilTagPoseOpt.isEmpty() && !drivetrain.isMotionBlur()) {
-                for (AprilTagPose pose : aprilTagPoseOpt) {
-                    if (pose.numTags() > 0) {
-                        drivetrain.addVisionMeasurement(
-                                pose.estimatedRobotPose(),
-                                pose.timestamp(),
-                                pose.standardDeviations());
-                    }
-                }
-            }
-        }
-
-        posePublisher.set(drivetrain.getState().Pose);
-    }
-
-    public void updateVisionSim() {
-        aprilTagCamSim.update(drivetrain.getState().Pose);
-    }
 
     private void configureBindings() {
         DriverStation.silenceJoystickConnectionWarning(true);
@@ -220,6 +137,9 @@ public class RobotContainer {
         primaryXboxController.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         primaryXboxController
+                .x()
+                .onTrue(coralManipulator.transitionTo(CoralManipulatorState.STOWED));
+        primaryXboxController
                 .leftBumper()
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
         primaryXboxController
@@ -227,9 +147,6 @@ public class RobotContainer {
                 .onTrue(coralManipulator.transitionTo(CoralManipulatorState.GROUND_INTAKE));
         primaryXboxController.leftTrigger().onTrue(coralManipulator.selectQueuedStateCommand());
         primaryXboxController.rightTrigger().onTrue((coralManipulator.scoreState()));
-        primaryXboxController.y().whileTrue(reefAlignPPOTF.reefAlign());
-        primaryXboxController.a().whileTrue(algaeAlignPPOTF.algaeAlign());
-        primaryXboxController.button(1).whileTrue(reefAlignPPOTF.reefAlign());
         gigaStation
                 .topMiddleSwitch()
                 .onTrue(
@@ -258,12 +175,10 @@ public class RobotContainer {
                 .bottomRightSwitch()
                 .onTrue(coralManipulator.wrist.transitionTo(WristPositions.SAFE))
                 .onFalse(coralManipulator.wrist.transitionTo(WristPositions.FLIP_SAFE));
-        gigaStation
-                .bottomLeftSwitch()
-                .onTrue(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.RIGHT))
-                .onFalse(reefAlignPPOTF.setBranch(ReefAlignPPOTF.Branch.LEFT));
+
         gigaStation
                 .bottomMiddleSwitch()
+
                 .onTrue(coralManipulator.setMode(CoralManipulatorSystem.Mode.ALGAE))
                 .onFalse(coralManipulator.setMode(CoralManipulatorSystem.Mode.CORAL));
         gigaStation.bottomLeftBlue().whileTrue(climber.spinClimber(climber.climbSpeed));
@@ -306,12 +221,6 @@ public class RobotContainer {
         simJoy.button(11).onTrue(coralManipulator.transitionTo(CoralManipulatorState.ALGAE_HIGH));
         simJoy.button(12).onTrue(runOnce(() -> leds.addProgress()));
         simJoy.button(13).onTrue(runOnce(() -> leds.subtractProgress()));
-        simJoy.button(14)
-                .whileTrue(
-                        reefAlignPPOTF
-                                .reefAlign()
-                                .alongWith(leds.runPattern(LEDPatterns.AUTO_ALIGN)))
-                .onFalse(leds.runPattern(LEDPatterns.YETI_BLUE_PATTERN));
         simJoy.button(15).onTrue(leds.runPattern(LEDPatterns.FADING_BLUE_SCROLL));
     }
 

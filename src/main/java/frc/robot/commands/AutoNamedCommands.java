@@ -6,12 +6,9 @@ import frc.robot.subsystems.coral.grabber.GrabberState;
 
 public class AutoNamedCommands {
     private final CoralManipulatorSystem coralManipulator;
-    private final ReefAlignPPOTF reefAlignCommand;
 
-    public AutoNamedCommands(
-            CoralManipulatorSystem coralManipulator, ReefAlignPPOTF reefAlignCommand) {
+    public AutoNamedCommands(CoralManipulatorSystem coralManipulator) {
         this.coralManipulator = coralManipulator;
-        this.reefAlignCommand = reefAlignCommand;
         registerCommands();
     }
 
@@ -22,8 +19,6 @@ public class AutoNamedCommands {
                 "HPIntake", coralManipulator.transitionTo(CoralManipulatorState.HP_INTAKE));
         NamedCommands.registerCommand(
                 "LollipopIntake", coralManipulator.transitionTo(CoralManipulatorState.LOLLIPOP));
-
-        NamedCommands.registerCommand("ReefAlign", reefAlignCommand.reefAlign().asProxy());
 
         NamedCommands.registerCommand(
                 "L1", coralManipulator.transitionTo(CoralManipulatorState.L1));
