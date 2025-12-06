@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "goToReef"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "goToHP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "goBackToReef"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

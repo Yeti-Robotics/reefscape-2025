@@ -33,17 +33,12 @@ public class ElevatorConfig {
     static final TalonFXConfiguration primaryTalonFXConfigs = new TalonFXConfiguration()
             .withSlot0(SLOT_0_REAL_CONFIGS)
             .withSlot1(SLOT_1_SIM_CONFIGS)
-            .withMotionMagic(
-                    new MotionMagicConfigs()
-                            .withMotionMagicCruiseVelocity(15)
-                            .withMotionMagicAcceleration(25)
-                            .withMotionMagicJerk(0))
-            .withMotorOutput(
-                    new MotorOutputConfigs()
-                            .withInverted(InvertedValue.CounterClockwise_Positive)
-                            .withNeutralMode(NeutralModeValue.Brake))
-            .withFeedback(
-                    new FeedbackConfigs()
-                            .withRotorToSensorRatio(1.0)
-                            .withSensorToMechanismRatio(44.0/18.0));
+            .withMotionMagic(new MotionMagicConfigs()
+                    .withMotionMagicCruiseVelocity(15)
+                    .withMotionMagicAcceleration(25)
+                    .withMotionMagicJerk(0))
+            .withMotorOutput(new MotorOutputConfigs()
+                    .withInverted(InvertedValue.CounterClockwise_Positive)
+                    .withNeutralMode(NeutralModeValue.Brake))
+            .withFeedback(new FeedbackConfigs().withRotorToSensorRatio(1.0).withSensorToMechanismRatio(44.0 / 18.0));
 }

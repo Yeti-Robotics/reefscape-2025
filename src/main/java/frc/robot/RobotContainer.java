@@ -29,6 +29,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.climber.ClimberIO;
+import frc.robot.subsystems.climber.ClimberIOTalonFX;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.vision.*;
 import org.ironmaple.simulation.SimulatedArena;
@@ -46,6 +49,7 @@ public class RobotContainer {
     // Subsystems
     private final Vision vision;
     private final Drive drive;
+    private final ClimberSubsystem climber;
     private SwerveDriveSimulation driveSimulation = null;
 
     // Controller
@@ -70,6 +74,7 @@ public class RobotContainer {
                         drive,
                         new VisionIOLimelight(VisionConstants.camera0Name, drive::getRotation),
                         new VisionIOLimelight(VisionConstants.camera1Name, drive::getRotation));
+                climber = new ClimberSubsystem(new ClimberIOTalonFX());
                 break;
 
             case SIM:
@@ -83,13 +88,13 @@ public class RobotContainer {
                         new ModuleIOSim(driveSimulation.getModules()[2]),
                         new ModuleIOSim(driveSimulation.getModules()[3]),
                         driveSimulation::setSimulationWorldPose);
-
                 vision = new Vision(
                         drive,
                         new VisionIOPhotonVisionSim(
                                 camera0Name, robotToCamera0, driveSimulation::getSimulatedDriveTrainPose),
                         new VisionIOPhotonVisionSim(
                                 camera1Name, robotToCamera1, driveSimulation::getSimulatedDriveTrainPose));
+                climber = new ClimberSubsystem(new ClimberIOTalonFX());
                 break;
 
             default:
@@ -102,6 +107,7 @@ public class RobotContainer {
                         new ModuleIO() {},
                         (robotPose) -> {});
                 vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
+                climber = new ClimberSubsystem(new ClimberIO() {});
                 break;
         }
 

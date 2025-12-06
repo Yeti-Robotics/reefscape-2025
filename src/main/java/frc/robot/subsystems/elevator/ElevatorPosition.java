@@ -18,7 +18,11 @@ public enum ElevatorPosition implements Comparable<ElevatorPosition> {
 
     private final Angle height;
 
-    ElevatorPosition(double height) { this(Units.Rotations.of(height)); }
+    ElevatorPosition(double height) {
+        this(Units.Rotations.of(height));
+    }
 
-    ElevatorPosition(Angle height) { this.height = height; }
+    ElevatorPosition(Angle height) {
+        this.height = height;
+    }
 }
